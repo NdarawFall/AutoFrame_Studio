@@ -1,7 +1,7 @@
 # ==============================================================================
 # SECRETS & CONFIGURATION LOCALE (NE JAMAIS COMMITER SUR GITHUB)
 # ==============================================================================
-# Fichier local contenant les clés API (géré automatiquement par settings.html ou %APPDATA%)
+# Fichier local contenant les clés API (géré automatiquement par settings.html ou settings.html)
 07_Scripts/api_config.json
 07_Scripts/api_config*.json
 api_config.json
@@ -20,7 +20,7 @@ node_modules/
 package-lock.json
 
 # ==============================================================================
-# PACKAGING & BUILDS EXÉCUTABLES (ELECTRON / WINDOWS)
+# EXCLUSIONS DE SÉCURITÉ & ARCHIVES
 # ==============================================================================
 dist/
 build/

@@ -2,12 +2,11 @@
 
 > [!IMPORTANT]
 > **NATURE DU PROJET & PHILOSOPHIE UTILISATEUR** :
-> 1. **Application Desktop Windows Native (Electron)** : VibeEditor n'est **PAS** un simple script ou un projet Git destiné à être cloné et exécuté par des développeurs en ligne de commande. C'est une **application de bureau Windows (.exe)** autonome et packagée propulsée par Electron (`electron-main.cjs`).
-> 2. **Zéro Friction Technique pour l'Utilisateur Final** : L'utilisateur final (créateur de contenu, monteur, agence) ne doit **JAMAIS** avoir à installer Node.js manuellement, ni taper de commande dans un terminal, ni manipuler, renommer ou supprimer des fichiers `.env` ou `.json` d'exemple.
+> 1. **Studio Web Local Autonome** : VibeEditor est un **studio de création vidéo web/local** propulsé par un serveur Node.js (`07_Scripts/studio-server.cjs`). Il n'est **PAS** une application de bureau installable (.exe, Electron, installeur Windows).
+> 2. **Interface Studio Interactive** : L'accès, la création et la prévisualisation se font directement via le navigateur web sur `http://localhost:3000` (`npm start` ou `npm run studio`).
 > 3. **Gestion Transparente des Paramètres & Clés API** :
 >    - Toute la configuration se fait exclusivement à travers l'interface graphique ([`09_Pages/settings.html`](../../09_Pages/settings.html)).
->    - En mode application packagée Windows, les clés et réglages sont stockés automatiquement dans le profil sécurisé de l'utilisateur (`%APPDATA%/VibeEditor/api_config.json` via `app.getPath('userData')`).
->    - En mode développement local, ils sont persistés dans `07_Scripts/api_config.json` (qui reste strictement exclu de Git).
+>    - Les clés et réglages sont persistés dans `07_Scripts/api_config.json` (qui reste strictement exclu de Git).
 >    - Si une clé API est manquante lors d'une tentative de création vidéo, l'application le signale par une modale claire invitant l'utilisateur à coller sa clé dans l'écran des Paramètres.
 > 4. **Règle d'or d'économie de tokens & lecture préalable** : L'IA doit consulter ce document pour connaître la topologie exacte sans jamais fouiller aveuglément les répertoires.
 
@@ -17,8 +16,7 @@
 
 ```text
 heygen-new/
-├── electron-main.cjs           # Point d'entrée de l'application Desktop Windows (Electron)
-├── package.json                # Dépendances & scripts ("npm run app", "npm start", "npm run render")
+├── package.json                # Dépendances & scripts ("npm start", "npm run studio", "npm run render")
 ├── .agents/
 │   └── rules/                  # Règles strictes de gouvernance pour l'IA
 │       ├── project-architecture.md         # Ce document maître d'architecture
@@ -80,7 +78,7 @@ heygen-new/
 │   ├── remove_bg.cjs           # Détourage et suppression du fond d'images
 │   └── api_config.json         # Stockage local des clés API (ignoré par Git)
 ├── 08_Rendus/                  # [Éphémère] Sorties finales vidéo MP4 (ignoré par Git)
-└── 09_Pages/                   # Interface utilisateur web intégrée dans Electron
+└── 09_Pages/                   # Interface utilisateur web du studio (Home, Studio Player, Paramètres)
     ├── home.html               # Page d'accueil et tableau de bord principal
     ├── studio.html             # Studio de montage (player, timeline, onglets Vidéos, Rendus)
     ├── create_video.html       # Formulaire de brief et configuration de création vidéo
@@ -137,7 +135,6 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 
 | Dossier | Nature | Rôle Principal | Droit de Modification IA |
 | :--- | :--- | :--- | :--- |
-| **`electron-main.cjs`** | Système | Lanceur de l'application bureau Windows et gestion de fenêtre Electron. | Maintenance technique. |
 | **`00_Skills/`** | Pérenne | Guides et skills spécialisés réutilisables (design, physique 2D, narration). | Lecture seule (sauf ajout d'un nouveau skill). |
 | **`01_Assets/`** | Pérenne | Rangement de tous les médias utilisés par les vidéos. | Ajout de fichiers avec le suffixe unique. |
 | **`02_Composants/`**| Pérenne | Éléments graphiques, transitions et blocs HTML/CSS prêts. | Lecture et réutilisation dans les scènes. |
@@ -147,4 +144,4 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 | **`06_Templates/`** | Pérenne | Modèles maîtres de structures vidéo. | Lecture et duplication comme base de montage. |
 | **`07_Scripts/`** | Pérenne | Moteurs d'orchestration et scripts utilitaires (`ai_director`, `tts`, `coverr`...). | Exécution et maintenance. |
 | **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre utilisateur**. |
-| **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur intégrés dans l'app Windows. | Maintenance et affichage UI. |
+| **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur du Studio web. | Maintenance et affichage UI. |

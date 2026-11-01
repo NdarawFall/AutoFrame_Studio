@@ -1,23 +1,18 @@
 {
-  "name": "vibe-editor-app",
-  "productName": "VibeEditor",
+  "name": "vibe-editor",
   "version": "1.0.0",
   "description": "Studio vidéo automatisé & moteur de motion design IA",
-  "main": "electron-main.cjs",
+  "main": "07_Scripts/studio-server.cjs",
   "scripts": {
-    "app": "electron electron-main.cjs",
     "start": "node 07_Scripts/studio-server.cjs",
     "studio": "node 07_Scripts/studio-server.cjs",
     "home": "node 07_Scripts/studio-server.cjs",
-    "render": "node 07_Scripts/render.cjs",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "render": "node 07_Scripts/render.cjs"
   },
   "keywords": [
     "video-editor",
     "motion-design",
     "ai",
-    "electron",
     "gsap",
     "threejs"
   ],
@@ -38,47 +33,5 @@
     "srt-parser-2": "^1.2.3",
     "three": "^0.186.1",
     "topojson-client": "^3.1.0"
-  },
-  "devDependencies": {
-    "electron": "^45.0.0",
-    "electron-builder": "^25.1.8"
-  },
-  "build": {
-    "appId": "com.vibeeditor.app",
-    "productName": "VibeEditor",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "**/*",
-      "!dist/**/*",
-      "!scratch/**/*",
-      "!08_Rendus/**/*",
-      "!.agents/**/*",
-      "!.github/**/*",
-      "!07_Scripts/api_config.json"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "differentialPackage": false,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico"
-    },
-    "asar": false,
-    "compression": "store"
   }
 }

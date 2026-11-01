@@ -24,7 +24,7 @@
 2. **Poids & Pollution Disque** :
    Chaque export MP4 pèse des dizaines voire des centaines de mégaoctets dans `08_Rendus/`. Générer un MP4 non demandé sature inutilement le stockage.
 3. **Cycle d'Itération Rapide** :
-   La force de l'architecture VibeEditor réside dans la prévisualisation instantanée dans le navigateur ou dans l'application Electron à 60 FPS avec timeline interactive. L'utilisateur doit pouvoir visualiser, ajuster la physique, peaufiner les animations et valider le résultat dans le player interactif **AVANT** de décider d'exporter.
+   La force de l'architecture VibeEditor réside dans la prévisualisation instantanée dans le navigateur web à 60 FPS avec timeline interactive. L'utilisateur doit pouvoir visualiser, ajuster la physique, peaufiner les animations et valider le résultat dans le player interactif **AVANT** de décider d'exporter.
 
 ---
 

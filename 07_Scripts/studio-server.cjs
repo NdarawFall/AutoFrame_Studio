@@ -48,9 +48,8 @@ const { runAiVideoPipeline } = require('./ai_director.cjs');
 const activeCreationJobs = new Map();
 
 // Détermination transparente du dossier de travail et de configuration :
-// - Mode Windows Electron empaqueté (.exe) : %APPDATA%/VibeEditor (zéro bazar sur le PC)
-// - Mode Développement local : ROOT_DIR
-const USER_DATA_DIR = process.env.VIBE_USER_DATA || ROOT_DIR;
+// Dossier racine du projet
+const USER_DATA_DIR = ROOT_DIR;
 
 if (process.env.VIBE_USER_DATA) {
     ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus'].forEach(folder => {
@@ -1379,7 +1378,7 @@ const server = http.createServer(async (req, res) => {
 
     let filePath = path.join(ROOT_DIR, reqPath);
 
-    // Si USER_DATA_DIR est défini (Electron), vérifier d'abord dans les données utilisateur
+    // Vérifier dans les données utilisateur ou racine
     if (process.env.VIBE_USER_DATA) {
         const inUserData = path.join(process.env.VIBE_USER_DATA, reqPath);
         if (fs.existsSync(inUserData)) {

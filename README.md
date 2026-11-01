@@ -17,11 +17,11 @@ npm install
 
 Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur GitHub grâce au `.gitignore`.
 
-1. Lancez l'application :
+1. Lancez le studio :
    ```bash
    npm start
-   # OU en mode application de bureau :
-   npm run app
+   # OU
+   npm run studio
    ```
 2. Ouvrez la page **Paramètres** : [http://localhost:3000/09_Pages/settings.html](http://localhost:3000/09_Pages/settings.html)
 3. Collez vos clés d'API personnelles :
@@ -38,7 +38,6 @@ Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur Git
 | :--- | :--- |
 | `npm start` ou `npm run studio` | Démarre le serveur local VibeEditor sur `http://localhost:3000` |
 | `npm run render` | Lance le moteur de rendu vidéo headless (Puppeteer + FFmpeg) |
-| `npm run app` | Lance l'application de bureau Electron (optionnel) |
 
 ---
 

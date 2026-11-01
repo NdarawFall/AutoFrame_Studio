@@ -345,8 +345,8 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     baseRawName = baseRawName.replace(/\.html$/i, '');
     let finalFileName = `${baseRawName}${suffix}.html`;
 
-    // Chemins cibles (dossier utilisateur sécurisé si en mode Electron/Packagé)
-    const baseProjectDir = process.env.VIBE_USER_DATA || ROOT_DIR;
+    // Chemins cibles
+    const baseProjectDir = ROOT_DIR;
     const videosTargetDir = isChannel
         ? path.join(baseProjectDir, '03_Chaines', channelId)
         : path.join(baseProjectDir, '04_Videos');

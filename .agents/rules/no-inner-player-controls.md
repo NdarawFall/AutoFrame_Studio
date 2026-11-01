@@ -9,7 +9,7 @@
 ## 1. Pourquoi cette Interdiction est Impérative
 
 1. **Suppression de l'Anti-Pattern "Lecteur dans le Lecteur"** :
-   L'interface Studio ([`09_Pages/studio.html`](../../09_Pages/studio.html)) et l'application bureau Electron possèdent déjà leur propre lecteur vidéo maître externe (timeline, bouton lecture/pause, scrubber, timecode, gestion des pistes V1/CC/A1/A2/A3).
+   L'interface Studio ([`09_Pages/studio.html`](../../09_Pages/studio.html)) possède déjà son propre lecteur vidéo maître externe (timeline, bouton lecture/pause, scrubber, timecode, gestion des pistes V1/CC/A1/A2/A3).
    Intégrer des boutons de lecture ou un slider dans le fichier HTML de la vidéo crée un dédoublement parasite (*"un player dans le player"*), masque la partie inférieure de la vidéo et perturbe la synchronisation des événements.
 
 2. **Rendu MP4 Final Inexploitable** :
