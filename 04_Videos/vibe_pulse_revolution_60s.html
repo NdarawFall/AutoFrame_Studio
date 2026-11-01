@@ -235,6 +235,9 @@
 
         .gauge-readout {
             position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -370,20 +373,29 @@
                         <div class="gauge-container">
                             <svg class="gauge-svg" viewBox="0 0 360 360">
                                 <defs>
-                                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                         <stop offset="0%" stop-color="#06b6d4"/>
                                         <stop offset="50%" stop-color="#3b82f6"/>
                                         <stop offset="100%" stop-color="#a855f7"/>
                                     </linearGradient>
                                 </defs>
-                                <!-- Cadran d'arrière-plan -->
-                                <circle cx="180" cy="180" r="140" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16" stroke-dasharray="660" stroke-dashoffset="165" stroke-linecap="round"/>
-                                <!-- Arc actif animé -->
-                                <circle id="gaugeArc" cx="180" cy="180" r="140" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-dasharray="660" stroke-dashoffset="660" stroke-linecap="round" filter="drop-shadow(0 0 16px rgba(6, 182, 212, 0.6))"/>
-                                <!-- Groupe pivot SVG infaillible centré à (180, 180) -->
+                                <!-- Contour fixe en arc de cercle supérieur (Track de guidage stable) -->
+                                <path id="gaugeBgTrack" d="M 73.5,254.5 A 130,130 0 1,1 286.5,254.5" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16" stroke-linecap="round"/>
+                                
+                                <!-- Arc actif dynamique : s'anime en harmonie parfaite avec l'aiguille -->
+                                <path id="gaugeArc" d="M 73.5,254.5 A 130,130 0 1,1 286.5,254.5" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="568" stroke-dashoffset="568" filter="drop-shadow(0 0 16px rgba(6, 182, 212, 0.8))"/>
+                                
+                                <!-- Repères discrets sur l'arc -->
+                                <circle cx="73.5" cy="254.5" r="3.5" fill="rgba(255,255,255,0.3)"/>
+                                <circle cx="180" cy="50" r="3.5" fill="rgba(255,255,255,0.3)"/>
+                                <circle cx="286.5" cy="254.5" r="3.5" fill="rgba(255,255,255,0.3)"/>
+
+                                <!-- Aiguille du tachymètre : ancrage absolu au centre (180, 180) -->
                                 <g id="gaugeHandPivot">
-                                    <line x1="180" y1="180" x2="180" y2="70" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
-                                    <circle cx="180" cy="180" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="3"/>
+                                    <line x1="180" y1="180" x2="180" y2="60" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
+                                    <line x1="180" y1="180" x2="180" y2="80" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="180" cy="180" r="14" fill="#12131e" stroke="#06b6d4" stroke-width="3"/>
+                                    <circle cx="180" cy="180" r="6" fill="#ffffff"/>
                                 </g>
                             </svg>
                             <div class="gauge-readout">
@@ -591,9 +603,14 @@
         window.__timeline = tl;
         window.__timelines = { main: tl };
 
-        // 1. ANCRAGE PHYSIQUE SVG INFAILLIBLE : Pivot absolu au centre (180, 180) du cadran
+        // 1. TACHYMÈTRE : Point d'ancrage absolu au centre (180, 180) et aiguille calée au départ de l'arc (-125°)
         gsap.set("#gaugeHandPivot", {
-            svgOrigin: "180 180"
+            svgOrigin: "180 180",
+            rotation: -125
+        });
+        gsap.set("#gaugeArc", {
+            strokeDasharray: 568,
+            strokeDashoffset: 568
         });
 
         // 2. ÉTAT INITIAL t=0 : LA SCÈNE 1 EST VISIBLE SANS ÉCRAN VIDE (RÈGLE MAÎTRESSE)
@@ -641,23 +658,25 @@
           .from('.scene2-left', { x: -80, opacity: 0, duration: 0.9, ease: 'back.out(1.4)' }, 15.1)
           .from('.scene2-right', { x: 80, opacity: 0, duration: 0.9, ease: 'back.out(1.4)' }, 15.2);
 
-        // Animation de la jauge (arc + aiguille à ancrage <g> infaillible)
+        // Animation du tachymètre en parfaite synchronie (aiguille + arc supérieur)
         const gaugeObj = { val: 0 };
+        const gaugeArcLength = 568; // Longueur exacte de l'arc supérieur (250°)
         tl.to(gaugeObj, {
-            val: 850,
+            val: 880,
             duration: 9.0,
             ease: 'power2.out',
             onUpdate: function() {
                 const v = Math.round(gaugeObj.val);
                 const el = document.getElementById('gaugeVal');
                 if (el) el.textContent = v;
-                // Calcul rotation aiguille (0 à 210 degrés)
-                const rot = (v / 1000) * 210;
-                gsap.set('#gaugeHandPivot', { rotation: rot });
-                // Calcul offset d'arc SVG (660 -> 165)
-                const arcOff = 660 - (v / 1000) * 495;
+                // Progression normalisée p de 0.0 à 1.0 (calée sur max 1000)
+                const p = gaugeObj.val / 1000;
+                // 1. Rotation de l'aiguille : part de -125° et balaie 250° vers +125°
+                const curAngle = -125 + (p * 250);
+                gsap.set('#gaugeHandPivot', { svgOrigin: '180 180', rotation: curAngle });
+                // 2. Arc actif : se remplit au même rythme rigoureux que l'aiguille
                 const arc = document.getElementById('gaugeArc');
-                if (arc) arc.style.strokeDashoffset = arcOff;
+                if (arc) arc.style.strokeDashoffset = gaugeArcLength * (1 - p);
             }
         }, 15.4);
 
