@@ -54,6 +54,8 @@
       "!dist/**/*",
       "!scratch/**/*",
       "!08_Rendus/**/*",
+      "!.agents/**/*",
+      "!.github/**/*",
       "!07_Scripts/api_config.json"
     ],
     "win": {
@@ -77,6 +79,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
-    }
+    },
+    "asar": false
   }
 }

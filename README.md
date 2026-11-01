@@ -8,8 +8,8 @@
 
 ### 1. Cloner le dépôt et installer les dépendances
 ```bash
-git clone https://github.com/votre-nom/vibe-editor.git
-cd vibe-editor
+git clone https://github.com/NdarawFall/Vibe_Editor_App.git
+cd Vibe_Editor_App
 npm install
 ```
 
