@@ -263,6 +263,37 @@
             color: var(--accent-indigo);
         }
 
+        /* ==========================================================================
+           HELPERS TEXT ANIMATION (VIBEEDITOR STANDARDS PAR DÉFAUT)
+           ========================================================================== */
+        .w-wrap {
+            display: inline-block;
+            white-space: nowrap;
+            margin-right: 0.28em;
+        }
+        .w-wrap:last-child {
+            margin-right: 0;
+        }
+        .w-wrap-mask {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+            padding-bottom: 0.14em;
+            margin-bottom: -0.14em;
+            margin-right: 0.28em;
+        }
+        .w-wrap-mask:last-child {
+            margin-right: 0;
+        }
+        .w-inner {
+            display: inline-block;
+            will-change: transform, opacity;
+        }
+        .line-wrap {
+            display: block;
+            overflow: hidden;
+        }
+
         /* ICÔNES VECTORIELLES STYLISÉES */
         .icon-circle {
             width: 60px;
@@ -391,15 +422,15 @@
                 
                 <!-- GAUCHE : LE MESSAGE CLÉ -->
                 <div style="flex: 1; text-align: left;" id="p3TextCol">
-                    <div class="badge-pill" style="margin-bottom: 20px;">
+                    <div class="badge-pill" id="p3Badge" style="margin-bottom: 20px;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                         <span>PARADOXE DE LA PRODUCTIVITÉ</span>
                     </div>
-                    <h2 class="section-title" style="font-size: 3.4rem; line-height: 1.15; margin-bottom: 20px;">
+                    <h2 class="section-title" id="p3Title" style="font-size: 3.4rem; line-height: 1.15; margin-bottom: 20px;">
                         Travailler moins... <br>
                         <span class="editorial-accent">produit beaucoup plus.</span>
                     </h2>
-                    <p class="body-desc" style="font-size: 1.3rem;">
+                    <p class="body-desc" id="p3Sub" style="font-size: 1.3rem;">
                         La richesse générée par heure travaillée (PIB / h) prouve que la présence physique ne crée pas la valeur réelle.
                     </p>
                 </div>
@@ -505,7 +536,7 @@
 
                 <!-- DROITE : LES DEUX NATIONS MODÈLES -->
                 <div style="flex: 1.2; text-align: left;" id="p4NationsList">
-                    <div class="section-title" style="font-size: 3.2rem; line-height: 1.15; margin-bottom: 24px;">
+                    <div class="section-title" id="p4Title" style="font-size: 3.2rem; line-height: 1.15; margin-bottom: 24px;">
                         L'Énigme Nordique & Helvétique
                     </div>
                     
@@ -549,11 +580,11 @@
         <div class="scene" id="plan_5">
             <div style="width: 100%; max-width: 1540px;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <div class="badge-pill" style="margin-bottom: 14px;">
+                    <div class="badge-pill" id="p5Badge" style="margin-bottom: 14px;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
                         <span>LOI DES RENDEMENTS DÉCROISSANTS</span>
                     </div>
-                    <h2 class="section-title">La Courbe de Saturation Cognitive</h2>
+                    <h2 class="section-title" id="p5Title">La Courbe de Saturation Cognitive</h2>
                 </div>
 
                 <div class="glass-card" style="padding: 40px 60px; position: relative;" id="p5GraphCard">
@@ -593,8 +624,8 @@
              ========================================================================== -->
         <div class="scene" id="plan_6">
             <div style="text-align: center; margin-bottom: 40px;">
-                <h2 class="section-title">Les 3 Piliers du Futur du Travail</h2>
-                <p class="body-desc" style="margin-top: 10px;">L'art de démultiplier son impact sans sacrifier sa vie.</p>
+                <h2 class="section-title" id="p6Title">Les 3 Piliers du Futur du Travail</h2>
+                <p class="body-desc" id="p6Sub" style="margin-top: 10px;">L'art de démultiplier son impact sans sacrifier sa vie.</p>
             </div>
 
             <!-- GRILLE RIGOROUSEMENT CENTRÉE (MARGES SYMÉTRIQUES ÉGALES) -->
@@ -641,7 +672,7 @@
              ========================================================================== -->
         <div class="scene" id="plan_7">
             <div class="glass-card" style="padding: 60px 80px; max-width: 1300px; text-align: center; margin: 0 auto;" id="p7HeroCard">
-                <div class="badge-pill" style="margin-bottom: 30px;">
+                <div class="badge-pill" id="p7Badge" style="margin-bottom: 30px;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
                     <span>L'ESSENTIEL</span>
                 </div>
@@ -775,6 +806,100 @@
     adaptStage();
 
     /* ==========================================================================
+       FONCTIONS D'ANIMATION DE TEXTE (STANDARDS OFFICIELS VIBEEDITOR)
+       ========================================================================== */
+    // Découpage propre mot par mot sans destruction de layout (maintien absolu de la baseline)
+    function splitWordsClean(el, { masked = false } = {}) {
+        if (typeof el === 'string') el = document.querySelector(el);
+        if (!el) return [];
+        const text = el.textContent.normalize('NFC').trim();
+        el.setAttribute('aria-label', text);
+        el.textContent = '';
+        const ws = text.split(/\s+/);
+        return ws.map((w, i) => {
+            const wrap = document.createElement('span');
+            wrap.className = masked ? 'w-wrap-mask' : 'w-wrap';
+            if (i === ws.length - 1) wrap.style.marginRight = '0';
+            const inner = document.createElement('span');
+            inner.className = 'w-inner';
+            inner.textContent = w;
+            wrap.appendChild(inner);
+            el.appendChild(wrap);
+            return inner;
+        });
+    }
+
+    // Titre monopoliche : mot par mot avec fondu vers le haut (DÉFAUT TITRE)
+    function titleFadeWordsUp(timeline, el, t = 0, { dur = 0.65, stagger = 0.1, y = 28, ease = 'power2.out' } = {}) {
+        const words = splitWordsClean(el, { masked: false });
+        if (words.length > 0) {
+            timeline.fromTo(words,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+                t
+            );
+            return t + dur + (words.length - 1) * stagger;
+        }
+        return t;
+    }
+
+    // Titre monopoliche : mot par mot avec fondu vers le bas
+    function titleFadeWordsDown(timeline, el, t = 0, { dur = 0.65, stagger = 0.1, y = -28, ease = 'power2.out' } = {}) {
+        const words = splitWordsClean(el, { masked: false });
+        if (words.length > 0) {
+            timeline.fromTo(words,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+                t
+            );
+            return t + dur + (words.length - 1) * stagger;
+        }
+        return t;
+    }
+
+    // Titre multipolice : slide vers le haut en bloc/ligne (interdiction formelle du mot-par-mot)
+    function titleMultiFontSlide(timeline, el, t = 0, { dur = 0.75, y = 30, ease = 'power2.out' } = {}) {
+        const target = typeof el === 'string' ? document.querySelector(el) : el;
+        if (target) {
+            timeline.fromTo(target,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, ease: ease },
+                t
+            );
+            return t + dur;
+        }
+        return t;
+    }
+
+    // Sous-titre par défaut n°1 : slide vers le haut du texte entier
+    function subtitleSlideUp(timeline, el, t = 0, { dur = 0.7, y = 22, ease = 'power2.out' } = {}) {
+        const target = typeof el === 'string' ? document.querySelector(el) : el;
+        if (target) {
+            timeline.fromTo(target,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, ease: ease },
+                t
+            );
+            return t + dur;
+        }
+        return t;
+    }
+
+    // Sous-titre par défaut n°2 : mot par mot glissant de droite à gauche
+    function subtitleWordsSlideRightToLeft(timeline, el, t = 0, { dur = 0.5, stagger = 0.08, distance = 35, ease = 'power2.out' } = {}) {
+        const words = splitWordsClean(el, { masked: false });
+        if (words.length > 0) {
+            timeline.fromTo(words,
+                { x: distance, opacity: 0 },
+                { x: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+                t
+            );
+            return t + dur + (words.length - 1) * stagger;
+        }
+        return t;
+    }
+
+    /* ==========================================================================
        TIMELINE MAÎTRESSE GSAP (60.0 SECONDES DÉTERMINISTE)
        ========================================================================== */
     const tl = gsap.timeline({
@@ -800,8 +925,8 @@
        Transitions : Simple fondu vertical fluide & compteur dynamique
        -------------------------------------------------------------------------- */
     tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
-    tl.from('#p1Badge', { y: -25, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.2);
-    tl.from('#p1CounterWrap', { y: 35, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.4);
+    tl.fromTo('#p1Badge', { y: -25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
+    tl.fromTo('#p1CounterWrap', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 0.4);
 
     // Incrément dynamique du compteur de 0 à 90 000 avec son pop
     const p1Obj = { val: 0 };
@@ -816,8 +941,11 @@
     }, 0.5);
     tl.call(() => playSfx('chime', 0.8), null, 0.6);
 
-    tl.from('#p1Subtitle', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 1.4);
-    tl.from('#p1Punchline', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 2.0);
+    // Sous-titre : animation standard slide vers le haut (Défaut n°1)
+    subtitleSlideUp(tl, '#p1Subtitle', 1.4, { dur: 0.7, y: 22 });
+
+    // Punchline : titre multipolice (contient accent italique Source Serif 4) -> entrée en bloc
+    titleMultiFontSlide(tl, '#p1Punchline', 2.0, { dur: 0.7, y: 22 });
     // Surlignage feutre jaune
     tl.to('#p1Pen', { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.5);
 
@@ -827,24 +955,29 @@
 
     /* --------------------------------------------------------------------------
        PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (3 NATIONS CENTRÉES)
-       Transitions : Simple fondu vers le haut, animé UNE À UNE à la suite
+       Transitions : Révélation mot par mot pour le titre monopoliche, cartes UNE À UNE
        -------------------------------------------------------------------------- */
     tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
-    tl.from('#p2Title', { y: 25, opacity: 0, duration: 0.6, ease: 'power2.out' }, 4.1);
-    tl.from('#p2Sub', { y: 15, opacity: 0, duration: 0.6, ease: 'power2.out' }, 4.3);
+
+    // Titre Monopoliche : "Le Grand Écart Mondial" (Outfit 800)
+    // RÈGLE : Animation par défaut mot par mot avec fondu vers le haut, alignement strict garanti sans briser le layout
+    titleFadeWordsUp(tl, '#p2Title', 4.1, { dur: 0.65, stagger: 0.12, y: 28 });
+
+    // Sous-titre : Animation par défaut n°1 en slide vers le haut
+    subtitleSlideUp(tl, '#p2Sub', 4.5, { dur: 0.65, y: 20 });
 
     // Entrée des 3 cartes UNE À UNE à la suite en simple fondu vers le haut
     // Card 1 : États-Unis
-    tl.from('#p2Card1', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 4.5);
-    tl.call(() => playSfx('pop', 0.5), null, 4.5);
+    tl.fromTo('#p2Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 4.8);
+    tl.call(() => playSfx('pop', 0.5), null, 4.8);
 
     // Card 2 : France
-    tl.from('#p2Card2', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 5.3);
-    tl.call(() => playSfx('pop', 0.5), null, 5.3);
+    tl.fromTo('#p2Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 5.6);
+    tl.call(() => playSfx('pop', 0.5), null, 5.6);
 
     // Card 3 : Allemagne
-    tl.from('#p2Card3', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 6.1);
-    tl.call(() => playSfx('pop', 0.5), null, 6.1);
+    tl.fromTo('#p2Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 6.4);
+    tl.call(() => playSfx('pop', 0.5), null, 6.4);
 
     // Sortie Plan 2 : simple fondu vers le haut
     tl.to('#plan_2', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 13.6)
@@ -852,11 +985,20 @@
 
     /* --------------------------------------------------------------------------
        PLAN 03 (00:14 - 00:24, 10s) : LE BAR-CHART 2D INTERACTIF
-       Transitions : Simple fondu latéral (gauche et droite)
+       Transitions : Titre multipolice en bloc, sous-titre de droite à gauche mot par mot
        -------------------------------------------------------------------------- */
     tl.set('#plan_3', { display: 'flex', opacity: 1 }, 14.0);
-    tl.from('#p3TextCol', { x: -40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 14.1);
-    tl.from('#p3ChartCard', { x: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 14.3);
+    tl.fromTo('#p3TextCol', { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 14.1);
+
+    // Titre Multipolice (Outfit + editorial-accent Source Serif 4 italic)
+    // RÈGLE : Interdiction formelle du mot par mot -> entrée par ligne/bloc entier
+    titleMultiFontSlide(tl, '#p3Title', 14.2, { dur: 0.75, y: 25 });
+
+    // Sous-titre : Démonstration de l'Animation par défaut n°2 : mot par mot glissant de droite à gauche
+    // Chaque mot glisse de droite à gauche (x: 35 -> 0) à sa place exacte et s'y fige définitivement
+    subtitleWordsSlideRightToLeft(tl, '#p3Sub', 14.6, { dur: 0.5, stagger: 0.08, distance: 35 });
+
+    tl.fromTo('#p3ChartCard', { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 14.4);
 
     // Animation 2D des barres horizontales et compteurs de valeur
     const deObj = { val: 0 };
@@ -919,8 +1061,11 @@
        -------------------------------------------------------------------------- */
     tl.set('#plan_4', { display: 'flex', opacity: 1 }, 24.0);
     // Donut card à gauche : simple fondu vers le haut
-    tl.from('#p4DonutCard', { y: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 24.1);
-    tl.from('#p4NationsList .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 24.2);
+    tl.fromTo('#p4DonutCard', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 24.1);
+
+    // Titre Monopoliche : "L'Énigme Nordique & Helvétique"
+    // RÈGLE : Animation par défaut mot par mot avec fondu vers le haut
+    titleFadeWordsUp(tl, '#p4Title', 24.2, { dur: 0.65, stagger: 0.1, y: 28 });
 
     // Progression 2D du donut vectoriel (502.6 * (1 - 0.88) = 60.3)
     tl.to('#p4DonutCircle', { strokeDashoffset: 60.3, duration: 2.2, ease: 'power2.out' }, 24.4);
@@ -938,9 +1083,9 @@
     tl.call(() => playSfx('pop', 0.6), null, 24.5);
 
     // Révélation des 2 cartes pays UNE À UNE à la suite (simple fondu latéral)
-    tl.from('#p4Fi', { x: 45, opacity: 0, duration: 0.65, ease: 'power2.out' }, 25.0);
+    tl.fromTo('#p4Fi', { x: 45, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 25.0);
     tl.call(() => playSfx('pop', 0.5), null, 25.0);
-    tl.from('#p4Ch', { x: 45, opacity: 0, duration: 0.65, ease: 'power2.out' }, 25.8);
+    tl.fromTo('#p4Ch', { x: 45, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 25.8);
     tl.call(() => playSfx('pop', 0.5), null, 25.8);
 
     // Sortie Plan 4 : simple fondu vers le haut
@@ -952,10 +1097,14 @@
        Transitions : Simple fondu vers le haut pour la carte
        -------------------------------------------------------------------------- */
     tl.set('#plan_5', { display: 'flex', opacity: 1 }, 33.0);
-    tl.from('#plan_5 .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 33.1);
+    tl.fromTo('#p5Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 33.1);
+
+    // Titre Monopoliche : "La Courbe de Saturation Cognitive"
+    // RÈGLE : Animation par défaut mot par mot avec fondu vers le haut
+    titleFadeWordsUp(tl, '#p5Title', 33.15, { dur: 0.65, stagger: 0.1, y: 28 });
 
     // Simple fondu vers le haut pour la carte du graphique
-    tl.from('#p5GraphCard', { y: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 33.2);
+    tl.fromTo('#p5GraphCard', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 33.3);
 
     // Configuration mathématique du tracé SVG et du point traceur
     const curveEl = document.getElementById('p5Curve');
@@ -992,24 +1141,29 @@
 
     /* --------------------------------------------------------------------------
        PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DU TRAVAIL MODERNE (CENTRÉS)
-       Transitions : Simple fondu vers le haut, UNE À UNE à la suite
+       Transitions : Révélation mot par mot pour le titre monopoliche, cartes UNE À UNE
        -------------------------------------------------------------------------- */
     tl.set('#plan_6', { display: 'flex', opacity: 1 }, 43.0);
-    tl.from('#plan_6 .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 43.1);
-    tl.from('#plan_6 .body-desc', { y: 15, opacity: 0, duration: 0.6, ease: 'power2.out' }, 43.2);
+
+    // Titre Monopoliche : "Les 3 Piliers du Futur du Travail"
+    // RÈGLE : Animation par défaut mot par mot avec fondu vers le haut
+    titleFadeWordsUp(tl, '#p6Title', 43.1, { dur: 0.65, stagger: 0.1, y: 28 });
+
+    // Sous-titre : Animation par défaut n°1 en slide vers le haut
+    subtitleSlideUp(tl, '#p6Sub', 43.4, { dur: 0.65, y: 20 });
 
     // Entrée des 3 cartes UNE À UNE à la suite en simple fondu vers le haut
     // Pilier 1
-    tl.from('#p6Card1', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 43.5);
-    tl.call(() => playSfx('pop', 0.5), null, 43.5);
+    tl.fromTo('#p6Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 43.8);
+    tl.call(() => playSfx('pop', 0.5), null, 43.8);
 
     // Pilier 2
-    tl.from('#p6Card2', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 44.4);
-    tl.call(() => playSfx('pop', 0.5), null, 44.4);
+    tl.fromTo('#p6Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 44.6);
+    tl.call(() => playSfx('pop', 0.5), null, 44.6);
 
     // Pilier 3
-    tl.from('#p6Card3', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 45.3);
-    tl.call(() => playSfx('pop', 0.5), null, 45.3);
+    tl.fromTo('#p6Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 45.4);
+    tl.call(() => playSfx('pop', 0.5), null, 45.4);
 
     // Sortie Plan 6 : simple fondu vers le haut
     tl.to('#plan_6', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 51.6)
@@ -1021,18 +1175,24 @@
        -------------------------------------------------------------------------- */
     tl.set('#plan_7', { display: 'flex', opacity: 1 }, 52.0);
     // Simple fondu vers le haut pour la Hero Card
-    tl.from('#p7HeroCard', { y: 35, opacity: 0, duration: 0.8, ease: 'power2.out' }, 52.1);
-    tl.from('#p7Title', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 52.4);
+    tl.fromTo('#p7HeroCard', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 52.1);
+    tl.fromTo('#p7Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 52.3);
+
+    // Titre Multipolice (accent serif italique) : slide vers le haut en bloc
+    titleMultiFontSlide(tl, '#p7Title', 52.4, { dur: 0.75, y: 25 });
 
     // Déploiement majestueux du surlignage jaune feutré
     tl.to('#p7Pen', { scaleX: 1, duration: 0.9, ease: 'power2.inOut' }, 53.5);
     tl.call(() => playSfx('chime', 0.9), null, 53.6);
 
     // Simple fondu vers le haut pour les drapeaux
-    tl.from('#p7Flags', { y: 15, opacity: 0, duration: 0.7, ease: 'power2.out' }, 54.4);
+    tl.fromTo('#p7Flags', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 54.4);
 
     // Fondu final délicat vers 60.0s
     tl.to('#stage', { opacity: 0.95, duration: 1.0 }, 59.0);
+
+    // Pré-chauffe GSAP déterministe (évite les états indéfinis au scrub inverse)
+    tl.seek(60).seek(0);
 
     // Enregistrement de la timeline maîtresse pour les outils et le rendu
     window.tl = tl;

@@ -17,6 +17,10 @@ Ce skill formalise les **17 principes de design fondamentaux** enseignés par Jo
   ```html
   <h2 class="title-sans">Comment créer une offre à <span class="highlight-script">7 Chiffres</span></h2>
   ```
+* ⚡ **Règles Fondamentales d'Animation de Texte (Monopoliche vs Multipolice) :**
+  * **Titre Monopoliche (1 seule police sur tout le texte, ex: *"Le Grand Écart Mondial"*) :** Animation par défaut **mot par mot** avec fondu vers le haut ou vers le bas (`titleFadeWordsUp` / `titleFadeWordsDown`). Le texte doit rester rigoureusement aligné sur sa ligne de base sans déformation ni saut de ligne.
+  * **Titre Multipolice (Sans-Serif + Accent Script/Serif) :** ⚠️ **Interdiction absolue du découpage mot par mot**. Le titre doit impérativement entrer en **bloc entier** ou **ligne par ligne** (`titleMultiFontSlide`) pour préserver les rapports de baseline et la cohérence optique des deux polices.
+  * **Sous-titres & Paragraphes :** Animation par défaut n°1 en **slide vers le haut** du texte entier (ou ligne par ligne avec conteneur masqué si multiligne) ; ou animation par défaut n°2 en **slide de droite à gauche mot par mot** (`subtitleWordsSlideRightToLeft`, où chaque mot glisse à sa place et s'y fige sans décaler les mots précédents). Voir `.agents/skills/My_Skills/text_animation/SKILL.md`.
 
 ---
 

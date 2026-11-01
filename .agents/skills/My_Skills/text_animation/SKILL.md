@@ -32,6 +32,16 @@ Easing : entrée = `expo.out` / `power3.out` (premium, net) ; impact = `back.out
 Cohérence : UNE animation « de base » pour tous les titres d'une vidéo + UNE animation « signature » réservée aux moments d'impact (hook, chiffre choc, chute). Jamais plus de 2 familles.
 
 ## 2. Quand utiliser quoi
+
+### 🌟 LES ANIMATIONS PAR DÉFAUT (Standards Obligatoires)
+| Rôle Typographique | Condition / Structure | Animation Recommandée | Comportement |
+|---|---|---|---|
+| **Titre Monopoliche (DÉFAUT)** | **1 seule police sur tout le titre** (ex: *"Le Grand Écart Mondial"*) | `titleFadeWordsUp` ou `titleFadeWordsDown` | **Mot par mot** avec fondu vers le haut ou bas. Alignement strict garanti sans briser le layout. |
+| **Titre Multipolice** | **Contient un mot dans un autre font** (accent serif / script dual-font) | `titleMultiFontSlide` | **Bloc entier ou ligne par ligne**. ⚠️ **INTERDICTION du mot par mot** pour préserver la baseline ! |
+| **Sous-titre (DÉFAUT n°1)** | 1 à 3 lignes descriptives | `subtitleSlideUp` | **Slide vers le haut** du texte entier (ou ligne par ligne avec conteneur masqué si multiligne). |
+| **Sous-titre (DÉFAUT n°2)** | Phrase d'accroche / rythme cinétique | `subtitleWordsSlideRightToLeft` | **Mot par mot de droite à gauche** : chaque mot glisse à sa place et s'y fige définitivement. |
+
+### 🎨 Animations d'Impact & Styles Spécialisés
 | Intention | Animation |
 |---|---|
 | Titre de chapitre / sérieux / docu | `maskReveal` |
@@ -46,6 +56,17 @@ Cohérence : UNE animation « de base » pour tous les titres d'une vidéo + UNE
 
 ## 3. Helpers (à inclure une seule fois)
 ```css
+/* Wrappers mot par mot stables (Zéro Layout Shift) */
+.w-wrap { display: inline-block; white-space: nowrap; margin-right: 0.28em; }
+.w-wrap:last-child { margin-right: 0; }
+.w-wrap-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; margin-right: 0.28em; }
+.w-wrap-mask:last-child { margin-right: 0; }
+.w-inner { display: inline-block; will-change: transform, opacity; }
+
+/* Conteneur de ligne pour sous-titres multilignes */
+.line-wrap { display: block; overflow: hidden; }
+
+/* Styles historiques VibeEditor */
 .w{display:inline-block;white-space:nowrap}
 .w-mask{overflow:hidden;vertical-align:top;padding:.08em .04em .18em;margin:-.08em -.04em -.18em}
 .wi,.c{display:inline-block;will-change:transform}
@@ -57,6 +78,25 @@ Cohérence : UNE animation « de base » pour tous les titres d'une vidéo + UNE
 ```js
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* Découpage mot par mot propre sans destruction de layout */
+function splitWordsClean(el, { masked = false } = {}) {
+  const text = el.textContent.normalize('NFC').trim();
+  el.setAttribute('aria-label', text);
+  el.textContent = '';
+  const ws = text.split(/\s+/);
+  return ws.map((w, i) => {
+    const wrap = document.createElement('span');
+    wrap.className = masked ? 'w-wrap-mask' : 'w-wrap';
+    if (i === ws.length - 1) wrap.style.marginRight = '0';
+    const inner = document.createElement('span');
+    inner.className = 'w-inner';
+    inner.textContent = w;
+    wrap.appendChild(inner);
+    el.appendChild(wrap);
+    return inner;
+  });
+}
 
 function splitWords(el,{mask=false}={}){
   const text=el.textContent.normalize('NFC').trim();
@@ -80,6 +120,79 @@ function splitChars(el){
 Le parent d'un texte animé en transform doit avoir `display:inline-block` ou `block` (les `inline` ignorent `transform`).
 
 ## 4. Catalogue d'animations
+
+### 4.0 ANIMATIONS PAR DÉFAUT (Règles Fondamentales VibeEditor)
+
+#### 4.0.1 Titre Monopoliche — `titleFadeWordsUp` & `titleFadeWordsDown`
+**Quand l'utiliser :** Titre dont l'intégralité du texte partage la même police (ex: *"Le Grand Écart Mondial"* en Outfit 800).  
+**Comportement :** Chaque mot apparaît l'un après l'autre avec une translation verticale douce et un fondu d'opacité.
+- **Règle absolue de layout :** Le texte reste parfaitement aligné sur sa ligne de base. Les retours à la ligne naturels sont respectés sans aucun reflow pendant la transition.
+- **Interdiction formelle :** Ne jamais utiliser sur un titre contenant un mot dans une autre police !
+```js
+function titleFadeWordsUp(tl, el, t = 0, { dur = 0.65, stagger = 0.1, y = 28, ease = 'power2.out' } = {}) {
+  const words = splitWordsClean(el, { masked: false });
+  tl.fromTo(words,
+    { y: y, opacity: 0 },
+    { y: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+    t
+  );
+  return t + dur + (words.length - 1) * stagger;
+}
+
+function titleFadeWordsDown(tl, el, t = 0, { dur = 0.65, stagger = 0.1, y = -28, ease = 'power2.out' } = {}) {
+  const words = splitWordsClean(el, { masked: false });
+  tl.fromTo(words,
+    { y: y, opacity: 0 },
+    { y: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+    t
+  );
+  return t + dur + (words.length - 1) * stagger;
+}
+```
+
+#### 4.0.2 Titre Multipolice — `titleMultiFontSlide`
+**Quand l'utiliser :** Titre associant deux polices (ex: Sans-Serif + mot en Serif italique ou Script manuscrit type `<span class="editorial-accent">...</span>`).  
+**Pourquoi interdire le mot par mot ici ?** Découper des mots ayant des tailles de corps, des hauteurs d'x et des chasses dissemblables crée des ruptures visuelles disgracieuses et déforme la perception du titre.  
+**Comportement :** Le titre entre en bloc entier ou ligne par ligne avec un glissement vertical élégant.
+```js
+function titleMultiFontSlide(tl, el, t = 0, { dur = 0.75, y = 30, ease = 'power2.out' } = {}) {
+  tl.fromTo(el,
+    { y: y, opacity: 0 },
+    { y: 0, opacity: 1, duration: dur, ease: ease },
+    t
+  );
+  return t + dur;
+}
+```
+
+#### 4.0.3 Sous-titre par Défaut n°1 — `subtitleSlideUp` (Texte entier ou ligne par ligne)
+**Quand l'utiliser :** Sous-titres, explications et descriptions sous un titre.  
+**Comportement :** Le texte entier (ou chaque ligne successivement si le texte est sur plusieurs lignes) glisse vers le haut avec un fondu doux.
+```js
+function subtitleSlideUp(tl, el, t = 0, { dur = 0.7, y = 22, ease = 'power2.out' } = {}) {
+  tl.fromTo(el,
+    { y: y, opacity: 0 },
+    { y: 0, opacity: 1, duration: dur, ease: ease },
+    t
+  );
+  return t + dur;
+}
+```
+
+#### 4.0.4 Sous-titre par Défaut n°2 — `subtitleWordsSlideRightToLeft`
+**Quand l'utiliser :** Sous-titres dynamiques où l'on souhaite une cadence rythmée mot par mot.  
+**Comportement :** Chaque mot glisse de droite à gauche (`x: 35 -> 0`) vers sa place exacte et s'y fige définitivement. Le premier mot arrive, reste immobile, puis le second arrive et se colle à sa suite, sans jamais bousculer les mots déjà posés.
+```js
+function subtitleWordsSlideRightToLeft(tl, el, t = 0, { dur = 0.5, stagger = 0.08, distance = 35, ease = 'power2.out' } = {}) {
+  const words = splitWordsClean(el, { masked: false });
+  tl.fromTo(words,
+    { x: distance, opacity: 0 },
+    { x: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+    t
+  );
+  return t + dur + (words.length - 1) * stagger;
+}
+```
 
 ### 4.1 maskReveal — premium par défaut
 ```js
