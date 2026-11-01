@@ -72,6 +72,7 @@ function createWindow() {
         backgroundColor: '#000000',
         title: 'VibeEditor 1.0 — Motion Design & Video Engine',
         autoHideMenuBar: true,
+        icon: path.join(__dirname, 'build', 'icon.png'),
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true
