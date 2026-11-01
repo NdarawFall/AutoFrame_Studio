@@ -1,5 +1,5 @@
 ---
-name: video_design_mastery
+name: Joseph_Edit_Skills
 description: Règles de design et de direction artistique vidéo professionnelles (17 principes de design par Joseph / Ultimate Editors : typographie 80/20, placement règle des tiers, équilibre, contraste 4 leviers, palette 60/30/10, script-to-design, habillage short-form 9:16 et long-form 16:9).
 ---
 

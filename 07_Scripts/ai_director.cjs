@@ -36,18 +36,35 @@ const CONFIG_PATH = process.env.VIBE_USER_DATA
     ? path.join(process.env.VIBE_USER_DATA, 'api_config.json')
     : path.join(ROOT_DIR, '07_Scripts', 'api_config.json');
 
-// Helper pour charger les directives des skills de conception et physique 2D (00_Skills/)
+// Helper pour charger les directives des skills de conception et physique 2D (00_Skills/ et .agents/skills/)
 function loadSkillsDirectives() {
     try {
         const skillsDir = path.join(ROOT_DIR, '00_Skills');
-        const designSkillPath = path.join(skillsDir, 'video_design_mastery', 'SKILL.md');
+        const agentSkillsDir = path.join(ROOT_DIR, '.agents', 'skills');
+
+        // Skill Design Joseph (vérification Joseph_Edit_Skills ou fallback video_design_mastery)
+        const josephPath = path.join(agentSkillsDir, 'Joseph_Edit_Skills', 'SKILL.md');
+        const legacyDesignPath = path.join(skillsDir, 'video_design_mastery', 'SKILL.md');
+        const designSkillPath = fs.existsSync(josephPath) ? josephPath : legacyDesignPath;
+
         const physicsSkillPath = path.join(skillsDir, 'animation_2d_physics', 'SKILL.md');
         let text = '';
         if (fs.existsSync(designSkillPath)) {
-            text += '\n=== DIRECTIVES SKILL: VIDEO DESIGN MASTERY (17 Règles d\'Or) ===\n' + fs.readFileSync(designSkillPath, 'utf8') + '\n';
+            text += '\n=== DIRECTIVES SKILL: JOSEPH EDIT SKILLS (17 Règles d\'Or) ===\n' + fs.readFileSync(designSkillPath, 'utf8') + '\n';
         }
         if (fs.existsSync(physicsSkillPath)) {
             text += '\n=== DIRECTIVES SKILL: ANIMATION 2D & PHYSIQUE GÉOMÉTRIQUE ===\n' + fs.readFileSync(physicsSkillPath, 'utf8') + '\n';
+        }
+
+        // Chargement automatique des nouveaux skills personnalisés (.agents/skills/My_Skills/)
+        const mySkillsDir = path.join(agentSkillsDir, 'My_Skills');
+        if (fs.existsSync(mySkillsDir)) {
+            for (const sub of fs.readdirSync(mySkillsDir)) {
+                const subSkillPath = path.join(mySkillsDir, sub, 'SKILL.md');
+                if (fs.existsSync(subSkillPath)) {
+                    text += `\n=== DIRECTIVES SKILL: ${sub.toUpperCase()} ===\n` + fs.readFileSync(subSkillPath, 'utf8') + '\n';
+                }
+            }
         }
         return text;
     } catch (e) {
