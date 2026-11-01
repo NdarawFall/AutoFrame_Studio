@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="fr" data-format="16x9">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Paradoxe du Temps : Qui Travaille le Plus et Vit le Mieux ? (60s)</title>
+    <!-- Polices officielles : Outfit (Titres d'impact), Plus Jakarta Sans (Corps UI), Space Grotesk (Données & Chiffres), Source Serif 4 (Accents éditoriaux) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=Source+Serif+4:ital,wght@0,600;1,600;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           RESET & CANVAS 16:9 RIGOREUX (DESIGN COMPOSITION & POLISH STUDIO)
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        :root {
+            --W: 1920px;
+            --H: 1080px;
+
+            /* PALETTE LIGHT ULTRA-MODERNE (Règle 60/30/10) */
+            --bg-base: #f8fafc;          /* 60% : Blanc cassé soyeux haute lisibilité */
+            --bg-card: rgba(255, 255, 255, 0.92); /* 30% : Surface carte immaculée */
+            --border-card: #e2e8f0;      /* Contour fin et chirurgical */
+            --text-title: #0f172a;       /* Noir ardoise profond */
+            --text-body: #475569;        /* Gris de lecture équilibré */
+            --text-muted: #94a3b8;       /* Gris discret métadonnées */
+
+            /* ACCENTS CHRYSANTHÈMES (10%) */
+            --accent-blue: #2563eb;      /* Bleu cobalt énergie */
+            --accent-indigo: #4f46e5;    /* Indigo profond */
+            --accent-emerald: #059669;   /* Vert succès / bien-être */
+            --accent-amber: #d97706;     /* Alerte / tension */
+            --accent-rose: #e11d48;      /* Point critique */
+            --highlight-yellow: #fef08a; /* Surlignage feutre */
+
+            /* SYSTÈME D'OMBRE PORTEE STUDIO */
+            --shadow-subtle: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+            --shadow-card: 0 20px 35px -10px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(15, 23, 42, 0.04);
+            --shadow-float: 0 30px 60px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05);
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #0b0f19;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-title);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* CADRE MAÎTRE 16:9 FIXE — AUCUN TEXTE OU OVERLAY DANS LES 4 COINS */
+        #stage {
+            position: relative;
+            width: var(--W);
+            height: var(--H);
+            background: var(--bg-base);
+            overflow: hidden;
+            box-shadow: 0 0 120px rgba(0, 0, 0, 0.85);
+            transform-origin: center center;
+        }
+
+        /* COUCHE 1 : DYNAMIC MESH GRADIENT BACKDROP (FOND BLANC VIVANT) */
+        .ambient-gradient-backdrop {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+            background: #ffffff;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.22;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 800px;
+            height: 800px;
+            left: -100px;
+            top: -100px;
+            background: radial-gradient(circle, #38bdf8 0%, #818cf8 100%);
+        }
+
+        .orb-2 {
+            width: 900px;
+            height: 900px;
+            right: -150px;
+            bottom: -150px;
+            background: radial-gradient(circle, #fb923c 0%, #f43f5e 100%);
+            opacity: 0.15;
+        }
+
+        .orb-3 {
+            width: 700px;
+            height: 700px;
+            left: 35%;
+            top: 25%;
+            background: radial-gradient(circle, #34d399 0%, #06b6d4 100%);
+            opacity: 0.14;
+        }
+
+        /* MICRO-GRILLE ÉDITORIALE ÉLÉGANTE */
+        .grid-texture {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.025) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        /* SCÈNES DU FILM (ORGANISÉES EN TIMELINES STRICTEMENT ISOLÉES) */
+        .scene {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 100px;
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           SYSTÈME DE CARTES HARMONISÉES & COHÉRENTES (DIRECTION ARTISTIQUE)
+           ========================================================================== */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 24px;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card-featured {
+            border: 2px solid rgba(37, 99, 235, 0.25);
+            box-shadow: var(--shadow-float), 0 0 0 4px rgba(37, 99, 235, 0.05);
+        }
+
+        /* ==========================================================================
+           HIÉRARCHIE TYPOGRAPHIQUE STRICTE (80/20 & ÉDITORIAL HIGH-END)
+           ========================================================================== */
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4.8rem;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.035em;
+            color: var(--text-title);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            color: var(--text-title);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--text-title);
+        }
+
+        .body-desc {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            line-height: 1.55;
+            color: var(--text-body);
+        }
+
+        .mono-stat {
+            font-family: 'Space Grotesk', monospace;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.18);
+            color: var(--accent-blue);
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* DRAPEAUX ENCAPSULÉS */
+        .flag-box {
+            width: 32px;
+            height: 22px;
+            border-radius: 4px;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+
+        .flag-box svg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* EFFET SURLIGNEUR FEUTRE (TEXT ANIMATION) */
+        .highlighter-wrap {
+            position: relative;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .highlighter-pen {
+            position: absolute;
+            left: -4px;
+            right: -4px;
+            bottom: 4px;
+            height: 38%;
+            background: var(--highlight-yellow);
+            border-radius: 4px;
+            z-index: -1;
+            transform-origin: left center;
+            transform: scaleX(0);
+        }
+
+        .editorial-accent {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-style: italic;
+            font-weight: 600;
+            color: var(--accent-indigo);
+        }
+
+        /* ICÔNES VECTORIELLES STYLISÉES */
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .icon-circle svg {
+            width: 30px;
+            height: 30px;
+            stroke-width: 2.2;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stage" data-duration="60">
+
+        <!-- FOND BLANC AVEC GRADIENTS PASTEL FLUIDES -->
+        <div class="ambient-gradient-backdrop">
+            <div class="gradient-orb orb-1" id="orb1"></div>
+            <div class="gradient-orb orb-2" id="orb2"></div>
+            <div class="gradient-orb orb-3" id="orb3"></div>
+            <div class="grid-texture"></div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — LE COMPTEUR DES 90 000 HEURES
+             ========================================================================== -->
+        <div class="scene" id="plan_1">
+            <div class="badge-pill" id="p1Badge" style="margin-bottom: 28px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>LE COMPTEUR D'UNE VIE</span>
+            </div>
+
+            <div style="display: flex; align-items: baseline; justify-content: center; gap: 20px;" id="p1CounterWrap">
+                <div class="hero-title mono-stat" id="p1Counter" style="font-size: 8.5rem; color: var(--accent-blue);">0</div>
+                <div class="hero-title" style="font-size: 4.8rem; color: var(--text-title);">HEURES</div>
+            </div>
+
+            <div class="body-desc" id="p1Subtitle" style="font-size: 2.2rem; max-width: 1100px; margin-top: 24px; color: var(--text-body);">
+                C'est le temps qu'un être humain consacre au travail dans sa vie.
+            </div>
+
+            <div class="editorial-accent" id="p1Punchline" style="font-size: 2.5rem; margin-top: 20px;">
+                Mais qui en tire <span class="highlighter-wrap"><span class="highlighter-pen" id="p1Pen"></span>le plus de valeur</span> ?
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (4 NATIONS CLÉS)
+             ========================================================================== -->
+        <div class="scene" id="plan_2">
+            <div class="section-title" id="p2Title" style="margin-bottom: 12px;">
+                Le Grand Écart Mondial
+            </div>
+            <p class="body-desc" id="p2Sub" style="margin-bottom: 50px;">
+                Le volume annuel d'heures travaillées révèle deux visions opposées de l'existence.
+            </p>
+
+            <!-- GRILLE DE 4 CARDS HOMOGÈNES ET HARMONISÉES -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; width: 100%; max-width: 1600px;" id="p2Grid">
+                
+                <!-- CARD 1 : ÉTATS-UNIS -->
+                <div class="glass-card" style="padding: 34px 28px; text-align: left; position: relative;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+                        <span class="card-title" style="font-size: 1.4rem;">États-Unis</span>
+                        <div class="flag-box">
+                            <!-- SVG US -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7410 3900"><path fill="#b31942" d="M0 0h7410v3900H0"/><path stroke="#FFF" stroke-width="300" d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0"/><path fill="#0a3161" d="M0 0h2964v2100H0"/></svg>
+                        </div>
+                    </div>
+                    <div class="mono-stat" style="font-size: 3.2rem; color: #dc2626; margin-bottom: 6px;">1 811 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
+                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;"><strong>0 jour</strong> de congé payé garanti par la loi fédérale.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 2 : JAPON -->
+                <div class="glass-card" style="padding: 34px 28px; text-align: left;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+                        <span class="card-title" style="font-size: 1.4rem;">Japon</span>
+                        <div class="flag-box">
+                            <!-- SVG JAPON -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#fff" d="M0 0h900v600H0z"/><circle fill="#bc002d" cx="450" cy="300" r="180"/></svg>
+                        </div>
+                    </div>
+                    <div class="mono-stat" style="font-size: 3.2rem; color: #ea580c; margin-bottom: 6px;">1 607 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
+                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;">Phénomène du <strong>Karōshi</strong> (surmenage extrême au bureau).</p>
+                    </div>
+                </div>
+
+                <!-- CARD 3 : FRANCE -->
+                <div class="glass-card" style="padding: 34px 28px; text-align: left;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+                        <span class="card-title" style="font-size: 1.4rem;">France</span>
+                        <div class="flag-box">
+                            <!-- SVG FRANCE -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#CE1126" d="M0 0h900v600H0"/><path fill="#fff" d="M0 0h600v600H0"/><path fill="#002654" d="M0 0h300v600H0"/></svg>
+                        </div>
+                    </div>
+                    <div class="mono-stat" style="font-size: 3.2rem; color: var(--accent-blue); margin-bottom: 6px;">1 511 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
+                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;"><strong>35 heures</strong> légales, 5 semaines de congés + RTT.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 4 : ALLEMAGNE -->
+                <div class="glass-card glass-card-featured" style="padding: 34px 28px; text-align: left; background: #ffffff;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+                        <span class="card-title" style="font-size: 1.4rem;">Allemagne</span>
+                        <div class="flag-box">
+                            <!-- SVG ALLEMAGNE -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><path d="M0 0h5v3H0z"/><path fill="#D00" d="M0 1h5v2H0z"/><path fill="#FFCE00" d="M0 2h5v1H0z"/></svg>
+                        </div>
+                    </div>
+                    <div class="mono-stat" style="font-size: 3.2rem; color: var(--accent-emerald); margin-bottom: 6px;">1 341 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #059669; text-transform: uppercase; margin-bottom: 18px;">Champion OCDE</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
+                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;">Le volume annuel le <strong>plus faible</strong> du monde développé.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 03 (00:14 - 00:24, 10s) : LE BAR-CHART 2D INTERACTIF (PRODUCTIVITÉ)
+             ========================================================================== -->
+        <div class="scene" id="plan_3">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1540px; gap: 80px;">
+                
+                <!-- GAUCHE : LE MESSAGE CLÉ -->
+                <div style="flex: 1; text-align: left;" id="p3TextCol">
+                    <div class="badge-pill" style="margin-bottom: 20px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span>PARADOXE DE LA PRODUCTIVITÉ</span>
+                    </div>
+                    <h2 class="section-title" style="font-size: 3.4rem; line-height: 1.15; margin-bottom: 20px;">
+                        Travailler moins... <br>
+                        <span class="editorial-accent">produit beaucoup plus.</span>
+                    </h2>
+                    <p class="body-desc" style="font-size: 1.3rem;">
+                        La richesse générée par heure travaillée (PIB / h) prouve que la présence physique ne crée pas la valeur réelle.
+                    </p>
+                </div>
+
+                <!-- DROITE : BAR-CHART 2D VECTORIEL ANIMÉ -->
+                <div class="glass-card" style="flex: 1.3; padding: 44px 48px;" id="p3ChartCard">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 34px;">
+                        <span style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-title);">PIB produit par Heure Travaillée ($)</span>
+                        <span style="font-family: 'Space Grotesk', monospace; font-size: 0.95rem; font-weight: 600; color: #94a3b8;">Source : OCDE Data</span>
+                    </div>
+
+                    <!-- BARRE 1 : ALLEMAGNE -->
+                    <div style="margin-bottom: 26px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><path d="M0 0h5v3H0z"/><path fill="#D00" d="M0 1h5v2H0z"/><path fill="#FFCE00" d="M0 2h5v1H0z"/></svg></div>
+                                <span style="font-size: 1.15rem;">Allemagne</span>
+                            </div>
+                            <span class="mono-stat" style="font-size: 1.3rem; color: var(--accent-emerald);" id="barValDe">0 $ / h</span>
+                        </div>
+                        <div style="width: 100%; height: 22px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+                            <div id="barFillDe" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BARRE 2 : FRANCE -->
+                    <div style="margin-bottom: 26px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#CE1126" d="M0 0h900v600H0"/><path fill="#fff" d="M0 0h600v600H0"/><path fill="#002654" d="M0 0h300v600H0"/></svg></div>
+                                <span style="font-size: 1.15rem;">France</span>
+                            </div>
+                            <span class="mono-stat" style="font-size: 1.3rem; color: var(--accent-blue);" id="barValFr">0 $ / h</span>
+                        </div>
+                        <div style="width: 100%; height: 22px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+                            <div id="barFillFr" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BARRE 3 : ÉTATS-UNIS -->
+                    <div style="margin-bottom: 26px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7410 3900"><path fill="#b31942" d="M0 0h7410v3900H0"/><path stroke="#FFF" stroke-width="300" d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0"/><path fill="#0a3161" d="M0 0h2964v2100H0"/></svg></div>
+                                <span style="font-size: 1.15rem;">États-Unis</span>
+                            </div>
+                            <span class="mono-stat" style="font-size: 1.3rem; color: var(--accent-indigo);" id="barValUs">0 $ / h</span>
+                        </div>
+                        <div style="width: 100%; height: 22px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+                            <div id="barFillUs" style="width: 0%; height: 100%; background: linear-gradient(90deg, #6366f1, #4f46e5); border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BARRE 4 : JAPON -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#fff" d="M0 0h900v600H0z"/><circle fill="#bc002d" cx="450" cy="300" r="180"/></svg></div>
+                                <span style="font-size: 1.15rem;">Japon</span>
+                            </div>
+                            <span class="mono-stat" style="font-size: 1.3rem; color: var(--accent-amber);" id="barValJp">0 $ / h</span>
+                        </div>
+                        <div style="width: 100%; height: 22px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+                            <div id="barFillJp" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 04 (00:24 - 00:33, 9s) : LE DONUT DU BONHEUR (FINLANDE & SUISSE)
+             ========================================================================== -->
+        <div class="scene" id="plan_4">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 70px; width: 100%; max-width: 1540px;">
+                
+                <!-- GAUCHE : CARTE INTERACTIVE DONUT 2D -->
+                <div class="glass-card" style="flex: 1; padding: 48px; text-align: center;" id="p4DonutCard">
+                    <span class="card-title" style="font-size: 1.6rem; margin-bottom: 8px; display: block;">Indice de Bonheur & Équilibre</span>
+                    <span style="font-size: 1.05rem; color: var(--text-muted); display: block; margin-bottom: 24px;">Rapport Mondial de l'ONU</span>
+                    
+                    <div style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
+                        <svg viewBox="0 0 200 200" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                            <!-- Anneau de fond -->
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" stroke-width="18"/>
+                            <!-- Anneau de progression actif -->
+                            <circle id="p4DonutCircle" cx="100" cy="100" r="80" fill="none" stroke="url(#donutGrad)" stroke-width="18" stroke-linecap="round" stroke-dasharray="502.6" stroke-dashoffset="502.6"/>
+                            <defs>
+                                <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3b82f6"/>
+                                    <stop offset="100%" stop-color="#10b981"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span class="mono-stat" id="p4DonutVal" style="font-size: 3.8rem; color: var(--text-title); line-height: 1;">0%</span>
+                            <span style="font-size: 0.95rem; font-weight: 700; color: #10b981; text-transform: uppercase; margin-top: 6px;">Satisfaction Globale</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DROITE : LES DEUX NATIONS MODÈLES -->
+                <div style="flex: 1.2; text-align: left;" id="p4NationsList">
+                    <div class="section-title" style="font-size: 3.2rem; line-height: 1.15; margin-bottom: 24px;">
+                        L'Énigme Nordique & Helvétique
+                    </div>
+                    
+                    <!-- CARTE FINLANDE -->
+                    <div class="glass-card" style="padding: 24px 28px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;" id="p4Fi">
+                        <div style="display: flex; align-items: center; gap: 18px;">
+                            <div class="flag-box" style="width: 44px; height: 30px;">
+                                <!-- SVG FINLANDE -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11"><path fill="#fff" d="M0 0h18v11H0z"/><path d="M0 5.5h18M6.5 0v11" stroke="#002F6C" stroke-width="3"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text-title);">Finlande</div>
+                                <div style="font-size: 0.95rem; color: #64748b;">#1 Pays le Plus Heureux du Monde (7 ans consécutifs)</div>
+                            </div>
+                        </div>
+                        <span class="badge-pill" style="background: rgba(16, 185, 129, 0.1); color: #059669; border-color: rgba(16, 185, 129, 0.2);">N° 1 MONDIAL</span>
+                    </div>
+
+                    <!-- CARTE SUISSE -->
+                    <div class="glass-card" style="padding: 24px 28px; display: flex; align-items: center; justify-content: space-between;" id="p4Ch">
+                        <div style="display: flex; align-items: center; gap: 18px;">
+                            <div class="flag-box" style="width: 44px; height: 30px;">
+                                <!-- SVG SUISSE -->
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h32v32H0z" fill="red"/><path d="M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z" fill="#fff"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text-title);">Suisse</div>
+                                <div style="font-size: 0.95rem; color: #64748b;">Record mondial de stabilité & salaire horaire réel</div>
+                            </div>
+                        </div>
+                        <span class="badge-pill" style="background: rgba(59, 130, 246, 0.1); color: #2563eb; border-color: rgba(59, 130, 246, 0.2);">QUALITÉ DE VIE</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION (ILLICH)
+             ========================================================================== -->
+        <div class="scene" id="plan_5">
+            <div style="width: 100%; max-width: 1540px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div class="badge-pill" style="margin-bottom: 14px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                        <span>LOI DES RENDEMENTS DÉCROISSANTS</span>
+                    </div>
+                    <h2 class="section-title">La Courbe de Saturation Cognitive</h2>
+                </div>
+
+                <div class="glass-card" style="padding: 40px 60px; position: relative;" id="p5GraphCard">
+                    <!-- GRAPH SVG 2D : COURBE DE RENDEMENT -->
+                    <svg viewBox="0 0 1000 360" style="width: 100%; height: 320px; overflow: visible;">
+                        <!-- Grille horizontale discrète -->
+                        <line x1="80" y1="300" x2="960" y2="300" stroke="#cbd5e1" stroke-width="2"/>
+                        <line x1="80" y1="200" x2="960" y2="200" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="6 6"/>
+                        <line x1="80" y1="100" x2="960" y2="100" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+                        <!-- Zone optimale (Verte pastel) -->
+                        <rect x="250" y="50" width="220" height="250" fill="rgba(16, 185, 129, 0.08)" rx="12"/>
+                        <text x="360" y="40" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="700" fill="#059669">ZONE HAUTE PERFORMANCE (30H - 35H)</text>
+
+                        <!-- Zone de fatigue (Rouge pastel) -->
+                        <rect x="680" y="50" width="260" height="250" fill="rgba(239, 68, 68, 0.08)" rx="12"/>
+                        <text x="810" y="40" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="700" fill="#dc2626">EFFONDREMENT & ERREURS (> 45H)</text>
+
+                        <!-- Courbe animée -->
+                        <path id="p5Curve" d="M 80,290 C 220,280 290,70 380,80 C 500,90 620,180 720,240 C 820,285 920,295 960,298" fill="none" stroke="var(--accent-blue)" stroke-width="5" stroke-linecap="round" stroke-dasharray="1100" stroke-dashoffset="1100"/>
+
+                        <!-- Point traceur -->
+                        <circle id="p5Point" cx="80" cy="290" r="9" fill="#ffffff" stroke="var(--accent-blue)" stroke-width="4" filter="drop-shadow(0 4px 8px rgba(37,99,235,0.4))"/>
+
+                        <!-- Graduations X -->
+                        <text x="80" y="330" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="600" fill="#94a3b8">0h</text>
+                        <text x="360" y="330" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="15" font-weight="700" fill="#0f172a">35h</text>
+                        <text x="600" y="330" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="600" fill="#94a3b8">45h</text>
+                        <text x="960" y="330" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="600" fill="#94a3b8">60h+</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DE L'ÉQUILIBRE MODERNE
+             ========================================================================== -->
+        <div class="scene" id="plan_6">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 class="section-title">Les 3 Piliers du Futur du Travail</h2>
+                <p class="body-desc" style="margin-top: 10px;">L'art de démultiplier son impact sans sacrifier sa vie.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; max-width: 1540px;" id="p6CardsWrap">
+                
+                <!-- PILIER 1 -->
+                <div class="glass-card" style="padding: 44px 36px; text-align: left;" id="p6Card1">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <div class="card-title" style="font-size: 1.6rem; margin-bottom: 12px;">1. Densité Cognitive</div>
+                    <p class="body-desc" style="font-size: 1.15rem; line-height: 1.5;">
+                        4 heures de concentration pure (Deep Work) génèrent plus de résultats que 10 heures de présence passive et d'interruptions.
+                    </p>
+                </div>
+
+                <!-- PILIER 2 -->
+                <div class="glass-card glass-card-featured" style="padding: 44px 36px; text-align: left; background: #ffffff;" id="p6Card2">
+                    <div class="icon-circle" style="background: rgba(79, 70, 229, 0.1); color: var(--accent-indigo);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div class="card-title" style="font-size: 1.6rem; margin-bottom: 12px; color: var(--accent-indigo);">2. Levier Technologique</div>
+                    <p class="body-desc" style="font-size: 1.15rem; line-height: 1.5;">
+                        Déléguer les tâches répétitives aux algorithmes et à l'IA pour préserver son énergie mentale sur les choix stratégiques.
+                    </p>
+                </div>
+
+                <!-- PILIER 3 -->
+                <div class="glass-card" style="padding: 44px 36px; text-align: left;" id="p6Card3">
+                    <div class="icon-circle" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <div class="card-title" style="font-size: 1.6rem; margin-bottom: 12px;">3. Souveraineté du Temps</div>
+                    <p class="body-desc" style="font-size: 1.15rem; line-height: 1.5;">
+                        Mesurer sa réussite à la valeur réelle accomplie et à la liberté de son agenda, plutôt qu'à la fatigue accumulée.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             PLAN 07 (00:52 - 01:00, 8s) : LE CLIMAX & LA DÉCLARATION FINALE
+             ========================================================================== -->
+        <div class="scene" id="plan_7">
+            <div class="glass-card" style="padding: 60px 80px; max-width: 1300px; text-align: center;" id="p7HeroCard">
+                <div class="badge-pill" style="margin-bottom: 30px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                    <span>L'ESSENTIEL</span>
+                </div>
+
+                <div class="hero-title" style="font-size: 4.4rem; line-height: 1.15; margin-bottom: 30px;" id="p7Title">
+                    Le temps n'est pas de l'argent. <br>
+                    <span class="editorial-accent highlighter-wrap">
+                        <span class="highlighter-pen" id="p7Pen"></span>
+                        Le temps est de la vie.
+                    </span>
+                </div>
+
+                <!-- DRAPEAUX COORDONNÉS EN BAS DE CARTE -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 36px;" id="p7Flags">
+                    <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #64748b;">
+                        <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11"><path fill="#fff" d="M0 0h18v11H0z"/><path d="M0 5.5h18M6.5 0v11" stroke="#002F6C" stroke-width="3"/></svg></div>
+                        <span>Finlande</span>
+                    </div>
+                    <span style="color: #cbd5e1;">•</span>
+                    <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #64748b;">
+                        <div class="flag-box"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h32v32H0z" fill="red"/><path d="M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z" fill="#fff"/></svg></div>
+                        <span>Suisse</span>
+                    </div>
+                    <span style="color: #cbd5e1;">•</span>
+                    <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #64748b;">
+                        <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><path d="M0 0h5v3H0z"/><path fill="#D00" d="M0 1h5v2H0z"/><path fill="#FFCE00" d="M0 2h5v1H0z"/></svg></div>
+                        <span>Allemagne</span>
+                    </div>
+                    <span style="color: #cbd5e1;">•</span>
+                    <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #64748b;">
+                        <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#CE1126" d="M0 0h900v600H0"/><path fill="#fff" d="M0 0h600v600H0"/><path fill="#002654" d="M0 0h300v600H0"/></svg></div>
+                        <span>France</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AUDIO MAÎTRE (FRESH & FUNKY 60S WAV) + EFFETS SONORES SYNCHRONISÉS -->
+    <audio id="bgm" src="../01_Assets/Musiques/fresh_funky_60s.wav" preload="auto"></audio>
+
+    <script>
+    /* ==========================================================================
+       GESTIONNAIRE AUDIO & SFX DÉTERMINISTE
+       ========================================================================== */
+    const bgm = document.getElementById('bgm');
+    let audioCtx = null;
+
+    function getAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
+
+    // Synthétiseur d'effets sonores UI organique et percutant
+    function playSfx(type, intensity = 0.5) {
+        try {
+            const ctx = getAudioContext();
+            const now = ctx.currentTime;
+
+            if (type === 'pop') {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1400, now + 0.08);
+                gain.gain.setValueAtTime(0.25 * intensity, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'chime') {
+                [880, 1320, 1760].forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + (idx * 0.06));
+                    gain.gain.setValueAtTime(0.2 * intensity, now + (idx * 0.06));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.06) + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + (idx * 0.06));
+                    osc.stop(now + (idx * 0.06) + 0.4);
+                });
+            } else if (type === 'tick') {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(1200, now);
+                gain.gain.setValueAtTime(0.08 * intensity, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.02);
+            } else if (type === 'whoosh') {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(250, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+                gain.gain.setValueAtTime(0.25 * intensity, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        } catch (e) {
+            // Audio policy ignore
+        }
+    }
+
+    /* ==========================================================================
+       ADAPTATEUR D'ÉCHELLE RESPONSIVE 16:9
+       ========================================================================== */
+    function adaptStage() {
+        const stage = document.getElementById('stage');
+        const scaleX = window.innerWidth / 1920;
+        const scaleY = window.innerHeight / 1080;
+        const scale = Math.min(scaleX, scaleY);
+        stage.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', adaptStage);
+    adaptStage();
+
+    /* ==========================================================================
+       TIMELINE MAÎTRESSE GSAP (60.0 SECONDES DÉTERMINISTE)
+       ========================================================================== */
+    const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: 'power3.out' }
+    });
+
+    // Mouvement d'ambiance lent des gradients (orbes vivantes en arrière-plan)
+    gsap.to('#orb1', { x: 120, y: 80, duration: 20, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb2', { x: -100, y: -60, duration: 25, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb3', { x: 80, y: -100, duration: 18, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+    // Lancement de la musique
+    tl.call(() => {
+        if (bgm) {
+            bgm.currentTime = 0;
+            bgm.play().catch(() => {});
+        }
+    }, null, 0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — LE COMPTEUR DES 90 000 HEURES
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
+    tl.from('#p1Badge', { y: -30, opacity: 0, duration: 0.6, ease: 'back.out(1.5)' }, 0.2);
+    tl.from('#p1CounterWrap', { scale: 0.8, opacity: 0, duration: 0.8, ease: 'back.out(1.4)' }, 0.4);
+
+    // Incrément dynamique du compteur de 0 à 90 000 avec son pop
+    const p1Obj = { val: 0 };
+    tl.to(p1Obj, {
+        val: 90000,
+        duration: 2.2,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('p1Counter');
+            if (el) el.textContent = Math.round(p1Obj.val).toLocaleString('fr-FR');
+        }
+    }, 0.5);
+    tl.call(() => playSfx('chime', 0.8), null, 0.6);
+
+    tl.from('#p1Subtitle', { y: 25, opacity: 0, duration: 0.7 }, 1.4);
+    tl.from('#p1Punchline', { y: 20, opacity: 0, duration: 0.7 }, 2.0);
+    // Surlignage feutre jaune
+    tl.to('#p1Pen', { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.5);
+
+    // Sortie Plan 1
+    tl.to('#plan_1', { opacity: 0, y: -30, duration: 0.4, ease: 'power2.in' }, 3.6)
+      .set('#plan_1', { display: 'none' }, 4.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (4 NATIONS)
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
+    tl.from('#p2Title', { y: 30, opacity: 0, duration: 0.6 }, 4.1);
+    tl.from('#p2Sub', { y: 20, opacity: 0, duration: 0.6 }, 4.3);
+
+    // Stagger fluide des 4 cartes avec drapeaux
+    const p2Cards = gsap.utils.toArray('#p2Grid > div');
+    tl.from(p2Cards, {
+        y: 60,
+        opacity: 0,
+        scale: 0.92,
+        duration: 0.8,
+        stagger: 0.18,
+        ease: 'back.out(1.3)'
+    }, 4.5);
+
+    p2Cards.forEach((_, idx) => {
+        tl.call(() => playSfx('pop', 0.5), null, 4.5 + (idx * 0.18));
+    });
+
+    // Sortie Plan 2
+    tl.to('#plan_2', { opacity: 0, scale: 0.96, duration: 0.4, ease: 'power2.in' }, 13.6)
+      .set('#plan_2', { display: 'none' }, 14.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 03 (00:14 - 00:24, 10s) : LE BAR-CHART 2D INTERACTIF
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_3', { display: 'flex', opacity: 1 }, 14.0);
+    tl.from('#p3TextCol', { x: -50, opacity: 0, duration: 0.8 }, 14.1);
+    tl.from('#p3ChartCard', { x: 50, opacity: 0, duration: 0.8 }, 14.2);
+
+    // Animation 2D des barres horizontales et compteurs de valeur
+    const deObj = { val: 0 };
+    tl.to('#barFillDe', { width: '88%', duration: 1.5, ease: 'power2.out' }, 14.8);
+    tl.to(deObj, {
+        val: 74,
+        duration: 1.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('barValDe');
+            if (el) el.textContent = Math.round(deObj.val) + ' $ / h';
+        }
+    }, 14.8);
+
+    const frObj = { val: 0 };
+    tl.to('#barFillFr', { width: '83%', duration: 1.5, ease: 'power2.out' }, 15.1);
+    tl.to(frObj, {
+        val: 70,
+        duration: 1.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('barValFr');
+            if (el) el.textContent = Math.round(frObj.val) + ' $ / h';
+        }
+    }, 15.1);
+
+    const usObj = { val: 0 };
+    tl.to('#barFillUs', { width: '84%', duration: 1.5, ease: 'power2.out' }, 15.4);
+    tl.to(usObj, {
+        val: 71,
+        duration: 1.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('barValUs');
+            if (el) el.textContent = Math.round(usObj.val) + ' $ / h';
+        }
+    }, 15.4);
+
+    const jpObj = { val: 0 };
+    tl.to('#barFillJp', { width: '56%', duration: 1.5, ease: 'power2.out' }, 15.7);
+    tl.to(jpObj, {
+        val: 48,
+        duration: 1.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('barValJp');
+            if (el) el.textContent = Math.round(jpObj.val) + ' $ / h';
+        }
+    }, 15.7);
+
+    tl.call(() => playSfx('chime', 0.7), null, 15.0);
+
+    // Sortie Plan 3
+    tl.to('#plan_3', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 23.6)
+      .set('#plan_3', { display: 'none' }, 24.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 04 (00:24 - 00:33, 9s) : LE DONUT DU BONHEUR (FINLANDE & SUISSE)
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_4', { display: 'flex', opacity: 1 }, 24.0);
+    tl.from('#p4DonutCard', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'back.out(1.3)' }, 24.1);
+    tl.from('#p4NationsList .section-title', { x: 40, opacity: 0, duration: 0.6 }, 24.2);
+
+    // Progression 2D du donut vectoriel (502.6 * (1 - 0.88) = 60.3)
+    tl.to('#p4DonutCircle', { strokeDashoffset: 60.3, duration: 2.2, ease: 'power2.out' }, 24.4);
+    
+    const donutObj = { val: 0 };
+    tl.to(donutObj, {
+        val: 88,
+        duration: 2.2,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('p4DonutVal');
+            if (el) el.textContent = Math.round(donutObj.val) + '%';
+        }
+    }, 24.4);
+    tl.call(() => playSfx('pop', 0.6), null, 24.5);
+
+    // Révélation des 2 cartes pays
+    tl.from('#p4Fi', { x: 50, opacity: 0, duration: 0.6, ease: 'power2.out' }, 25.0);
+    tl.from('#p4Ch', { x: 50, opacity: 0, duration: 0.6, ease: 'power2.out' }, 25.4);
+
+    // Sortie Plan 4
+    tl.to('#plan_4', { opacity: 0, scale: 0.95, duration: 0.4, ease: 'power2.in' }, 32.6)
+      .set('#plan_4', { display: 'none' }, 33.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION COGNITIVE
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_5', { display: 'flex', opacity: 1 }, 33.0);
+    tl.from('#plan_5 .section-title', { y: 20, opacity: 0, duration: 0.6 }, 33.1);
+    tl.from('#p5GraphCard', { scale: 0.92, opacity: 0, duration: 0.8, ease: 'back.out(1.2)' }, 33.2);
+
+    // Tracé de la courbe 2D vectorielle
+    tl.to('#p5Curve', { strokeDashoffset: 0, duration: 3.5, ease: 'power1.inOut' }, 33.6);
+
+    // Animation synchronisée du point traceur le long de la courbe
+    const curvePoints = [
+        { t: 33.6, x: 80, y: 290 },
+        { t: 34.6, x: 380, y: 80 },   // Sommet optimal
+        { t: 35.8, x: 720, y: 240 },  // Déclin
+        { t: 37.1, x: 960, y: 298 }   // Crash
+    ];
+    curvePoints.forEach(pt => {
+        tl.to('#p5Point', { cx: pt.x, cy: pt.y, duration: 1.1, ease: 'sine.inOut' }, pt.t);
+    });
+
+    tl.call(() => playSfx('whoosh', 0.4), null, 34.2);
+
+    // Sortie Plan 5
+    tl.to('#plan_5', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 42.6)
+      .set('#plan_5', { display: 'none' }, 43.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DU TRAVAIL MODERNE
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_6', { display: 'flex', opacity: 1 }, 43.0);
+    tl.from('#plan_6 .section-title', { y: 25, opacity: 0, duration: 0.6 }, 43.1);
+    tl.from('#plan_6 .body-desc', { y: 15, opacity: 0, duration: 0.6 }, 43.2);
+
+    // Entrée échelonnée des 3 cartes piliers avec icônes
+    const p6Cards = ['#p6Card1', '#p6Card2', '#p6Card3'];
+    p6Cards.forEach((id, idx) => {
+        const t = 43.5 + (idx * 0.25);
+        tl.from(id, { y: 50, opacity: 0, scale: 0.94, duration: 0.7, ease: 'back.out(1.3)' }, t);
+        tl.call(() => playSfx('pop', 0.5), null, t);
+    });
+
+    // Sortie Plan 6
+    tl.to('#plan_6', { opacity: 0, scale: 0.95, duration: 0.4, ease: 'power2.in' }, 51.6)
+      .set('#plan_6', { display: 'none' }, 52.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 07 (00:52 - 01:00, 8s) : CLIMAX & DÉCLARATION FINALE
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_7', { display: 'flex', opacity: 1 }, 52.0);
+    tl.from('#p7HeroCard', { scale: 0.9, opacity: 0, duration: 0.9, ease: 'back.out(1.4)' }, 52.1);
+    tl.from('#p7Title', { y: 20, opacity: 0, duration: 0.8 }, 52.4);
+
+    // Déploiement majestueux du surlignage jaune feutré
+    tl.to('#p7Pen', { scaleX: 1, duration: 0.9, ease: 'power2.inOut' }, 53.6);
+    tl.call(() => playSfx('chime', 0.9), null, 53.7);
+
+    // Révélation finale des drapeaux
+    tl.from('#p7Flags', { opacity: 0, y: 15, duration: 0.8, ease: 'power2.out' }, 54.5);
+
+    // Fondu final délicat vers 60.0s
+    tl.to('#stage', { opacity: 0.95, duration: 1.0 }, 59.0);
+
+    // Enregistrement de la timeline maîtresse pour les outils et le rendu
+    window.tl = tl;
+    window.__timeline = {
+        duration: () => 60.0,
+        seek: (t) => {
+            tl.seek(t);
+            if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
+                bgm.currentTime = t;
+            }
+        }
+    };
+
+    // Auto-démarrage au clic utilisateur ou en lecture studio
+    document.addEventListener('click', () => {
+        getAudioContext();
+        if (tl.paused()) tl.play();
+    }, { once: true });
+
+    // Démarrage automatique
+    tl.play();
+    </script>
+</body>
+</html>
