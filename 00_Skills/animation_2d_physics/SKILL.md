@@ -9,45 +9,52 @@ Ce skill formalise les règles indispensables pour concevoir des animations 2D s
 
 ---
 
-## 🎯 1. La Règle d'Or des Points d'Ancrage (Anchor Points)
+## 🎯 1. La Règle d'Or des Points d'Ancrage SVG & 2D (Anchor Points)
 
-### Le Piège SVG Classique : L'Effondrement de la Bounding Box
-* **Erreur fréquente :** Appliquer une rotation (`rotation: 360`) directement sur une balise SVG `<line>` avec `transformOrigin: "160px 160px"` ou `transformOrigin: "50% 50%"`.
-* **Pourquoi ça casse :** Dans le moteur de rendu SVG des navigateurs (Blink, WebKit, Gecko), une ligne verticale (`x1="160" x2="160"`) possède une boîte englobante (*bounding box*) de **largeur nulle (`width: 0`)**. 
-  Lorsque CSS ou GSAP tente de calculer un `transform-origin` basé sur un pourcentage ou des pixels relatifs à la boîte de l'élément, le diviseur nul produit des aberrations géométriques : les aiguilles ou bâtons voltigent dans tous les sens au lieu de rester fixés au centre.
+### Le Piège Absolu : L'Aiguille qui Voltige Hors du Cadran
+* **Erreur CATASTROPHIQUE fréquente :** Écrire `svgOrigin: "0 0"` en pensant que cela correspond au centre local d'un groupe.
+* **Pourquoi l'aiguille s'envole :** Dans GSAP, **`svgOrigin` opère TOUJOURS dans le repère global du viewBox SVG racine** ! Si votre cadran est centré à `(180, 180)` et que vous mettez `svgOrigin: "0 0"`, GSAP fait tourner l'aiguille autour du coin supérieur gauche (0, 0) du SVG. Résultat : dès le début de la rotation, l'aiguille est éjectée à des centaines de pixels en orbite et quitte le cadran !
 
-### Les 2 Solutions Mathématiques Infaillibles
-
-#### Solution A : Le Pivot `<g>` Translate (Recommandée)
-Au lieu de faire tourner la ligne elle-même, positionner un groupe `<g>` au centre exact du cadran `(cx, cy)` avec `transform="translate(cx, cy)"`.
-L'aiguille est ensuite dessinée à l'intérieur du groupe par rapport à l'origine `(0, 0)` :
+### La Solution Mathématique Infaillible : Coordonnées Réelles `svgOrigin: "cx cy"`
+1. Le centre du cadran ou de l'horloge est défini à `(cx, cy)` dans le `viewBox` (ex: `viewBox="0 0 360 360"`, centre = `180, 180`).
+2. L'aiguille est dessinée avec sa base exactement ancrée au centre `(cx, cy)` :
 ```html
-<!-- Cadran au centre (160, 160) -->
-<svg viewBox="0 0 320 320">
-    <!-- Groupe pivot centré à (160, 160) -->
-    <g id="secondHand" transform="translate(160, 160)">
-        <!-- L'aiguille pointe vers le haut depuis le centre (0, 0) -->
-        <line x1="0" y1="20" x2="0" y2="-120" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="0" cy="0" r="4" fill="#ef4444"/>
+<svg viewBox="0 0 360 360">
+    <!-- Cadran centré à (180, 180) -->
+    <circle cx="180" cy="180" r="140" fill="none" stroke="#333" stroke-width="12"/>
+    <circle cx="180" cy="180" r="8" fill="#fff"/>
+    <!-- Groupe de l'aiguille : base à (180, 180), pointe vers le haut à (180, 70) -->
+    <g id="clockHand">
+        <line x1="180" y1="180" x2="180" y2="70" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="180" cy="180" r="6" fill="#06b6d4"/>
     </g>
 </svg>
 ```
-En GSAP, animer directement la rotation du groupe en utilisant impérativement **`svgOrigin: "0 0"`** :
+3. Dans GSAP, l'origine de rotation DOIT IMPÉRATIVEMENT être les coordonnées réelles du centre `"cx cy"` (ex: `"180 180"`) :
 ```javascript
-// OBLIGATOIRE : svgOrigin: "0 0" ancre la rotation au (0, 0) du repère SVG parent
-// (transformOrigin sur SVG calcule à partir de getBBox(), ce qui peut introduire un décalage si le sous-élément est asymétrique)
-gsap.set(["#hourHand", "#minuteHand", "#secondHand"], {
-    svgOrigin: "0 0"
+// OBLIGATOIRE : svgOrigin DOIT être égal aux coordonnées exactes du centre "180 180"
+gsap.set('#clockHand', {
+    svgOrigin: "180 180"
 });
 
-gsap.to("#secondHand", {
+// L'aiguille pivote alors avec une perfection absolue sur son centre sans dévier d'un cheveu :
+gsap.to('#clockHand', {
     rotation: 360,
-    duration: 2.0,
-    ease: "linear"
+    duration: 10,
+    ease: "none",
+    repeat: -1
 });
 ```
 
-#### Solution B : Le Pivot HTML/CSS (Axe Absolu)
+#### Solution B : Le Pivot HTML/CSS (Axe Absolu avec `transform-origin: 50% 100%`)
+
+---
+
+## 🚫 1.1 BANNISSEMENT STRICT DES TEXTES ET BADGES AUX 4 COINS DE L'ÉCRAN
+* ❌ **INTERDICTION ABSOLUE :** Ne JAMAIS placer de textes, badges, timecodes, résolutions ou fausses métadonnées HUD collées dans les 4 coins du cadre (`top-left`, `top-right`, `bottom-left`, `bottom-right` du type `.hud-telemetry`, `VIBE ENGINE // v1.0`, `TEMPO 120 BPM`, `RES 1080p`, etc.).
+* **Pourquoi :** Cela donne un aspect amateur, didactique et surchargé de type "diaporama PowerPoint". Une vidéo de calibre professionnel (type Vox, pub Apple, documentaire de cinéma) respire. Le regard du spectateur doit être guidé vers le sujet narratif et le centre focal, pas distrait par des parasites textuels aux 4 coins.
+* ✅ **Règle d'Or :** Les 4 coins du cadre doivent rester 100% vides, épurés et respirer. Tout texte affiché doit avoir une justification narrative directe dans la scène en cours.
+
 Si l'objet est composé en HTML :
 ```html
 <div class="clock-face" style="position: relative; width: 300px; height: 300px;">

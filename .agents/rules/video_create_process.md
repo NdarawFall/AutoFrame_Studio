@@ -36,8 +36,9 @@
 10. **Zéro Copie Visuelle — Créativité 100% Originale** :
    - **Ne JAMAIS recopier visuellement une vidéo ou un composant existant sur le projet**.
    - Pour chaque sujet demandé, concevoir des graphismes 2D, des animations de texte, des icônes SVG animées, des dynamiques spatiales et des palettes colorimétriques sur mesure adaptées au thème.
-11. **Interdiction des Titrages Didactiques / Badges Type "PowerPoint" & IA Slop** :
-   - **Ne JAMAIS ajouter d'étiquettes, de badges de présentation scolaire ou de pilules didactiques** en haut d'une scène (ex: `[ Règle Fondamentale • 01 ]`, `[ Lois du Jeu • 02 ]`, `[ Chapitre 1 ]`, `[ Étape 01 ]`, `[ PSYCHOLOGIE DU TEMPS ]`, `[ THÉORIE DE X ]`, conteneurs `.tag-pill`).
+11. **Interdiction des Titrages Didactiques, Badges Type "PowerPoint" & Textes aux 4 Coins** :
+   - **Ne JAMAIS ajouter d'étiquettes scolaires ou de pilules didactiques** (ex: `[ Règle 01 ]`, `[ Chapitre 1 ]`, `[ Étape 01 ]`, conteneurs `.tag-pill`).
+   - **BANNISSEMENT ABSOLU DES TEXTES AUX 4 COINS DU CADRE** : Ne jamais coller de textes, timecodes, résolutions ou faux indicateurs HUD aux 4 coins de l'écran (top-left, top-right, bottom-left, bottom-right type `.hud-telemetry`, `VIBE ENGINE // v1.0`, `TEMPO 120 BPM`, `RES 1080p`, etc.). Les 4 coins du cadre doivent impérativement rester 100% vides et dégagés pour bannir l'effet "diaporama PowerPoint".
    - Une vidéo n'est pas un diaporama PowerPoint ni un cours magistral. Les titrages doivent être narratifs, percutants et intégrés au storytelling vidéo (façon Vox, documentaire ou pub dynamique) avec du copywriting axé sur le spectateur.
 12. **Interdiction du Fond "Cliché IA" Répétitif (Grille + Halo Sombre)** :
    - **Ne JAMAIS systématiser le même fond stéréotypé** : quadrillage de lignes transparentes (`.grid-backdrop`) sur fond noir/sombre avec halo radial flou vert/cyan.
@@ -49,7 +50,7 @@
    - Bannir l'animation unique répétitive (fade-slide générique sur tout). Donner une signature propre à chaque élément : kinetic text pour les titres, smooth fade pour les sous-titres, perspective tilt 3D et pop élastique pour les cartes, rotation élastique pour les icônes, tracé séquentiel pour les graphismes vectoriels.
 15. **Rigueur de la Physique 2D & Points d'Ancrage SVG Infaillibles** :
    - Pour les objets tournants et rebondissants (ballon, pièce), séparer le conteneur de translation $Y$ (rebond + squash & stretch) de l'élément SVG interne (rotation axiale à `center center`). L'ombre au sol doit rester strictement au sol sous le point de contact.
-   - **Pour tout élément vectoriel rotatif SVG (aiguilles d'horloge, jauges, boussoles)** : Les balises `<line>` ont une bounding box de largeur nulle. Toujours envelopper le pivot dans un groupe maître centré `<g transform="translate(cx, cy)">`, placer l'élément enfant relativement à `(0, 0)`, et animer dans GSAP avec `svgOrigin: "0 0"`. Supprimer tout trait ou rayon parasite décentré (`speedRays`).
+   - **Pour tout élément vectoriel rotatif SVG (aiguilles d'horloge, jauges, boussoles)** : Les balises `<line>` ont une bounding box de largeur nulle. Toujours ancrer la ligne à son centre réel `(cx, cy)` et animer dans GSAP en fournissant les coordonnées réelles du centre : `svgOrigin: "${cx} ${cy}"` (ex: `svgOrigin: "180 180"`). INTERDICTION FORMELLE d'écrire `svgOrigin: "0 0"`, qui fait voltiger l'aiguille hors du cadran.
 16. **Charte Stricte : 3 Couleurs Max Uniques (Règle 60-30-10)** :
    - Toute vidéo doit respecter une palette de 3 couleurs uniques maximales : 60% Primaire (fond sombre), 30% Secondaire (cartes `#131b2e` / bordures `#1e293b`, texte blanc & gris), 10% Accent Unique (ex: Ambre Doré `#f59e0b` / `#fbbf24`) appliqué à tous les dégradés, icônes, jauges et surbrillances.
 17. **Typographie Stable (Zéro Reflow) & Centrage Carte Finale** :

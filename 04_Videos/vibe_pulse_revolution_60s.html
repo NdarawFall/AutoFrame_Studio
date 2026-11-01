@@ -76,40 +76,6 @@
             pointer-events: none;
         }
 
-        /* TÉLÉMÉTRIE DIÉGÉTIQUE DISCRÈTE (COINS DU CADRE) */
-        .hud-telemetry {
-            position: absolute;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Space Grotesk', monospace;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.45);
-        }
-
-        .hud-tl { top: 48px; left: 64px; }
-        .hud-tr { top: 48px; right: 64px; }
-        .hud-bl { bottom: 48px; left: 64px; }
-        .hud-br { bottom: 48px; right: 64px; }
-
-        .telemetry-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #06b6d4;
-            box-shadow: 0 0 10px #06b6d4;
-            animation: pulseDot 1.5s infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
-        }
-
         /* CAMÉRA RIG */
         #cameraRig {
             position: absolute;
@@ -363,21 +329,6 @@
         <div class="ambient-glow" id="ambientGlow"></div>
         <div class="grain-layer"></div>
 
-        <!-- TÉLÉMÉTRIE PERMANENTE -->
-        <div class="hud-telemetry hud-tl">
-            <div class="telemetry-dot"></div>
-            <span>VIBE ENGINE // v1.0</span>
-        </div>
-        <div class="hud-telemetry hud-tr">
-            <span>TEMPO // 120 BPM</span>
-        </div>
-        <div class="hud-telemetry hud-bl">
-            <span>RES // 1080p 60FPS</span>
-        </div>
-        <div class="hud-telemetry hud-br">
-            <span id="retentionStat">RETENTION 98.4%</span>
-        </div>
-
         <!-- RIG PRINCIPAL DES SCÈNES -->
         <div id="cameraRig">
 
@@ -430,9 +381,9 @@
                                 <!-- Arc actif animé -->
                                 <circle id="gaugeArc" cx="180" cy="180" r="140" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-dasharray="660" stroke-dashoffset="660" stroke-linecap="round" filter="drop-shadow(0 0 16px rgba(6, 182, 212, 0.6))"/>
                                 <!-- Groupe pivot SVG infaillible centré à (180, 180) -->
-                                <g id="gaugeHandPivot" transform="translate(180, 180)">
-                                    <line x1="0" y1="18" x2="0" y2="-120" stroke="#06b6d4" stroke-width="4" stroke-linecap="round"/>
-                                    <circle cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="3"/>
+                                <g id="gaugeHandPivot">
+                                    <line x1="180" y1="180" x2="180" y2="70" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
+                                    <circle cx="180" cy="180" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="3"/>
                                 </g>
                             </svg>
                             <div class="gauge-readout">
@@ -640,9 +591,9 @@
         window.__timeline = tl;
         window.__timelines = { main: tl };
 
-        // 1. ANCRAGE PHYSIQUE SVG INFAILLIBLE (RÈGLE SKILL ANIMATION 2D)
+        // 1. ANCRAGE PHYSIQUE SVG INFAILLIBLE : Pivot absolu au centre (180, 180) du cadran
         gsap.set("#gaugeHandPivot", {
-            svgOrigin: "0 0" // Pivot absolu au centre (180, 180) du groupe parent
+            svgOrigin: "180 180"
         });
 
         // 2. ÉTAT INITIAL t=0 : LA SCÈNE 1 EST VISIBLE SANS ÉCRAN VIDE (RÈGLE MAÎTRESSE)

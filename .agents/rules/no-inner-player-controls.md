@@ -22,7 +22,8 @@
 * ✅ **Une Toile Vidéo Pure 16:9 ou 9:16** : Un conteneur responsive plein cadre (Three.js canvas, conteneurs GSAP, SVG).
 * ✅ **Uniquement des Overlays Graphiques Narratifs** :
   - Badges thématiques, citations, titrages animés, sous-titres dynamiques.
-  - Télémétrie diégétique narrative (ex: vitesse en km/h, boussole, altimètre dans les coins de l'écran).
+  - Overlays narratifs directement intégrés au sujet (ex: compteur de vitesse au sein du tachymètre, citations, badges de comparaison).
+* ❌ **Interdiction Formelle des Textes aux 4 Coins** : Ne jamais afficher de faux indicateurs HUD collés aux 4 coins du cadre (.hud-telemetry, "1080p", "TEMPO", "VIBE ENGINE"). Les 4 coins doivent impérativement rester vides et épurés pour bannir l'effet "diapositive PowerPoint".
 * ✅ **Une Timeline Maîtresse GSAP Exposée** :
   ```javascript
   const tl = gsap.timeline({ paused: false, onUpdate: () => renderAt(tl.time()) });

@@ -1190,7 +1190,8 @@ DIRECTIVES CRÉATIVES ET TECHNIQUES ABSOLUES :
 
 3. ORIGINALITÉ & DIRECTION ARTISTIQUE SUR-MESURE :
    - Crée des graphismes et animations SVG vectorielles riches, uniques et adaptées au sujet.
-   - Respecte scrupuleusement la règle des points d'ancrage SVG : utilise des groupes pivot avec svgOrigin: "0 0" pour toute rotation d'aiguille, d'engrenage ou d'élément rotatif (aucun diviseur nul).
+   - RÈGLE CRITIQUE D'ANCRAGE SVG / 2D (AIGUILLES, ROUES, HORLOGES) : Dans GSAP, svgOrigin opère TOUJOURS dans les coordonnées globales du viewBox SVG ! Tu dois impérativement utiliser les coordonnées réelles du centre du cadran : svgOrigin: "${cx} ${cy}" (ex: svgOrigin: "180 180" si le cadran est centré à 180, 180). INTERDICTION FORMELLE ET ABSOLUE d'écrire svgOrigin: "0 0", car cela fait voltiger l'aiguille hors du cadran !
+   - BANNISSEMENT ABSOLU DES TEXTES ET BADGES AUX 4 COINS DE L'ÉCRAN : INTERDICTION FORMELLE de coller des badges, timecodes, textes techniques ou faux indicateurs HUD dans les 4 coins du cadre (type .hud-telemetry, hud-tl, hud-tr, hud-bl, hud-br, "VIBE ENGINE", "1080p 60fps", "TEMPO 120 BPM", etc.). Cela fait amateur et ressemble à une présentation PowerPoint surchargée. Les 4 coins de l'écran doivent rester 100% vides, épurés et respirer ! Tout cadrage doit être cinématographique et centré sur l'histoire.
    - Zéro titrage scolaire / PowerPoint (aucun [ Étape 01 ], [ Chapitre 1 ], ni de conteneur .tag-pill).
    - Typographie cinétique stable sans reflow : balises <span class="title-line"> avec display:block et white-space:nowrap.
    - Centrage absolu de la scène de conclusion finale : position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%).
