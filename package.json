@@ -1,0 +1,82 @@
+{
+  "name": "vibe-editor-app",
+  "productName": "VibeEditor",
+  "version": "1.0.0",
+  "description": "Studio vidéo automatisé & moteur de motion design IA",
+  "main": "electron-main.cjs",
+  "scripts": {
+    "app": "electron electron-main.cjs",
+    "start": "node 07_Scripts/studio-server.cjs",
+    "studio": "node 07_Scripts/studio-server.cjs",
+    "home": "node 07_Scripts/studio-server.cjs",
+    "render": "node 07_Scripts/render.cjs",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "video-editor",
+    "motion-design",
+    "ai",
+    "electron",
+    "gsap",
+    "threejs"
+  ],
+  "author": "NdarawFall",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@imgly/background-removal-node": "^1.4.5",
+    "@xenova/transformers": "^2.17.2",
+    "chart.js": "^4.6.1",
+    "countup.js": "^2.10.1",
+    "gsap": "^3.15.0",
+    "lottie-web": "^5.13.0",
+    "n8ao": "^2.0.1",
+    "postprocessing": "^6.39.5",
+    "puppeteer-core": "^25.16.0",
+    "srt-parser-2": "^1.2.3",
+    "three": "^0.186.1",
+    "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.vibeeditor.app",
+    "productName": "VibeEditor",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**/*",
+      "!scratch/**/*",
+      "!08_Rendus/**/*",
+      "!07_Scripts/api_config.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

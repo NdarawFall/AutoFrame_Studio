@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadcn UI — Design System Pure CSS</title>
+    <link rel="stylesheet" href="shadcn.css">
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span class="badge badge-outline">Zinc Dark Theme</span>
+                <span class="badge badge-primary">13 Ko Pure CSS</span>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 0.5rem 0;">Shadcn UI pour VibeEditor</h1>
+            <p style="color: hsl(var(--muted-foreground)); margin: 0; font-size: 0.95rem;">
+                Composants officiels Shadcn ultra-légers, 100% compatibles Vanilla HTML sans React ni bundler.
+            </p>
+        </div>
+
+        <!-- 1. Boutons -->
+        <div>
+            <div class="section-title">Boutons (Button Variants)</div>
+            <div class="flex-row">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary</button>
+                <button class="btn btn-outline">Outline</button>
+                <button class="btn btn-ghost">Ghost</button>
+                <button class="btn btn-destructive">Destructive</button>
+                <button class="btn btn-primary btn-sm">Small</button>
+                <button class="btn btn-outline btn-icon" title="Icon Button">✦</button>
+            </div>
+        </div>
+
+        <!-- 2. Badges -->
+        <div>
+            <div class="section-title">Badges</div>
+            <div class="flex-row">
+                <span class="badge badge-primary">En cours</span>
+                <span class="badge badge-secondary">YouTube 16:9</span>
+                <span class="badge badge-outline">HD 1080p</span>
+                <span class="badge badge-destructive">Échec</span>
+            </div>
+        </div>
+
+        <!-- 3. Formulaires -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Génération de Vidéo</h3>
+                    <p class="card-description">Configurez les paramètres du prompt pour l'IA.</p>
+                </div>
+                <div class="card-content" style="display:flex; flex-direction:column; gap:1rem;">
+                    <div>
+                        <label class="label">Sujet / Prompt</label>
+                        <textarea class="textarea" placeholder="Décrivez votre idée de vidéo..."></textarea>
+                    </div>
+                    <div>
+                        <label class="label">Format d'export</label>
+                        <select class="select">
+                            <option>YouTube 16:9 (1920x1080)</option>
+                            <option>TikTok / Shorts 9:16 (1080x1920)</option>
+                            <option>Instagram Carré 1:1 (1080x1080)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-size:0.875rem; font-weight:500;">Sous-titres automatiques</div>
+                            <div style="font-size:0.75rem; color:hsl(var(--muted-foreground));">Style Alex Hormozi mot-à-mot</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card-footer" style="justify-content: flex-end;">
+                    <button class="btn btn-outline">Annuler</button>
+                    <button class="btn btn-primary" onclick="openDemoModal()">Lancer le rendu</button>
+                </div>
+            </div>
+
+            <!-- 4. Alert & Onglets -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div>
+                    <div class="section-title">Onglets (Tabs)</div>
+                    <div class="tabs-list">
+                        <button class="tabs-trigger active" onclick="setTab(this)">Compositions</button>
+                        <button class="tabs-trigger" onclick="setTab(this)">Modifier</button>
+                        <button class="tabs-trigger" onclick="setTab(this)">Rendus</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">Alertes & Notifications</div>
+                    <div class="alert">
+                        <div style="font-size:1.125rem;">ℹ️</div>
+                        <div>
+                            <div class="alert-title">Normalisation sonore active</div>
+                            <div class="alert-description">Le volume final sera calibré à -14.0 LUFS pour respecter les standards YouTube.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">Chargement (Skeleton)</div>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <div class="skeleton" style="height: 1.25rem; width: 60%;"></div>
+                        <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog Démo -->
+    <div id="demoModal" class="dialog-overlay">
+        <div class="dialog-content">
+            <button class="dialog-close" onclick="closeDemoModal()">✕</button>
+            <div class="dialog-header">
+                <h3 class="dialog-title">Confirmer la suppression</h3>
+                <p class="dialog-description">Cette action supprimera définitivement le fichier vidéo et ses déclinaisons.</p>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-outline" onclick="closeDemoModal()">Annuler</button>
+                <button class="btn btn-destructive" onclick="closeDemoModal()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDemoModal() {
+            document.getElementById('demoModal').classList.add('open');
+        }
+        function closeDemoModal() {
+            document.getElementById('demoModal').classList.remove('open');
+        }
+        function setTab(btn) {
+            btn.parentElement.querySelectorAll('.tabs-trigger').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

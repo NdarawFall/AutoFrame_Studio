@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque d'Animations de Textes — Entrées, Sorties & Boucles</title>
+
+    <!-- Typographies Studio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&family=Source+Serif+4:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+    <!-- GSAP 3.12.5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-card: #121217;
+            --bg-surface: #181820;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-active: #2f6fdb;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-blue: #2f6fdb;
+            --accent-teal: #00d2b4;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #a855f7;
+            --radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BARRE SUPÉRIEURE DE NAVIGATION ET CONTRÔLE */
+        header {
+            height: 72px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(18, 18, 23, 0.85);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 100;
+        }
+
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .brand-badge {
+            background: var(--accent-blue);
+            color: #fff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.1em;
+        }
+        .brand-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(47, 111, 219, 0.35);
+        }
+        .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .actions-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-action {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .btn-action.primary {
+            background: #ffffff;
+            color: #000;
+            border: none;
+        }
+        .btn-action.primary:hover {
+            background: #e2e8f0;
+        }
+
+        /* ZONE PRINCIPALE DE TRAVAIL */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 380px 1fr 420px;
+            overflow: hidden;
+        }
+
+        /* PANNEAU LATÉRAL GAUCHE : SÉLECTEUR D'ANIMATIONS */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar-heading {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin: 12px 6px 8px;
+        }
+        .anim-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            position: relative;
+        }
+        .anim-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+        .anim-card.active {
+            border-color: var(--accent-blue);
+            background: rgba(47, 111, 219, 0.12);
+        }
+        .anim-card.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent-blue);
+            border-radius: 8px 0 0 8px;
+        }
+        .anim-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .anim-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .anim-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .anim-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-top: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+        }
+        .anim-tag.scurve {
+            background: rgba(47, 111, 219, 0.2);
+            color: #60a5fa;
+        }
+
+        /* SCÈNE CENTRALE D'APERÇU LIVE */
+        .stage-viewport {
+            position: relative;
+            background: radial-gradient(circle at center, #111116 0%, #060608 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .grid-backdrop {
+            position: absolute;
+            inset: 0;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            pointer-events: none;
+        }
+        .center-cross {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        .center-cross::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; width: 2px; background: #fff; }
+        .center-cross::after { content: ''; position: absolute; top: 14px; left: 0; right: 0; height: 2px; background: #fff; }
+
+        /* CONTENEUR DU TEXTE ANIMÉ */
+        #textStage {
+            position: relative;
+            width: 90%;
+            max-width: 960px;
+            padding: 40px;
+            text-align: center;
+            z-index: 10;
+        }
+        .sample-headline {
+            font-family: 'Archivo', sans-serif;
+            font-size: 68px;
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            display: inline-block;
+            perspective: 1000px;
+        }
+        .sample-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+        .highlight-word {
+            color: var(--accent-blue);
+            display: inline-block;
+        }
+
+        /* PANNEAU LATÉRAL DROIT : INSPECTEUR DE CODE ET RÈGLES */
+        .inspector {
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .inspector-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .inspector-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+        }
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'IBM Plex Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-copy:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .inspector-body {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .code-box {
+            background: #0a0a0d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .rule-note {
+            background: rgba(47, 111, 219, 0.08);
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+        .rule-note strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Masquage des catégories non actives */
+        .category-view {
+            display: none;
+        }
+        .category-view.active {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENTÊTE & CONTRÔLES -->
+    <header>
+        <div class="brand-zone">
+            <span class="brand-badge">COMPOSANTS</span>
+            <h1 class="brand-title">ANIMATIONS DE TEXTE STUDIO</h1>
+        </div>
+
+        <div class="tab-group">
+            <button class="tab-btn active" onclick="switchCategory('in')">
+                🚀 Entrées (In) <span class="badge-count">8</span>
+            </button>
+            <button class="tab-btn" onclick="switchCategory('out')">
+                🛑 Sorties (Out) <span class="badge-count">8</span>
+            </button>
+            <button class="tab-btn" onclick="switchCategory('loop')">
+                🔄 Boucles (Idle) <span class="badge-count">8</span>
+            </button>
+            <button class="tab-btn" onclick="switchCategory('combo')">
+                ⚡ Séquence Complète (In-Loop-Out)
+            </button>
+        </div>
+
+        <div class="actions-zone">
+            <button class="btn-action primary" onclick="replayCurrent()">▶ Rejouer l'animation</button>
+        </div>
+    </header>
+
+    <!-- ZONE PRINCIPALE -->
+    <main>
+        <!-- COLONNE GAUCHE : SÉLECTEUR -->
+        <div class="sidebar">
+            <!-- CATÉGORIE 1 : ENTRÉES (8 STYLES AVEC COURBE EN S : SLOW -> FAST -> SLOW) -->
+            <div id="cat_in" class="category-view active">
+                <div class="sidebar-heading">8 Animations d'Entrée (Courbe en S)</div>
+
+                <div class="anim-card active" onclick="selectAnim('in_1')">
+                    <div class="anim-num">ENTRÉE 01</div>
+                    <div class="anim-title">Kinetic S-Curve Rush</div>
+                    <div class="anim-desc">Translation Y, scale et rotation subtile avec départ lent, accélération centrale et amorti soigné.</div>
+                    <span class="anim-tag scurve">ease: "power3.inOut"</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_2')">
+                    <div class="anim-num">ENTRÉE 02</div>
+                    <div class="anim-title">Vox Masked Stagger Reveal</div>
+                    <div class="anim-desc">Émergence masquée depuis le plancher avec stagger par mot dans un conteneur overflow:hidden.</div>
+                    <span class="anim-tag scurve">ease: "power4.inOut"</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_3')">
+                    <div class="anim-num">ENTRÉE 03</div>
+                    <div class="anim-title">Blur-to-Focus Converge</div>
+                    <div class="anim-desc">Flou cinématographique convergent (28px -> 0px) avec scale down doux (1.3 -> 1.0).</div>
+                    <span class="anim-tag scurve">filter: blur()</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_4')">
+                    <div class="anim-num">ENTRÉE 04</div>
+                    <div class="anim-title">3D Perspective Flip-In</div>
+                    <div class="anim-desc">Basculement 3D depuis l'axe X horizontal avec perspective spatiale feutrée.</div>
+                    <span class="anim-tag scurve">rotateX(-90deg)</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_5')">
+                    <div class="anim-num">ENTRÉE 05</div>
+                    <div class="anim-title">Kinetic Tracking Expand</div>
+                    <div class="anim-desc">Expansion et resserrement cinématique de l'espacement des caractères (letter-spacing).</div>
+                    <span class="anim-tag scurve">letter-spacing</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_6')">
+                    <div class="anim-num">ENTRÉE 06</div>
+                    <div class="anim-title">Organic Elastic S-Cushion</div>
+                    <div class="anim-desc">Déformation élastique souple des proportions scaleX/scaleY sans effet gadget.</div>
+                    <span class="anim-tag scurve">squish-and-stretch</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_7')">
+                    <div class="anim-num">ENTRÉE 07</div>
+                    <div class="anim-title">Diagonal Knife Clip-Path</div>
+                    <div class="anim-desc">Découpe vectorielle diagonale au scalpel révélant le texte de gauche à droite.</div>
+                    <span class="anim-tag scurve">clip-path: polygon</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('in_8')">
+                    <div class="anim-num">ENTRÉE 08</div>
+                    <div class="anim-title">Cyber Decode Scramble</div>
+                    <div class="anim-desc">Décodage instantané de glyphes aléatoires avec balayage et flash de clarté.</div>
+                    <span class="anim-tag scurve">char-scramble</span>
+                </div>
+            </div>
+
+            <!-- CATÉGORIE 2 : SORTIES (8 STYLES D'ÉJECTION ET D'ÉCLIPSE) -->
+            <div id="cat_out" class="category-view">
+                <div class="sidebar-heading">8 Animations de Sortie (Out)</div>
+
+                <div class="anim-card" onclick="selectAnim('out_1')">
+                    <div class="anim-num">SORTIE 01</div>
+                    <div class="anim-title">S-Curve Cushion Sink</div>
+                    <div class="anim-desc">Plongée progressive vers le bas avec départ doux, accélération et dissipation.</div>
+                    <span class="anim-tag">y: +80px</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_2')">
+                    <div class="anim-num">SORTIE 02</div>
+                    <div class="anim-title">Masked Trapdoor Drop</div>
+                    <div class="anim-desc">Disparition mot à mot à travers le plancher masqué en cascade rapide.</div>
+                    <span class="anim-tag">overflow: hidden</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_3')">
+                    <div class="anim-num">SORTIE 03</div>
+                    <div class="anim-title">Hyper-Speed Blur Disperse</div>
+                    <div class="anim-desc">Zoom avant violent combiné à un flou directionnel centrifuge qui dissout le texte.</div>
+                    <span class="anim-tag">scale: 1.45 + blur</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_4')">
+                    <div class="anim-num">SORTIE 04</div>
+                    <div class="anim-title">3D Spatial Fold Away</div>
+                    <div class="anim-desc">Basculement vers l'arrière dans la profondeur 3D avec extinction de lumière.</div>
+                    <span class="anim-tag">rotateX(85deg)</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_5')">
+                    <div class="anim-num">SORTIE 05</div>
+                    <div class="anim-title">Tracking Implosion Collapse</div>
+                    <div class="anim-desc">Contraction extrême des lettres vers l'intérieur jusqu'à un point de singularité.</div>
+                    <span class="anim-tag">letter-spacing: -0.3em</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_6')">
+                    <div class="anim-num">SORTIE 06</div>
+                    <div class="anim-title">Diagonal Shutter Slice</div>
+                    <div class="anim-desc">Fermeture en biseau par volet vectoriel tranchant de droite à gauche.</div>
+                    <span class="anim-tag">clip-path closure</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_7')">
+                    <div class="anim-num">SORTIE 07</div>
+                    <div class="anim-title">Slingshot Ejection</div>
+                    <div class="anim-desc">Micro-recul d'anticipation vers la gauche puis projection catapulte vers la droite.</div>
+                    <span class="anim-tag">anticipation recoil</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('out_8')">
+                    <div class="anim-num">SORTIE 08</div>
+                    <div class="anim-title">Ghost Vaporize & Rise</div>
+                    <div class="anim-desc">Dissipation gazeuse ascendante avec flou vertical et perte de consistance.</div>
+                    <span class="anim-tag">y: -60px + blur</span>
+                </div>
+            </div>
+
+            <!-- CATÉGORIE 3 : BOUCLES (8 STYLES DE MAINTIEN VIVANT SANS POLLUER) -->
+            <div id="cat_loop" class="category-view">
+                <div class="sidebar-heading">8 Animations en Boucle (Idle)</div>
+
+                <div class="anim-card" onclick="selectAnim('loop_1')">
+                    <div class="anim-num">BOUCLE 01</div>
+                    <div class="anim-title">Breathing Pulse & Glow</div>
+                    <div class="anim-desc">Respiration organique imperceptible de l'échelle (1.0 -> 1.03) avec lueur feutrée.</div>
+                    <span class="anim-tag">continuous breathe</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_2')">
+                    <div class="anim-num">BOUCLE 02</div>
+                    <div class="anim-title">Levitation & Pendulum Tilt</div>
+                    <div class="anim-desc">Flottement vertical sinusoïdal doux couplé à une inclinaison oscillante (-1.2° -> +1.2°).</div>
+                    <span class="anim-tag">sine wave float</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_3')">
+                    <div class="anim-num">BOUCLE 03</div>
+                    <div class="anim-title">Gloss Shimmer Sweep</div>
+                    <div class="anim-desc">Reflet de lumière oblique balayant le lettrage toutes les 3 secondes.</div>
+                    <span class="anim-tag">metallic glint</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_4')">
+                    <div class="anim-num">BOUCLE 04</div>
+                    <div class="anim-title">Kinetic Sine Letter Wave</div>
+                    <div class="anim-desc">Ondulation continue de chaque lettre en cascade fluide.</div>
+                    <span class="anim-tag">letter wave</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_5')">
+                    <div class="anim-num">BOUCLE 05</div>
+                    <div class="anim-title">Double Heartbeat Impact</div>
+                    <div class="anim-desc">Pulsation en double battement organique simulant la tension cardiaque.</div>
+                    <span class="anim-tag">thump-thump</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_6')">
+                    <div class="anim-num">BOUCLE 06</div>
+                    <div class="anim-title">Cyber Neon Micro-Flicker</div>
+                    <div class="anim-desc">Clignotements subtils simulant une chute de tension d'un tube néon haute fidélité.</div>
+                    <span class="anim-tag">neon spark</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_7')">
+                    <div class="anim-num">BOUCLE 07</div>
+                    <div class="anim-title">Sub-Bass Forensic Tremor</div>
+                    <div class="anim-desc">Micro-séisme périodique ultra-bref synchronisable avec un impact de basse.</div>
+                    <span class="anim-tag">bass tremor</span>
+                </div>
+
+                <div class="anim-card" onclick="selectAnim('loop_8')">
+                    <div class="anim-num">BOUCLE 08</div>
+                    <div class="anim-title">Aurora Chromatic Cycle</div>
+                    <div class="anim-desc">Variation chromatique fluide balayant les reflets cyan, cobalt et améthyste.</div>
+                    <span class="anim-tag">gradient cycle</span>
+                </div>
+            </div>
+
+            <!-- CATÉGORIE 4 : SÉQUENCE COMBINÉE -->
+            <div id="cat_combo" class="category-view">
+                <div class="sidebar-heading">Enchaînement Complet</div>
+                <div class="anim-card active" onclick="selectAnim('combo_full')">
+                    <div class="anim-num">COMBO CINÉMATIQUE</div>
+                    <div class="anim-title">In (S-Curve) → Loop (Float) → Out (Sink)</div>
+                    <div class="anim-desc">Démonstration du cycle de vie complet d'un titre : apparition lente-rapide-lente, respiration vivante, sortie amortie.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE CENTRALE : SCÈNE DE RENDU -->
+        <div class="stage-viewport">
+            <div class="grid-backdrop"></div>
+            <div class="center-cross"></div>
+
+            <div id="textStage">
+                <div class="sample-headline" id="mainTitle">
+                    L'ANATOMIE D'UNE <span class="highlight-word">DÉFAILLANCE</span>
+                </div>
+                <div class="sample-subtitle" id="mainSub">
+                    Reconstitution médico-légale et cinématique de mouvement
+                </div>
+            </div>
+        </div>
+
+        <!-- COLONNE DROITE : INSPECTEUR ET CODE GSAP -->
+        <div class="inspector">
+            <div class="inspector-header">
+                <span class="inspector-title">CODE GSAP & DIRECTIVES</span>
+                <button class="btn-copy" onclick="copyCurrentCode()">Copier le Code</button>
+            </div>
+
+            <div class="inspector-body">
+                <div class="rule-note">
+                    <strong>Règle d'Or de l'Apparition :</strong>
+                    « Départ lent $\rightarrow$ accélération centrale $\rightarrow$ arrivée lente ».
+                    Toujours utiliser une courbe sigmoïde avec amorti (ex: <code>power3.inOut</code>) pour éviter la rigidité.
+                </div>
+
+                <div class="code-box" id="codeDisplay">
+// Sélectionnez une animation pour voir le code
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- LOGIQUE GSAP ET GESTION DU CATALOGUE -->
+    <script>
+        let currentAnimKey = 'in_1';
+        let currentTimeline = null;
+
+        // DÉFINITION EXHAUSTIVE DES 24 ANIMATIONS + COMBO
+        const ANIM_DEFINITIONS = {
+            // ----------------------------------------------------
+            // 8 ENTRÉES (IN) : TOUTES AVEC LA COURBE SLOW-FAST-SLOW
+            // ----------------------------------------------------
+            in_1: {
+                name: 'Kinetic S-Curve Rush',
+                category: 'in',
+                desc: 'Translation Y + Scale + Rotation avec départ lent, accélération et atterrissage velouté.',
+                run: () => {
+                    const tl = gsap.timeline();
+                    gsap.set('#mainTitle', { opacity: 1, y: 0, scale: 1, rotation: 0, filter: 'none', letterSpacing: 'normal', clipPath: 'none' });
+                    gsap.set('#mainSub', { opacity: 1, y: 0 });
+
+                    tl.from('#mainTitle', {
+                        y: 90,
+                        scale: 0.88,
+                        rotation: -2,
+                        opacity: 0,
+                        duration: 1.4,
+                        ease: 'power3.inOut' // Départ lent -> accélération centrale -> arrivée lente
+                    }, 0);
+
+                    tl.from('#mainSub', {
+                        y: 40,
+                        opacity: 0,
+                        duration: 1.2,
+                        ease: 'power3.inOut'
+                    }, 0.25);
+                    return tl;
+                },
+                code: `// 1. Kinetic S-Curve Rush (Entrée)
+// Formule départ lent -> accélération -> arrivée lente
+gsap.from('#title', {
+    y: 90,
+    scale: 0.88,
+    rotation: -2,
+    opacity: 0,
+    duration: 1.4,
+    ease: 'power3.inOut'
+});
+
+gsap.from('#sub', {
+    y: 40,
+    opacity: 0,
+    duration: 1.2,
+    ease: 'power3.inOut'
+}, 0.25);`
+            },
+
+            in_2: {
+                name: 'Vox Masked Stagger Reveal',
+                category: 'in',
+                desc: 'Chaque mot jaillit d\'un masque d\'overflow avec stagger et courbe sigmoïde.',
+                run: () => {
+                    const el = document.getElementById('mainTitle');
+                    el.innerHTML = '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word" style="display:inline-block">L\'ANATOMIE</span></span> ' +
+                                   '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word" style="display:inline-block">D\'UNE</span></span> ' +
+                                   '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word highlight-word" style="display:inline-block">DÉFAILLANCE</span></span>';
+                    
+                    const tl = gsap.timeline();
+                    tl.from('.m-word', {
+                        y: 120,
+                        duration: 1.3,
+                        stagger: 0.12,
+                        ease: 'power4.inOut' // Départ feutré, projection rapide, amorti parfait
+                    }, 0);
+                    tl.from('#mainSub', { opacity: 0, y: 30, duration: 1.1, ease: 'power3.inOut' }, 0.4);
+                    return tl;
+                },
+                code: `// 2. Vox Masked Stagger Reveal (Entrée)
+// Conteneurs avec overflow:hidden autour de chaque mot
+gsap.from('.masked-word', {
+    y: 120,
+    duration: 1.3,
+    stagger: 0.12,
+    ease: 'power4.inOut' // Sigmoïde de haut grade
+});`
+            },
+
+            in_3: {
+                name: 'Blur-to-Focus Converge',
+                category: 'in',
+                desc: 'Flou cinématographique convergent se clarifiant lors de la décélération finale.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.from('#mainTitle', {
+                        filter: 'blur(32px)',
+                        scale: 1.35,
+                        opacity: 0,
+                        duration: 1.5,
+                        ease: 'power3.inOut'
+                    }, 0);
+                    tl.from('#mainSub', { opacity: 0, filter: 'blur(16px)', duration: 1.2, ease: 'power3.inOut' }, 0.3);
+                    return tl;
+                },
+                code: `// 3. Blur-to-Focus Converge (Entrée)
+gsap.from('#title', {
+    filter: 'blur(32px)',
+    scale: 1.35,
+    opacity: 0,
+    duration: 1.5,
+    ease: 'power3.inOut'
+});`
+            },
+
+            in_4: {
+                name: '3D Spatial Perspective Flip-In',
+                category: 'in',
+                desc: 'Basculement depuis l\'axe 3D avec perspective prononcée et amorti soigné.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.from('#mainTitle', {
+                        rotationX: -90,
+                        y: -40,
+                        opacity: 0,
+                        transformOrigin: 'center top',
+                        duration: 1.4,
+                        ease: 'power3.inOut'
+                    }, 0);
+                    tl.from('#mainSub', { opacity: 0, y: 20, duration: 1.0, ease: 'power3.inOut' }, 0.4);
+                    return tl;
+                },
+                code: `// 4. 3D Spatial Perspective Flip-In (Entrée)
+gsap.from('#title', {
+    rotationX: -90,
+    y: -40,
+    opacity: 0,
+    transformOrigin: 'center top',
+    duration: 1.4,
+    ease: 'power3.inOut'
+});`
+            },
+
+            in_5: {
+                name: 'Kinetic Tracking Expand',
+                category: 'in',
+                desc: 'Rapprochement des caractères depuis un espacement étiré avec décélération feutrée.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.from('#mainTitle', {
+                        letterSpacing: '0.45em',
+                        scale: 0.95,
+                        opacity: 0,
+                        duration: 1.6,
+                        ease: 'power3.inOut'
+                    }, 0);
+                    tl.from('#mainSub', { opacity: 0, y: 25, duration: 1.2, ease: 'power3.inOut' }, 0.3);
+                    return tl;
+                },
+                code: `// 5. Kinetic Tracking Expand (Entrée)
+gsap.from('#title', {
+    letterSpacing: '0.45em',
+    scale: 0.95,
+    opacity: 0,
+    duration: 1.6,
+    ease: 'power3.inOut'
+});`
+            },
+
+            in_6: {
+                name: 'Organic Elastic S-Cushion',
+                category: 'in',
+                desc: 'Déformation biomimétique souple scaleX/scaleY sans oscillation cartoon.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.fromTo('#mainTitle', 
+                        { scaleX: 0.5, scaleY: 1.6, y: 80, opacity: 0 },
+                        { scaleX: 1, scaleY: 1, y: 0, opacity: 1, duration: 1.4, ease: 'power3.inOut' }, 0);
+                    tl.from('#mainSub', { opacity: 0, y: 30, duration: 1.1, ease: 'power3.inOut' }, 0.3);
+                    return tl;
+                },
+                code: `// 6. Organic Elastic S-Cushion (Entrée)
+gsap.fromTo('#title',
+    { scaleX: 0.5, scaleY: 1.6, y: 80, opacity: 0 },
+    { scaleX: 1, scaleY: 1, y: 0, opacity: 1, duration: 1.4, ease: 'power3.inOut' }
+);`
+            },
+
+            in_7: {
+                name: 'Diagonal Knife Clip-Path',
+                category: 'in',
+                desc: 'Masque vectoriel tranchant en biseau révélant le texte de gauche à droite.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.fromTo('#mainTitle',
+                        { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 40, opacity: 0 },
+                        { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', y: 0, opacity: 1, duration: 1.5, ease: 'power4.inOut' }, 0);
+                    tl.from('#mainSub', { opacity: 0, duration: 1.2, ease: 'power3.inOut' }, 0.4);
+                    return tl;
+                },
+                code: `// 7. Diagonal Knife Clip-Path (Entrée)
+gsap.fromTo('#title',
+    { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 40, opacity: 0 },
+    { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', y: 0, opacity: 1, duration: 1.5, ease: 'power4.inOut' }
+);`
+            },
+
+            in_8: {
+                name: 'Cyber Decode Scramble',
+                category: 'in',
+                desc: 'Simulation de décodage haute technologie avec balayage de caractères aléatoires.',
+                run: () => {
+                    resetHeadline();
+                    const target = "L'ANATOMIE D'UNE DÉFAILLANCE";
+                    const el = document.getElementById('mainTitle');
+                    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+=-";
+                    const tl = gsap.timeline();
+                    
+                    const obj = { p: 0 };
+                    tl.fromTo(obj, { p: 0 }, {
+                        p: 1,
+                        duration: 1.6,
+                        ease: 'power3.inOut',
+                        onUpdate: () => {
+                            const revealedLen = Math.floor(obj.p * target.length);
+                            let str = target.slice(0, revealedLen);
+                            for (let i = revealedLen; i < target.length; i++) {
+                                if (target[i] === ' ') str += ' ';
+                                else str += chars[Math.floor(Math.random() * chars.length)];
+                            }
+                            el.innerHTML = str.replace("DÉFAILLANCE", '<span class="highlight-word">DÉFAILLANCE</span>');
+                        }
+                    }, 0);
+                    tl.from('#mainTitle', { opacity: 0, duration: 0.3 }, 0);
+                    tl.from('#mainSub', { opacity: 0, y: 20, duration: 1.2, ease: 'power3.inOut' }, 0.5);
+                    return tl;
+                },
+                code: `// 8. Cyber Decode Scramble (Entrée)
+// Remplacement progressif de caractères avec easing S-Curve
+const target = "MON TITRE D'IMPACT";
+gsap.to({ p: 0 }, {
+    p: 1,
+    duration: 1.6,
+    ease: 'power3.inOut',
+    onUpdate: function() {
+        // Logique de tirage aléatoire des caractères restants
+    }
+});`
+            },
+
+            // ----------------------------------------------------
+            // 8 SORTIES (OUT) : ÉJECTION ET DISSIPATION CINÉMATIQUE
+            // ----------------------------------------------------
+            out_1: {
+                name: 'S-Curve Cushion Sink',
+                category: 'out',
+                desc: 'Plongeon vers le bas avec départ doux, accélération et dissipation finale.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { y: 90, scale: 0.9, opacity: 0, duration: 1.2, ease: 'power3.inOut' }, 0);
+                    tl.to('#mainSub', { y: 40, opacity: 0, duration: 0.9, ease: 'power3.inOut' }, 0.1);
+                    return tl;
+                },
+                code: `// 1. S-Curve Cushion Sink (Sortie)
+gsap.to('#title', {
+    y: 90,
+    scale: 0.9,
+    opacity: 0,
+    duration: 1.2,
+    ease: 'power3.inOut'
+});`
+            },
+
+            out_2: {
+                name: 'Masked Trapdoor Drop',
+                category: 'out',
+                desc: 'Chute des mots à travers un plancher masqué en cascade rapide.',
+                run: () => {
+                    const el = document.getElementById('mainTitle');
+                    el.innerHTML = '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word" style="display:inline-block">L\'ANATOMIE</span></span> ' +
+                                   '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word" style="display:inline-block">D\'UNE</span></span> ' +
+                                   '<span style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="m-word highlight-word" style="display:inline-block">DÉFAILLANCE</span></span>';
+                    const tl = gsap.timeline();
+                    tl.to('.m-word', { y: 120, duration: 1.0, stagger: 0.08, ease: 'power4.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.8 }, 0.2);
+                    return tl;
+                },
+                code: `// 2. Masked Trapdoor Drop (Sortie)
+gsap.to('.masked-word', {
+    y: 120,
+    duration: 1.0,
+    stagger: 0.08,
+    ease: 'power4.inOut'
+});`
+            },
+
+            out_3: {
+                name: 'Hyper-Speed Blur Disperse',
+                category: 'out',
+                desc: 'Zoom avant violent combiné à un flou directionnel qui dissout le texte.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { scale: 1.5, filter: 'blur(36px)', opacity: 0, duration: 1.1, ease: 'power3.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, filter: 'blur(16px)', duration: 0.8 }, 0.1);
+                    return tl;
+                },
+                code: `// 3. Hyper-Speed Blur Disperse (Sortie)
+gsap.to('#title', {
+    scale: 1.5,
+    filter: 'blur(36px)',
+    opacity: 0,
+    duration: 1.1,
+    ease: 'power3.inOut'
+});`
+            },
+
+            out_4: {
+                name: '3D Spatial Fold Away',
+                category: 'out',
+                desc: 'Basculement vers l\'arrière dans l\'espace 3D avec perte d\'opacité.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { rotationX: 85, y: -40, opacity: 0, transformOrigin: 'center top', duration: 1.2, ease: 'power3.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.8 }, 0.1);
+                    return tl;
+                },
+                code: `// 4. 3D Spatial Fold Away (Sortie)
+gsap.to('#title', {
+    rotationX: 85,
+    y: -40,
+    opacity: 0,
+    transformOrigin: 'center top',
+    duration: 1.2,
+    ease: 'power3.inOut'
+});`
+            },
+
+            out_5: {
+                name: 'Tracking Implosion Collapse',
+                category: 'out',
+                desc: 'Contraction extrême de l\'interlettrage jusqu\'à écrasement complet.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { letterSpacing: '-0.35em', opacity: 0, scale: 0.85, duration: 1.2, ease: 'power3.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.7 }, 0.1);
+                    return tl;
+                },
+                code: `// 5. Tracking Implosion Collapse (Sortie)
+gsap.to('#title', {
+    letterSpacing: '-0.35em',
+    opacity: 0,
+    scale: 0.85,
+    duration: 1.2,
+    ease: 'power3.inOut'
+});`
+            },
+
+            out_6: {
+                name: 'Diagonal Shutter Slice',
+                category: 'out',
+                desc: 'Fermeture au scalpel par volet vectoriel tranchant.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)', duration: 1.2, ease: 'power4.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.8 }, 0.2);
+                    return tl;
+                },
+                code: `// 6. Diagonal Shutter Slice (Sortie)
+gsap.to('#title', {
+    clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+    duration: 1.2,
+    ease: 'power4.inOut'
+});`
+            },
+
+            out_7: {
+                name: 'Slingshot Ejection',
+                category: 'out',
+                desc: 'Recul d\'anticipation vers la gauche puis projection éclair vers la droite.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { x: -30, duration: 0.35, ease: 'power2.out' }, 0);
+                    tl.to('#mainTitle', { x: 300, opacity: 0, duration: 0.8, ease: 'power3.in' }, 0.35);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.5 }, 0.35);
+                    return tl;
+                },
+                code: `// 7. Slingshot Ejection (Sortie)
+const tl = gsap.timeline();
+tl.to('#title', { x: -30, duration: 0.35, ease: 'power2.out' })
+  .to('#title', { x: 300, opacity: 0, duration: 0.8, ease: 'power3.in' });`
+            },
+
+            out_8: {
+                name: 'Ghost Vaporize & Rise',
+                category: 'out',
+                desc: 'Vaporisation fantôme ascendante avec flou vertical.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    tl.to('#mainTitle', { y: -70, filter: 'blur(28px)', opacity: 0, duration: 1.3, ease: 'power3.inOut' }, 0);
+                    tl.to('#mainSub', { opacity: 0, duration: 0.8 }, 0.1);
+                    return tl;
+                },
+                code: `// 8. Ghost Vaporize & Rise (Sortie)
+gsap.to('#title', {
+    y: -70,
+    filter: 'blur(28px)',
+    opacity: 0,
+    duration: 1.3,
+    ease: 'power3.inOut'
+});`
+            },
+
+            // ----------------------------------------------------
+            // 8 BOUCLES (LOOP) : MAINTIEN EN VIE DU TITRE SANS GÊNER
+            // ----------------------------------------------------
+            loop_1: {
+                name: 'Breathing Pulse & Glow',
+                category: 'loop',
+                desc: 'Respiration continue de l\'échelle avec halo lumineux subtil.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+                    tl.to('#mainTitle', { scale: 1.035, textShadow: '0 0 24px rgba(47, 111, 219, 0.45)', duration: 2.2, ease: 'sine.inOut' });
+                    return tl;
+                },
+                code: `// 1. Breathing Pulse & Glow (Boucle)
+gsap.to('#title', {
+    scale: 1.035,
+    textShadow: '0 0 24px rgba(47, 111, 219, 0.45)',
+    duration: 2.2,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut'
+});`
+            },
+
+            loop_2: {
+                name: 'Levitation & Pendulum Tilt',
+                category: 'loop',
+                desc: 'Lévitation sinusoïdale fluide combinée à une oscillation angulaire douce.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+                    tl.to('#mainTitle', { y: -16, rotation: 1.2, duration: 2.6, ease: 'sine.inOut' }, 0);
+                    tl.to('#mainSub', { y: -8, duration: 2.6, ease: 'sine.inOut' }, 0.2);
+                    return tl;
+                },
+                code: `// 2. Levitation & Pendulum Tilt (Boucle)
+gsap.to('#title', {
+    y: -16,
+    rotation: 1.2,
+    duration: 2.6,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut'
+});`
+            },
+
+            loop_3: {
+                name: 'Gloss Shimmer Sweep',
+                category: 'loop',
+                desc: 'Balayage lumineux d\'un reflet de lumière oblique traversant le lettrage.',
+                run: () => {
+                    resetHeadline();
+                    const el = document.getElementById('mainTitle');
+                    el.style.backgroundImage = 'linear-gradient(110deg, #ffffff 40%, #70aaff 50%, #ffffff 60%)';
+                    el.style.backgroundSize = '200% auto';
+                    el.style.webkitBackgroundClip = 'text';
+                    el.style.webkitTextFillColor = 'transparent';
+
+                    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+                    tl.fromTo(el, { backgroundPosition: '200% center' }, { backgroundPosition: '-200% center', duration: 1.8, ease: 'power2.inOut' });
+                    return tl;
+                },
+                code: `// 3. Gloss Shimmer Sweep (Boucle)
+// Nécessite background-clip: text en CSS
+gsap.fromTo('#title',
+    { backgroundPosition: '200% center' },
+    { backgroundPosition: '-200% center', duration: 1.8, repeat: -1, repeatDelay: 1.5, ease: 'power2.inOut' }
+);`
+            },
+
+            loop_4: {
+                name: 'Kinetic Sine Letter Wave',
+                category: 'loop',
+                desc: 'Ondulation lettre par lettre le long d\'une onde sinusoïdale perpétuelle.',
+                run: () => {
+                    const el = document.getElementById('mainTitle');
+                    const text = "L'ANATOMIE D'UNE DÉFAILLANCE";
+                    el.innerHTML = text.split('').map(c => `<span class="wave-char" style="display:inline-block">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+                    
+                    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+                    tl.to('.wave-char', {
+                        y: -12,
+                        duration: 0.8,
+                        stagger: { each: 0.04, from: 'start', repeat: -1, yoyo: true },
+                        ease: 'sine.inOut'
+                    });
+                    return tl;
+                },
+                code: `// 4. Kinetic Sine Letter Wave (Boucle)
+gsap.to('.wave-char', {
+    y: -12,
+    duration: 0.8,
+    stagger: { each: 0.04, from: 'start', repeat: -1, yoyo: true },
+    ease: 'sine.inOut'
+});`
+            },
+
+            loop_5: {
+                name: 'Double Heartbeat Impact',
+                category: 'loop',
+                desc: 'Double pulsation rythmique (thump-thump... pause) pour accentuer la tension dramatique.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+                    tl.to('#mainTitle', { scale: 1.06, duration: 0.14, ease: 'power2.out' })
+                      .to('#mainTitle', { scale: 1.0, duration: 0.18, ease: 'power2.in' })
+                      .to('#mainTitle', { scale: 1.04, duration: 0.12, ease: 'power2.out' })
+                      .to('#mainTitle', { scale: 1.0, duration: 0.22, ease: 'power2.in' });
+                    return tl;
+                },
+                code: `// 5. Double Heartbeat Impact (Boucle)
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+tl.to('#title', { scale: 1.06, duration: 0.14, ease: 'power2.out' })
+  .to('#title', { scale: 1.0, duration: 0.18, ease: 'power2.in' })
+  .to('#title', { scale: 1.04, duration: 0.12, ease: 'power2.out' })
+  .to('#title', { scale: 1.0, duration: 0.22, ease: 'power2.in' });`
+            },
+
+            loop_6: {
+                name: 'Cyber Neon Micro-Flicker',
+                category: 'loop',
+                desc: 'Micro-chutes de tension réalistes mimant un éclairage néon sous tension.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline({ repeat: -1, repeatDelay: 2.0 });
+                    tl.to('#mainTitle', { opacity: 0.35, textShadow: 'none', duration: 0.05, ease: 'none' })
+                      .to('#mainTitle', { opacity: 1, textShadow: '0 0 20px #2f6fdb', duration: 0.04, ease: 'none' })
+                      .to('#mainTitle', { opacity: 0.5, textShadow: 'none', duration: 0.06, ease: 'none' })
+                      .to('#mainTitle', { opacity: 1, textShadow: '0 0 30px #2f6fdb', duration: 0.05, ease: 'none' });
+                    return tl;
+                },
+                code: `// 6. Cyber Neon Micro-Flicker (Boucle)
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 2.0 });
+tl.to('#title', { opacity: 0.35, textShadow: 'none', duration: 0.05 })
+  .to('#title', { opacity: 1, textShadow: '0 0 20px #2f6fdb', duration: 0.04 })
+  .to('#title', { opacity: 0.5, textShadow: 'none', duration: 0.06 })
+  .to('#title', { opacity: 1, textShadow: '0 0 30px #2f6fdb', duration: 0.05 });`
+            },
+
+            loop_7: {
+                name: 'Sub-Bass Forensic Tremor',
+                category: 'loop',
+                desc: 'Micro-séisme périodique ultra-bref mimant un impact de basse fréquence.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline({ repeat: -1, repeatDelay: 2.5 });
+                    tl.to('#mainTitle', { x: -6, y: 3, duration: 0.04, ease: 'none' })
+                      .to('#mainTitle', { x: 5, y: -4, duration: 0.04, ease: 'none' })
+                      .to('#mainTitle', { x: -3, y: 2, duration: 0.04, ease: 'none' })
+                      .to('#mainTitle', { x: 0, y: 0, duration: 0.05, ease: 'none' });
+                    return tl;
+                },
+                code: `// 7. Sub-Bass Forensic Tremor (Boucle)
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 2.5 });
+tl.to('#title', { x: -6, y: 3, duration: 0.04 })
+  .to('#title', { x: 5, y: -4, duration: 0.04 })
+  .to('#title', { x: 0, y: 0, duration: 0.05 });`
+            },
+
+            loop_8: {
+                name: 'Aurora Chromatic Cycle',
+                category: 'loop',
+                desc: 'Variation chromatique continue balayant les nuances cyan, cobalt et violet.',
+                run: () => {
+                    resetHeadline();
+                    const hl = document.querySelector('.highlight-word');
+                    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+                    tl.to(hl, { color: '#00d2b4', textShadow: '0 0 25px rgba(0,210,180,0.5)', duration: 2.0, ease: 'sine.inOut' })
+                      .to(hl, { color: '#a855f7', textShadow: '0 0 25px rgba(168,85,247,0.5)', duration: 2.0, ease: 'sine.inOut' })
+                      .to(hl, { color: '#2f6fdb', textShadow: '0 0 25px rgba(47,111,219,0.5)', duration: 2.0, ease: 'sine.inOut' });
+                    return tl;
+                },
+                code: `// 8. Aurora Chromatic Cycle (Boucle)
+gsap.to('.highlight-word', {
+    color: '#00d2b4',
+    textShadow: '0 0 25px rgba(0,210,180,0.5)',
+    duration: 2.0,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut'
+});`
+            },
+
+            // SÉQUENCE COMBINÉE COMPLÈTE
+            combo_full: {
+                name: 'Cycle Complet (In -> Loop -> Out)',
+                category: 'combo',
+                desc: 'Cycle complet de vie d\'un titre : Entrée S-Curve -> 3s de lévitation vivante -> Sortie avec amorti.',
+                run: () => {
+                    resetHeadline();
+                    const tl = gsap.timeline();
+                    // 1. Entrée S-Curve
+                    tl.from('#mainTitle', { y: 90, scale: 0.88, opacity: 0, duration: 1.3, ease: 'power3.inOut' }, 0);
+                    tl.from('#mainSub', { y: 40, opacity: 0, duration: 1.1, ease: 'power3.inOut' }, 0.2);
+
+                    // 2. Maintien vivant (Lévitation)
+                    tl.to('#mainTitle', { y: -14, duration: 1.5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.3);
+
+                    // 3. Sortie S-Curve
+                    tl.to('#mainTitle', { y: 100, scale: 0.9, opacity: 0, duration: 1.1, ease: 'power3.inOut' }, 4.3);
+                    tl.to('#mainSub', { y: 50, opacity: 0, duration: 0.9, ease: 'power3.inOut' }, 4.4);
+                    return tl;
+                },
+                code: `// Cycle Complet Recommandé (In -> Loop -> Out)
+const tl = gsap.timeline();
+
+// 1. Entrée Signature (Départ lent -> accélération -> arrivée lente)
+tl.from('#title', { y: 90, scale: 0.88, opacity: 0, duration: 1.3, ease: 'power3.inOut' }, 0);
+
+// 2. Respiration / Lévitation en scène
+tl.to('#title', { y: -14, duration: 1.5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.3);
+
+// 3. Sortie amortie
+tl.to('#title', { y: 100, scale: 0.9, opacity: 0, duration: 1.1, ease: 'power3.inOut' }, 4.3);`
+            }
+        };
+
+        function resetHeadline() {
+            const el = document.getElementById('mainTitle');
+            el.innerHTML = 'L\'ANATOMIE D\'UNE <span class="highlight-word">DÉFAILLANCE</span>';
+            el.style = '';
+            gsap.set(el, { opacity: 1, x: 0, y: 0, scale: 1, scaleX: 1, scaleY: 1, rotation: 0, rotationX: 0, filter: 'none', letterSpacing: 'normal', clipPath: 'none', textShadow: 'none' });
+            gsap.set('#mainSub', { opacity: 1, x: 0, y: 0, filter: 'none' });
+        }
+
+        function selectAnim(key) {
+            currentAnimKey = key;
+            const def = ANIM_DEFINITIONS[key];
+            if (!def) return;
+
+            // Mise à jour de la carte active dans la sidebar
+            document.querySelectorAll('.anim-card').forEach(c => c.classList.remove('active'));
+            const clicked = Array.from(document.querySelectorAll('.anim-card')).find(c => c.getAttribute('onclick')?.includes(key));
+            if (clicked) clicked.classList.add('active');
+
+            // Affichage du code
+            document.getElementById('codeDisplay').textContent = def.code;
+
+            // Exécution
+            replayCurrent();
+        }
+
+        function replayCurrent() {
+            if (currentTimeline) currentTimeline.kill();
+            gsap.killTweensOf(['#mainTitle', '#mainSub', '.m-word', '.wave-char', '.highlight-word']);
+            const def = ANIM_DEFINITIONS[currentAnimKey];
+            if (def && typeof def.run === 'function') {
+                currentTimeline = def.run();
+            }
+        }
+
+        function switchCategory(cat) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.querySelectorAll('.category-view').forEach(v => v.classList.remove('active'));
+            const targetView = document.getElementById('cat_' + cat);
+            if (targetView) targetView.classList.add('active');
+
+            // Sélectionner la première animation de cette catégorie
+            const first = Object.keys(ANIM_DEFINITIONS).find(k => ANIM_DEFINITIONS[k].category === cat);
+            if (first) selectAnim(first);
+        }
+
+        function copyCurrentCode() {
+            const code = document.getElementById('codeDisplay').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copié !';
+                setTimeout(() => btn.textContent = orig, 1800);
+            });
+        }
+
+        // Lancement initial sur Entrée 01
+        window.addEventListener('DOMContentLoaded', () => {
+            selectAnim('in_1');
+        });
+    </script>
+</body>
+</html>

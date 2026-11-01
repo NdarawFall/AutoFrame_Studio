@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Storytelling // Voix Off & Illustrations Dynamiques</title>
+    <!-- GSAP 3.12.5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --title-font: 'Outfit', sans-serif;
+            --subtitle-font: 'Plus Jakarta Sans', sans-serif;
+            --accent-color: #00f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: var(--subtitle-font);
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* CADRE CINÉMATIQUE 1920x1080 (16:9) */
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: #050508;
+        }
+
+        /* CONTENEUR DE LA PISTE D'IMAGES */
+        #mediaTrack {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .segment-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CONTENEUR DE L'IMAGE AVEC TRANSFORMATION KEN BURNS */
+        .image-wrapper {
+            position: absolute;
+            width: 112%;
+            height: 112%;
+            left: -6%;
+            top: -6%;
+            overflow: hidden;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Fallback élégant si l'image locale est en attente */
+        .image-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            gap: 16px;
+        }
+
+        /* FILTRES CINÉMATIQUES ANTI "AI-SLOP" */
+        .cinematic-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.65) 100%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .cinematic-grain {
+            position: absolute;
+            inset: 0;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 11;
+        }
+
+        /* INCRUSTATION DE TITRE / CHAPITRE */
+        .title-overlay-container {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+            width: 80%;
+        }
+
+        .title-overlay {
+            font-family: var(--title-font);
+            font-size: 52px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.4);
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(16px);
+            padding: 12px 36px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* BARRE DE SOUS-TITRES DYNAMIQUE */
+        .subtitle-bar {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 1400px;
+            text-align: center;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .subtitle-text {
+            display: inline-block;
+            font-family: var(--subtitle-font);
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 14px 32px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            letter-spacing: -0.2px;
+        }
+
+        .subtitle-text .highlight {
+            color: var(--accent-color);
+            font-weight: 700;
+            text-shadow: 0 0 15px var(--accent-color);
+        }
+
+        /* HUD DISCRET DE REPERE */
+        .audio-wave-hud {
+            position: absolute;
+            top: 40px;
+            right: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent-color);
+            z-index: 40;
+            letter-spacing: 1px;
+        }
+
+        .wave-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 14px;
+        }
+        .wave-bar {
+            width: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            height: 30%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stage" data-duration="20.0" data-width="1920" data-height="1080">
+        
+        <!-- PISTE DES IMAGES -->
+        <div id="mediaTrack"></div>
+
+        <!-- AMBIANCES CINÉMATIQUES -->
+        <div class="cinematic-vignette"></div>
+        <div class="cinematic-grain"></div>
+
+        <!-- HUD AUDIO / TIME -->
+        <div class="audio-wave-hud">
+            <span>VOIX OFF ACTIVE</span>
+            <div class="wave-bars">
+                <div class="wave-bar" id="wb1"></div>
+                <div class="wave-bar" id="wb2"></div>
+                <div class="wave-bar" id="wb3"></div>
+                <div class="wave-bar" id="wb4"></div>
+            </div>
+        </div>
+
+        <!-- INCRUSTATION TITRE -->
+        <div class="title-overlay-container">
+            <div class="title-overlay" id="titleOverlay" style="opacity: 0;"></div>
+        </div>
+
+        <!-- BARRE DE SOUS-TITRES -->
+        <div class="subtitle-bar">
+            <div class="subtitle-text" id="subtitleText" style="opacity: 0;"></div>
+        </div>
+
+    </div>
+
+    <!-- MOTEUR D'ANIMATION AUTOMATIQUE DATA-DRIVEN -->
+    <script>
+        /**
+         * =========================================================================
+         * CONFIGURATION DE LA VIDÉO (Alimentée par l'IA ou l'utilisateur)
+         * Modifiez simplement cette structure JSON pour changer toute la vidéo !
+         * =========================================================================
+         */
+        const VIDEO_CONFIG = {
+            title: "L'Histoire Captivante",
+            duration: 20.0,
+            fps: 30,
+            
+            // Paramètres audio (optionnels)
+            audio: {
+                voiceover: "audio/voiceover.mp3",
+                music: "audio/background.mp3",
+                musicVolume: 0.15
+            },
+
+            // Typographie et Couleurs
+            styling: {
+                titleFont: "'Outfit', sans-serif",
+                subtitleFont: "'Plus Jakarta Sans', sans-serif",
+                accentColor: "#00f0ff"
+            },
+
+            // Options de montage
+            options: {
+                showSubtitles: true,
+                showTitles: true,
+                crossfadeDuration: 0.8 // Durée de fondu doux entre les images
+            },
+
+            // Segments d'images synchronisés sur la voix off
+            segments: [
+                {
+                    id: 1,
+                    image: "01.jpg",
+                    fallbackGradient: "radial-gradient(circle at 40% 40%, #1e293b, #090d16)",
+                    label: "01.jpg • Genèse",
+                    start: 0.0,
+                    end: 4.5,
+                    motion: "zoom-in", // 'zoom-in' | 'zoom-out' | 'pan-left' | 'pan-right' | 'static'
+                    title: "CHAPITRE 1 : LA GENÈSE",
+                    subtitle: "Tout a commencé dans un silence absolu, bien avant l'avènement du numérique."
+                },
+                {
+                    id: 2,
+                    image: "02.jpg",
+                    fallbackGradient: "radial-gradient(circle at 60% 50%, #312e81, #0f1026)",
+                    label: "02.jpg • Les Pionniers",
+                    start: 4.5,
+                    end: 8.8,
+                    motion: "zoom-out",
+                    title: "",
+                    subtitle: "Une poignée de visionnaires travaillaient jour et nuit pour accomplir l'impossible."
+                },
+                {
+                    id: 3,
+                    image: "03.jpg",
+                    fallbackGradient: "radial-gradient(circle at 50% 50%, #064e3b, #022019)",
+                    label: "03.jpg • La Rupture",
+                    start: 8.8,
+                    end: 12.0,
+                    motion: "static", // Image fixe volontaire : moment dramatique / solennel
+                    title: "LE POINT DE NON-RETOUR",
+                    subtitle: "Mais soudain, un obstacle imprévu menaça d'anéantir des années d'efforts."
+                },
+                {
+                    id: 4,
+                    image: "04.jpg",
+                    fallbackGradient: "radial-gradient(circle at 40% 60%, #701a75, #1d0726)",
+                    label: "04.jpg • Résilience",
+                    start: 12.0,
+                    end: 16.2,
+                    motion: "pan-left",
+                    title: "",
+                    subtitle: "C'est dans l'adversité la plus sombre que naissent les plus grandes découvertes."
+                },
+                {
+                    id: 5,
+                    image: "05.jpg",
+                    fallbackGradient: "radial-gradient(circle at 50% 40%, #7c2d12, #1f0702)",
+                    label: "05.jpg • L'Apogée",
+                    start: 16.2,
+                    end: 20.0,
+                    motion: "zoom-in",
+                    title: "L'HÉRITAGE ÉTERNEL",
+                    subtitle: "Aujourd'hui encore, leur héritage continue d'inspirer des millions d'esprits."
+                }
+            ]
+        };
+
+        // Appliquer les styles CSS configurés
+        document.documentElement.style.setProperty('--title-font', VIDEO_CONFIG.styling.titleFont);
+        document.documentElement.style.setProperty('--subtitle-font', VIDEO_CONFIG.styling.subtitleFont);
+        document.documentElement.style.setProperty('--accent-color', VIDEO_CONFIG.styling.accentColor);
+
+        // =========================================================================
+        // GÉNÉRATEUR AUTOMATIQUE DE LA TIMELINE GSAP DÉTERMINISTE
+        // =========================================================================
+        window.__timeline = gsap.timeline({ paused: true });
+        const tl = window.__timeline;
+
+        const mediaTrack = document.getElementById('mediaTrack');
+        const titleOverlay = document.getElementById('titleOverlay');
+        const subtitleText = document.getElementById('subtitleText');
+
+        // Animation des barres audio du HUD
+        tl.to("#wb1", { height: "90%", duration: 0.3, repeat: -1, yoyo: true, ease: "sine.inOut" }, 0)
+          .to("#wb2", { height: "100%", duration: 0.22, repeat: -1, yoyo: true, ease: "sine.inOut" }, 0)
+          .to("#wb3", { height: "70%", duration: 0.28, repeat: -1, yoyo: true, ease: "sine.inOut" }, 0)
+          .to("#wb4", { height: "95%", duration: 0.35, repeat: -1, yoyo: true, ease: "sine.inOut" }, 0);
+
+        // Construction dynamique des couches et des animations de caméra Ken Burns
+        VIDEO_CONFIG.segments.forEach((seg, index) => {
+            const segDuration = seg.end - seg.start;
+            const layerId = `segment_${seg.id}`;
+            const wrapId = `wrap_${seg.id}`;
+
+            // 1. Création de l'élément DOM de la couche
+            const layer = document.createElement('div');
+            layer.className = 'segment-layer';
+            layer.id = layerId;
+
+            layer.innerHTML = `
+                <div class="image-wrapper" id="${wrapId}">
+                    <img src="${seg.image}" alt="${seg.label}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-fallback" style="display:none; background:${seg.fallbackGradient};">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        <span>${seg.label}</span>
+                    </div>
+                </div>
+            `;
+            mediaTrack.appendChild(layer);
+
+            // 2. Fondu d'apparition (Crossfade fluide)
+            const fadeDur = Math.min(VIDEO_CONFIG.options.crossfadeDuration, segDuration * 0.3);
+            tl.set(`#${layerId}`, { zIndex: index + 1 }, seg.start);
+            tl.fromTo(`#${layerId}`, { opacity: 0 }, { opacity: 1, duration: fadeDur, ease: "power1.inOut" }, seg.start);
+
+            // 3. Animation du mouvement Ken Burns
+            const wrapSelector = `#${wrapId}`;
+            if (seg.motion === 'zoom-in') {
+                tl.fromTo(wrapSelector, 
+                    { scale: 1.0, x: 0, y: 0 }, 
+                    { scale: 1.15, duration: segDuration, ease: "sine.out" }, 
+                    seg.start
+                );
+            } else if (seg.motion === 'zoom-out') {
+                tl.fromTo(wrapSelector, 
+                    { scale: 1.16, x: 0, y: 0 }, 
+                    { scale: 1.02, duration: segDuration, ease: "sine.out" }, 
+                    seg.start
+                );
+            } else if (seg.motion === 'pan-left') {
+                tl.fromTo(wrapSelector, 
+                    { scale: 1.12, x: "3%", y: 0 }, 
+                    { scale: 1.12, x: "-3%", duration: segDuration, ease: "sine.inOut" }, 
+                    seg.start
+                );
+            } else if (seg.motion === 'pan-right') {
+                tl.fromTo(wrapSelector, 
+                    { scale: 1.12, x: "-3%", y: 0 }, 
+                    { scale: 1.12, x: "3%", duration: segDuration, ease: "sine.inOut" }, 
+                    seg.start
+                );
+            } else {
+                // Statique (repos cinématographique)
+                tl.set(wrapSelector, { scale: 1.03, x: 0, y: 0 }, seg.start);
+            }
+
+            // 4. Fondu de sortie (pour le dernier segment ou transition noire)
+            if (index === VIDEO_CONFIG.segments.length - 1) {
+                tl.to(`#${layerId}`, { opacity: 0, duration: 0.6, ease: "power2.in" }, seg.end - 0.6);
+            }
+
+            // 5. Incrustation du titre de chapitre (optionnel)
+            if (VIDEO_CONFIG.options.showTitles && seg.title) {
+                tl.call(() => {
+                    titleOverlay.textContent = seg.title;
+                }, null, seg.start + 0.1);
+
+                tl.fromTo(titleOverlay, 
+                    { opacity: 0, y: -20, scale: 0.95 }, 
+                    { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.5)" }, 
+                    seg.start + 0.1
+                );
+
+                const titleHideTime = Math.min(seg.start + 3.0, seg.end - 0.4);
+                tl.to(titleOverlay, 
+                    { opacity: 0, y: -15, duration: 0.4, ease: "power2.in" }, 
+                    titleHideTime
+                );
+            }
+
+            // 6. Synchronisation des sous-titres
+            if (VIDEO_CONFIG.options.showSubtitles && seg.subtitle) {
+                tl.call(() => {
+                    subtitleText.innerHTML = seg.subtitle.replace(/(\b\w{6,}\b)/g, '<span class="highlight">$1</span>');
+                }, null, seg.start + 0.2);
+
+                tl.fromTo(subtitleText, 
+                    { opacity: 0, y: 20 }, 
+                    { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 
+                    seg.start + 0.2
+                );
+
+                tl.to(subtitleText, 
+                    { opacity: 0, y: 10, duration: 0.35, ease: "power2.in" }, 
+                    seg.end - 0.35
+                );
+            }
+        });
+
+        // Initialisation de la timeline à l'instant zéro
+        tl.seek(0);
+    </script>
+</body>
+</html>

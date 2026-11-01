@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque de Notifications Vidéo — Style Shadcn UI</title>
+    <link rel="stylesheet" href="../shadcn.css">
+    <script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #09090b;
+            color: #fafafa;
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- PANNEAU LATÉRAL SÉLECTEUR --- */
+        .sidebar {
+            width: 320px;
+            background: #111115;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-desc {
+            font-size: 0.8125rem;
+            color: hsl(var(--muted-foreground));
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: transparent;
+            border: 1px solid transparent;
+            color: hsl(var(--muted-foreground));
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: hsl(var(--secondary));
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8125rem;
+            flex-shrink: 0;
+        }
+
+        /* --- SCÈNE DE PRÉVISUALISATION VIDÉO --- */
+        .stage-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle at center, #18181f 0%, #09090b 100%);
+            padding: 40px;
+        }
+
+        .stage-controls {
+            position: absolute;
+            top: 24px;
+            display: flex;
+            gap: 12px;
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- MODÈLE UNIVERSEL DU TOAST --- */
+        .video-toast {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            width: 420px;
+            padding: 16px 20px;
+            background: rgba(15, 15, 18, 0.88);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 255, 255, 0.03);
+            position: relative;
+            user-select: none;
+        }
+
+        .video-toast.active {
+            display: flex;
+        }
+
+        .toast-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-content {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .toast-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .toast-app-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .toast-time {
+            font-size: 0.75rem;
+            color: hsl(var(--muted-foreground));
+            flex-shrink: 0;
+        }
+
+        .toast-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #fafafa;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .toast-desc {
+            font-size: 0.8125rem;
+            color: #a1a1aa;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .toast-amount {
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        /* --- COULEURS ET LOGOS DES PLATEFORMES --- */
+        .icon-stripe { background: #635bff; color: #fff; }
+        .icon-paypal { background: #0070ba; color: #fff; }
+        .icon-whatsapp { background: #25d366; color: #fff; }
+        .icon-shopify { background: #95bf47; color: #fff; }
+        .icon-youtube { background: #ff0000; color: #fff; }
+        .icon-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
+        .icon-twitter { background: #000000; border: 1px solid #333; color: #fff; }
+        .icon-revolut { background: #000000; border: 1px solid #3b82f6; color: #3b82f6; }
+        .icon-imessage { background: #34c759; color: #fff; }
+        .icon-crypto { background: #f59e0b; color: #000; }
+        .icon-security { background: #ef4444; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         1. BARRE LATÉRALE : SÉLECTEUR DE NOTIFICATION
+         ============================================================ -->
+    <div class="sidebar">
+        <div>
+            <h2 class="sidebar-title">⚡ Notifications Vidéo</h2>
+            <p class="sidebar-desc">Styles Shadcn prêts pour l'IA et les animations vidéo.</p>
+        </div>
+
+        <div class="nav-list">
+            <button class="nav-item active" onclick="showToast('stripe', this)">
+                <span class="nav-badge icon-stripe">S</span>
+                <span>1. Paiement Stripe</span>
+            </button>
+            <button class="nav-item" onclick="showToast('paypal', this)">
+                <span class="nav-badge icon-paypal">P</span>
+                <span>2. Paiement PayPal</span>
+            </button>
+            <button class="nav-item" onclick="showToast('whatsapp', this)">
+                <span class="nav-badge icon-whatsapp">💬</span>
+                <span>3. Message WhatsApp</span>
+            </button>
+            <button class="nav-item" onclick="showToast('shopify', this)">
+                <span class="nav-badge icon-shopify">🛍️</span>
+                <span>4. Vente Shopify</span>
+            </button>
+            <button class="nav-item" onclick="showToast('revolut', this)">
+                <span class="nav-badge icon-revolut">R</span>
+                <span>5. Virement Revolut</span>
+            </button>
+            <button class="nav-item" onclick="showToast('youtube', this)">
+                <span class="nav-badge icon-youtube">▶</span>
+                <span>6. Abonné YouTube</span>
+            </button>
+            <button class="nav-item" onclick="showToast('instagram', this)">
+                <span class="nav-badge icon-instagram">📷</span>
+                <span>7. Like Instagram</span>
+            </button>
+            <button class="nav-item" onclick="showToast('twitter', this)">
+                <span class="nav-badge icon-twitter">𝕏</span>
+                <span>8. Repost X / Twitter</span>
+            </button>
+            <button class="nav-item" onclick="showToast('imessage', this)">
+                <span class="nav-badge icon-imessage">✉️</span>
+                <span>9. Apple iMessage</span>
+            </button>
+            <button class="nav-item" onclick="showToast('crypto', this)">
+                <span class="nav-badge icon-crypto">₿</span>
+                <span>10. Trade Crypto (BTC)</span>
+            </button>
+            <button class="nav-item" onclick="showToast('security', this)">
+                <span class="nav-badge icon-security">🛡️</span>
+                <span>11. Code Sécurité (2FA)</span>
+            </button>
+            <button class="nav-item" onclick="showCascade(this)" style="margin-top:8px; border-color:hsl(var(--primary)); color:#fff;">
+                <span class="nav-badge" style="background:#fff; color:#000;">✨</span>
+                <span>Mode Cascade (Tout défiler)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         2. ZONE DE SCÈNE (PRÉVISUALISATION & ANIMATION GSAP)
+         ============================================================ -->
+    <div class="stage-area">
+        <div class="stage-controls">
+            <button class="btn btn-outline btn-sm" onclick="replayAnimation()">🔄 Rejouer l'animation</button>
+        </div>
+
+        <!-- NOTIFICATION 1 : STRIPE -->
+        <!-- [IA_TAG: NOTIFICATION_STRIPE] -->
+        <div id="toast-stripe" class="video-toast active" data-type="stripe">
+            <div class="toast-icon-box icon-stripe">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697.5 12.521.5 7.027.5 3.393 3.39 3.393 7.828c0 5.485 5.228 6.577 8.083 7.643 2.502.94 3.356 1.63 3.356 2.624 0 .995-.89 1.52-2.316 1.52-2.557 0-5.32-1.22-7.149-2.216l-.89 5.603c1.785.94 4.877 1.548 7.939 1.548 5.768 0 9.58-2.736 9.58-7.38 0-5.54-5.02-6.522-8.02-7.02z"/></svg>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name">Stripe Payments</span>
+                    <span class="toast-time">À l'instant</span>
+                </div>
+                <h4 class="toast-title">Paiement Réussi</h4>
+                <p class="toast-desc"><span class="toast-amount">+$1,450.00</span> via Checkout (Plan Annuel)</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 2 : PAYPAL -->
+        <!-- [IA_TAG: NOTIFICATION_PAYPAL] -->
+        <div id="toast-paypal" class="video-toast" data-type="paypal">
+            <div class="toast-icon-box icon-paypal">
+                <span style="font-weight:900; font-style:italic;">P</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name">PayPal</span>
+                    <span class="toast-time">Il y a 2m</span>
+                </div>
+                <h4 class="toast-title">Argent reçu</h4>
+                <p class="toast-desc">Vous avez reçu <span class="toast-amount">480,00 €</span> de Thomas Bernard</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 3 : WHATSAPP -->
+        <!-- [IA_TAG: NOTIFICATION_WHATSAPP] -->
+        <div id="toast-whatsapp" class="video-toast" data-type="whatsapp">
+            <div class="toast-icon-box icon-whatsapp">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/></svg>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#25d366;">WhatsApp • Sarah V.</span>
+                    <span class="toast-time">14:32</span>
+                </div>
+                <h4 class="toast-title">Nouveau message</h4>
+                <p class="toast-desc">« Le contrat est signé ! On lance la campagne vidéo lundi ? 🚀 »</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 4 : SHOPIFY -->
+        <!-- [IA_TAG: NOTIFICATION_SHOPIFY] -->
+        <div id="toast-shopify" class="video-toast" data-type="shopify">
+            <div class="toast-icon-box icon-shopify">
+                <span>🛍️</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#95bf47;">Shopify Store</span>
+                    <span class="toast-time">À l'instant</span>
+                </div>
+                <h4 class="toast-title">Nouvelle Commande #1042</h4>
+                <p class="toast-desc">2 articles expédiés vers Paris • <span class="toast-amount">129,90 €</span></p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 5 : REVOLUT -->
+        <!-- [IA_TAG: NOTIFICATION_REVOLUT] -->
+        <div id="toast-revolut" class="video-toast" data-type="revolut">
+            <div class="toast-icon-box icon-revolut">
+                <span style="font-weight:900;">R</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name">Revolut Business</span>
+                    <span class="toast-time">10:15</span>
+                </div>
+                <h4 class="toast-title">Virement Reçu</h4>
+                <p class="toast-desc"><span class="toast-amount">+5 200,00 €</span> de Studio Production SAS</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 6 : YOUTUBE -->
+        <!-- [IA_TAG: NOTIFICATION_YOUTUBE] -->
+        <div id="toast-youtube" class="video-toast" data-type="youtube">
+            <div class="toast-icon-box icon-youtube">
+                <span>▶</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#ff4444;">YouTube Studio</span>
+                    <span class="toast-time">Il y a 5m</span>
+                </div>
+                <h4 class="toast-title">Nouveau Cap d'Abonnés !</h4>
+                <p class="toast-desc">🎉 Votre chaîne vient de dépasser les <strong>50 000 abonnés</strong> !</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 7 : INSTAGRAM -->
+        <!-- [IA_TAG: NOTIFICATION_INSTAGRAM] -->
+        <div id="toast-instagram" class="video-toast" data-type="instagram">
+            <div class="toast-icon-box icon-instagram">
+                <span>❤️</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name">Instagram</span>
+                    <span class="toast-time">3m</span>
+                </div>
+                <h4 class="toast-title">Nouveau Like & Partage</h4>
+                <p class="toast-desc"><strong>@lucas_motion</strong> et 184 autres personnes ont aimé votre Reel.</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 8 : TWITTER / X -->
+        <!-- [IA_TAG: NOTIFICATION_TWITTER] -->
+        <div id="toast-twitter" class="video-toast" data-type="twitter">
+            <div class="toast-icon-box icon-twitter">
+                <span>𝕏</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name">X (Twitter)</span>
+                    <span class="toast-time">À l'instant</span>
+                </div>
+                <h4 class="toast-title">Publication Virale</h4>
+                <p class="toast-desc">Votre post a atteint <strong>45.2K impressions</strong> (+820 reposts).</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 9 : APPLE IMESSAGE -->
+        <!-- [IA_TAG: NOTIFICATION_IMESSAGE] -->
+        <div id="toast-imessage" class="video-toast" data-type="imessage">
+            <div class="toast-icon-box icon-imessage">
+                <span>💬</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#34c759;">iMessage • Marc (CEO)</span>
+                    <span class="toast-time">18:02</span>
+                </div>
+                <h4 class="toast-title">Validation Client</h4>
+                <p class="toast-desc">« Le board a validé la démo. Félicitations à toute l'équipe ! 🍾 »</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 10 : CRYPTO (BINANCE / BITCOIN) -->
+        <!-- [IA_TAG: NOTIFICATION_CRYPTO] -->
+        <div id="toast-crypto" class="video-toast" data-type="crypto">
+            <div class="toast-icon-box icon-crypto">
+                <span>₿</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#f59e0b;">Binance Trading</span>
+                    <span class="toast-time">À l'instant</span>
+                </div>
+                <h4 class="toast-title">Ordre Exécuté : Achat BTC</h4>
+                <p class="toast-desc">+0.50 BTC au prix de $68,450.00 (<span class="toast-amount">+$34,225</span>)</p>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION 11 : SÉCURITÉ / 2FA -->
+        <!-- [IA_TAG: NOTIFICATION_SECURITY] -->
+        <div id="toast-security" class="video-toast" data-type="security">
+            <div class="toast-icon-box icon-security">
+                <span>🛡️</span>
+            </div>
+            <div class="toast-content">
+                <div class="toast-header-row">
+                    <span class="toast-app-name" style="color:#ef4444;">Sécurité du Compte</span>
+                    <span class="toast-time">Maintenant</span>
+                </div>
+                <h4 class="toast-title">Code de vérification (2FA)</h4>
+                <p class="toast-desc">Votre code d'accès temporaire est : <strong style="letter-spacing:2px; font-size:1.05rem; color:#fff;">849 201</strong></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+         3. MOTEUR D'ANIMATION GSAP
+         ============================================================ -->
+    <script>
+        let currentToastId = 'toast-stripe';
+
+        function animateEntrance(el) {
+            gsap.fromTo(el, 
+                { opacity: 0, y: -40, scale: 0.9 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: "back.out(1.6)" }
+            );
+        }
+
+        function showToast(type, btn) {
+            // Mettre à jour la sidebar
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            // Cacher tous les toasts
+            document.querySelectorAll('.video-toast').forEach(t => {
+                t.classList.remove('active');
+                gsap.killTweensOf(t);
+            });
+
+            currentToastId = 'toast-' + type;
+            const target = document.getElementById(currentToastId);
+            if (target) {
+                target.classList.add('active');
+                animateEntrance(target);
+            }
+        }
+
+        function replayAnimation() {
+            const target = document.getElementById(currentToastId);
+            if (target) {
+                animateEntrance(target);
+            }
+        }
+
+        // Mode Défilement Cascade
+        function showCascade(btn) {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const allToasts = document.querySelectorAll('.video-toast');
+            allToasts.forEach(t => t.classList.remove('active'));
+
+            let idx = 0;
+            function next() {
+                if (idx >= allToasts.length) idx = 0;
+                allToasts.forEach(t => t.classList.remove('active'));
+                
+                const cur = allToasts[idx];
+                cur.classList.add('active');
+                currentToastId = cur.id;
+                animateEntrance(cur);
+
+                idx++;
+                window.cascadeTimer = setTimeout(next, 2500);
+            }
+
+            clearTimeout(window.cascadeTimer);
+            next();
+        }
+
+        // Lancement initial
+        window.addEventListener('DOMContentLoaded', () => {
+            const initial = document.getElementById('toast-stripe');
+            if (initial) animateEntrance(initial);
+        });
+    </script>
+</body>
+</html>

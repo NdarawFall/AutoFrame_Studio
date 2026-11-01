@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Screen Vertical — Format Short (9:16)</title>
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #090a0f;
+            --accent-cyan: #00f0ff;
+            --accent-pink: #ff0055;
+            --accent-amber: #f59e0b;
+            --border-glow: rgba(0, 240, 255, 0.45);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-canvas);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-x: hidden;
+        }
+
+        /* --- TOOLBAR DE CONTRÔLE --- */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .toolbar-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            margin-right: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-mode {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-mode:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .btn-mode.active {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- SMARTPHONE STAGE 9:16 --- */
+        .stage-wrapper {
+            position: relative;
+            width: 405px;
+            height: 720px; /* Ratio 9:16 fidèle (1080x1920 normalisé) */
+            background: #000000;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Split container vertical */
+        .split-short-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #000000;
+        }
+
+        /* Panneaux */
+        .short-pane {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: flex 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .short-pane img,
+        .short-pane video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Décorations gradients pour le mockup si pas d'image */
+        .bg-gradient-top {
+            background: radial-gradient(circle at 50% 30%, #312e81 0%, #0f172a 100%);
+        }
+        .bg-gradient-bottom {
+            background: radial-gradient(circle at 50% 70%, #831843 0%, #0f172a 100%);
+        }
+        .bg-gradient-third {
+            background: radial-gradient(circle at 50% 50%, #064e3b 0%, #0f172a 100%);
+        }
+
+        /* Ligne de séparation (Divider) */
+        .split-divider-h {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
+            box-shadow: 0 0 12px var(--accent-cyan);
+            position: relative;
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        /* Badges d'information sur les panneaux */
+        .pane-tag {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pane-tag .indicator-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .pane-tag.alt .indicator-dot {
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        /* Titre narratif centré */
+        .pane-label {
+            position: relative;
+            z-index: 5;
+            font-size: 20px;
+            font-weight: 900;
+            text-align: center;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.8);
+            padding: 0 20px;
+        }
+
+        .pane-label span {
+            font-size: 11px;
+            display: block;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        /* --- 1. LAYOUT 50/50 ÉQUILIBRÉ --- */
+        .layout-50-50 .short-pane:nth-child(1) { flex: 1; }
+        .layout-50-50 .short-pane:nth-child(3) { flex: 1; }
+
+        /* --- 2. LAYOUT RÉACTION (35% Speaker / 65% Gameplay ou Clip) --- */
+        .layout-reaction .short-pane:nth-child(1) { flex: 0.38; }
+        .layout-reaction .short-pane:nth-child(3) { flex: 0.62; }
+
+        /* --- 3. LAYOUT TRIPLE STACK (3 Paliers) --- */
+        .layout-triple .short-pane { flex: 1; }
+
+        /* --- 4. LAYOUT FLOATING PiP (Fenêtre flottante) --- */
+        .layout-pip {
+            display: block !important;
+        }
+        .layout-pip .short-pane.base-fullscreen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+        }
+        .layout-pip .pip-floating-box {
+            position: absolute;
+            top: 24px;
+            right: 20px;
+            width: 140px;
+            height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+            z-index: 50;
+        }
+
+        /* Badge TikTok / Short en overlay */
+        .short-footer-meta {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .watermark {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SÉLECTEUR DE MODE SPLIT SHORT -->
+    <div class="toolbar">
+        <span class="toolbar-title">⚡ SHORT (9:16) :</span>
+        <button class="btn-mode active" onclick="switchLayout('50_50', this)">50 / 50 Standard</button>
+        <button class="btn-mode" onclick="switchLayout('reaction', this)">Réaction (Speaker + Démo)</button>
+        <button class="btn-mode" onclick="switchLayout('triple', this)">Triple Stack (1/3)</button>
+        <button class="btn-mode" onclick="switchLayout('pip', this)">PiP Flottant</button>
+    </div>
+
+    <!-- ZONE DE RENDU SMARTPHONE (9:16) -->
+    <div class="stage-wrapper">
+        <div id="splitStage" class="split-short-container layout-50-50">
+            <!-- Haut -->
+            <div class="short-pane bg-gradient-top" id="paneTop">
+                <div class="pane-tag">
+                    <span class="indicator-dot"></span>
+                    <span>CAMÉRA 01</span>
+                </div>
+                <div class="pane-label">
+                    <span>Facecam / Narration</span>
+                    Locuteur Principal
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="split-divider-h" id="dividerH"></div>
+
+            <!-- Bas -->
+            <div class="short-pane bg-gradient-bottom" id="paneBottom">
+                <div class="pane-tag alt">
+                    <span class="indicator-dot"></span>
+                    <span>B-ROLL / DEMO</span>
+                </div>
+                <div class="pane-label">
+                    <span>Gameplay & Extraits</span>
+                    Preuve & Illustration
+                </div>
+            </div>
+        </div>
+
+        <div class="short-footer-meta">
+            <span class="watermark">VibeEditor Shorts 9:16</span>
+            <span class="watermark" id="layoutBadge">Mode : 50/50</span>
+        </div>
+    </div>
+
+    <script>
+        function switchLayout(mode, btnEl) {
+            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            const stage = document.getElementById('splitStage');
+            const badge = document.getElementById('layoutBadge');
+
+            if (mode === '50_50') {
+                stage.className = 'split-short-container layout-50-50';
+                stage.innerHTML = `
+                    <div class="short-pane bg-gradient-top">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>CAMÉRA 01</span></div>
+                        <div class="pane-label"><span>Facecam</span>Locuteur Haut</div>
+                    </div>
+                    <div class="split-divider-h"></div>
+                    <div class="short-pane bg-gradient-bottom">
+                        <div class="pane-tag alt"><span class="indicator-dot"></span><span>B-ROLL 02</span></div>
+                        <div class="pane-label"><span>Illustration</span>Gameplay & Scène Bas</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : 50/50';
+            } 
+            else if (mode === 'reaction') {
+                stage.className = 'split-short-container layout-reaction';
+                stage.innerHTML = `
+                    <div class="short-pane bg-gradient-top">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>REACTION CAM</span></div>
+                        <div class="pane-label" style="font-size:16px;"><span>38% Hauteur</span>Speaker Focus</div>
+                    </div>
+                    <div class="split-divider-h"></div>
+                    <div class="short-pane bg-gradient-bottom">
+                        <div class="pane-tag alt"><span class="indicator-dot"></span><span>SUJET PRINCIPAL</span></div>
+                        <div class="pane-label"><span>62% Hauteur</span>Démonstration / Extrait</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Réaction (38/62)';
+            }
+            else if (mode === 'triple') {
+                stage.className = 'split-short-container layout-triple';
+                stage.innerHTML = `
+                    <div class="short-pane bg-gradient-top">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>ÉTAPE 1</span></div>
+                        <div class="pane-label" style="font-size:15px;">Intro & Crochet</div>
+                    </div>
+                    <div class="split-divider-h"></div>
+                    <div class="short-pane bg-gradient-third">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>ÉTAPE 2</span></div>
+                        <div class="pane-label" style="font-size:15px;">Démonstration Clé</div>
+                    </div>
+                    <div class="split-divider-h"></div>
+                    <div class="short-pane bg-gradient-bottom">
+                        <div class="pane-tag alt"><span class="indicator-dot"></span><span>ÉTAPE 3</span></div>
+                        <div class="pane-label" style="font-size:15px;">Appel à l'Action</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Triple Stack (1/3)';
+            }
+            else if (mode === 'pip') {
+                stage.className = 'split-short-container layout-pip';
+                stage.innerHTML = `
+                    <div class="short-pane base-fullscreen bg-gradient-bottom">
+                        <div class="pane-tag alt"><span class="indicator-dot"></span><span>ARRIÈRE-PLAN PLEIN ÉCRAN</span></div>
+                        <div class="pane-label"><span>Écran Total 100%</span>Démonstration Principale</div>
+                    </div>
+                    <div class="pip-floating-box bg-gradient-top">
+                        <div class="pane-tag" style="top:8px; left:8px; font-size:9px; padding:3px 6px;">
+                            <span class="indicator-dot"></span><span>PIVOT</span>
+                        </div>
+                        <div class="pane-label" style="font-size:13px; margin-top:55px;">Facecam Flottante</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : PiP Flottant';
+            }
+
+            // Animation douce GSAP
+            gsap.from(stage.children, {
+                opacity: 0.4,
+                scale: 0.98,
+                duration: 0.35,
+                stagger: 0.05,
+                ease: 'power2.out'
+            });
+        }
+    </script>
+</body>
+</html>
+

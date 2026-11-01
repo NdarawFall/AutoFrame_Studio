@@ -1,0 +1,77 @@
+# ==============================================================================
+# SECRETS & CONFIGURATION LOCALE (NE JAMAIS COMMITER SUR GITHUB)
+# ==============================================================================
+# Fichier local contenant les clés API (géré automatiquement par settings.html ou %APPDATA%)
+07_Scripts/api_config.json
+07_Scripts/api_config*.json
+api_config.json
+api_config*.json
+!*api_config.example.json
+
+# Fichiers d'environnement locaux
+.env
+.env.*
+*.env
+
+# ==============================================================================
+# DÉPENDANCES & PACKAGES
+# ==============================================================================
+node_modules/
+package-lock.json
+
+# ==============================================================================
+# PACKAGING & BUILDS EXÉCUTABLES (ELECTRON / WINDOWS)
+# ==============================================================================
+dist/
+build/
+out/
+*.exe
+*.dmg
+*.zip
+*.tar.gz
+
+# ==============================================================================
+# RENDUS VIDÉO FINAUX & FICHIERS VOLUMINEUX (> 50-100 Mo)
+# ==============================================================================
+06_Rendus/*.mp4
+08_Rendus/*.mp4
+08_Rendus/*.mov
+08_Rendus/*.webm
+08_Rendus/*.avi
+!08_Rendus/.gitkeep
+
+# ==============================================================================
+# ASSETS PERSONNELS (SEULE L'ARBORESCENCE DES SOUS-DOSSIERS EST CONSERVÉE SUR GITHUB)
+# ==============================================================================
+# Tous les fichiers et contenus multimédias personnels dans 01_Assets sont exclus
+01_Assets/**
+!01_Assets/**/
+!01_Assets/**/.gitkeep
+
+# ==============================================================================
+# CHAÎNES UTILISATEUR & DONNÉES LOCALES
+# ==============================================================================
+03_Chaines/*
+!03_Chaines/.gitkeep
+
+# ==============================================================================
+# FICHIERS TEMPORAIRES & ESPACE BROUILLON (SCRATCH)
+# ==============================================================================
+scratch/*
+!scratch/.gitkeep
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.cache/
+
+# ==============================================================================
+# FICHIERS SYSTÈMES & ÉDITEURS
+# ==============================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo

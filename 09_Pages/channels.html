@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Chaînes — VibeEditor 1.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Montserrat:wght@700;800;900&family=Outfit:wght@600;700;800&family=Patrick+Hand&family=Poppins:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --bg-elevated: #141414;
+            --bg-hover: #1c1c1c;
+            --border-subtle: rgba(255, 255, 255, 0.12);
+            --border-active: rgba(255, 255, 255, 0.35);
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #555555;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- TOP NAVIGATION BAR --- */
+        header.top-nav {
+            height: 58px;
+            background: rgba(10, 10, 10, 0.85);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 900;
+            font-size: 16px;
+            letter-spacing: -0.4px;
+            background: linear-gradient(135deg, #ffffff 15%, #ff7b8a 52%, #ff2e43 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            filter: drop-shadow(0 0 14px rgba(255, 51, 68, 0.3));
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .nav-btn.btn-create-video {
+            background: #dc2626;
+            color: #ffffff !important;
+            border-color: #ef4444;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+        }
+
+        .nav-btn.btn-create-video:hover {
+            background: #b91c1c;
+            border-color: #f87171;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+        }
+
+        /* --- MAIN CONTAINER --- */
+        main.container {
+            max-width: 1140px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 24px 90px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+        }
+
+        .page-header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-header-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .page-title {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -0.8px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-width: 650px;
+        }
+
+        .btn-add-channel {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #0f0f14;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px 22px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-add-channel:hover {
+            background: #1c1c24;
+            border-color: rgba(255, 255, 255, 0.55);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85);
+        }
+
+        /* --- STATS OVERVIEW CARDS --- */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat-card-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-card-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-card-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* --- CATEGORIES FILTER BAR --- */
+        .channels-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .filter-pill {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .filter-pill:hover {
+            color: #ffffff;
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .filter-pill.active {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.45);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .filter-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+
+        .filter-pill.active .filter-count {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        /* --- CHANNELS GRID (SIMPLIFIED & CLEAN) --- */
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .channel-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .channel-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            transition: var(--transition-smooth);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .channel-card:hover {
+            border-color: var(--border-active);
+            background: var(--bg-elevated);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+        }
+
+        .channel-card-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .channel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .channel-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .channel-avatar:hover {
+            border-color: #ffffff;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .channel-avatar .avatar-hover-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.68);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #ffffff;
+        }
+
+        .channel-avatar:hover .avatar-hover-overlay {
+            opacity: 1;
+        }
+
+        .channel-avatar .avatar-hover-overlay svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2.2;
+        }
+
+        .channel-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .channel-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-meta-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .channel-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .channel-card-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+        }
+
+        .channel-videos-num {
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .channel-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 4px;
+        }
+
+        .channel-open-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .channel-open-label:hover {
+            color: #ef4444;
+        }
+
+        .btn-card-delete {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-card-delete:hover {
+            color: #ff4d5a;
+            background: rgba(255, 77, 90, 0.1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 660px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95);
+            animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.96) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px;
+            font-size: 20px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .form-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-input, .form-select {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: #ffffff;
+            font-size: 13.5px;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            outline: none;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+            transition: var(--transition-smooth);
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #ffffff;
+            background: var(--bg-hover);
+        }
+
+        /* COLOR PICKER STYLES CLEAN & NON-OVERFLOWING */
+        .color-picker-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 6px 10px;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            transition: var(--transition-smooth);
+        }
+
+        .color-picker-box:focus-within {
+            border-color: #ffffff;
+            background: var(--bg-hover);
+        }
+
+        .color-picker-native {
+            -webkit-appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .color-picker-native::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker-native::-webkit-color-swatch {
+            border: none;
+            border-radius: 5px;
+        }
+
+        .color-picker-hex {
+            flex: 1;
+            min-width: 0;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            padding: 4px 0;
+            letter-spacing: 0.5px;
+        }
+
+        /* AVATAR UPLOAD DROPZONE */
+        .avatar-upload-box {
+            border: 1.5px dashed var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .avatar-upload-box:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .avatar-preview-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #111;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            color: #ffffff;
+            background: var(--bg-hover);
+        }
+
+        .btn-submit {
+            background: #0f0f14;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-submit:hover {
+            background: #1c1c24;
+            border-color: #ffffff;
+        }
+
+        svg.icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <a href="home.html" class="nav-btn" title="Accueil (Home)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Accueil</span>
+            </a>
+            <a href="home.html" class="brand-badge">
+                <span>VibeEditor 1.0</span>
+            </a>
+        </div>
+
+        <nav class="nav-links">
+            <a href="channels.html" class="nav-btn active">
+                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <span>Chaînes & Vidéos</span>
+            </a>
+            <a href="studio.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
+                <span>Studio</span>
+            </a>
+            <a href="assets.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>Assets</span>
+            </a>
+            <a href="settings.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Paramètres</span>
+            </a>
+            <a href="create_video.html" class="nav-btn btn-create-video">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Créer une Vidéo</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+        <div class="page-header-row">
+            <div class="page-header-text">
+                <h1 class="page-title">
+                    <svg class="icon" style="width:26px; height:26px;" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    <span>Mes Chaînes</span>
+                </h1>
+                <p class="page-desc">
+                    Sélectionnez une chaîne pour consulter toutes ses vidéos, ou créez une nouvelle chaîne avec votre template et vos couleurs de marque.
+                </p>
+            </div>
+            <button class="btn-add-channel" onclick="openAddModal()">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Nouvelle Chaîne</span>
+            </button>
+        </div>
+
+        <!-- STATS OVERVIEW CARDS -->
+        <div class="stats-overview" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <div class="stat-card">
+                <span class="stat-card-title">Chaînes Actives</span>
+                <span class="stat-card-value" id="totalChannelsCount">0</span>
+                <span class="stat-card-sub" id="subChannelsCount">YouTube, TikTok & Instagram</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-card-title">Vidéos Disponibles</span>
+                <span class="stat-card-value" id="totalVideosCount">0</span>
+                <span class="stat-card-sub">Chaînes & Vidéos sans chaîne</span>
+            </div>
+        </div>
+
+        <!-- CATEGORIES FILTER BAR -->
+        <div class="channels-filter-bar" id="channelsFilterBar">
+            <button class="filter-pill active" data-filter="all" onclick="setCategoryFilter('all')">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Toutes les Chaînes</span>
+                <span class="filter-count" id="countAll">0</span>
+            </button>
+            <button class="filter-pill" data-filter="YouTube" onclick="setCategoryFilter('YouTube')">
+                <svg style="width:14px; height:14px; flex-shrink:0;" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span>YouTube</span>
+                <span class="filter-count" id="countYouTube">0</span>
+            </button>
+            <button class="filter-pill" data-filter="TikTok" onclick="setCategoryFilter('TikTok')">
+                <svg style="width:13px; height:13px; flex-shrink:0;" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.5 6.3 6.3 0 0 0 1.86-4.5v-7.1a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.86.01z"/></svg>
+                <span>TikTok</span>
+                <span class="filter-count" id="countTikTok">0</span>
+            </button>
+            <button class="filter-pill" data-filter="Instagram" onclick="setCategoryFilter('Instagram')">
+                <svg class="icon" style="width:13px; height:13px;" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                <span>Instagram</span>
+                <span class="filter-count" id="countInstagram">0</span>
+            </button>
+            <button class="filter-pill" data-filter="standalone_videos" onclick="setCategoryFilter('standalone_videos')">
+                <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Vidéos sans chaîne</span>
+                <span class="filter-count" id="countStandalone">0</span>
+            </button>
+        </div>
+
+        <!-- LISTE DES CHAÎNES OU VIDÉOS SANS CHAÎNE -->
+        <div class="channels-grid" id="channelsGrid">
+            <!-- Rendu dynamique via JavaScript -->
+        </div>
+
+    </main>
+
+    <!-- MODAL DE CRÉATION DE CHAÎNE ÉPURÉ -->
+    <div class="modal-overlay" id="addChannelModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">Créer une Chaîne</div>
+                <button class="modal-close" onclick="closeAddModal()">&times;</button>
+            </div>
+            <form onsubmit="handleCreateChannel(event)" style="display:flex; flex-direction:column; gap:16px;">
+                <!-- 1. NOM DE LA CHAÎNE -->
+                <div class="form-row">
+                    <label class="form-label">Nom de la Chaîne</label>
+                    <input class="form-input" id="channelNameInput" required placeholder="Ex: Tech Décodeur, Story Vibe...">
+                </div>
+
+                <!-- 2. PLATEFORME & FORMAT DOMINANT -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Plateforme</span>
+                        </label>
+                        <select class="form-select" id="channelPlatformInput" onchange="autoSelectFormat()">
+                            <option value="YouTube">YouTube</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Instagram">Instagram</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Format dominant</span>
+                        </label>
+                        <select class="form-select" id="channelFormatInput">
+                            <option value="16:9">16:9 — Paysage (1920 × 1080)</option>
+                            <option value="9:16">9:16 — Portrait (1080 × 1920)</option>
+                            <option value="1:1">1:1 — Carré (1080 × 1080)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. PHOTO DE PROFIL -->
+                <div class="form-row">
+                    <label class="form-label">Photo de profil</label>
+                    <div class="avatar-upload-box" onclick="document.getElementById('avatarFileInput').click()">
+                        <div class="avatar-preview-box" id="avatarPreviewBox">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <span style="font-size:13px; font-weight:600; color:#fff;" id="avatarUploadLabel">Cliquer pour choisir une photo de profil</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Format JPG, PNG ou WEBP (enregistré dans 01_Assets/Avatars/)</span>
+                        </div>
+                    </div>
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarSelected(this)">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Annuler</button>
+                    <button type="submit" class="btn-submit">Créer la Chaîne</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMATION DE SUPPRESSION PERSONNALISÉ -->
+    <div class="modal-overlay" id="confirmDeleteModal">
+        <div class="modal-card" style="max-width: 440px; text-align: center; padding: 30px;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px auto; color: #ef4444;">
+                <svg class="icon" style="width: 26px; height: 26px;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3 style="font-size: 19px; font-weight: 800; color: #ffffff; margin-bottom: 10px;" id="confirmModalTitle">Supprimer</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 26px;" id="confirmModalDesc">
+                Êtes-vous sûr de vouloir supprimer définitivement cet élément ? Cette action est irréversible.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" class="btn-cancel" onclick="closeConfirmModal()" style="padding: 10px 18px;">Annuler</button>
+                <button type="button" id="btnConfirmDeleteAction" style="background: #dc2626; color: #ffffff; border: 1px solid #ef4444; font-size: 13px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition-smooth);" onclick="executeDeleteTarget()">
+                    Supprimer définitivement
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_CHANNELS = 'vibeeditor_channels_data';
+
+        let channelsCache = [];
+        let serverVideosCache = [];
+        let currentFilter = 'all';
+        let deleteTarget = null; // { type: 'channel' | 'standalone_video', id: string, name: string }
+        let uploadedAvatarData = '';
+
+        // Hydratation immédiate à 0ms depuis le cache local pour éliminer toute latence d'affichage
+        (function hydrateImmediately() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_CHANNELS);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        channelsCache = parsed.filter(c => c.id !== 'ch_youtube_tech' && c.id !== 'ch_tiktok_story');
+                        updateFilterCountsAndRender();
+                    }
+                }
+            } catch (e) {}
+        })();
+
+        async function loadChannelsAndVideos() {
+            let channels = [];
+            
+            // Chargement simultané en parallèle (0ms d'attente séquentielle)
+            try {
+                const [resChannels, resFiles] = await Promise.all([
+                    fetch('/api/channels').catch(() => null),
+                    fetch('/api/files').catch(() => null)
+                ]);
+
+                if (resChannels && resChannels.ok) {
+                    channels = await resChannels.json();
+                }
+                if (resFiles && resFiles.ok) {
+                    const filesData = await resFiles.json();
+                    serverVideosCache = filesData.videos || [];
+                }
+            } catch (e) {}
+
+            // Filtrer d'anciennes démos factices
+            channels = (channels || []).filter(c => c.id !== 'ch_youtube_tech' && c.id !== 'ch_tiktok_story');
+
+            // Synchronisation avec localStorage
+            if (channels.length > 0) {
+                channelsCache = channels;
+                localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify(channels));
+            } else {
+                const raw = localStorage.getItem(STORAGE_KEY_CHANNELS);
+                if (raw) {
+                    try {
+                        const localChannels = JSON.parse(raw);
+                        const userLocal = localChannels.filter(c => c.id !== 'ch_youtube_tech' && c.id !== 'ch_tiktok_story');
+                        if (userLocal.length > 0) {
+                            channelsCache = userLocal;
+                            fetch('/api/channels', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(userLocal)
+                            }).catch(() => {});
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            updateFilterCountsAndRender();
+        }
+
+        // Trouver les vidéos sans chaîne (fichiers HTML dans 04_Videos non rattachés à une chaîne)
+        function getStandaloneVideos() {
+            const channelVideoFiles = new Set();
+            channelsCache.forEach(ch => {
+                if (Array.isArray(ch.videos)) {
+                    ch.videos.forEach(v => {
+                        const file = typeof v === 'string' ? v : (v.file || v.fileName);
+                        if (file) channelVideoFiles.add(file);
+                    });
+                }
+            });
+
+            return serverVideosCache.filter(v => {
+                if (typeof v === 'object' && v !== null) {
+                    if (v.isStandalone !== undefined) return v.isStandalone;
+                    return !channelVideoFiles.has(v.file || v.name);
+                }
+                return !channelVideoFiles.has(v);
+            });
+        }
+
+        function setCategoryFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                if (btn.getAttribute('data-filter') === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderGridContent();
+        }
+
+        function updateFilterCountsAndRender() {
+            const countAll = channelsCache.length;
+            const countYouTube = channelsCache.filter(c => c.platform === 'YouTube').length;
+            const countTikTok = channelsCache.filter(c => c.platform === 'TikTok').length;
+            const countInstagram = channelsCache.filter(c => c.platform === 'Instagram').length;
+            const standaloneVideos = getStandaloneVideos();
+            const countStandalone = standaloneVideos.length;
+
+            document.getElementById('countAll').textContent = countAll;
+            document.getElementById('countYouTube').textContent = countYouTube;
+            document.getElementById('countTikTok').textContent = countTikTok;
+            document.getElementById('countInstagram').textContent = countInstagram;
+            document.getElementById('countStandalone').textContent = countStandalone;
+
+            // Stats cards
+            document.getElementById('totalChannelsCount').textContent = countAll;
+            const totalChannelVids = channelsCache.reduce((acc, c) => acc + (c.videoCount || (c.videos ? c.videos.length : 0)), 0);
+            const totalAllVids = totalChannelVids + countStandalone;
+            const totalVidsEl = document.getElementById('totalVideosCount');
+            if (totalVidsEl) totalVidsEl.textContent = totalAllVids;
+
+            renderGridContent();
+        }
+
+        function renderGridContent() {
+            const grid = document.getElementById('channelsGrid');
+
+            // CAS 1 : Filtre "Vidéos sans chaîne"
+            if (currentFilter === 'standalone_videos') {
+                const standalone = getStandaloneVideos();
+                if (standalone.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; padding: 60px 20px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg);">
+                            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--text-secondary);">
+                                <svg class="icon" style="width:26px; height:26px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            </div>
+                            <p style="font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 8px;">Aucune vidéo sans chaîne</p>
+                            <p style="font-size: 13px; max-width: 480px; margin: 0 auto 22px auto; color: var(--text-muted); line-height: 1.5;">
+                                Toutes les vidéos sont actuellement liées à des chaînes ou le dossier de vidéos est vide. Vous pouvez créer une nouvelle vidéo rapide directement depuis le bouton « Créer une Vidéo ».
+                            </p>
+                            <a href="create_video.html" class="btn-add-channel" style="text-decoration:none;">
+                                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                <span>Créer une Vidéo Rapide</span>
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = standalone.map(item => {
+                    const fileName = typeof item === 'string' ? item : (item.file || item.name);
+                    const cleanName = fileName.replace(/\.html$/, '').replace(/[-_]/g, ' ');
+                    const videoParam = typeof item === 'object' && item.path ? item.path : ('04_Videos/' + fileName);
+                    const isProcessing = (typeof item === 'object' && item.status === 'processing');
+                    const clickTarget = isProcessing 
+                        ? `video_processus.html?video=${encodeURIComponent(videoParam)}`
+                        : `studio.html?video=${encodeURIComponent(videoParam)}`;
+                    const lower = fileName.toLowerCase();
+                    const videoFormat = (typeof item === 'object' && item.format) 
+                        ? item.format 
+                        : ((lower.includes('short') || lower.includes('tiktok') || lower.includes('reels') || lower.includes('9-16') || lower.includes('9_16')) ? '9:16' : (lower.includes('carre') || lower.includes('1-1') || lower.includes('1_1') ? '1:1' : '16:9'));
+                    return `
+                        <div class="channel-card ${isProcessing ? 'processing-card' : ''}" onclick="window.location.href='${clickTarget}'">
+                            <div class="channel-card-strip" style="background: ${isProcessing ? '#f59e0b' : '#dc2626'};"></div>
+                            
+                            <div class="channel-header">
+                                <div class="channel-avatar" style="background: #141414; border: 1px solid rgba(255, 255, 255, 0.15);">
+                                    ${isProcessing ? `<svg class="icon spinner" style="width:20px; height:20px; color:#f59e0b;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"></circle></svg>` : `<svg class="icon" style="width:20px; height:20px; color:#ffffff;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`}
+                                </div>
+                                <div class="channel-title-wrap">
+                                    <div class="channel-name">${escapeHtml(cleanName)}</div>
+                                    <div class="channel-meta-badges">
+                                        ${isProcessing ? `<span class="channel-badge-pill" style="color:#f59e0b; border-color:rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1);"><span>🟡 En création...</span></span>` : `<span class="channel-badge-pill" style="color:#ef4444; border-color:rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.08);"><span>Sans chaîne</span></span>`}
+                                        <span class="channel-badge-pill" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#ffffff;">${videoFormat}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="channel-card-footer" onclick="event.stopPropagation()">
+                                <a href="${clickTarget}" class="channel-open-label">
+                                    <span>${isProcessing ? 'Voir la progression' : 'Ouvrir dans le Studio'}</span>
+                                    <svg class="icon" style="width:13px; height:13px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                </a>
+                                <button class="btn-card-delete" onclick="askDeleteStandaloneVideo('${fileName}')" title="Supprimer la vidéo">
+                                    <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                return;
+            }
+
+            // CAS 2 : Filtrer les chaînes par plateforme
+            let filteredChannels = channelsCache;
+            if (currentFilter !== 'all') {
+                filteredChannels = channelsCache.filter(c => c.platform === currentFilter);
+            }
+
+            if (filteredChannels.length === 0) {
+                const catLabel = currentFilter === 'all' ? 'Aucune chaîne créée' : `Aucune chaîne ${currentFilter}`;
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; padding: 60px 20px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg);">
+                        <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--text-secondary);">
+                            <svg class="icon" style="width:26px; height:26px;" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        </div>
+                        <p style="font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 8px;">${catLabel}</p>
+                        <p style="font-size: 13px; max-width: 480px; margin: 0 auto 22px auto; color: var(--text-muted); line-height: 1.5;">
+                            ${currentFilter === 'all' 
+                                ? "Vous n'avez pas encore créé de chaîne. Cliquez sur « Nouvelle Chaîne » pour configurer votre premier univers."
+                                : `Aucune chaîne configurée pour la plateforme ${currentFilter}. Créez-en une en quelques secondes.`}
+                        </p>
+                        <button class="btn-add-channel" onclick="openAddModal()">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Créer une Chaîne</span>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredChannels.map(ch => {
+                let iconSvg = '';
+                if (ch.platform === 'YouTube') {
+                    iconSvg = `<svg style="width:14px; height:14px; flex-shrink:0;" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+                } else if (ch.platform === 'TikTok') {
+                    iconSvg = `<svg style="width:13px; height:13px; flex-shrink:0;" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.5 6.3 6.3 0 0 0 1.86-4.5v-7.1a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.86.01z"/></svg>`;
+                } else {
+                    iconSvg = `<svg class="icon" style="width:13px; height:13px;" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`;
+                }
+
+                const cPrim = ch.colorPrimary || '#ef4444';
+                const cSec = ch.colorSecondary || '#dc2626';
+                const count = ch.videoCount || (ch.videos ? ch.videos.length : 0);
+                const formatLabel = ch.format === '1:1' ? '1:1 Carré' : (ch.format || '16:9');
+
+                const avatarStyle = ch.avatar 
+                    ? `background-image: url('${ch.avatar}');` 
+                    : `background: #1c1c22; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.15);`;
+
+                return `
+                    <div class="channel-card" onclick="window.location.href='channel.html?id=${encodeURIComponent(ch.id)}'">
+                        <div class="channel-header">
+                            <div class="channel-avatar" style="${avatarStyle}" onclick="event.stopPropagation(); triggerCardAvatarChange('${ch.id}')">
+                                ${ch.avatar ? '' : ch.name.charAt(0).toUpperCase()}
+                                <div class="avatar-hover-overlay">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                </div>
+                            </div>
+                            <div class="channel-title-wrap">
+                                <div class="channel-name">${escapeHtml(ch.name)}</div>
+                                <div class="channel-meta-badges">
+                                    <span class="channel-badge-pill">
+                                        ${iconSvg}
+                                        <span>${escapeHtml(ch.platform)}</span>
+                                    </span>
+                                    <span class="channel-badge-pill">${formatLabel}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="channel-card-stats">
+                            <span style="color:var(--text-secondary);">Vidéos publiées</span>
+                            <span class="channel-videos-num">${count} vidéo${count > 1 ? 's' : ''}</span>
+                        </div>
+
+                        <div class="channel-card-footer" onclick="event.stopPropagation()">
+                            <a href="channel.html?id=${encodeURIComponent(ch.id)}" class="channel-open-label">
+                                <span>Ouvrir la Chaîne</span>
+                                <svg class="icon" style="width:13px; height:13px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                            <button class="btn-card-delete" onclick="askDeleteChannel('${ch.id}')" title="Supprimer la chaîne">
+                                <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openAddModal() {
+            uploadedAvatarData = '';
+            document.getElementById('avatarPreviewBox').style.backgroundImage = 'none';
+            document.getElementById('avatarPreviewBox').innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+            document.getElementById('avatarUploadLabel').textContent = 'Cliquer pour choisir une photo de profil';
+            document.getElementById('addChannelModal').classList.add('open');
+            document.getElementById('channelNameInput').focus();
+        }
+
+        function closeAddModal() {
+            document.getElementById('addChannelModal').classList.remove('open');
+        }
+
+        function autoSelectFormat() {
+            const platform = document.getElementById('channelPlatformInput').value;
+            const formatSelect = document.getElementById('channelFormatInput');
+            if (platform === 'TikTok') {
+                formatSelect.value = '9:16';
+            } else if (platform === 'Instagram') {
+                formatSelect.value = '1:1';
+            } else {
+                formatSelect.value = '16:9';
+            }
+        }
+
+        function handleAvatarSelected(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedAvatarData = e.target.result;
+                const prev = document.getElementById('avatarPreviewBox');
+                prev.innerHTML = '';
+                prev.style.backgroundImage = `url('${uploadedAvatarData}')`;
+                document.getElementById('avatarUploadLabel').textContent = `01_Assets/Avatars/${file.name}`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleCreateChannel(e) {
+            e.preventDefault();
+            const name = document.getElementById('channelNameInput').value.trim();
+            const platform = document.getElementById('channelPlatformInput').value;
+            const format = document.getElementById('channelFormatInput').value;
+
+            if (!name) return;
+
+            const newChannel = {
+                id: 'ch_' + Date.now(),
+                name,
+                platform,
+                format,
+                colorPrimary: '#ff3344',
+                colorSecondary: '#dc2626',
+                fontPrimary: 'Montserrat',
+                fontSecondary: 'Inter',
+                fontAccent: 'Caveat',
+                description: '',
+                avatar: uploadedAvatarData || '',
+                videos: []
+            };
+
+            channelsCache.push(newChannel);
+            localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify(channelsCache));
+
+            // Sauvegarde serveur
+            try {
+                await fetch('/api/channels', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newChannel)
+                });
+            } catch (err) {}
+
+            closeAddModal();
+            document.getElementById('channelNameInput').value = '';
+            updateFilterCountsAndRender();
+        }
+
+        function askDeleteChannel(id) {
+            const ch = channelsCache.find(c => c.id === id);
+            const name = ch ? ch.name : 'cette chaîne';
+            deleteTarget = { type: 'channel', id, name };
+            document.getElementById('confirmModalTitle').textContent = `Supprimer la chaîne`;
+            document.getElementById('confirmModalDesc').textContent = `Êtes-vous sûr de vouloir supprimer définitivement « ${name} » ? Toutes les configurations associées seront effacées.`;
+            document.getElementById('confirmDeleteModal').classList.add('open');
+        }
+
+        function askDeleteStandaloneVideo(fileName) {
+            deleteTarget = { type: 'standalone_video', id: fileName, name: fileName };
+            document.getElementById('confirmModalTitle').textContent = `Supprimer la vidéo`;
+            document.getElementById('confirmModalDesc').textContent = `Êtes-vous sûr de vouloir supprimer définitivement le fichier « ${fileName} » du dossier de vidéos ? Cette action est irréversible.`;
+            document.getElementById('confirmDeleteModal').classList.add('open');
+        }
+
+        function closeConfirmModal() {
+            deleteTarget = null;
+            document.getElementById('confirmDeleteModal').classList.remove('open');
+        }
+
+        async function executeDeleteTarget() {
+            if (!deleteTarget) return;
+            const target = { ...deleteTarget };
+            closeConfirmModal();
+
+            if (target.type === 'channel') {
+                try {
+                    await fetch(`/api/channels?id=${encodeURIComponent(target.id)}`, { method: 'DELETE' });
+                } catch (e) {}
+                channelsCache = channelsCache.filter(c => c.id !== target.id);
+                localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify(channelsCache));
+            } else if (target.type === 'standalone_video') {
+                try {
+                    await fetch('/api/delete-video', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ video: target.id })
+                    });
+                } catch (e) {}
+                serverVideosCache = serverVideosCache.filter(v => (typeof v === 'string' ? v : (v.file || v.name)) !== target.id);
+            }
+
+            updateFilterCountsAndRender();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        let targetChannelIdForAvatar = null;
+
+        function triggerCardAvatarChange(channelId) {
+            targetChannelIdForAvatar = channelId;
+            const input = document.getElementById('cardAvatarFileInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        }
+
+        async function handleCardAvatarFileSelected(input) {
+            if (!input.files || !input.files[0] || !targetChannelIdForAvatar) return;
+            const file = input.files[0];
+            const ch = channelsCache.find(c => c.id === targetChannelIdForAvatar);
+            if (!ch) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const dataUrl = e.target.result;
+                ch.avatar = dataUrl;
+                localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify(channelsCache));
+                try {
+                    await fetch('/api/channels', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(ch)
+                    });
+                } catch(err) {
+                    console.error('Erreur API avatar:', err);
+                }
+                renderGridContent();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Exécution immédiate sans attendre l'événement window.load
+        loadChannelsAndVideos();
+
+        // Instant Navigation Hover Prefetch : élimine toute latence de changement de page
+        document.addEventListener('mouseover', function(e) {
+            const a = e.target.closest('a[href]');
+            if (!a) return;
+            const href = a.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('javascript') || href.startsWith('http')) return;
+            if (!a.dataset.prefetched) {
+                a.dataset.prefetched = 'true';
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = href;
+                document.head.appendChild(link);
+            }
+        }, { passive: true });
+    </script>
+
+    <input type="file" id="cardAvatarFileInput" accept="image/*" style="display:none;" onchange="handleCardAvatarFileSelected(this)">
+</body>
+</html>

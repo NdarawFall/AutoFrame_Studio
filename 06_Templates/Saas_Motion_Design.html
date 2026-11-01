@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template SaaS Motion Design // Interface & Product Tour</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --title-font: 'Outfit', sans-serif;
+            --body-font: 'Plus Jakarta Sans', sans-serif;
+            --accent-saas: #3b82f6;
+            --bg-dark: #090d16;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--body-font); color: #fff; }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 30%, #1e293b 0%, var(--bg-dark) 80%);
+        }
+        .saas-grid-backdrop {
+            position: absolute;
+            inset: 0;
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+        }
+        .saas-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, transparent 70%);
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .saas-window {
+            position: absolute;
+            width: 1200px;
+            height: 680px;
+            left: 50%;
+            top: 52%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .saas-header {
+            height: 48px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            gap: 8px;
+        }
+        .saas-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .saas-dot.red { background: #ef4444; }
+        .saas-dot.yellow { background: #f59e0b; }
+        .saas-dot.green { background: #10b981; }
+        .saas-body {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .saas-preview-img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .saas-title-box {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+        .saas-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .saas-title {
+            font-family: var(--title-font);
+            font-size: 42px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+        <div class="saas-grid-backdrop"></div>
+        <div class="saas-glow"></div>
+        <div class="saas-title-box">
+            <span class="saas-badge">SaaS Feature Spotlight</span>
+            <h1 class="saas-title" id="stageTitle">Interface & Workflow Automatise</h1>
+        </div>
+        <div class="saas-window" id="saasWindow">
+            <div class="saas-header">
+                <span class="saas-dot red"></span>
+                <span class="saas-dot yellow"></span>
+                <span class="saas-dot green"></span>
+            </div>
+            <div class="saas-body">
+                <img id="mainMediaImg" class="saas-preview-img" src="../01_Assets/Images/styles/style_saas_motion_design.jpg" alt="Preview">
+            </div>
+        </div>
+    </div>
+    <script>
+        const isIframeMode = window.self !== window.top;
+        const tl = gsap.timeline({ paused: isIframeMode });
+        tl.from('#saasWindow', { duration: 1.2, y: 80, opacity: 0, scale: 0.94, ease: 'power3.out' })
+          .from('.saas-title-box', { duration: 0.8, y: -30, opacity: 0, ease: 'power2.out' }, '-=0.6');
+        window.tl = tl;
+        window.__timeline = {
+            duration: () => 30.0,
+            seek: (t) => tl.seek(t, false),
+            pause: () => tl.pause(),
+            play: () => tl.play()
+        };
+    </script>
+</body>
+</html>

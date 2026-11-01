@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie de Fonds (Backgrounds) — Composants Vidéo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #09090b;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 40px 24px 80px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .badge-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        p.lead {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* --- BARRE DE NAVIGATION RAPIDE --- */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 32px 0 48px;
+        }
+
+        .tab-btn {
+            background: #18181b;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: #27272a;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* --- GRILLE DES 5 MODÈLES --- */
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 32px;
+        }
+
+        .preset-card {
+            background: #121215;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .preset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .preset-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: #18181b;
+        }
+
+        .preset-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preset-badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        /* Prévisualisation Vidéo 16:9 dans la carte */
+        .preview-box {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Contenu Démo au-dessus du fond pour tester le contraste */
+        .demo-overlay-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .demo-sub {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        /* Section Code & Action */
+        .preset-details {
+            padding: 20px 24px;
+            background: #121215;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .preset-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .code-container {
+            position: relative;
+            background: #09090b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .btn-copy-code {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy-code:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ============================================================
+           DÉFINITIONS DES 5 STYLES DE BACKGROUND
+           ============================================================ */
+
+        /* 1. TOUT BLANC (PURE MINIMAL WHITE) */
+        .bg-pure-white {
+            background-color: #ffffff !important;
+            color: #09090b !important;
+        }
+        .bg-pure-white .demo-title {
+            color: #09090b;
+        }
+        .bg-pure-white .demo-sub {
+            color: #52525b;
+        }
+
+        /* 2. TOUT NOIR (DEEP OLED BLACK) */
+        .bg-pitch-black {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        .bg-pitch-black .demo-title {
+            color: #ffffff;
+        }
+        .bg-pitch-black .demo-sub {
+            color: #a1a1aa;
+        }
+
+        /* 3. COULEUR UNIQUE PERSONNALISÉE (SOLID BRAND COLOR) */
+        .bg-custom-solid {
+            background-color: #1e3a8a !important; /* Exemple : Bleu Roi Profond */
+            color: #ffffff !important;
+        }
+        .bg-custom-solid .demo-title {
+            color: #ffffff;
+        }
+        .bg-custom-solid .demo-sub {
+            color: #bfdbfe;
+        }
+
+        /* 4. DÉGRADÉ / GRADIENT (MESH & LINEAR) */
+        .bg-gradient-cinematic {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%) !important;
+            color: #ffffff !important;
+        }
+        .bg-gradient-cinematic .demo-title {
+            background: linear-gradient(to right, #ffffff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .bg-gradient-cinematic .demo-sub {
+            color: #e9d5ff;
+        }
+
+        /* 5. IMAGE AVEC DU FLOU (BLURRED IMAGE BACKDROP) */
+        .bg-blurred-image-wrap {
+            position: relative;
+            background: #000000;
+        }
+        .bg-blurred-image-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -20px; /* Débordement pour éviter les bordures blanches dues au flou */
+            background-image: url('background_short_vignette.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(28px);
+            transform: scale(1.15);
+            opacity: 0.75;
+            z-index: 1;
+        }
+        .bg-blurred-image-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45); /* Scrim sombre pour lisibilité du texte */
+            z-index: 2;
+        }
+        .bg-blurred-image-wrap .demo-overlay-content {
+            z-index: 10;
+        }
+        .bg-blurred-image-wrap .demo-title {
+            color: #ffffff;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.8);
+        }
+        .bg-blurred-image-wrap .demo-sub {
+            color: #e4e4e7;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        /* Sélecteur interactif de couleur pour le solid */
+        .color-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.2);
+        }
+
+        /* Toast de copie */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #22c55e;
+            color: #000000;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-header">02_Composants • Module Background</div>
+            <h1>Galerie & Modèles d'Arrière-Plans</h1>
+            <p class="lead">
+                5 directions artistiques indispensables pour vos vidéos. Zéro grille répétitive : choisissez le fond adapté à votre tonalité éditoriale et copiez le CSS en un clic.
+            </p>
+        </header>
+
+        <!-- Navigation de filtre / ancre -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="scrollToCard('card-white')">⚪ 1. Tout Blanc</button>
+            <button class="tab-btn" onclick="scrollToCard('card-black')">⚫ 2. Tout Noir</button>
+            <button class="tab-btn" onclick="scrollToCard('card-solid')">🎨 3. Couleur Unique</button>
+            <button class="tab-btn" onclick="scrollToCard('card-gradient')">🌈 4. Dégradé (Gradient)</button>
+            <button class="tab-btn" onclick="scrollToCard('card-blur')">🖼️ 5. Image avec Flou</button>
+        </div>
+
+        <div class="presets-grid">
+
+            <!-- 1. TOUT BLANC -->
+            <div id="card-white" class="preset-card">
+                <div class="preset-header">
+                    <div class="preset-title">⚪ Tout Blanc</div>
+                    <span class="preset-badge" style="background:#e4e4e7; color:#18181b;">Minimal / Editorial</span>
+                </div>
+                <div class="preview-box bg-pure-white">
+                    <div class="demo-overlay-content">
+                        <div class="demo-title">Clarté & Minimalisme</div>
+                        <div class="demo-sub">Idéal pour les vidéos explicatives, le style Notion ou les démonstrations épurées.</div>
+                    </div>
+                </div>
+                <div class="preset-details">
+                    <div class="preset-desc">
+                        Fond 100% blanc pur. Offre un contraste optimal pour la typographie noire, les illustrations vectorielles et les mockups d'appareils.
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy-code" onclick="copySnippet(this, 'snippet-white')">Copier</button>
+                        <code id="snippet-white">background: #ffffff;
+color: #09090b;</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. TOUT NOIR -->
+            <div id="card-black" class="preset-card">
+                <div class="preset-header">
+                    <div class="preset-title">⚫ Tout Noir</div>
+                    <span class="preset-badge" style="background:#27272a; color:#ffffff;">Cinématique / OLED</span>
+                </div>
+                <div class="preview-box bg-pitch-black">
+                    <div class="demo-overlay-content">
+                        <div class="demo-title">Contraste Absolu</div>
+                        <div class="demo-sub">Idéal pour faire ressortir les néons, les cartes Shadcn UI et le motion design intense.</div>
+                    </div>
+                </div>
+                <div class="preset-details">
+                    <div class="preset-desc">
+                        Fond noir profond `#000000`. Supprime toute distraction visuelle et magnifie les couleurs vives, les badges d'accent et les textes blancs.
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy-code" onclick="copySnippet(this, 'snippet-black')">Copier</button>
+                        <code id="snippet-black">background: #000000;
+color: #ffffff;</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. COULEUR UNIQUE PERSONNALISÉE -->
+            <div id="card-solid" class="preset-card">
+                <div class="preset-header">
+                    <div class="preset-title">🎨 Couleur Unique</div>
+                    <span class="preset-badge" style="background:#1d4ed8; color:#ffffff;">Brand Kit / Signature</span>
+                </div>
+                <div id="previewSolid" class="preview-box bg-custom-solid">
+                    <div class="demo-overlay-content">
+                        <div class="demo-title">Teinte de Marque Unique</div>
+                        <div class="demo-sub">Une couleur franche et affirmée pour ancrer l'identité visuelle de votre chaîne.</div>
+                    </div>
+                </div>
+                <div class="preset-details">
+                    <div class="preset-desc">
+                        Un aplat de couleur solide sur-mesure. Choisissez ci-dessous une couleur prédéfinie ou personnalisez le code hexadécimal :
+                    </div>
+                    <div class="color-picker-row">
+                        <span style="font-size:0.85rem; color:var(--text-muted);">Nuancier :</span>
+                        <div class="color-swatch" style="background:#1e3a8a;" title="Bleu Nuit" onclick="setSolidColor('#1e3a8a')"></div>
+                        <div class="color-swatch" style="background:#991b1b;" title="Rouge Cardinal" onclick="setSolidColor('#991b1b')"></div>
+                        <div class="color-swatch" style="background:#065f46;" title="Vert Forêt" onclick="setSolidColor('#065f46')"></div>
+                        <div class="color-swatch" style="background:#581c87;" title="Violet Sombre" onclick="setSolidColor('#581c87')"></div>
+                        <div class="color-swatch" style="background:#c2410c;" title="Terre Cuite" onclick="setSolidColor('#c2410c')"></div>
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy-code" onclick="copySnippet(this, 'snippet-solid')">Copier</button>
+                        <code id="snippet-solid">background: #1e3a8a;
+color: #ffffff;</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. DÉGRADÉ (GRADIENT) -->
+            <div id="card-gradient" class="preset-card">
+                <div class="preset-header">
+                    <div class="preset-title">🌈 Fond Gradient</div>
+                    <span class="preset-badge" style="background:linear-gradient(45deg, #7c3aed, #db2777); color:#ffffff;">Dynamique / Profondeur</span>
+                </div>
+                <div class="preview-box bg-gradient-cinematic">
+                    <div class="demo-overlay-content">
+                        <div class="demo-title">Atmosphère & Richesse</div>
+                        <div class="demo-sub">Donne du relief et une dimension haut de gamme sans saturer la composition.</div>
+                    </div>
+                </div>
+                <div class="preset-details">
+                    <div class="preset-desc">
+                        Dégradé multi-points fluide. Peut être combiné avec une légère animation de translation lente pour créer un fond subtilement vivant.
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy-code" onclick="copySnippet(this, 'snippet-gradient')">Copier</button>
+                        <code id="snippet-gradient">background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+color: #ffffff;</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. IMAGE AVEC DU FLOU -->
+            <div id="card-blur" class="preset-card" style="grid-column: 1 / -1;">
+                <div class="preset-header">
+                    <div class="preset-title">🖼️ Image avec Flou & Scrim</div>
+                    <span class="preset-badge" style="background:#0284c7; color:#ffffff;">Cinématique / B-Roll Backdrop</span>
+                </div>
+                <div class="preview-box bg-blurred-image-wrap" style="height: 300px;">
+                    <div class="demo-overlay-content">
+                        <div class="demo-title">Effet Bokeh d'Arrière-Plan</div>
+                        <div class="demo-sub">
+                            Floutez n'importe quelle photo ou capture d'écran avec un voile sombre pour mettre en valeur les éléments du premier plan.
+                        </div>
+                    </div>
+                </div>
+                <div class="preset-details">
+                    <div class="preset-desc">
+                        Technique éprouvée des vidéos professionnelles : une image de fond agrandie (`scale(1.15)` pour supprimer les bords flous), adoucie par un filtre Gaussian Blur (`filter: blur(28px)`) et recouverte d'un voile sombre semi-transparent (`rgba(0,0,0,0.45)`) pour garantir 100% de lisibilité textuelle.
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy-code" onclick="copySnippet(this, 'snippet-blur')">Copier</button>
+                        <code id="snippet-blur">/* HTML : &lt;div class="bg-blur-container"&gt;&lt;img src="..." class="bg-blur-img"&gt;&lt;div class="bg-scrim"&gt;&lt;/div&gt;&lt;/div&gt; */
+.bg-blur-container { position: absolute; inset: 0; overflow: hidden; background: #000; }
+.bg-blur-img { position: absolute; inset: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(28px); transform: scale(1.15); opacity: 0.75; }
+.bg-scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); }</code>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">✓ Code copié dans le presse-papier !</div>
+
+    <script>
+        function scrollToCard(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function setSolidColor(hex) {
+            const preview = document.getElementById('previewSolid');
+            const codeEl = document.getElementById('snippet-solid');
+            if (preview) preview.style.backgroundColor = hex;
+            if (codeEl) {
+                codeEl.textContent = `background: ${hex};\ncolor: #ffffff;`;
+            }
+        }
+
+        function copySnippet(btn, codeId) {
+            const codeEl = document.getElementById(codeId);
+            if (!codeEl) return;
+            const text = codeEl.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copié !';
+                btn.style.background = '#22c55e';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 1800);
+            }).catch(err => {
+                console.error('Erreur copie:', err);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant Vidéo — Carte Témoignage Shadcn</title>
+    <link rel="stylesheet" href="../shadcn.css">
+    <script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .video-testimonial-card {
+            width: 420px;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.04);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stars {
+            color: #eab308;
+            font-size: 1.125rem;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        .quote-text {
+            font-size: 1.0625rem;
+            line-height: 1.5;
+            color: hsl(var(--foreground));
+            font-weight: 400;
+            margin: 0 0 20px 0;
+            font-style: italic;
+        }
+
+        .author-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fff;
+            border: 2px solid hsl(var(--border));
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .author-name-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .author-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin: 0;
+        }
+
+        .verified-badge {
+            color: #3b82f6;
+            font-size: 0.875rem;
+        }
+
+        .author-role {
+            font-size: 0.8125rem;
+            color: hsl(var(--muted-foreground));
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="testimonial" class="video-testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="quote-text">« Cet outil a divisé notre temps de production vidéo par 5. La qualité des rendus et du design est tout simplement bluffante. »</p>
+        <div class="author-row">
+            <div class="author-avatar">AL</div>
+            <div class="author-info">
+                <div class="author-name-row">
+                    <span class="author-name">Alexandre Leroy</span>
+                    <span class="verified-badge">✓</span>
+                </div>
+                <span class="author-role">Directeur Artistique @ StudioPulse</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            gsap.to("#testimonial", {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                delay: 0.2,
+                ease: "power3.out"
+            });
+        });
+    </script>
+</body>
+</html>
+

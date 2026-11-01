@@ -1,0 +1,267 @@
+/* ==========================================================================
+   COMPOSANT SOUS-TITRES — VIBEEDITOR STUDIO
+   Système épuré et paramétrable de sous-titres (3 Types)
+   ========================================================================== */
+
+/* CONTENEUR PRINCIPAL */
+.subtitle-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: none;
+    z-index: 100;
+    transition: all 0.25s ease;
+}
+
+/* POSITIONS */
+.subtitle-container.pos-bottom,
+.subtitle-container:not(.pos-center):not(.pos-top) {
+    bottom: 55px;
+}
+
+.subtitle-container.pos-center {
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.subtitle-container.pos-top {
+    top: 60px;
+}
+
+/* BOÎTE DU SOUS-TITRE */
+.subtitle-box {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.35;
+    font-size: 32px;
+    transition: all 0.2s ease;
+    padding: 0;
+    --sub-base-color: #ffffff;
+    --sub-accent-color: #ffe600;
+    --sub-bg-color: transparent;
+    --sub-custom-font: 'Inter', sans-serif;
+    color: var(--sub-base-color, #ffffff);
+}
+
+.subtitle-box .word {
+    display: inline-block;
+    color: var(--sub-base-color, #ffffff);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 4px 16px rgba(0, 0, 0, 0.7);
+}
+
+/* POLICES PROPOSÉES (LES 6 MEILLEURES + POLICE PERSONNALISÉE) */
+.subtitle-box.font-inter { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; }
+.subtitle-box.font-outfit { font-family: 'Outfit', sans-serif; font-weight: 800; text-transform: uppercase; }
+.subtitle-box.font-montserrat { font-family: 'Montserrat', sans-serif; font-weight: 800; }
+.subtitle-box.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+.subtitle-box.font-bebas { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 1.5px; }
+.subtitle-box.font-roboto { font-family: 'Roboto', sans-serif; font-weight: 700; }
+.subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Inter', sans-serif); font-weight: 700; }
+
+/* COULEURS DU TEXTE DE BASE */
+.subtitle-box.color-white .word {
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 4px 16px rgba(0, 0, 0, 0.7);
+}
+
+.subtitle-box.color-black .word {
+    color: #000000;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.subtitle-box.color-custom .word {
+    color: var(--sub-base-color, #ffffff);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 4px 16px rgba(0, 0, 0, 0.7);
+}
+
+/* LUEUR (GLOW) PARAMÉTRABLE */
+.subtitle-box.glow-subtle .word {
+    text-shadow: 0 0 14px var(--sub-base-color, #ffffff), 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+.subtitle-box.glow-intense .word {
+    text-shadow: 0 0 24px var(--sub-base-color, #ffffff), 0 0 45px var(--sub-base-color, #ffffff), 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+.subtitle-box.glow-accent .word {
+    text-shadow: 0 0 20px var(--sub-accent-color, #ffe600), 0 0 40px var(--sub-accent-color, #ffe600), 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* FOND (BACKGROUND) PARAMÉTRABLE */
+.subtitle-box.has-bg,
+.subtitle-box.bg-custom {
+    background: var(--sub-bg-color, rgba(0, 0, 0, 0.75));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.subtitle-box.bg-dark {
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle-box.bg-white {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ARRONDI (BORDER-RADIUS) */
+.subtitle-box.radius-none { border-radius: 0px; }
+.subtitle-box.radius-sm { border-radius: 6px; }
+.subtitle-box.radius-md { border-radius: 12px; }
+.subtitle-box.radius-pill { border-radius: 9999px; padding-left: 26px; padding-right: 26px; }
+
+/* --------------------------------------------------------------------------
+   TYPE 1 : STANDARD / FIXE
+   Le texte s'affiche simplement avec la couleur de base et les paramètres choisis.
+   -------------------------------------------------------------------------- */
+.subtitle-box.type-standard .word {
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   TYPE 2 : MOT-À-MOT DYNAMIQUE (KARAOKÉ TOUR À TOUR)
+   Tous les mots sont dans la couleur de base, seul le mot prononcé prend la
+   couleur d'accentuation tour à tour.
+   -------------------------------------------------------------------------- */
+.subtitle-box.type-wordbyword .word {
+    display: inline-block;
+    transition: color 0.12s ease, transform 0.12s ease, text-shadow 0.12s ease;
+}
+
+.subtitle-box.type-wordbyword .word.active {
+    color: var(--sub-accent-color, #ffe600) !important;
+    transform: scale(1.09);
+    text-shadow: 0 0 18px var(--sub-accent-color, #ffe600), 0 2px 8px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* --------------------------------------------------------------------------
+   TYPE 3 : MOTS-CLÉS MIS EN VALEUR (HIGHLIGHT / COULEUR DE CHAÎNE)
+   Les mots importants de la phrase sont mis en valeur avec la couleur choisie
+   ou la couleur primaire de la chaîne.
+   -------------------------------------------------------------------------- */
+.subtitle-box.type-highlight .word {
+    display: inline-block;
+}
+
+.subtitle-box.type-highlight .word.key-highlight {
+    color: var(--sub-accent-color, #ff3344) !important;
+    font-weight: 900;
+    text-shadow: 0 0 20px var(--sub-accent-color, #ff3344), 0 2px 8px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* --------------------------------------------------------------------------
+   SIMULATEUR CADRE VIDÉO 16:9 (APERÇU DE LA POSITION)
+   -------------------------------------------------------------------------- */
+.sub-stage-169 {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 16 / 9;
+    background: radial-gradient(circle at center, #1b1c28 0%, #08080d 85%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    margin: 0 auto;
+}
+
+.sub-stage-169 .stage-grid {
+    position: absolute;
+    inset: 0;
+    background-size: 24px 24px;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    pointer-events: none;
+}
+
+.sub-stage-169 .stage-safe-guides {
+    position: absolute;
+    inset: 7%;
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+    border-radius: 6px;
+}
+
+.sub-stage-169 .stage-ratio-tag {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+
+.sub-stage-169 .stage-pos-tag {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: rgba(255, 51, 68, 0.15);
+    border: 1px solid rgba(255, 51, 68, 0.35);
+    color: #ff3344;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    z-index: 10;
+}
+
+/* Positionnement proportionnel dans le simulateur 16:9 */
+.sub-stage-169 .subtitle-container {
+    width: 90%;
+}
+
+.sub-stage-169 .subtitle-container.pos-bottom,
+.sub-stage-169 .subtitle-container:not(.pos-center):not(.pos-top) {
+    bottom: 12px;
+}
+
+.sub-stage-169 .subtitle-container.pos-center {
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sub-stage-169 .subtitle-container.pos-top {
+    top: 26px;
+}
+
+.sub-stage-169 .subtitle-box {
+    font-size: 13px;
+    gap: 4px;
+}
+.sub-stage-169 .subtitle-box.font-bebas {
+    font-size: 17px;
+}
+.sub-stage-169 .subtitle-box.has-bg,
+.sub-stage-169 .subtitle-box.bg-dark,
+.sub-stage-169 .subtitle-box.bg-white,
+.sub-stage-169 .subtitle-box.bg-custom {
+    padding: 3px 8px;
+}

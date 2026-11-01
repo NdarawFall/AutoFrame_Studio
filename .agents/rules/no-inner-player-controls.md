@@ -1,0 +1,34 @@
+# Règle Absolue : Interdiction des Barres de Contrôle Vidéo Internes dans les Compositions
+
+> [!CAUTION]
+> **RÈGLE CRITIQUE D'INTÉGRATION UI & LECTEUR VIDÉO** :
+> Les compositions vidéo HTML générées (dans `04_Videos/`, `05_Scenes/` ou `03_Chaines/`) ont l'interdiction formelle et absolue d'intégrer une barre de contrôle de lecture interne (bouton play/pause, slider de timeline, bouton plein écran, affichage de timecode ou bouton mute).
+
+---
+
+## 1. Pourquoi cette Interdiction est Impérative
+
+1. **Suppression de l'Anti-Pattern "Lecteur dans le Lecteur"** :
+   L'interface Studio ([`09_Pages/studio.html`](../../09_Pages/studio.html)) et l'application bureau Electron possèdent déjà leur propre lecteur vidéo maître externe (timeline, bouton lecture/pause, scrubber, timecode, gestion des pistes V1/CC/A1/A2/A3).
+   Intégrer des boutons de lecture ou un slider dans le fichier HTML de la vidéo crée un dédoublement parasite (*"un player dans le player"*), masque la partie inférieure de la vidéo et perturbe la synchronisation des événements.
+
+2. **Rendu MP4 Final Inexploitable** :
+   Lors de l'exportation vidéo par Puppeteer & FFmpeg (`render.cjs`), chaque frame de l'écran est capturée. Si des boutons play/pause ou un curseur de timeline sont présents dans le HTML, ils sont gravés définitivement dans le fichier MP4 final comme des éléments d'interface indésirables.
+
+---
+
+## 2. Ce qu'une Composition Vidéo Doit Contenir
+
+* ✅ **Une Toile Vidéo Pure 16:9 ou 9:16** : Un conteneur responsive plein cadre (Three.js canvas, conteneurs GSAP, SVG).
+* ✅ **Uniquement des Overlays Graphiques Narratifs** :
+  - Badges thématiques, citations, titrages animés, sous-titres dynamiques.
+  - Télémétrie diégétique narrative (ex: vitesse en km/h, boussole, altimètre dans les coins de l'écran).
+* ✅ **Une Timeline Maîtresse GSAP Exposée** :
+  ```javascript
+  const tl = gsap.timeline({ paused: false, onUpdate: () => renderAt(tl.time()) });
+  window.tl = tl;
+  window.__timeline = tl;
+  window.__timelines = { main: tl };
+  ```
+  Le Studio et le moteur de rendu pilotent directement cette timeline externe sans aucune interface parasite.
+

@@ -1,0 +1,17 @@
+{
+  "tts_engine": "elevenlabs",
+  "pref_format": "16:9",
+  "pref_fps": "60",
+  "pref_quality": "high",
+  "pref_template": "none",
+  "pref_subtitle_style": "type-wordbyword",
+  "google_api_key": "",
+  "elevenlabs_api_key": "",
+  "elevenlabs_voice_id": "N2lVS1w4EtoT3dr4eOWO",
+  "elevenlabs_model_id": "eleven_multilingual_v2",
+  "pixabay_api_key": "",
+  "brandfetch_api_key": "",
+  "bg_remove_api_key": "",
+  "coverr_api_key": ""
+}
+

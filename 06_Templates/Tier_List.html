@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Tier List // Ranking S-A-B-C-D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-main: 'Montserrat', sans-serif;
+            --font-sub: 'Outfit', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--font-sub); color: #fff; }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: #09090c;
+            padding: 60px 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        .page-title {
+            font-family: var(--font-main);
+            font-size: 40px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tier-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+        }
+        .tier-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 110px;
+        }
+        .tier-tag {
+            font-family: var(--font-main);
+            font-size: 44px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+        }
+        .tag-s { background: #ff7f7f; }
+        .tag-a { background: #ffbf7f; }
+        .tag-b { background: #ffdf7f; }
+        .tag-c { background: #ffff7f; }
+        .tag-d { background: #bfff7f; }
+        .tier-items {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 16px;
+        }
+        .tier-thumb {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+        <div class="header-box">
+            <h1 class="page-title">Tier List Officielle</h1>
+            <span style="font-family:'JetBrains Mono'; font-size:16px; color:#888;">CLASSEMENT DIRECT</span>
+        </div>
+        <div class="tier-rows">
+            <div class="tier-row" id="rowS">
+                <div class="tier-tag tag-s">S</div>
+                <div class="tier-items">
+                    <img class="tier-thumb" src="../01_Assets/Images/styles/style_tier_list.jpg" alt="Tier S Item">
+                </div>
+            </div>
+            <div class="tier-row" id="rowA">
+                <div class="tier-tag tag-a">A</div>
+                <div class="tier-items"></div>
+            </div>
+            <div class="tier-row" id="rowB">
+                <div class="tier-tag tag-b">B</div>
+                <div class="tier-items"></div>
+            </div>
+            <div class="tier-row" id="rowC">
+                <div class="tier-tag tag-c">C</div>
+                <div class="tier-items"></div>
+            </div>
+            <div class="tier-row" id="rowD">
+                <div class="tier-tag tag-d">D</div>
+                <div class="tier-items"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const isIframeMode = window.self !== window.top;
+        const tl = gsap.timeline({ paused: isIframeMode });
+        tl.from('.tier-row', { duration: 0.6, x: -80, opacity: 0, stagger: 0.12, ease: 'power2.out' });
+        window.tl = tl;
+        window.__timeline = {
+            duration: () => 30.0,
+            seek: (t) => tl.seek(t, false),
+            pause: () => tl.pause(),
+            play: () => tl.play()
+        };
+    </script>
+</body>
+</html>

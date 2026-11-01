@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Top 10 // Compte à Rebours & Classement Viral</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --title-font: 'Montserrat', sans-serif;
+            --number-font: 'JetBrains Mono', monospace;
+            --accent-gold: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Outfit', sans-serif; color: #fff; }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: #0b0c10;
+        }
+        .top10-backdrop {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.12) 0%, rgba(0,0,0,0.95) 75%);
+        }
+        .top10-card {
+            position: absolute;
+            width: 1400px;
+            height: 750px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            border: 2px solid rgba(245, 158, 11, 0.35);
+            border-radius: 24px;
+            background: rgba(18, 18, 24, 0.85);
+            backdrop-filter: blur(25px);
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.15);
+            overflow: hidden;
+        }
+        .top10-left {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(0,0,0,0.4) 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+        .rank-number {
+            font-family: var(--number-font);
+            font-size: 140px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+        }
+        .rank-label {
+            font-family: var(--title-font);
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent-gold);
+            margin-top: 10px;
+        }
+        .top10-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 50px;
+            gap: 20px;
+        }
+        .item-title {
+            font-family: var(--title-font);
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.15;
+            color: #ffffff;
+        }
+        .item-desc {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+        .item-media-box {
+            width: 100%;
+            height: 340px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .item-media-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+        <div class="top10-backdrop"></div>
+        <div class="top10-card" id="top10Card">
+            <div class="top10-left">
+                <div class="rank-number" id="rankNum">#01</div>
+                <div class="rank-label">CLASSEMENT ULTIME</div>
+            </div>
+            <div class="top10-right">
+                <div class="item-media-box">
+                    <img id="mainMediaImg" src="../01_Assets/Images/styles/style_top_10.jpg" alt="Ranking Item">
+                </div>
+                <h2 class="item-title" id="stageTitle">Le Choix Incontournable</h2>
+                <p class="item-desc">Analyse détaillée, faits marquants et statistiques exclusives.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const isIframeMode = window.self !== window.top;
+        const tl = gsap.timeline({ paused: isIframeMode });
+        tl.from('#top10Card', { duration: 1, scale: 0.9, opacity: 0, ease: 'back.out(1.4)' })
+          .from('#rankNum', { duration: 0.8, y: -40, opacity: 0, ease: 'power2.out' }, '-=0.5');
+        window.tl = tl;
+        window.__timeline = {
+            duration: () => 30.0,
+            seek: (t) => tl.seek(t, false),
+            pause: () => tl.pause(),
+            play: () => tl.play()
+        };
+    </script>
+</body>
+</html>

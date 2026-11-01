@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Story Vox Style - Reconstitution & Investigation 3D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts: Inter, Archivo, IBM Plex Mono, Source Serif 4 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+
+    <!-- GSAP & Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --clay-bg: #e7e7e5;
+            --clay-card: #ffffff;
+            --clay-ink: #16171a;
+            --clay-sub: #606266;
+            --clay-border: rgba(0, 0, 0, 0.08);
+            --accent-blue: #2f6fdb;
+            --alert-red: #d7443b;
+            --hl-yellow: #ffe94a;
+            --shadow-elevation: 0 16px 40px rgba(20, 24, 30, 0.09), 0 3px 8px rgba(20, 24, 30, 0.04);
+            --shadow-hard: 0 24px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: var(--clay-bg);
+            color: var(--clay-ink);
+        }
+
+        /* STRICT SCENE ISOLATION: All scenes display: none by default */
+        .scene {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            display: none;
+            overflow: hidden;
+        }
+
+        /* ----------------------------------------------------
+           COMMON FORENSIC UI COMPONENTS
+        ---------------------------------------------------- */
+        .badge {
+            position: absolute;
+            top: 48px;
+            right: 64px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1.5px solid rgba(0, 0, 0, 0.25);
+            color: var(--clay-ink);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            z-index: 50;
+            border-radius: 2px;
+        }
+
+        .footnote {
+            position: absolute;
+            bottom: 40px;
+            left: 64px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 17px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--clay-sub);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .footnote::before {
+            content: '•';
+            color: var(--accent-blue);
+            font-size: 22px;
+        }
+
+        /* ----------------------------------------------------
+           SCENE 1: 3D CLAY RECONSTRUCTION
+        ---------------------------------------------------- */
+        #scene_1 {
+            background: #e7e7e5;
+        }
+
+        #gl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 1;
+        }
+
+        .s1-ui-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            padding: 64px;
+        }
+
+        .kicker-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            background: rgba(47, 111, 219, 0.1);
+            padding: 5px 12px;
+            border-left: 3px solid var(--accent-blue);
+            margin-bottom: 12px;
+        }
+
+        .time-stack {
+            position: absolute;
+            bottom: 90px;
+            left: 64px;
+            z-index: 20;
+        }
+        .time-stack .date-line {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--clay-sub);
+            margin-bottom: 4px;
+        }
+        .time-stack .time-digits {
+            font-family: 'Archivo', sans-serif;
+            font-size: 104px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+            color: var(--clay-ink);
+            font-variant-numeric: tabular-nums;
+        }
+        .time-stack .location-line {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 3D Target Pin */
+        .pin-telemetry {
+            position: absolute;
+            top: 420px;
+            left: 920px;
+            z-index: 25;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .pin-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--alert-red);
+            box-shadow: 0 0 0 4px rgba(215, 68, 59, 0.25), 0 0 20px rgba(215, 68, 59, 0.6);
+            position: relative;
+        }
+        .pin-dot::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--alert-red);
+            transform: translate(-50%, -50%);
+            animation: radarPulse 2s infinite ease-out;
+        }
+        @keyframes radarPulse {
+            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+        .pin-line {
+            width: 120px;
+            height: 2px;
+            background: var(--clay-ink);
+            position: absolute;
+            top: 6px;
+            left: 14px;
+            transform-origin: 0 0;
+            transform: rotate(-35deg);
+        }
+        .pin-card {
+            position: absolute;
+            left: 105px;
+            top: -65px;
+            background: var(--clay-card);
+            border: 1px solid var(--clay-border);
+            padding: 10px 16px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-elevation);
+            white-space: nowrap;
+        }
+        .pin-card .p-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--clay-ink);
+            line-height: 1;
+        }
+        .pin-card .p-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            color: var(--alert-red);
+            font-weight: 600;
+            margin-top: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        /* ----------------------------------------------------
+           SCENE 2: FORENSIC ARTICLE & EVIDENCE HIGHLIGHT
+        ---------------------------------------------------- */
+        #scene_2 {
+            background: #f1f0ec;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 120px;
+            gap: 60px;
+        }
+
+        .art-card {
+            flex: 1.35;
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: var(--shadow-hard);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 60px 70px;
+            position: relative;
+            max-width: 1000px;
+        }
+
+        .art-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #111;
+            padding-bottom: 16px;
+            margin-bottom: 30px;
+        }
+        .art-outlet {
+            font-family: 'Archivo', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            color: #111;
+        }
+        .art-rubric {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            background: #111;
+            color: #fff;
+            padding: 5px 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        .art-headline {
+            font-family: 'Inter', sans-serif;
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: #151515;
+            margin-bottom: 22px;
+        }
+
+        .art-meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            color: var(--clay-sub);
+            letter-spacing: 0.02em;
+            margin-bottom: 36px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .art-body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 32px;
+            line-height: 1.6;
+            color: #1f2022;
+        }
+
+        /* Animated yellow highlighter sweep */
+        mark.sweep-hl {
+            background: transparent;
+            color: inherit;
+            padding: 0 4px;
+            margin: 0 -4px;
+            background-image: linear-gradient(var(--hl-yellow), var(--hl-yellow));
+            background-repeat: no-repeat;
+            background-position: 0 88%;
+            background-size: 0% 78%;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        /* Right Column Evidence Box */
+        .evidence-col {
+            flex: 0.95;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .quote-box {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 44px 48px;
+            box-shadow: var(--shadow-elevation);
+            border: 1px solid var(--clay-border);
+            position: relative;
+        }
+        .quote-qm {
+            font-family: 'Archivo', sans-serif;
+            font-size: 88px;
+            font-weight: 900;
+            color: var(--accent-blue);
+            line-height: 0.6;
+            height: 44px;
+        }
+        .quote-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.28;
+            letter-spacing: -0.01em;
+            color: var(--clay-ink);
+            margin-top: 14px;
+        }
+        .quote-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--clay-ink);
+            margin-top: 24px;
+        }
+        .quote-role {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            color: var(--clay-sub);
+            margin-top: 4px;
+        }
+        .quote-badge {
+            position: absolute;
+            top: -14px;
+            right: 24px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            background: #111;
+            color: #fff;
+            border-radius: 2px;
+        }
+
+        .doc-stamp {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px dashed rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 24px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .stamp-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 800;
+            font-size: 24px;
+        }
+        .stamp-txt .s-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--clay-ink);
+        }
+        .stamp-txt .s-meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            color: var(--clay-sub);
+            margin-top: 3px;
+        }
+
+        /* ----------------------------------------------------
+           SCENE 3: STAT HERO & VERDICT WALL
+        ---------------------------------------------------- */
+        #scene_3 {
+            background: #11151c;
+            color: #ffffff;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 80px 100px 70px;
+        }
+
+        #scene_3 .badge {
+            background: rgba(25, 32, 46, 0.85);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+        #scene_3 .footnote {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .s3-top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .s3-kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #5ea2ff;
+        }
+        .s3-main-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            line-height: 1.05;
+            margin-top: 8px;
+        }
+
+        .s3-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 70px;
+            margin: auto 0;
+        }
+
+        .stat-hero-card {
+            flex: 1;
+            background: rgba(22, 30, 44, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 44px 50px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-hero-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            background: var(--alert-red);
+        }
+        .stat-hero-card .hero-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .stat-hero-card .hero-number {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 180px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+            color: #ffffff;
+            margin: 14px 0 10px;
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-hero-card .hero-desc {
+            font-family: 'Archivo', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--alert-red);
+        }
+        .stat-hero-card .hero-sub {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.55);
+            margin-top: 8px;
+        }
+
+        /* SVG Telemetry Curve Card */
+        .telemetry-chart-card {
+            flex: 1.25;
+            background: rgba(22, 30, 44, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 40px 48px;
+            position: relative;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .chart-title {
+            font-family: 'Archivo', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .chart-rate {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--alert-red);
+            background: rgba(215, 68, 59, 0.18);
+            padding: 5px 12px;
+            border-radius: 3px;
+        }
+        .svg-chart {
+            width: 100%;
+            height: 220px;
+            overflow: visible;
+        }
+
+        /* Bottom Statement Verdict */
+        .statement-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 24px 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .stmt-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: #ffffff;
+            color: #111;
+            padding: 5px 12px;
+            border-radius: 2px;
+        }
+        .stmt-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+            flex: 1;
+            margin-left: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+
+        <!-- =======================================================
+             SCÈNE 1 (0.0s -> 9.5s) : RECONSTITUTION 3D CLAY & HORODATAGE
+        ======================================================== -->
+        <section id="scene_1" class="scene">
+            <!-- Three.js 3D WebGL Canvas -->
+            <canvas id="gl-canvas"></canvas>
+
+            <div class="s1-ui-overlay">
+                <div class="badge">RECONSTRUCTION · 3D FORENSIC</div>
+
+                <div class="kicker-tag">INCIDENT VOL FL-892</div>
+
+                <!-- Telemetry Pin tracking 3D object -->
+                <div class="pin-telemetry" id="s1_pin">
+                    <div class="pin-dot"></div>
+                    <div class="pin-line"></div>
+                    <div class="pin-card">
+                        <div class="p-title">DÉVIATION HYDRAULIQUE</div>
+                        <div class="p-sub">PERTE DE CONTRÔLE AXE YAW</div>
+                    </div>
+                </div>
+
+                <!-- Time & Location Stack -->
+                <div class="time-stack" id="s1_time_stack">
+                    <div class="date-line">LUNDI 12 OCTOBRE 2026</div>
+                    <div class="time-digits">08:21:44</div>
+                    <div class="location-line">
+                        <span>FL345</span> · <span>VITESSE 460 NDS</span> · <span>ESPACE AÉRIEN NORD</span>
+                    </div>
+                </div>
+
+                <div class="footnote">Données ADS-B & télémétrie recalculées d'après les enregistrements de vol</div>
+            </div>
+        </section>
+
+        <!-- =======================================================
+             SCÈNE 2 (9.5s -> 20.0s) : ENQUÊTE MÉDIA & SURLIGNAGE D'ARTICLE
+        ======================================================== -->
+        <section id="scene_2" class="scene">
+            <div class="badge">PIÈCE À CONVICTION N° 04</div>
+
+            <!-- Authentic Press Article Card with Yellow Highlighter -->
+            <div class="art-card" id="s2_art_card">
+                <div class="art-header-bar">
+                    <div class="art-outlet">LE MONDE / INVESTIGATION</div>
+                    <div class="art-rubric">RAPPORT TECHNIQUE</div>
+                </div>
+                <h1 class="art-headline">Les enregistrements de bord confirment une anomalie critique sur les gouvernes</h1>
+                <div class="art-meta">PAR LA CELLULE ENQUÊTE · PUBLIÉ LE 13 OCTOBRE 2026 · 14H30</div>
+                <div class="art-body">
+                    <p style="margin-bottom: 24px;">
+                        Selon les données transmises aux enquêteurs indépendants, à 08h21 précises, l'aéronef a subi 
+                        <mark class="sweep-hl" id="mark_article">une chute brutale et irréversible de pression dans le circuit hydraulique principal</mark>,
+                        provoquant le blocage simultané des deux gouvernes de profondeur.
+                    </p>
+                    <p style="color: #666; font-size: 26px;">
+                        Les calculateurs de secours n'ont déclenché aucune reprise manuelle avant l'impact télémétrique.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Column Forensic Evidence -->
+            <div class="evidence-col" id="s2_evidence">
+                <!-- Quote Box -->
+                <div class="quote-box" id="s2_quote">
+                    <div class="quote-badge">VERBATIM TÉMOIN</div>
+                    <div class="quote-qm">“</div>
+                    <div class="quote-text">
+                        « Aucun signal d'alarme sonore ne s'est déclenché dans le cockpit avant le décrochage. »
+                    </div>
+                    <div class="quote-author">Commandant de Bord Instructeur</div>
+                    <div class="quote-role">Déposition officielle devant la Commission d'Enquête</div>
+                </div>
+
+                <!-- Document Stamp -->
+                <div class="doc-stamp" id="s2_stamp">
+                    <div class="stamp-icon">✓</div>
+                    <div class="stamp-txt">
+                        <div class="s-title">DOCUMENT CERTIFIÉ CONFORME</div>
+                        <div class="s-meta">ARCHIVE BEA N° 2026-F892 · SAISIE JUDICIAIRE</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footnote">Extraits re-typographiés pour lisibilité · Source : Enquête technique et judiciaire</div>
+        </section>
+
+        <!-- =======================================================
+             SCÈNE 3 (20.0s -> 30.0s) : STAT HERO & VERDICT OFFICIEL
+        ======================================================== -->
+        <section id="scene_3" class="scene">
+            <div class="badge">RAPPORT D'EXPERTISE</div>
+
+            <div class="s3-top-header" id="s3_header">
+                <div>
+                    <div class="s3-kicker">CHRONOLOGIE DES DERNIÈRES MINUTES</div>
+                    <h2 class="s3-main-title">DÉCLENCHEMENT DE L'URGENCE</h2>
+                </div>
+            </div>
+
+            <!-- Center Dashboard: Big Hero Stat + Altitude Descent SVG -->
+            <div class="s3-dashboard">
+                <!-- Left: Giant Stat Hero Plate -->
+                <div class="stat-hero-card" id="s3_stat_hero">
+                    <div class="hero-label">CODE TRANSPONDEUR</div>
+                    <div class="hero-number" id="s3_squawk_num">7700</div>
+                    <div class="hero-desc">DÉTRESSE GÉNÉRALE DÉCLARÉE</div>
+                    <div class="hero-sub">Émis automatiquement à 08:22:12 UTC vers tous les récepteurs sol</div>
+                </div>
+
+                <!-- Right: SVG Telemetry Curve -->
+                <div class="telemetry-chart-card" id="s3_chart_card">
+                    <div class="chart-header">
+                        <div class="chart-title">PROFIL DE DESCENTE D'URGENCE</div>
+                        <div class="chart-rate">TAUX : -4 850 FT / MIN</div>
+                    </div>
+                    <svg class="svg-chart" viewBox="0 0 700 220">
+                        <!-- Grid lines -->
+                        <line x1="60" y1="20" x2="680" y2="20" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="4"/>
+                        <line x1="60" y1="80" x2="680" y2="80" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="4"/>
+                        <line x1="60" y1="140" x2="680" y2="140" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="4"/>
+                        <line x1="60" y1="200" x2="680" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+
+                        <!-- Grid labels -->
+                        <text x="10" y="25" fill="rgba(255,255,255,0.4)" font-family="IBM Plex Mono" font-size="14">35k FT</text>
+                        <text x="10" y="85" fill="rgba(255,255,255,0.4)" font-family="IBM Plex Mono" font-size="14">24k FT</text>
+                        <text x="10" y="145" fill="rgba(255,255,255,0.4)" font-family="IBM Plex Mono" font-size="14">12k FT</text>
+
+                        <!-- Telemetry Curve animated with GSAP -->
+                        <path id="chart_curve" d="M 70 24 C 220 25, 340 70, 480 155 C 560 190, 620 198, 670 200" 
+                              fill="none" stroke="#2f6fdb" stroke-width="4.5" stroke-linecap="round"/>
+                        
+                        <!-- Alert Marker on curve -->
+                        <circle id="chart_marker" cx="480" cy="155" r="7" fill="#d7443b" stroke="#ffffff" stroke-width="2.5"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Bottom Verdict Bar -->
+            <div class="statement-bar" id="s3_verdict">
+                <div class="stmt-badge">CONCLUSION PROVISOIRE</div>
+                <div class="stmt-text">
+                    AUCUNE FAUTE DE PILOTAGE RETENUE · ENQUÊTE ORIENTÉE VERS LE CIRCUIT D'ASSISTANCE HYDRAULIQUE
+                </div>
+            </div>
+
+            <div class="footnote">Rapport d'analyse télémétrique validé · Bureau d'Enquêtes et d'Analyses</div>
+        </section>
+
+    </div>
+
+    <!-- =======================================================
+         LOGIQUE DE RECONSTITUTION 3D ET SYNCHRONISATION GSAP
+    ======================================================== -->
+    <script>
+        // 1. CONFIGURATION DU STUDIO
+        window.VIDEO_CONFIG = {
+            duration: 30.0,
+            fps: 30,
+            width: 1920,
+            height: 1080
+        };
+
+        const isIframeMode = window.self !== window.top;
+
+        // 2. MOTEUR 3D CLAY (THREE.JS) POUR LA SCÈNE 1
+        let scene3d, camera3d, renderer3d;
+        let planeMesh, gridHelper, mannequinGroup, alertRing;
+        let is3DInitialized = false;
+
+        function initThreeJS() {
+            if (is3DInitialized) return;
+            const canvas = document.getElementById('gl-canvas');
+            if (!canvas) return;
+
+            scene3d = new THREE.Scene();
+            scene3d.background = new THREE.Color(0xe7e7e5);
+            scene3d.fog = new THREE.FogExp2(0xe7e7e5, 0.015);
+
+            camera3d = new THREE.PerspectiveCamera(40, 1920 / 1080, 0.1, 100);
+            camera3d.position.set(-6, 4.5, 9);
+            camera3d.lookAt(0, 0.8, 0);
+
+            renderer3d = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+            renderer3d.setSize(1920, 1080);
+            renderer3d.setPixelRatio(1);
+            renderer3d.shadowMap.enabled = true;
+            renderer3d.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Clay lighting setup: strong top-left soft light + ambient fill
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0xc9c6bf, 1.4);
+            scene3d.add(hemiLight);
+
+            const dirLight = new THREE.DirectionalLight(0xfffdf5, 1.8);
+            dirLight.position.set(-8, 12, 6);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 30;
+            dirLight.shadow.camera.left = -8;
+            dirLight.shadow.camera.right = 8;
+            dirLight.shadow.camera.top = 8;
+            dirLight.shadow.camera.bottom = -8;
+            dirLight.shadow.bias = -0.0005;
+            scene3d.add(dirLight);
+
+            // Ground plane (Clay matte)
+            const groundMat = new THREE.MeshStandardMaterial({
+                color: 0xdedcd6,
+                roughness: 0.85,
+                metalness: 0.05
+            });
+            const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.01;
+            ground.receiveShadow = true;
+            scene3d.add(ground);
+
+            // Clay runway / path grid
+            gridHelper = new THREE.GridHelper(40, 40, 0x2f6fdb, 0xc4c2ba);
+            gridHelper.position.y = 0.01;
+            scene3d.add(gridHelper);
+
+            // Matte off-white clay material
+            const clayMat = new THREE.MeshStandardMaterial({
+                color: 0xf2efe9,
+                roughness: 0.65,
+                metalness: 0.08
+            });
+
+            // Accent cobalt material
+            const accentMat = new THREE.MeshStandardMaterial({
+                color: 0x2f6fdb,
+                roughness: 0.5,
+                metalness: 0.1
+            });
+
+            // Alert red material
+            const alertMat = new THREE.MeshStandardMaterial({
+                color: 0xd7443b,
+                roughness: 0.4,
+                metalness: 0.1
+            });
+
+            // Reconstructed Aircraft fuselage & wings in clay
+            planeMesh = new THREE.Group();
+
+            // Fuselage
+            const bodyGeo = new THREE.CylinderGeometry(0.5, 0.45, 5.2, 32);
+            const body = new THREE.Mesh(bodyGeo, clayMat);
+            body.rotation.z = Math.PI / 2;
+            body.position.y = 1.2;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            planeMesh.add(body);
+
+            // Cockpit nose
+            const noseGeo = new THREE.SphereGeometry(0.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+            const nose = new THREE.Mesh(noseGeo, clayMat);
+            nose.rotation.z = -Math.PI / 2;
+            nose.position.set(2.6, 1.2, 0);
+            nose.castShadow = true;
+            planeMesh.add(nose);
+
+            // Wings
+            const wingGeo = new THREE.BoxGeometry(1.6, 0.08, 6.2);
+            const wings = new THREE.Mesh(wingGeo, clayMat);
+            wings.position.set(0.2, 1.15, 0);
+            wings.castShadow = true;
+            wings.receiveShadow = true;
+            planeMesh.add(wings);
+
+            // Tail fin
+            const finGeo = new THREE.BoxGeometry(0.9, 1.2, 0.08);
+            const fin = new THREE.Mesh(finGeo, clayMat);
+            fin.position.set(-2.2, 2.0, 0);
+            fin.rotation.z = 0.25;
+            fin.castShadow = true;
+            planeMesh.add(fin);
+
+            // Tail horizontal stabilizer
+            const stabGeo = new THREE.BoxGeometry(0.8, 0.06, 2.2);
+            const stab = new THREE.Mesh(stabGeo, clayMat);
+            stab.position.set(-2.3, 1.6, 0);
+            stab.castShadow = true;
+            planeMesh.add(stab);
+
+            // Hydraulic critical point (Glowing indicator)
+            const sensorGeo = new THREE.SphereGeometry(0.14, 16, 16);
+            const sensor = new THREE.Mesh(sensorGeo, alertMat);
+            sensor.position.set(-1.8, 1.25, 0);
+            planeMesh.add(sensor);
+
+            scene3d.add(planeMesh);
+
+            // Clay Faceless Mannequins (Stationary inspection crew)
+            mannequinGroup = new THREE.Group();
+            for (let i = 0; i < 3; i++) {
+                const man = new THREE.Group();
+                // Torso
+                const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 0.9, 16), i === 0 ? accentMat : clayMat);
+                torso.position.y = 0.85;
+                torso.castShadow = true;
+                man.add(torso);
+                // Head (faceless mannequin sphere)
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), clayMat);
+                head.position.y = 1.48;
+                head.castShadow = true;
+                man.add(head);
+
+                man.position.set(-1.5 + i * 1.6, 0, 2.8 - i * 0.4);
+                mannequinGroup.add(man);
+            }
+            scene3d.add(mannequinGroup);
+
+            // Alert target ring on the ground
+            const ringGeo = new THREE.RingGeometry(0.4, 0.46, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xd7443b, side: THREE.DoubleSide });
+            alertRing = new THREE.Mesh(ringGeo, ringMat);
+            alertRing.rotation.x = -Math.PI / 2;
+            alertRing.position.set(-1.8, 0.02, 0);
+            scene3d.add(alertRing);
+
+            is3DInitialized = true;
+            renderer3d.render(scene3d, camera3d);
+        }
+
+        function update3DScene(progress) {
+            if (!is3DInitialized) initThreeJS();
+            if (!planeMesh || !camera3d) return;
+
+            // Camera cinematic dolly: moves smoothly in arc from (-6, 4.5, 9) to (-3.8, 2.8, 6.2)
+            const camX = -6 + progress * 2.2;
+            const camY = 4.5 - progress * 1.6;
+            const camZ = 9 - progress * 2.8;
+            camera3d.position.set(camX, camY, camZ);
+            camera3d.lookAt(-0.5, 1.1, 0);
+
+            // Subtle aircraft attitude pitch/roll
+            planeMesh.rotation.z = Math.sin(progress * Math.PI) * 0.08;
+            planeMesh.rotation.x = Math.sin(progress * Math.PI * 0.7) * 0.05;
+
+            // Pulsing alert ring
+            if (alertRing) {
+                const scale = 1 + Math.sin(progress * 15) * 0.15;
+                alertRing.scale.set(scale, scale, 1);
+            }
+
+            renderer3d.render(scene3d, camera3d);
+        }
+
+        // 3. CONSTRUCTION DE LA TIMELINE MAÎTRESSE GSAP
+        const tl = gsap.timeline({ paused: isIframeMode });
+        window.tl = tl;
+
+        // Préparation initiale de l'état 3D
+        initThreeJS();
+
+        // ----------------------------------------------------
+        // SCÈNE 1 (0.0s -> 9.5s)
+        // ----------------------------------------------------
+        tl.set('#scene_1', { display: 'block', opacity: 1 }, 0);
+        tl.set('#scene_2', { display: 'none', opacity: 0 }, 0);
+        tl.set('#scene_3', { display: 'none', opacity: 0 }, 0);
+
+        // Animation de la caméra 3D sur toute la durée de la scène 1
+        const camProgressObj = { p: 0 };
+        tl.to(camProgressObj, {
+            p: 1,
+            duration: 9.5,
+            ease: 'power1.out',
+            onUpdate: () => update3DScene(camProgressObj.p)
+        }, 0);
+
+        // Apparition des éléments graphiques Scene 1
+        tl.from('#s1_time_stack', {
+            opacity: 0,
+            y: 40,
+            duration: 1.2,
+            ease: 'power3.out'
+        }, 0.4);
+
+        tl.to('#s1_pin', {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'back.out(1.5)'
+        }, 2.2);
+
+        // Sortie Scène 1
+        tl.to('#scene_1', {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.inOut'
+        }, 9.1);
+        tl.set('#scene_1', { display: 'none' }, 9.5);
+
+        // ----------------------------------------------------
+        // SCÈNE 2 (9.5s -> 20.0s) : ENQUÊTE & SURLIGNAGE
+        // ----------------------------------------------------
+        tl.set('#scene_2', { display: 'flex', opacity: 0 }, 9.5);
+        tl.to('#scene_2', { opacity: 1, duration: 0.4 }, 9.5);
+
+        // Entrée de l'article de journal
+        tl.from('#s2_art_card', {
+            opacity: 0,
+            x: -80,
+            scale: 0.96,
+            duration: 1.0,
+            ease: 'power3.out'
+        }, 9.8);
+
+        // Effet emblématique Vox : Surlignage jaune animé balayant la citation
+        tl.to('#mark_article', {
+            backgroundSize: '100% 78%',
+            duration: 1.8,
+            ease: 'power1.inOut'
+        }, 11.2);
+
+        // Entrée de la colonne de preuves
+        tl.from('#s2_quote', {
+            opacity: 0,
+            x: 60,
+            duration: 0.9,
+            ease: 'power3.out'
+        }, 12.8);
+
+        tl.from('#s2_stamp', {
+            opacity: 0,
+            y: 30,
+            duration: 0.7,
+            ease: 'back.out(1.4)'
+        }, 14.5);
+
+        // Sortie Scène 2
+        tl.to('#scene_2', {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.inOut'
+        }, 19.6);
+        tl.set('#scene_2', { display: 'none' }, 20.0);
+
+        // ----------------------------------------------------
+        // SCÈNE 3 (20.0s -> 30.0s) : STAT HERO & CONCLUSION
+        // ----------------------------------------------------
+        tl.set('#scene_3', { display: 'flex', opacity: 0 }, 20.0);
+        tl.to('#scene_3', { opacity: 1, duration: 0.4 }, 20.0);
+
+        tl.from('#s3_header', {
+            opacity: 0,
+            y: -30,
+            duration: 0.8,
+            ease: 'power3.out'
+        }, 20.3);
+
+        // Hero Stat Card impact
+        tl.from('#s3_stat_hero', {
+            opacity: 0,
+            scale: 0.88,
+            duration: 0.9,
+            ease: 'back.out(1.2)'
+        }, 20.8);
+
+        // Compteur de transpondeur
+        const squawkObj = { val: 1200 };
+        tl.to(squawkObj, {
+            val: 7700,
+            duration: 1.2,
+            ease: 'power2.out',
+            onUpdate: () => {
+                const el = document.getElementById('s3_squawk_num');
+                if (el) el.textContent = Math.round(squawkObj.val);
+            }
+        }, 21.0);
+
+        // Telemetry SVG Chart
+        tl.from('#s3_chart_card', {
+            opacity: 0,
+            x: 50,
+            duration: 0.9,
+            ease: 'power3.out'
+        }, 21.4);
+
+        // Tracé animé de la courbe de descente
+        const curvePath = document.getElementById('chart_curve');
+        if (curvePath) {
+            const length = curvePath.getTotalLength ? curvePath.getTotalLength() : 800;
+            gsap.set(curvePath, { strokeDasharray: length, strokeDashoffset: length });
+            tl.to(curvePath, {
+                strokeDashoffset: 0,
+                duration: 2.2,
+                ease: 'power1.inOut'
+            }, 21.8);
+        }
+
+        tl.from('#chart_marker', {
+            scale: 0,
+            opacity: 0,
+            transformOrigin: 'center center',
+            duration: 0.6,
+            ease: 'elastic.out(1, 0.5)'
+        }, 23.2);
+
+        // Verdict final
+        tl.from('#s3_verdict', {
+            opacity: 0,
+            y: 40,
+            duration: 0.8,
+            ease: 'power3.out'
+        }, 23.8);
+
+        // 4. API DU STUDIO VIDÉO (__timeline)
+        window.__timeline = {
+            duration: () => 30.0,
+            seek: (t) => {
+                tl.seek(t, false);
+                // Synchronisation du rendu 3D au scrub de la timeline
+                if (t < 9.5) {
+                    update3DScene(t / 9.5);
+                }
+            },
+            pause: () => tl.pause(),
+            play: () => {
+                if (typeof gsap !== 'undefined' && gsap.globalTimeline && gsap.globalTimeline.paused()) {
+                    gsap.globalTimeline.resume();
+                }
+                tl.play();
+            }
+        };
+
+        // En mode autonome (hors iframe), lancer la lecture automatique
+        if (!isIframeMode) {
+            tl.play();
+        }
+    </script>
+</body>
+</html>

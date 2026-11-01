@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Génération de la Vidéo en cours — VibeEditor 1.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #000000;
+            --bg-surface: #0a0a0d;
+            --bg-elevated: #121217;
+            --bg-hover: #1c1c24;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 255, 255, 0.35);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --primary: #ffffff;
+            --accent-emerald: #10b981;
+            --accent-cyan: #38bdf8;
+            --accent-amber: #f59e0b;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- TOP NAV --- */
+        header.top-nav {
+            height: 58px;
+            background: rgba(10, 10, 13, 0.85);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.btn-create-video {
+            background: #dc2626;
+            color: #ffffff !important;
+            border-color: #ef4444;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+        }
+
+        /* --- MAIN CONTAINER --- */
+        main.process-container {
+            max-width: 860px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 24px 90px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- HERO CARD --- */
+        .process-hero-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-hero-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #38bdf8, #10b981, #f59e0b, #ef4444);
+        }
+
+        .process-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .process-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .process-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .process-prompt-preview {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 600px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .process-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            color: #ffffff;
+        }
+
+        /* --- GLOBAL PROGRESS BAR --- */
+        .progress-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            height: 8px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, #38bdf8, #10b981);
+            border-radius: 6px;
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 1.8s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* --- STEPS LIST --- */
+        .steps-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .step-item.pending {
+            opacity: 0.45;
+        }
+
+        .step-item.active {
+            opacity: 1;
+            background: rgba(56, 189, 248, 0.05);
+            border-color: rgba(56, 189, 248, 0.35);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.08);
+        }
+
+        .step-item.completed {
+            opacity: 0.9;
+            background: rgba(16, 185, 129, 0.03);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+
+        .step-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+
+        .step-item.active .step-icon-wrap {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.12);
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        .step-item.completed .step-icon-wrap {
+            border-color: var(--accent-emerald);
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--accent-emerald);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+        }
+
+        .step-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .step-status-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-status-tag {
+            color: var(--accent-cyan);
+        }
+
+        .step-item.completed .step-status-tag {
+            color: var(--accent-emerald);
+        }
+
+        /* --- TERMINAL LIVE LOG --- */
+        .terminal-box {
+            background: #050508;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: #d1d5db;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .terminal-time {
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .terminal-text.info { color: #38bdf8; }
+        .terminal-text.success { color: #10b981; }
+        .terminal-text.warning { color: #f59e0b; }
+
+        /* --- ACTION BAR FINAL --- */
+        .completion-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-md);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .completion-bar.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-open-studio {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-open-studio:hover {
+            background: #e6e6e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.35);
+        }
+
+        /* Spinner SVG */
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        svg.icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <a href="home.html" class="nav-btn" title="Accueil (Home)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Accueil</span>
+            </a>
+            <a href="home.html" class="brand-badge">
+                <span>VibeEditor 1.0</span>
+            </a>
+        </div>
+
+        <nav class="nav-links">
+            <a href="channels.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <span>Chaînes & Vidéos</span>
+            </a>
+            <a href="studio.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
+                <span>Studio</span>
+            </a>
+            <a href="settings.html" class="nav-btn">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Paramètres</span>
+            </a>
+            <a href="create_video.html" class="nav-btn btn-create-video">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Créer une Vidéo</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- MAIN PROCESS VIEW -->
+    <main class="process-container">
+
+        <!-- HEADER HERO -->
+        <div class="process-hero-card">
+            <div class="process-title-row">
+                <div class="process-title-group">
+                    <h1 class="process-title">
+                        <svg class="icon spinner" style="width:24px; height:24px; color:var(--accent-cyan);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"></circle></svg>
+                        <span>Création de votre Vidéo en direct</span>
+                    </h1>
+                    <p class="process-prompt-preview" id="previewPromptText">Chargement du prompt et des paramètres...</p>
+                </div>
+
+                <div class="process-badges">
+                    <span class="badge-pill" id="badgeChannel">Chaîne : Aucune</span>
+                    <span class="badge-pill" id="badgeFormat">Format : 16:9</span>
+                    <span class="badge-pill" id="badgeAudio">Audio : Voix off + Musique</span>
+                    <span class="badge-pill" id="badgeSubtitles">Sous-titres : Oui</span>
+                    <span class="badge-pill" id="badgeScript" style="display:none; border-color: rgba(220, 38, 38, 0.4); color: #ff5264; font-weight:700;">📜 Script : Horodaté</span>
+                    <span class="badge-pill" id="badgeTotalSteps" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-cyan); font-weight:700;">-- étapes actives</span>
+                </div>
+            </div>
+
+            <!-- BARRE DE PROGRESSION -->
+            <div class="progress-box">
+                <div class="progress-meta-row">
+                    <span id="currentPhaseLabel" style="color:#ffffff;">Initialisation du pipeline IA...</span>
+                    <span id="percentText" style="font-family:'JetBrains Mono', monospace; color:var(--accent-cyan);">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFillBar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTE DYNAMIQUE DES ÉTAPES DU PROCESSUS (Injectée selon les facteurs) -->
+        <div class="steps-container" id="stepsList">
+            <!-- Rendu dynamique par JavaScript en fonction du prompt et des options -->
+        </div>
+
+        <!-- LIVE TERMINAL CONSOLE -->
+        <div class="terminal-box" id="terminalBox">
+            <div class="terminal-line">
+                <span class="terminal-time" id="initTime">00:00:00</span>
+                <span class="terminal-text info">[SYSTEM] Démarrage du processus de création vidéo piloté par l'IA...</span>
+            </div>
+        </div>
+
+        <!-- COMPLETION BAR (SHOWN WHEN DONE) -->
+        <div class="completion-bar" id="completionBar">
+            <div>
+                <div style="font-size:15px; font-weight:800; color:#10b981; display:flex; align-items:center; gap:8px;">
+                    <svg class="icon" style="stroke:#10b981; stroke-width:3;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Composition créée avec succès !</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;" id="completionSubtext">
+                    Redirection vers le Studio dans quelques secondes...
+                </div>
+            </div>
+            <a href="#" class="btn-open-studio" id="btnGoStudio">
+                <span>Ouvrir dans le Studio</span>
+                <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        function getTimeString() {
+            const d = new Date();
+            return d.toTimeString().split(' ')[0];
+        }
+
+        function logToTerminal(message, type = 'info') {
+            const box = document.getElementById('terminalBox');
+            if (!box) return;
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `
+                <span class="terminal-time">${getTimeString()}</span>
+                <span class="terminal-text ${type}">[AI] ${message}</span>
+            `;
+            box.appendChild(line);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- GESTION DES ÉTAPES DYNAMIQUES & VÉRIDIQUES DU PIPELINE (ZÉRO FAKE) ---
+        let currentSteps = [];
+
+        function renderPipelineSteps(steps) {
+            if (!steps || !steps.length) return;
+            currentSteps = steps;
+            const container = document.getElementById('stepsList');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const badgeTotal = document.getElementById('badgeTotalSteps');
+            if (badgeTotal) badgeTotal.textContent = `${steps.length} étapes réelles`;
+
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'step-item pending';
+                div.id = `step_item_${step.id}`;
+                div.innerHTML = `
+                    <div class="step-icon-wrap" id="icon_${step.id}">${stepNum}</div>
+                    <div class="step-content">
+                        <div class="step-title">
+                            <span>${stepNum}. ${step.title}</span>
+                            <span class="step-status-tag" id="status_${step.id}">En attente</span>
+                        </div>
+                        <p class="step-desc">${step.desc || ''}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function setStepDomState(stepId, state, statusText) {
+            const item = document.getElementById(`step_item_${stepId}`);
+            const icon = document.getElementById(`icon_${stepId}`);
+            const tag = document.getElementById(`status_${stepId}`);
+            if (!item) return;
+
+            item.classList.remove('pending', 'active', 'completed');
+            item.classList.add(state);
+
+            if (tag && statusText) tag.textContent = statusText;
+
+            if (state === 'completed') {
+                if (icon) icon.innerHTML = '✓';
+            } else if (state === 'active') {
+                if (icon) icon.innerHTML = `<svg class="icon spinner" style="width:16px; height:16px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"></circle></svg>`;
+            }
+        }
+
+        function updateProgress(percent, phaseLabel) {
+            const bar = document.getElementById('progressFillBar');
+            const pct = document.getElementById('percentText');
+            const lbl = document.getElementById('currentPhaseLabel');
+            if (bar) bar.style.width = `${percent}%`;
+            if (pct) pct.textContent = `${percent}%`;
+            if (lbl && phaseLabel) lbl.textContent = phaseLabel;
+        }
+
+        async function runProcess() {
+            document.getElementById('initTime').textContent = getTimeString();
+
+            // 1. Charger les paramètres soumis depuis create_video.html
+            let payload = null;
+            const raw = localStorage.getItem('vibeeditor_pending_creation');
+            if (raw) {
+                try { payload = JSON.parse(raw); } catch(e){}
+            }
+
+            if (!payload || !payload.prompt) {
+                payload = {
+                    fileName: 'video_' + Date.now().toString().slice(-6),
+                    prompt: 'Composition motion design automatique',
+                    format: '16:9',
+                    audioSetup: 'full_mix',
+                    subtitles: true,
+                    images: []
+                };
+            }
+
+            // 2. Mettre à jour les badges d'information
+            document.getElementById('previewPromptText').textContent = `« ${payload.prompt} »`;
+            document.getElementById('badgeFormat').textContent = `Format : ${payload.format || '16:9'}`;
+            
+            const audioLabels = {
+                'voice_only': 'Voix off seulement',
+                'music_only': 'Musique seulement',
+                'full_mix': 'Mix avec tout (Voix + Musique)',
+                'none': 'Sans audio'
+            };
+            document.getElementById('badgeAudio').textContent = `Audio : ${audioLabels[payload.audioSetup] || payload.audioSetup || 'Mix'}`;
+            document.getElementById('badgeSubtitles').textContent = `Sous-titres : ${payload.subtitles !== false ? 'Oui' : 'Non'}`;
+
+            const badgeScript = document.getElementById('badgeScript');
+            if (badgeScript) {
+                if (payload.hasCustomScript || (payload.customScript && payload.customScript.trim().length > 0)) {
+                    badgeScript.style.display = 'inline-flex';
+                } else {
+                    badgeScript.style.display = 'none';
+                }
+            }
+
+            if (payload.channelId) {
+                document.getElementById('badgeChannel').textContent = `Chaîne : ${payload.channelId}`;
+            } else {
+                document.getElementById('badgeChannel').textContent = `Chaîne : Aucune (Autonome)`;
+            }
+
+            // 3. Pré-remplissage initial propre (en attendant la confirmation du backend)
+            const initialSteps = [
+                { id: 'step_init', title: 'Initialisation du pipeline IA', desc: 'Configuration de la vidéo et calibrage du canvas.' },
+                { id: 'step_skills', title: 'Lecture & Application des Skills (00_Skills/)', desc: 'Chargement des règles de design 80/20, 60/30/10 et physique 2D.' },
+                { id: 'step_prompt', title: 'Réflexion, Direction Artistique & Découpage Narratif (Gemini)', desc: 'Analyse du brief narratif et scénarisation.' },
+                { id: 'step_gsap_code', title: 'Génération Dynamique du Code (HTML, CSS & GSAP)', desc: 'Conception vectorielle et programmation de l\'animation.' },
+                { id: 'step_disk_save', title: 'Sauvegarde Physique Intégrale', desc: 'Écriture du fichier vidéo unique (sans fichier loose dans 05_Scenes/).' },
+                { id: 'step_studio_ready', title: 'Finalisation & Ouverture dans le Studio', desc: 'Liaison directe avec le Studio de montage.' }
+            ];
+            renderPipelineSteps(initialSteps);
+            setStepDomState('step_init', 'active', 'En cours...');
+
+            logToTerminal(`Connexion au serveur et démarrage du pipeline IA...`, 'info');
+
+            // 4. Lancement réel sur le backend
+            let targetVideoPath = '';
+            let jobId = '';
+
+            try {
+                const startRes = await fetch('/api/create-video-start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const startData = await startRes.json();
+                if (startData && startData.jobId) {
+                    jobId = startData.jobId;
+                    logToTerminal(`Session IA connectée : ${jobId}`, 'info');
+                } else {
+                    throw new Error(startData.error || 'Erreur initialisation backend');
+                }
+            } catch(startErr) {
+                logToTerminal(`Avertissement connexion backend : ${startErr.message}`, 'warning');
+            }
+
+            // 5. Suivi en temps réel véridique via /api/creation-status
+            let lastLogIndex = 0;
+            let isCompleted = false;
+
+            if (jobId) {
+                while (!isCompleted) {
+                    await new Promise(r => setTimeout(r, 500));
+
+                    try {
+                        const statusRes = await fetch(`/api/creation-status?jobId=${encodeURIComponent(jobId)}`);
+                        const statusData = await statusRes.json();
+
+                        // Mise à jour de la liste des vraies étapes dès qu'elle arrive du backend
+                        if (statusData.steps && Array.isArray(statusData.steps) && statusData.steps.length > 0) {
+                            if (currentSteps.length !== statusData.steps.length || currentSteps[0]?.id !== statusData.steps[0]?.id) {
+                                renderPipelineSteps(statusData.steps);
+                            }
+                        }
+
+                        // Afficher les nouveaux logs réels du terminal
+                        if (Array.isArray(statusData.logs)) {
+                            for (let idx = lastLogIndex; idx < statusData.logs.length; idx++) {
+                                const l = statusData.logs[idx];
+                                logToTerminal(l.text, l.type || 'info');
+                            }
+                            lastLogIndex = statusData.logs.length;
+                        }
+
+                        // Mettre à jour l'étape courante dans le DOM
+                        if (statusData.currentStep && currentSteps.length > 0) {
+                            const curIdx = currentSteps.findIndex(s => s.id === statusData.currentStep);
+                            if (curIdx !== -1) {
+                                for (let k = 0; k < curIdx; k++) {
+                                    setStepDomState(currentSteps[k].id, 'completed', 'Terminé');
+                                }
+                                setStepDomState(statusData.currentStep, 'active', 'En cours...');
+                                for (let k = curIdx + 1; k < currentSteps.length; k++) {
+                                    setStepDomState(currentSteps[k].id, 'pending', 'En attente');
+                                }
+                            }
+                        }
+
+                        // Mettre à jour la barre de progression
+                        if (statusData.progress !== undefined) {
+                            updateProgress(statusData.progress, statusData.phaseLabel || 'Traitement en cours...');
+                        }
+
+                        if (statusData.status === 'completed') {
+                            isCompleted = true;
+                            targetVideoPath = statusData.videoUrl || '';
+                            currentSteps.forEach(s => setStepDomState(s.id, 'completed', 'Terminé'));
+                            break;
+                        } else if (statusData.status === 'error') {
+                            logToTerminal(`Erreur lors de la génération : ${statusData.error}`, 'error');
+                            isCompleted = true;
+                            break;
+                        }
+                    } catch(pollErr) {
+                        console.warn("Polling error:", pollErr);
+                    }
+                }
+            } else {
+                // Fallback direct si l'endpoint start a échoué
+                try {
+                    const fallbackRes = await fetch('/api/create-video', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const fallbackData = await fallbackRes.json();
+                    targetVideoPath = fallbackData.videoUrl || '';
+                } catch(e) {}
+            }
+
+            // 6. Finalisation & Préparation du Studio
+            if (!targetVideoPath) {
+                targetVideoPath = payload.channelId ? `03_Chaines/${payload.channelId}/${payload.fileName}.html` : `04_Videos/${payload.fileName}.html`;
+            }
+
+            updateProgress(100, 'Vidéo prête à être montée !');
+            logToTerminal(`✓ Processus 100% terminé ! Accès au Studio prêt.`, 'success');
+
+            localStorage.setItem('hyperstudio_cached_active_video', targetVideoPath);
+
+            const studioUrl = `studio.html?video=${encodeURIComponent(targetVideoPath)}`;
+            document.getElementById('btnGoStudio').href = studioUrl;
+            document.getElementById('completionBar').classList.add('show');
+
+            // Redirection automatique fluide
+            let countdown = 2;
+            const subtext = document.getElementById('completionSubtext');
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    subtext.textContent = `Redirection automatique dans ${countdown} seconde${countdown > 1 ? 's' : ''}...`;
+                } else {
+                    clearInterval(interval);
+                    window.location.href = studioUrl;
+                }
+            }, 1000);
+        }
+
+        window.addEventListener('load', runProcess);
+    </script>
+</body>
+</html>

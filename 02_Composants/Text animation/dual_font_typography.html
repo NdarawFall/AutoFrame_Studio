@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant — Dual-Font Typography (Règle #1)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@700;800;900&family=Playfair+Display:ital,wght@1,600;1,800&display=swap" rel="stylesheet">
+    <script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #09090b;
+            color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .typography-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            text-align: center;
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        /* Variante 1 : Sans-Serif Gras + Accent Script Manuscrit (Style Viral 2026) */
+        .title-container-1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            color: #ffffff;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .accent-script {
+            font-family: 'Caveat', cursive;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: inline-block;
+            margin: 0 8px;
+            transform: rotate(-3deg);
+            text-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Variante 2 : Sans-Serif Gras + Accent Serif Éditorial Italique (Style Luxe / Prestige) */
+        .title-container-2 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: #a1a1aa;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .accent-serif {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 3.4rem;
+            color: #facc15;
+            text-shadow: 0 0 30px rgba(250, 204, 21, 0.4);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            background: #27272a;
+            color: #fff;
+            border: 1px solid #3f3f46;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+        button:hover { background: #3f3f46; }
+    </style>
+</head>
+<body>
+
+    <div class="typography-stage">
+        <!-- Titre Dual-Font 1 : Style Viral / Business -->
+        <h1 id="title1" class="title-container-1">
+            Comment générer <span class="accent-script">$100,000</span> en 30 jours
+        </h1>
+
+        <!-- Titre Dual-Font 2 : Style Documentaire / Storytelling -->
+        <h2 id="title2" class="title-container-2">
+            La règle <span class="accent-serif">secrète</span> que les pros vous cachent
+        </h2>
+    </div>
+
+    <div class="controls">
+        <button onclick="playAnim()">🔄 Rejouer l'animation</button>
+    </div>
+
+    <script>
+        function playAnim() {
+            const tl = gsap.timeline();
+
+            tl.fromTo("#title1", 
+                { opacity: 0, y: 30, scale: 0.95 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(1.5)" }
+            );
+
+            tl.fromTo("#title1 .accent-script",
+                { scale: 0.5, rotation: -15, opacity: 0 },
+                { scale: 1, rotation: -3, opacity: 1, duration: 0.6, ease: "back.out(2)" },
+                "-=0.4"
+            );
+
+            tl.fromTo("#title2", 
+                { opacity: 0, y: 25 },
+                { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
+                "-=0.2"
+            );
+        }
+
+        window.addEventListener('DOMContentLoaded', playAnim);
+    </script>
+</body>
+</html>
+

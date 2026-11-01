@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Iman Gadzhi Style // Cinématique Sombre & Business Storytelling</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Cinzel', serif;
+            --font-quote: 'Playfair Display', serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --accent-gold: #d4af37;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--font-body); color: #fff; }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: #050507;
+        }
+        .gadzhi-bg-layer {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 60% 40%, rgba(212, 175, 55, 0.08) 0%, rgba(5,5,7,0.98) 70%);
+        }
+        .film-grain {
+            position: absolute;
+            inset: 0;
+            opacity: 0.18;
+            background-image: repeating-radial-gradient(circle at 17% 32%, white 0, white 1px, transparent 0, transparent 100%);
+            background-size: 180px 180px;
+            pointer-events: none;
+        }
+        .cinematic-vignette {
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 0 120px rgba(0,0,0,0.85);
+            pointer-events: none;
+        }
+        .document-wrapper {
+            position: absolute;
+            width: 680px;
+            height: 820px;
+            left: 140px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-2deg);
+            background: #141419;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .document-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.15) brightness(0.9);
+        }
+        .content-column {
+            position: absolute;
+            left: 900px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 860px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .gold-tag {
+            font-family: var(--font-serif);
+            font-size: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+            padding-bottom: 8px;
+            width: fit-content;
+        }
+        .punchline-quote {
+            font-family: var(--font-quote);
+            font-size: 64px;
+            line-height: 1.15;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        .punchline-quote span {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+        .narrative-text {
+            font-size: 22px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.72);
+            max-width: 760px;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+        <div class="gadzhi-bg-layer"></div>
+        <div class="film-grain"></div>
+        <div class="cinematic-vignette"></div>
+        <div class="document-wrapper" id="docWrap">
+            <img class="document-img" id="mainMediaImg" src="../01_Assets/Images/styles/style_iman_gadzhi_style.jpg" alt="Cinematic Visual">
+        </div>
+        <div class="content-column" id="contentCol">
+            <span class="gold-tag">Dossier Confidentiel</span>
+            <h1 class="punchline-quote" id="stageTitle">Le secret derrière les <span>milliards</span></h1>
+            <p class="narrative-text">Une esthétique documentaire d'investigation avec zoom progressif, découpage papier et transitions de haute finance.</p>
+        </div>
+    </div>
+    <script>
+        const isIframeMode = window.self !== window.top;
+        const tl = gsap.timeline({ paused: isIframeMode });
+        tl.from('#docWrap', { duration: 1.4, x: -80, opacity: 0, rotation: -6, ease: 'power3.out' })
+          .from('#contentCol', { duration: 1, y: 40, opacity: 0, ease: 'power2.out' }, '-=0.9');
+        window.tl = tl;
+        window.__timeline = {
+            duration: () => 30.0,
+            seek: (t) => tl.seek(t, false),
+            pause: () => tl.pause(),
+            play: () => tl.play()
+        };
+    </script>
+</body>
+</html>

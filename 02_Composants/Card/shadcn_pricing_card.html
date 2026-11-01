@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant Vidéo — Carte Pricing SaaS Shadcn</title>
+    <link rel="stylesheet" href="../shadcn.css">
+    <script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .video-pricing-card {
+            width: 320px;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transform: scale(0.85);
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            right: 24px;
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pricing-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+            margin: 0 0 6px 0;
+        }
+
+        .pricing-sub {
+            font-size: 0.8125rem;
+            color: hsl(var(--muted-foreground));
+            margin: 0 0 20px 0;
+        }
+
+        .pricing-price-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: hsl(var(--foreground));
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        .pricing-freq {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.875rem;
+            color: hsl(var(--foreground));
+        }
+
+        .feature-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .btn-pricing {
+            width: 100%;
+            height: 2.75rem;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pricingCard" class="video-pricing-card">
+        <div class="pricing-badge">Plus Populaire</div>
+        <h3 class="pricing-title">Pro Creator</h3>
+        <p class="pricing-sub">Idéal pour les chaînes et créateurs réguliers.</p>
+        
+        <div class="pricing-price-wrap">
+            <span class="pricing-price">$49</span>
+            <span class="pricing-freq">/ mois</span>
+        </div>
+
+        <ul class="feature-list">
+            <li class="feature-item"><span class="feature-check">✓</span> Vidéos 4K 60 FPS illimitées</li>
+            <li class="feature-item"><span class="feature-check">✓</span> Clones de voix IA instantanés</li>
+            <li class="feature-item"><span class="feature-check">✓</span> Sous-titres dynamiques automatiques</li>
+            <li class="feature-item"><span class="feature-check">✓</span> Export multi-plateforme en 1 clic</li>
+        </ul>
+
+        <button class="btn btn-primary btn-pricing">Commencer maintenant →</button>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            gsap.to("#pricingCard", {
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                delay: 0.2,
+                ease: "power3.out"
+            });
+        });
+    </script>
+</body>
+</html>
+
