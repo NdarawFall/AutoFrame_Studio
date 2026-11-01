@@ -32,8 +32,8 @@ function execAsync(cmd, timeout = 25000) {
 }
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const CONFIG_PATH = process.env.VIBE_USER_DATA 
-    ? path.join(process.env.VIBE_USER_DATA, 'api_config.json') 
+const CONFIG_PATH = process.env.VIBE_USER_DATA
+    ? path.join(process.env.VIBE_USER_DATA, 'api_config.json')
     : path.join(ROOT_DIR, '07_Scripts', 'api_config.json');
 
 // Helper pour charger les directives des skills de conception et physique 2D (00_Skills/)
@@ -50,7 +50,7 @@ function loadSkillsDirectives() {
             text += '\n=== DIRECTIVES SKILL: ANIMATION 2D & PHYSIQUE GÉOMÉTRIQUE ===\n' + fs.readFileSync(physicsSkillPath, 'utf8') + '\n';
         }
         return text;
-    } catch(e) {
+    } catch (e) {
         console.warn('Erreur chargement skills:', e.message);
         return '';
     }
@@ -78,7 +78,7 @@ function loadTemplateDirectives(chosenTemplate) {
                 htmlSnippet: bodyMatch ? bodyMatch[1].replace(/<script[\s\S]*?<\/script>/gi, '').trim() : ''
             };
         }
-    } catch(e) {
+    } catch (e) {
         console.warn('Erreur chargement template:', e.message);
     }
     return null;
@@ -111,7 +111,7 @@ function getAudioDuration(filePath) {
                 }
                 resolve(null);
             });
-        } catch(e) {
+        } catch (e) {
             resolve(null);
         }
     });
@@ -229,8 +229,8 @@ async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7) {
 function extractCleanSlug(text, maxWords = 3) {
     if (!text || typeof text !== 'string') return 'video';
     const stopWords = new Set([
-        'concois', 'cree', 'creer', 'creez', 'generer', 'genere', 'faire', 'fais', 'fait', 'animation', 'motion', 'design', 
-        'video', 'clip', 'secondes', 'seconde', 'sec', 'pour', 'dans', 'avec', 'sur', 'au', 
+        'concois', 'cree', 'creer', 'creez', 'generer', 'genere', 'faire', 'fais', 'fait', 'animation', 'motion', 'design',
+        'video', 'clip', 'secondes', 'seconde', 'sec', 'pour', 'dans', 'avec', 'sur', 'au',
         'aux', 'style', 'de', 'du', 'des', 'un', 'une', 'le', 'la', 'les', 'et', 'en', 'par',
         'ce', 'cette', 'ces', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
         'moi', 'toi', 'lui', 'nous', 'vous', 'leur', 'je', 'tu', 'il', 'elle', 'on', 'ils', 'elles', 'me', 'te', 'se',
@@ -246,7 +246,7 @@ function extractCleanSlug(text, maxWords = 3) {
         .replace(/[^a-z0-9\s_-]/g, ' ')
         .replace(/[-_\s]+/g, ' ')
         .trim();
-    
+
     let words = clean.split(' ').filter(w => w.length > 1 && !stopWords.has(w) && !/^\d+s?$/.test(w));
     if (words.length === 0) {
         words = clean.split(' ').filter(w => w.length > 2);
@@ -271,13 +271,13 @@ function ensureDir(dirPath) {
  * @param {object} payload - Données du formulaire create_video.html
  * @param {function} onProgress - Callback (stepId, phaseLabel, percent, logMsg, logType)
  */
-async function runAiVideoPipeline(payload, onProgress = () => {}) {
+async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const startTime = Date.now();
     const prompt = (payload.prompt || '').trim();
     const channelId = (payload.channelId || payload.channel || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
     const isChannel = Boolean(channelId);
     const format = ['16:9', '9:16', '1:1'].includes(payload.format) ? payload.format : '16:9';
-    
+
     // Détection de durée demandée dans le brief (ex: "20 secondes", "30s", "15 sec")
     let promptDuration = null;
     const durMatch = prompt.match(/(\d+)\s*(?:secondes?|secs?|s)\b/i);
@@ -330,13 +330,13 @@ async function runAiVideoPipeline(payload, onProgress = () => {}) {
 
     // Chemins cibles (dossier utilisateur sécurisé si en mode Electron/Packagé)
     const baseProjectDir = process.env.VIBE_USER_DATA || ROOT_DIR;
-    const videosTargetDir = isChannel 
+    const videosTargetDir = isChannel
         ? path.join(baseProjectDir, '03_Chaines', channelId)
         : path.join(baseProjectDir, '04_Videos');
     ensureDir(videosTargetDir);
     let finalFilePath = path.join(videosTargetDir, finalFileName);
-    let relVideoPath = isChannel 
-        ? `03_Chaines/${channelId}/${finalFileName}` 
+    let relVideoPath = isChannel
+        ? `03_Chaines/${channelId}/${finalFileName}`
         : `04_Videos/${finalFileName}`;
 
     // Dimensions
@@ -486,7 +486,7 @@ async function runAiVideoPipeline(payload, onProgress = () => {}) {
 
     // 1. Initialiser le fichier avec status: "processing"
     onProgress('step_init', 'Initialisation du pipeline IA...', 5, `Initialisation de la vidéo : ${finalFileName}`, 'info', { steps: pipelineSteps });
-    
+
     const initialConfigHeader = `<!DOCTYPE html>
 <!-- STATUT TEMPORAIRE : CRÉATION EN COURS PAR L'IA -->
 <html lang="fr">
@@ -639,7 +639,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     } catch (geminiError) {
         console.warn("[Gemini API Fallback] Erreur appel Gemini direct :", geminiError.message);
         onProgress('step_prompt', 'Génération du plan narratif en mode résilient...', 25, `Gemini fallback: ${geminiError.message}`, 'warning');
-        
+
         let fallbackNarration = `${prompt}. Découvrez cette histoire fascinante en quelques secondes.`;
         if (hasCustomScript) {
             const voiceLines = customScript
@@ -718,11 +718,11 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             baseRawName = geminiSlug;
             finalFileName = `${baseRawName}${suffix}.html`;
             finalFilePath = path.join(videosTargetDir, finalFileName);
-            relVideoPath = isChannel 
-                ? `03_Chaines/${channelId}/${finalFileName}` 
+            relVideoPath = isChannel
+                ? `03_Chaines/${channelId}/${finalFileName}`
                 : `04_Videos/${finalFileName}`;
             if (fs.existsSync(oldFilePath) && oldFilePath !== finalFilePath) {
-                try { fs.unlinkSync(oldFilePath); } catch (e) {}
+                try { fs.unlinkSync(oldFilePath); } catch (e) { }
             }
         }
     }
@@ -746,7 +746,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                     if (fontTitle) plan.theme.fontTitle = fontTitle;
                 }
             }
-        } catch(e){}
+        } catch (e) { }
     }
 
     // 4. ÉTAPE : OUTILS EXTERNES (CAPTURE WEB, LOGOS, DRAPEAUX, CARTES)
@@ -759,7 +759,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         detectedUrl = urlMatch[0];
         try {
             detectedDomain = new URL(detectedUrl).hostname.replace(/^www\./, '').toLowerCase();
-        } catch (e) {}
+        } catch (e) { }
     } else {
         const domainMatch = prompt.match(/\b([a-zA-Z0-9-]+\.(?:com|io|fr|org|net|co|ai|dev|app|tech|me))\b/i);
         if (domainMatch) {
@@ -807,9 +807,9 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         try {
             const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs');
             await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
-            const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/,'').toLowerCase().replace(/[\s_]/g,'-');
+            const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/, '').toLowerCase().replace(/[\s_]/g, '-');
             const cleanDomain = brandDomain.replace(/\./g, '_');
-            
+
             // Chercher SVG ou Favicon PNG haute résolution
             const candidates = [
                 path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
@@ -824,7 +824,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                     break;
                 }
             }
-        } catch(e) {
+        } catch (e) {
             console.warn("Erreur brandfetch:", e.message);
         }
     }
@@ -851,7 +851,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                 downloadedFlagPath = `${assetPrefix}/Flags/${path.basename(flagRes.svgPath)}`;
                 onProgress('step_flag', 'Drapeau récupéré avec succès !', 48, `Drapeau (${flagRes.code}) prêt : ${flagRes.relSvgPath}`, 'success');
             }
-        } catch(e) {
+        } catch (e) {
             console.warn("Erreur fetch_flag:", e.message);
         }
     }
@@ -874,7 +874,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                 downloadedMapPath = `${assetPrefix}/Maps/${path.basename(mapOut)}`;
                 onProgress('step_map', 'Carte satellite prête !', 54, `Carte enregistrée : 01_Assets/Maps/${path.basename(mapOut)}`, 'success');
             }
-        } catch(e) {
+        } catch (e) {
             console.warn("Erreur fetch_map:", e.message);
         }
     }
@@ -887,17 +887,17 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         for (const imgItem of userImagesList) {
             const imgName = typeof imgItem === 'string' ? imgItem : (imgItem.name || '');
             if (/green|vert|fond_vert|chroma/i.test(imgName) || /detour|fond vert|chroma/i.test(normPrompt)) {
-                const rawImgPath = isChannel 
+                const rawImgPath = isChannel
                     ? path.join(ROOT_DIR, '01_Assets', 'Images', channelId, imgName)
                     : path.join(ROOT_DIR, '01_Assets', 'Images', imgName);
-                
+
                 if (fs.existsSync(rawImgPath)) {
                     onProgress('step_chroma', `Détourage fond vert de "${imgName}"...`, 56, `07_Scripts/chroma_key.cjs : suppression du fond vert...`, 'info');
                     const parsed = path.parse(rawImgPath);
                     const outChroma = path.join(parsed.dir, `${parsed.name}_detoure.png`);
                     await removeGreenScreen(rawImgPath, outChroma);
                     if (fs.existsSync(outChroma)) {
-                        const relChroma = isChannel 
+                        const relChroma = isChannel
                             ? `${assetPrefix}/Images/${channelId}/${path.basename(outChroma)}`
                             : `${assetPrefix}/Images/${path.basename(outChroma)}`;
                         processedChromaAssets.push(relChroma);
@@ -938,14 +938,14 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             generatedVoiceRelPath = isChannel
                 ? `${assetPrefix}/Voix_Off/${channelId}/${payload.voiceover}`
                 : `${assetPrefix}/Voix_Off/${payload.voiceover}`;
-            
+
             const fullVoicePath = path.join(ROOT_DIR, isChannel ? `01_Assets/Voix_Off/${channelId}/${payload.voiceover}` : `01_Assets/Voix_Off/${payload.voiceover}`);
             const exactDur = await getAudioDuration(fullVoicePath);
             if (exactDur) voiceDurationSeconds = exactDur;
         } else {
             onProgress('step_voice_tts', 'Synthèse vocale IA ElevenLabs...', 58, `07_Scripts/generate_voice.cjs : synthèse de la narration ("${(plan.narration || '').slice(0, 35)}...")`, 'info');
             try {
-                const voiceDir = isChannel 
+                const voiceDir = isChannel
                     ? path.join(ROOT_DIR, '01_Assets', 'Voix_Off', channelId)
                     : path.join(ROOT_DIR, '01_Assets', 'Voix_Off');
                 ensureDir(voiceDir);
@@ -962,7 +962,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                     generatedVoiceRelPath = isChannel
                         ? `${assetPrefix}/Voix_Off/${channelId}/${voiceFile}`
                         : `${assetPrefix}/Voix_Off/${voiceFile}`;
-                    
+
                     // Mesure exacte de la durée via FFmpeg
                     const exactDur = await getAudioDuration(fullVoicePath);
                     if (exactDur && exactDur > 2.0) {
@@ -973,7 +973,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                     }
                     onProgress('step_voice_tts', 'Voix off générée et mesurée !', 65, `Voix générée : ${voiceFile} (${voiceDurationSeconds.toFixed(1)}s)`, 'success');
                 }
-            } catch(voiceErr) {
+            } catch (voiceErr) {
                 console.warn("[Voice TTS Warning] :", voiceErr.message);
                 onProgress('step_voice_tts', 'Voix off prête en mode résilient.', 65, `Voix synthétisée en mode résilient.`, 'warning');
             }
@@ -1004,7 +1004,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     let subtitleCues = [];
     if (showSubtitles) {
         onProgress('step_subtitles', 'Calage temporel mot-à-mot des sous-titres...', 75, `Synchronisation vocale dynamique (style : ${payload.subtitleType || 'type-wordbyword'})`, 'info');
-        
+
         const textToSub = plan.narration || `${prompt}. Composition générée par VibeEditor.`;
         const words = textToSub.split(/\s+/).filter(Boolean);
         const speechStart = 0.3; // Décalage naturel initial de la voix
@@ -1244,19 +1244,19 @@ Veille à ce que les animations, transitions et affichages textuels respectent l
 
 Crée une composition visuelle remarquable avec de vrais éléments graphiques SVG thématiques. Réponds UNIQUEMENT en JSON.`;
 
-        let generatedCode = null;
-        try {
-            onProgress('step_gsap_code', 'Gemini génère le code HTML, CSS et GSAP...', 88, `Génération du motion design et du code vectoriel...`, 'info');
-            generatedCode = await callGeminiAPI(codeGenSystemPrompt, codeGenUserPrompt, 0.7);
-        } catch (codeErr) {
-            console.warn("[Code Gen Fallback] Erreur génération Gemini:", codeErr.message);
-        }
+    let generatedCode = null;
+    try {
+        onProgress('step_gsap_code', 'Gemini génère le code HTML, CSS et GSAP...', 88, `Génération du motion design et du code vectoriel...`, 'info');
+        generatedCode = await callGeminiAPI(codeGenSystemPrompt, codeGenUserPrompt, 0.7);
+    } catch (codeErr) {
+        console.warn("[Code Gen Fallback] Erreur génération Gemini:", codeErr.message);
+    }
 
-        // Fallback résilient si l'API n'a pas répondu
-        if (!generatedCode || !generatedCode.htmlContent || !generatedCode.gsapTimelineCode) {
-            const scDur = (totalVideoDuration / 3).toFixed(1);
-            generatedCode = {
-                htmlContent: `
+    // Fallback résilient si l'API n'a pas répondu
+    if (!generatedCode || !generatedCode.htmlContent || !generatedCode.gsapTimelineCode) {
+        const scDur = (totalVideoDuration / 3).toFixed(1);
+        generatedCode = {
+            htmlContent: `
                 <!-- SCÈNE 1 : ACCROCHE -->
                 <div class="scene-container" id="scene_1">
                     <h1 class="hero-title">
@@ -1294,7 +1294,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
                         <p class="hero-subline">${plan.scenes[2]?.subtitle || 'Prenez l\'avantage dès aujourd\'hui.'}</p>
                     </div>
                 </div>`,
-                customCss: `
+            customCss: `
                 .scene-container {
                     position: absolute;
                     inset: 0;
@@ -1377,7 +1377,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
                     width: 90%;
                     max-width: 900px;
                 }`,
-                gsapTimelineCode: `
+            gsapTimelineCode: `
                 const sc1 = document.getElementById('scene_1');
                 const sc2 = document.getElementById('scene_2');
                 const sc3 = document.getElementById('scene_3');
@@ -1397,50 +1397,50 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
                 tl.set(sc3, { opacity: 1, pointerEvents: 'auto' }, ${2 * scDur});
                 tl.from(sc3.querySelector('.conclusion-box'), { scale: 0.9, opacity: 0, duration: 0.9, ease: 'power3.out' }, ${2 * parseFloat(scDur) + 0.2});
                 `
-            };
+        };
+    }
+
+    // --- SANITISATION & SÉCURISATION DU CODE GÉNÉRÉ PAR L'IA ---
+    let safeCustomCss = (generatedCode.customCss || '').replace(/!important/gi, '');
+    // Retirer les déclarations de style orphelines sans sélecteur en début de CSS
+    const firstBraceIdx = safeCustomCss.indexOf('{');
+    if (firstBraceIdx > -1) {
+        const beforeBrace = safeCustomCss.slice(0, firstBraceIdx);
+        if (beforeBrace.includes(':') && beforeBrace.includes(';')) {
+            const lastSemi = beforeBrace.lastIndexOf(';');
+            safeCustomCss = safeCustomCss.slice(lastSemi + 1).trim();
+        }
+    }
+
+    let safeHtmlContent = (generatedCode.htmlContent || '').replace(/style=(["'])(.*?)\1/gi, (match, quote, styleStr) => {
+        return `style=${quote}${styleStr.replace(/!important/gi, '')}${quote}`;
+    });
+
+    // Détection et neutralisation des balises <img> pointant vers des fichiers inexistants (ex: 01.jpg halluciné)
+    safeHtmlContent = safeHtmlContent.replace(/<img[^>]+src=(["'])(.*?)\1[^>]*>/gi, (imgTag, quote, src) => {
+        let cleanSrc = src.trim();
+        let diskPath = null;
+        if (cleanSrc.startsWith('../')) {
+            diskPath = path.resolve(videosTargetDir, cleanSrc);
+        } else if (cleanSrc.startsWith('01_Assets') || cleanSrc.startsWith('/01_Assets')) {
+            diskPath = path.resolve(ROOT_DIR, cleanSrc.replace(/^\//, ''));
+        } else {
+            diskPath = path.resolve(videosTargetDir, cleanSrc);
         }
 
-        // --- SANITISATION & SÉCURISATION DU CODE GÉNÉRÉ PAR L'IA ---
-        let safeCustomCss = (generatedCode.customCss || '').replace(/!important/gi, '');
-        // Retirer les déclarations de style orphelines sans sélecteur en début de CSS
-        const firstBraceIdx = safeCustomCss.indexOf('{');
-        if (firstBraceIdx > -1) {
-            const beforeBrace = safeCustomCss.slice(0, firstBraceIdx);
-            if (beforeBrace.includes(':') && beforeBrace.includes(';')) {
-                const lastSemi = beforeBrace.lastIndexOf(';');
-                safeCustomCss = safeCustomCss.slice(lastSemi + 1).trim();
-            }
+        if (fs.existsSync(diskPath)) {
+            return imgTag;
         }
 
-        let safeHtmlContent = (generatedCode.htmlContent || '').replace(/style=(["'])(.*?)\1/gi, (match, quote, styleStr) => {
-            return `style=${quote}${styleStr.replace(/!important/gi, '')}${quote}`;
-        });
-
-        // Détection et neutralisation des balises <img> pointant vers des fichiers inexistants (ex: 01.jpg halluciné)
-        safeHtmlContent = safeHtmlContent.replace(/<img[^>]+src=(["'])(.*?)\1[^>]*>/gi, (imgTag, quote, src) => {
-            let cleanSrc = src.trim();
-            let diskPath = null;
-            if (cleanSrc.startsWith('../')) {
-                diskPath = path.resolve(videosTargetDir, cleanSrc);
-            } else if (cleanSrc.startsWith('01_Assets') || cleanSrc.startsWith('/01_Assets')) {
-                diskPath = path.resolve(ROOT_DIR, cleanSrc.replace(/^\//, ''));
-            } else {
-                diskPath = path.resolve(videosTargetDir, cleanSrc);
-            }
-
-            if (fs.existsSync(diskPath)) {
-                return imgTag;
-            }
-
-            console.warn(`[Asset Shield] Remplacement d'une image inexistante hallucinée : ${src}`);
-            return `<div class="vector-hud-card" style="width:100%; height:100%; min-height:200px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:20px;">
+        console.warn(`[Asset Shield] Remplacement d'une image inexistante hallucinée : ${src}`);
+        return `<div class="vector-hud-card" style="width:100%; height:100%; min-height:200px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:20px;">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${accentColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px; filter:drop-shadow(0 0 8px ${accentColor});"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 <span style="font-family:sans-serif; font-size:13px; font-weight:700; color:${accentColor}; text-transform:uppercase; letter-spacing:0.1em;">Visuel Vectoriel</span>
             </div>`;
-        });
+    });
 
-        // Assemblage du fichier HTML complet
-        finalHtml = `<!DOCTYPE html>
+    // Assemblage du fichier HTML complet
+    finalHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -1625,7 +1625,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             subtitles: ${JSON.stringify(subtitleCues)},
             segments: [
                 ${(plan.scenes || []).map((sc, i) => `{
-                    id: ${sc.id || i+1},
+                    id: ${sc.id || i + 1},
                     image: "${downloadedWebCapturePath || downloadedLogoPath || ''}",
                     label: "${(sc.headline || '').replace(/"/g, '\\"')}",
                     start: ${Math.round((i * totalVideoDuration / (plan.scenes.length || 3)) * 10) / 10},
