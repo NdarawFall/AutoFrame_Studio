@@ -27,7 +27,7 @@
 
             /* PALETTE LIGHT ULTRA-MODERNE (Règle 60/30/10) */
             --bg-base: #f8fafc;          /* 60% : Blanc cassé soyeux haute lisibilité */
-            --bg-card: rgba(255, 255, 255, 0.92); /* 30% : Surface carte immaculée */
+            --bg-card: rgba(255, 255, 255, 0.94); /* 30% : Surface carte immaculée */
             --border-card: #e2e8f0;      /* Contour fin et chirurgical */
             --text-title: #0f172a;       /* Noir ardoise profond */
             --text-body: #475569;        /* Gris de lecture équilibré */
@@ -218,8 +218,8 @@
 
         /* DRAPEAUX ENCAPSULÉS */
         .flag-box {
-            width: 32px;
-            height: 22px;
+            width: 34px;
+            height: 24px;
             border-radius: 4px;
             overflow: hidden;
             display: inline-flex;
@@ -319,80 +319,64 @@
         </div>
 
         <!-- ==========================================================================
-             PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (4 NATIONS CLÉS)
+             PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (3 NATIONS CENTRÉES)
              ========================================================================== -->
         <div class="scene" id="plan_2">
             <div class="section-title" id="p2Title" style="margin-bottom: 12px;">
                 Le Grand Écart Mondial
             </div>
             <p class="body-desc" id="p2Sub" style="margin-bottom: 50px;">
-                Le volume annuel d'heures travaillées révèle deux visions opposées de l'existence.
+                Le volume annuel d'heures travaillées révèle trois visions opposées de l'existence.
             </p>
 
-            <!-- GRILLE DE 4 CARDS HOMOGÈNES ET HARMONISÉES -->
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; width: 100%; max-width: 1600px;" id="p2Grid">
+            <!-- GRILLE DE 3 CARDS RIGOROUSEMENT CENTRÉES AU MILLIMÈTRE PRÈS (220px DE MARGE À GAUCHE ET À DROITE) -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: 100%; max-width: 1480px; margin: 0 auto; justify-content: center; align-items: stretch;" id="p2Grid">
                 
                 <!-- CARD 1 : ÉTATS-UNIS -->
-                <div class="glass-card" style="padding: 34px 28px; text-align: left; position: relative;">
+                <div class="glass-card" style="padding: 38px 32px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto; position: relative;" id="p2Card1">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
-                        <span class="card-title" style="font-size: 1.4rem;">États-Unis</span>
+                        <span class="card-title" style="font-size: 1.5rem;">États-Unis</span>
                         <div class="flag-box">
                             <!-- SVG US -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7410 3900"><path fill="#b31942" d="M0 0h7410v3900H0"/><path stroke="#FFF" stroke-width="300" d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0"/><path fill="#0a3161" d="M0 0h2964v2100H0"/></svg>
                         </div>
                     </div>
-                    <div class="mono-stat" style="font-size: 3.2rem; color: #dc2626; margin-bottom: 6px;">1 811 h</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
-                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
-                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;"><strong>0 jour</strong> de congé payé garanti par la loi fédérale.</p>
+                    <div class="mono-stat" style="font-size: 3.4rem; color: #dc2626; margin-bottom: 6px;">1 811 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 20px;">Par an / actif</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 18px;">
+                        <p style="font-size: 1.15rem; color: var(--text-body); line-height: 1.45;"><strong>0 jour</strong> de congé payé garanti par la loi fédérale. Le culte du surmenage permanent.</p>
                     </div>
                 </div>
 
-                <!-- CARD 2 : JAPON -->
-                <div class="glass-card" style="padding: 34px 28px; text-align: left;">
+                <!-- CARD 2 : FRANCE -->
+                <div class="glass-card" style="padding: 38px 32px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto;" id="p2Card2">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
-                        <span class="card-title" style="font-size: 1.4rem;">Japon</span>
-                        <div class="flag-box">
-                            <!-- SVG JAPON -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#fff" d="M0 0h900v600H0z"/><circle fill="#bc002d" cx="450" cy="300" r="180"/></svg>
-                        </div>
-                    </div>
-                    <div class="mono-stat" style="font-size: 3.2rem; color: #ea580c; margin-bottom: 6px;">1 607 h</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
-                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
-                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;">Phénomène du <strong>Karōshi</strong> (surmenage extrême au bureau).</p>
-                    </div>
-                </div>
-
-                <!-- CARD 3 : FRANCE -->
-                <div class="glass-card" style="padding: 34px 28px; text-align: left;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
-                        <span class="card-title" style="font-size: 1.4rem;">France</span>
+                        <span class="card-title" style="font-size: 1.5rem;">France</span>
                         <div class="flag-box">
                             <!-- SVG FRANCE -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><path fill="#CE1126" d="M0 0h900v600H0"/><path fill="#fff" d="M0 0h600v600H0"/><path fill="#002654" d="M0 0h300v600H0"/></svg>
                         </div>
                     </div>
-                    <div class="mono-stat" style="font-size: 3.2rem; color: var(--accent-blue); margin-bottom: 6px;">1 511 h</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 18px;">Par an / actif</div>
-                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
-                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;"><strong>35 heures</strong> légales, 5 semaines de congés + RTT.</p>
+                    <div class="mono-stat" style="font-size: 3.4rem; color: var(--accent-blue); margin-bottom: 6px;">1 511 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 20px;">Par an / actif</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 18px;">
+                        <p style="font-size: 1.15rem; color: var(--text-body); line-height: 1.45;"><strong>35 heures</strong> légales, 5 semaines de congés + RTT. Le modèle protecteur européen.</p>
                     </div>
                 </div>
 
-                <!-- CARD 4 : ALLEMAGNE -->
-                <div class="glass-card glass-card-featured" style="padding: 34px 28px; text-align: left; background: #ffffff;">
+                <!-- CARD 3 : ALLEMAGNE -->
+                <div class="glass-card glass-card-featured" style="padding: 38px 32px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto; background: #ffffff;" id="p2Card3">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
-                        <span class="card-title" style="font-size: 1.4rem;">Allemagne</span>
+                        <span class="card-title" style="font-size: 1.5rem;">Allemagne</span>
                         <div class="flag-box">
                             <!-- SVG ALLEMAGNE -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><path d="M0 0h5v3H0z"/><path fill="#D00" d="M0 1h5v2H0z"/><path fill="#FFCE00" d="M0 2h5v1H0z"/></svg>
                         </div>
                     </div>
-                    <div class="mono-stat" style="font-size: 3.2rem; color: var(--accent-emerald); margin-bottom: 6px;">1 341 h</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: #059669; text-transform: uppercase; margin-bottom: 18px;">Champion OCDE</div>
-                    <div style="border-top: 1px solid var(--border-card); padding-top: 16px;">
-                        <p style="font-size: 1.05rem; color: var(--text-body); line-height: 1.4;">Le volume annuel le <strong>plus faible</strong> du monde développé.</p>
+                    <div class="mono-stat" style="font-size: 3.4rem; color: var(--accent-emerald); margin-bottom: 6px;">1 341 h</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #059669; text-transform: uppercase; margin-bottom: 20px;">Championne OCDE</div>
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 18px;">
+                        <p style="font-size: 1.15rem; color: var(--text-body); line-height: 1.45;">Le volume le <strong>plus faible</strong> du monde développé, pour une puissance industrielle intacte.</p>
                     </div>
                 </div>
 
@@ -560,7 +544,7 @@
         </div>
 
         <!-- ==========================================================================
-             PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION (ILLICH)
+             PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION (ILLICH) — SUIVI SVG CONTINU
              ========================================================================== -->
         <div class="scene" id="plan_5">
             <div style="width: 100%; max-width: 1540px;">
@@ -573,8 +557,8 @@
                 </div>
 
                 <div class="glass-card" style="padding: 40px 60px; position: relative;" id="p5GraphCard">
-                    <!-- GRAPH SVG 2D : COURBE DE RENDEMENT -->
-                    <svg viewBox="0 0 1000 360" style="width: 100%; height: 320px; overflow: visible;">
+                    <!-- GRAPH SVG 2D : COURBE DE RENDEMENT AVEC SUIVI SUB-PIXEL PARFAIT -->
+                    <svg id="p5Svg" viewBox="0 0 1000 360" style="width: 100%; height: 320px; overflow: visible;">
                         <!-- Grille horizontale discrète -->
                         <line x1="80" y1="300" x2="960" y2="300" stroke="#cbd5e1" stroke-width="2"/>
                         <line x1="80" y1="200" x2="960" y2="200" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="6 6"/>
@@ -588,10 +572,10 @@
                         <rect x="680" y="50" width="260" height="250" fill="rgba(239, 68, 68, 0.08)" rx="12"/>
                         <text x="810" y="40" text-anchor="middle" font-family="'Space Grotesk', monospace" font-size="14" font-weight="700" fill="#dc2626">EFFONDREMENT & ERREURS (> 45H)</text>
 
-                        <!-- Courbe animée -->
-                        <path id="p5Curve" d="M 80,290 C 220,280 290,70 380,80 C 500,90 620,180 720,240 C 820,285 920,295 960,298" fill="none" stroke="var(--accent-blue)" stroke-width="5" stroke-linecap="round" stroke-dasharray="1100" stroke-dashoffset="1100"/>
+                        <!-- Courbe animée continue -->
+                        <path id="p5Curve" d="M 80,290 C 220,280 290,70 380,80 C 500,90 620,180 720,240 C 820,285 920,295 960,298" fill="none" stroke="var(--accent-blue)" stroke-width="5" stroke-linecap="round"/>
 
-                        <!-- Point traceur -->
+                        <!-- Point traceur sub-pixel parfaitement collé au tracé -->
                         <circle id="p5Point" cx="80" cy="290" r="9" fill="#ffffff" stroke="var(--accent-blue)" stroke-width="4" filter="drop-shadow(0 4px 8px rgba(37,99,235,0.4))"/>
 
                         <!-- Graduations X -->
@@ -605,7 +589,7 @@
         </div>
 
         <!-- ==========================================================================
-             PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DE L'ÉQUILIBRE MODERNE
+             PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DE L'ÉQUILIBRE MODERNE (CENTRÉS)
              ========================================================================== -->
         <div class="scene" id="plan_6">
             <div style="text-align: center; margin-bottom: 40px;">
@@ -613,10 +597,11 @@
                 <p class="body-desc" style="margin-top: 10px;">L'art de démultiplier son impact sans sacrifier sa vie.</p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; width: 100%; max-width: 1540px;" id="p6CardsWrap">
+            <!-- GRILLE RIGOROUSEMENT CENTRÉE (MARGES SYMÉTRIQUES ÉGALES) -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: 100%; max-width: 1480px; margin: 0 auto; justify-content: center; align-items: stretch;" id="p6CardsWrap">
                 
                 <!-- PILIER 1 -->
-                <div class="glass-card" style="padding: 44px 36px; text-align: left;" id="p6Card1">
+                <div class="glass-card" style="padding: 44px 34px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto;" id="p6Card1">
                     <div class="icon-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                     </div>
@@ -627,7 +612,7 @@
                 </div>
 
                 <!-- PILIER 2 -->
-                <div class="glass-card glass-card-featured" style="padding: 44px 36px; text-align: left; background: #ffffff;" id="p6Card2">
+                <div class="glass-card glass-card-featured" style="padding: 44px 34px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto; background: #ffffff;" id="p6Card2">
                     <div class="icon-circle" style="background: rgba(79, 70, 229, 0.1); color: var(--accent-indigo);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
@@ -638,7 +623,7 @@
                 </div>
 
                 <!-- PILIER 3 -->
-                <div class="glass-card" style="padding: 44px 36px; text-align: left;" id="p6Card3">
+                <div class="glass-card" style="padding: 44px 34px; text-align: left; width: 100%; max-width: 460px; margin: 0 auto;" id="p6Card3">
                     <div class="icon-circle" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald);">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                     </div>
@@ -655,7 +640,7 @@
              PLAN 07 (00:52 - 01:00, 8s) : LE CLIMAX & LA DÉCLARATION FINALE
              ========================================================================== -->
         <div class="scene" id="plan_7">
-            <div class="glass-card" style="padding: 60px 80px; max-width: 1300px; text-align: center;" id="p7HeroCard">
+            <div class="glass-card" style="padding: 60px 80px; max-width: 1300px; text-align: center; margin: 0 auto;" id="p7HeroCard">
                 <div class="badge-pill" style="margin-bottom: 30px;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
                     <span>L'ESSENTIEL</span>
@@ -670,7 +655,7 @@
                 </div>
 
                 <!-- DRAPEAUX COORDONNÉS EN BAS DE CARTE -->
-                <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 36px;" id="p7Flags">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 28px; margin-top: 36px;" id="p7Flags">
                     <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #64748b;">
                         <div class="flag-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11"><path fill="#fff" d="M0 0h18v11H0z"/><path d="M0 5.5h18M6.5 0v11" stroke="#002F6C" stroke-width="3"/></svg></div>
                         <span>Finlande</span>
@@ -696,8 +681,8 @@
 
     </div>
 
-    <!-- AUDIO MAÎTRE (FRESH & FUNKY 60S WAV) + EFFETS SONORES SYNCHRONISÉS -->
-    <audio id="bgm" src="../01_Assets/Musiques/fresh_funky_60s.wav" preload="auto"></audio>
+    <!-- NOUVELLE BANDE-SON ORIGINALE CRÉÉE DE TOUTE PIÈCE (PARADOXE DU TEMPS 60S WAV) -->
+    <audio id="bgm" src="../01_Assets/Musiques/paradoxe_du_temps_60s.wav" preload="auto"></audio>
 
     <script>
     /* ==========================================================================
@@ -812,10 +797,13 @@
 
     /* --------------------------------------------------------------------------
        PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — LE COMPTEUR DES 90 000 HEURES
+       Transitions : 3D Flip sur badge, Zoom élastique, Clip-path reveal sur sous-titre
        -------------------------------------------------------------------------- */
     tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
-    tl.from('#p1Badge', { y: -30, opacity: 0, duration: 0.6, ease: 'back.out(1.5)' }, 0.2);
-    tl.from('#p1CounterWrap', { scale: 0.8, opacity: 0, duration: 0.8, ease: 'back.out(1.4)' }, 0.4);
+    // 3D Flip drop sur le badge
+    tl.from('#p1Badge', { transformPerspective: 800, rotateX: -90, y: -40, opacity: 0, duration: 0.7, ease: 'back.out(2)' }, 0.2);
+    // Zoom élastique percutant sur le compteur
+    tl.from('#p1CounterWrap', { scale: 0.2, opacity: 0, duration: 1.0, ease: 'elastic.out(1, 0.7)' }, 0.4);
 
     // Incrément dynamique du compteur de 0 à 90 000 avec son pop
     const p1Obj = { val: 0 };
@@ -830,8 +818,18 @@
     }, 0.5);
     tl.call(() => playSfx('chime', 0.8), null, 0.6);
 
-    tl.from('#p1Subtitle', { y: 25, opacity: 0, duration: 0.7 }, 1.4);
-    tl.from('#p1Punchline', { y: 20, opacity: 0, duration: 0.7 }, 2.0);
+    // Masked Clip-Path Reveal de gauche à droite sur le sous-titre
+    tl.fromTo('#p1Subtitle', 
+        { clipPath: 'inset(0 100% 0 0)', opacity: 0, y: 15 },
+        { clipPath: 'inset(0 0% 0 0)', opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+        1.4
+    );
+    // Blur-to-focus sur la punchline
+    tl.fromTo('#p1Punchline',
+        { filter: 'blur(16px)', opacity: 0, scale: 0.95 },
+        { filter: 'blur(0px)', opacity: 1, scale: 1, duration: 0.75, ease: 'power3.out' },
+        2.0
+    );
     // Surlignage feutre jaune
     tl.to('#p1Pen', { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.5);
 
@@ -840,26 +838,38 @@
       .set('#plan_1', { display: 'none' }, 4.0);
 
     /* --------------------------------------------------------------------------
-       PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (4 NATIONS)
+       PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (3 NATIONS CENTRÉES)
+       Transitions : 3D Perspective Tilt Drop + Pop élastique des drapeaux
        -------------------------------------------------------------------------- */
     tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
     tl.from('#p2Title', { y: 30, opacity: 0, duration: 0.6 }, 4.1);
     tl.from('#p2Sub', { y: 20, opacity: 0, duration: 0.6 }, 4.3);
 
-    // Stagger fluide des 4 cartes avec drapeaux
-    const p2Cards = gsap.utils.toArray('#p2Grid > div');
-    tl.from(p2Cards, {
-        y: 60,
-        opacity: 0,
-        scale: 0.92,
-        duration: 0.8,
-        stagger: 0.18,
-        ease: 'back.out(1.3)'
-    }, 4.5);
-
-    p2Cards.forEach((_, idx) => {
-        tl.call(() => playSfx('pop', 0.5), null, 4.5 + (idx * 0.18));
+    // Entrée 3D asymétrique des 3 cartes (parfaitement centrées)
+    const p2Cards = ['#p2Card1', '#p2Card2', '#p2Card3'];
+    p2Cards.forEach((id, idx) => {
+        const rotY = idx === 0 ? -18 : (idx === 2 ? 18 : 0);
+        tl.from(id, {
+            transformPerspective: 1000,
+            rotateY: rotY,
+            rotateX: -22,
+            y: -70,
+            scale: 0.88,
+            opacity: 0,
+            duration: 0.85,
+            ease: 'back.out(1.5)'
+        }, 4.4 + (idx * 0.2));
+        tl.call(() => playSfx('pop', 0.6), null, 4.4 + (idx * 0.2));
     });
+
+    // Pop élastique avec rotation des drapeaux
+    tl.from('#p2Grid .flag-box', {
+        scale: 0,
+        rotation: -180,
+        duration: 0.6,
+        stagger: 0.2,
+        ease: 'back.out(2)'
+    }, 4.7);
 
     // Sortie Plan 2
     tl.to('#plan_2', { opacity: 0, scale: 0.96, duration: 0.4, ease: 'power2.in' }, 13.6)
@@ -867,10 +877,25 @@
 
     /* --------------------------------------------------------------------------
        PLAN 03 (00:14 - 00:24, 10s) : LE BAR-CHART 2D INTERACTIF
+       Transitions : Blur-to-focus cinétique à gauche + Déploiement isométrique à droite
        -------------------------------------------------------------------------- */
     tl.set('#plan_3', { display: 'flex', opacity: 1 }, 14.0);
-    tl.from('#p3TextCol', { x: -50, opacity: 0, duration: 0.8 }, 14.1);
-    tl.from('#p3ChartCard', { x: 50, opacity: 0, duration: 0.8 }, 14.2);
+    // Blur-to-focus sur la colonne texte gauche
+    tl.fromTo('#p3TextCol',
+        { filter: 'blur(20px)', opacity: 0, x: -70 },
+        { filter: 'blur(0px)', opacity: 1, x: 0, duration: 0.85, ease: 'power3.out' },
+        14.1
+    );
+    // Déploiement isométrique de la carte graphique
+    tl.from('#p3ChartCard', {
+        transformPerspective: 1200,
+        rotateY: 16,
+        rotateX: -10,
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'back.out(1.4)'
+    }, 14.2);
 
     // Animation 2D des barres horizontales et compteurs de valeur
     const deObj = { val: 0 };
@@ -929,10 +954,16 @@
 
     /* --------------------------------------------------------------------------
        PLAN 04 (00:24 - 00:33, 9s) : LE DONUT DU BONHEUR (FINLANDE & SUISSE)
+       Transitions : Radial Scale Pop + Masked Wipe sur le titre
        -------------------------------------------------------------------------- */
     tl.set('#plan_4', { display: 'flex', opacity: 1 }, 24.0);
-    tl.from('#p4DonutCard', { scale: 0.85, opacity: 0, duration: 0.8, ease: 'back.out(1.3)' }, 24.1);
-    tl.from('#p4NationsList .section-title', { x: 40, opacity: 0, duration: 0.6 }, 24.2);
+    // Radial pop sur le donut card
+    tl.from('#p4DonutCard', { scale: 0.3, rotation: -35, opacity: 0, duration: 0.85, ease: 'back.out(1.8)' }, 24.1);
+    tl.fromTo('#p4NationsList .section-title',
+        { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+        { clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 0.75, ease: 'power2.out' },
+        24.2
+    );
 
     // Progression 2D du donut vectoriel (502.6 * (1 - 0.88) = 60.3)
     tl.to('#p4DonutCircle', { strokeDashoffset: 60.3, duration: 2.2, ease: 'power2.out' }, 24.4);
@@ -959,24 +990,44 @@
 
     /* --------------------------------------------------------------------------
        PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION COGNITIVE
+       Transitions : Expanding Aperture Wipe + SUIVI SUB-PIXEL CONTINU VIA path.getPointAtLength()
        -------------------------------------------------------------------------- */
     tl.set('#plan_5', { display: 'flex', opacity: 1 }, 33.0);
     tl.from('#plan_5 .section-title', { y: 20, opacity: 0, duration: 0.6 }, 33.1);
-    tl.from('#p5GraphCard', { scale: 0.92, opacity: 0, duration: 0.8, ease: 'back.out(1.2)' }, 33.2);
 
-    // Tracé de la courbe 2D vectorielle
-    tl.to('#p5Curve', { strokeDashoffset: 0, duration: 3.5, ease: 'power1.inOut' }, 33.6);
+    // Expanding Aperture Wipe (Révélation circulaire radiale du conteneur)
+    tl.fromTo('#p5GraphCard',
+        { clipPath: 'circle(0% at 50% 50%)', opacity: 0 },
+        { clipPath: 'circle(120% at 50% 50%)', opacity: 1, duration: 0.9, ease: 'power2.out' },
+        33.2
+    );
 
-    // Animation synchronisée du point traceur le long de la courbe
-    const curvePoints = [
-        { t: 33.6, x: 80, y: 290 },
-        { t: 34.6, x: 380, y: 80 },   // Sommet optimal
-        { t: 35.8, x: 720, y: 240 },  // Déclin
-        { t: 37.1, x: 960, y: 298 }   // Crash
-    ];
-    curvePoints.forEach(pt => {
-        tl.to('#p5Point', { cx: pt.x, cy: pt.y, duration: 1.1, ease: 'sine.inOut' }, pt.t);
-    });
+    // Configuration mathématique du tracé SVG et du point traceur
+    const curveEl = document.getElementById('p5Curve');
+    const curveLen = curveEl ? curveEl.getTotalLength() : 1100;
+    gsap.set('#p5Curve', { strokeDasharray: curveLen, strokeDashoffset: curveLen });
+
+    // SUIVI MATHÉMATIQUE ABSOLU (ZÉRO SAUT DE POINT — FLUIDITÉ 100% ORGANIQUE)
+    const p5Progress = { val: 0 };
+    tl.to(p5Progress, {
+        val: 1,
+        duration: 3.8,
+        ease: 'power1.inOut',
+        onUpdate: () => {
+            const p = p5Progress.val;
+            if (curveEl) {
+                // Remplir exactement le tracé
+                curveEl.style.strokeDashoffset = curveLen * (1 - p);
+                // Calculer la position sub-pixel réelle sur la courbe bezier
+                const pt = curveEl.getPointAtLength(p * curveLen);
+                const ptEl = document.getElementById('p5Point');
+                if (ptEl) {
+                    ptEl.setAttribute('cx', pt.x);
+                    ptEl.setAttribute('cy', pt.y);
+                }
+            }
+        }
+    }, 33.6);
 
     tl.call(() => playSfx('whoosh', 0.4), null, 34.2);
 
@@ -985,17 +1036,33 @@
       .set('#plan_5', { display: 'none' }, 43.0);
 
     /* --------------------------------------------------------------------------
-       PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DU TRAVAIL MODERNE
+       PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DU TRAVAIL MODERNE (CENTRÉS)
+       Transitions : Cascading Domino Stagger avec rotation asymétrique
        -------------------------------------------------------------------------- */
     tl.set('#plan_6', { display: 'flex', opacity: 1 }, 43.0);
     tl.from('#plan_6 .section-title', { y: 25, opacity: 0, duration: 0.6 }, 43.1);
     tl.from('#plan_6 .body-desc', { y: 15, opacity: 0, duration: 0.6 }, 43.2);
 
-    // Entrée échelonnée des 3 cartes piliers avec icônes
+    // Cascading Domino Stagger avec rotation asymétrique sur les 3 cartes
     const p6Cards = ['#p6Card1', '#p6Card2', '#p6Card3'];
     p6Cards.forEach((id, idx) => {
-        const t = 43.5 + (idx * 0.25);
-        tl.from(id, { y: 50, opacity: 0, scale: 0.94, duration: 0.7, ease: 'back.out(1.3)' }, t);
+        const t = 43.5 + (idx * 0.22);
+        const rot = idx === 0 ? -6 : (idx === 2 ? 6 : 0);
+        tl.from(id, {
+            y: 80,
+            rotation: rot,
+            opacity: 0,
+            scale: 0.88,
+            duration: 0.8,
+            ease: 'back.out(1.6)'
+        }, t);
+        // Icônes qui pulsent avec pop sonore
+        tl.from(`${id} .icon-circle`, {
+            scale: 0,
+            rotation: -90,
+            duration: 0.5,
+            ease: 'back.out(2)'
+        }, t + 0.15);
         tl.call(() => playSfx('pop', 0.5), null, t);
     });
 
@@ -1005,17 +1072,30 @@
 
     /* --------------------------------------------------------------------------
        PLAN 07 (00:52 - 01:00, 8s) : CLIMAX & DÉCLARATION FINALE
+       Transitions : Cinematic Zoom-In from Depth + Surlignage feutre + Pop drapeaux
        -------------------------------------------------------------------------- */
     tl.set('#plan_7', { display: 'flex', opacity: 1 }, 52.0);
-    tl.from('#p7HeroCard', { scale: 0.9, opacity: 0, duration: 0.9, ease: 'back.out(1.4)' }, 52.1);
-    tl.from('#p7Title', { y: 20, opacity: 0, duration: 0.8 }, 52.4);
+    // Cinematic Zoom-In from Depth
+    tl.fromTo('#p7HeroCard',
+        { scale: 1.15, filter: 'blur(12px)', opacity: 0 },
+        { scale: 1, filter: 'blur(0px)', opacity: 1, duration: 1.0, ease: 'power3.out' },
+        52.1
+    );
+    tl.from('#p7Title', { y: 25, opacity: 0, duration: 0.8 }, 52.4);
 
     // Déploiement majestueux du surlignage jaune feutré
     tl.to('#p7Pen', { scaleX: 1, duration: 0.9, ease: 'power2.inOut' }, 53.6);
     tl.call(() => playSfx('chime', 0.9), null, 53.7);
 
-    // Révélation finale des drapeaux
-    tl.from('#p7Flags', { opacity: 0, y: 15, duration: 0.8, ease: 'power2.out' }, 54.5);
+    // Stagger élastique des 4 drapeaux finaux
+    tl.from('#p7Flags > div', {
+        scale: 0,
+        y: 20,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 0.6,
+        ease: 'back.out(2)'
+    }, 54.5);
 
     // Fondu final délicat vers 60.0s
     tl.to('#stage', { opacity: 0.95, duration: 1.0 }, 59.0);
@@ -1025,7 +1105,7 @@
     window.__timeline = {
         duration: () => 60.0,
         seek: (t) => {
-            tl.seek(t);
+            tl.seek(t, false);
             if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
                 bgm.currentTime = t;
             }

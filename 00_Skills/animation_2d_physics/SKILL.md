@@ -180,3 +180,90 @@ Toute vidéo doit obligatoirement être articulée autour de **3 couleurs unique
   ```
 * Cela garantit que la carte de conclusion percutante s'affiche **rigoureusement au centre géométrique de l'écran vertical (1080x1920) ou horizontal (1920x1080)**.
 
+---
+
+## 📈 7. SUIVI CONTINU DE COURBE SVG (PATH TRACKING) : FIN DES SAUTS DE POINTS
+
+### Le Problème Fréquent
+* Tenter d'animer un point ou un curseur le long d'une courbe en déclenchant des `tl.to(point, { cx: x1, cy: y1 })` successifs entre des points arbitraires.
+* **Résultat disgracieux :** Le point se déplace en ligne droite entre chaque étape et fait des sauts visibles, déconnecté du tracé bezier réel de la courbe.
+
+### La Règle d'Or : `path.getPointAtLength()` Sub-pixel
+Toujours dériver la position du point traceur mathématiquement de la longueur réelle du path SVG :
+```javascript
+const curve = document.getElementById('myCurve');
+const curveLen = curve.getTotalLength();
+const tracker = { progress: 0 };
+
+tl.to(tracker, {
+    progress: 1,
+    duration: 3.5,
+    ease: "power1.inOut",
+    onUpdate: () => {
+        const p = tracker.progress;
+        // 1. Remplir le tracé exactement
+        curve.style.strokeDashoffset = curveLen * (1 - p);
+        // 2. Ancrer le point sur le tracé au millième de pixel près
+        const pt = curve.getPointAtLength(p * curveLen);
+        const pointEl = document.getElementById('myPoint');
+        if (pointEl) {
+            pointEl.setAttribute('cx', pt.x);
+            pointEl.setAttribute('cy', pt.y);
+        }
+    }
+});
+```
+* **Résultat :** Le point colle de manière organique et continue à la pointe du tracé, sans aucun à-coup ni saut rectiligne.
+
+---
+
+## 📐 8. CENTRAGE STRICT DES GRILLES DE CARDS (ZÉRO DÉCALAGE LATÉRAL)
+
+### Le Piège du Décalage à Droite ou à Gauche
+* Dans une flexbox `.scene`, attribuer à un conteneur de grille `width: 100%; max-width: 1480px;` sans spécifier `margin: 0 auto; justify-content: center;` peut provoquer un alignement asymétrique vers la droite ou la gauche.
+
+### La Règle Infaillible pour 3 Cards Alignées
+```html
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: 100%; max-width: 1480px; margin: 0 auto; justify-content: center; align-items: stretch;">
+    <div class="glass-card" style="width: 100%; max-width: 460px; margin: 0 auto;">Card 1</div>
+    <div class="glass-card" style="width: 100%; max-width: 460px; margin: 0 auto;">Card 2</div>
+    <div class="glass-card" style="width: 100%; max-width: 460px; margin: 0 auto;">Card 3</div>
+</div>
+```
+* Chaque carte a une largeur équilibrée (~460px), les marges gauche et droite du canvas sont strictement égales (`(1920 - 1480) / 2 = 220px`), garantissant un centrage parfait au pixel près.
+
+---
+
+## 🎭 9. DIVERSITÉ DES CINÉMATIQUES D'ENTRÉE (BANNIR LE SLIDE/FONDU RÉPÉTITIF)
+
+Il est formellement interdit d'utiliser la même transition `tl.from({ y: 30, opacity: 0 })` sur toutes les scènes consécutives. Une vraie direction artistique varie les mécaniques :
+
+1. **3D Perspective Unfolding / Drop :**
+   ```javascript
+   tl.from(card, { transformPerspective: 1000, rotateX: -25, y: -60, scale: 0.9, opacity: 0, duration: 0.8, ease: "back.out(1.5)" });
+   ```
+2. **Masked Clip-Path Wipe :**
+   ```javascript
+   tl.fromTo(element, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" });
+   ```
+3. **Blur-To-Focus Kinetic Snap :**
+   ```javascript
+   tl.fromTo(element, { filter: "blur(20px)", scale: 0.95, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" });
+   ```
+4. **Radial Aperture Expand (Circle Wipe) :**
+   ```javascript
+   tl.fromTo(container, { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(120% at 50% 50%)", duration: 0.9, ease: "power2.out" });
+   ```
+5. **Elastic Domino Cascade :**
+   ```javascript
+   tl.from(cardsArray, { y: 70, rotation: (i) => [-4, 0, 4][i], scale: 0.88, opacity: 0, stagger: 0.18, ease: "back.out(1.6)" });
+   ```
+
+---
+
+## 🎵 10. COMPOSITION MUSICALE SUR MESURE DE TOUTE PIÈCE
+
+* Ne jamais recycler indéfiniment la même boucle musicale préexistante.
+* Utiliser les générateurs procéduraux intégrés (`00_Skills/reconstruction_documentary/scripts/music.py`) pour composer un morceau 100% original adapté au tempo exact (BPM), à la progression dramatique et à l'identité visuelle de la composition.
+
+

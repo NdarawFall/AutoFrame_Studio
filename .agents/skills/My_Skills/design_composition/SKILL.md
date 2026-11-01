@@ -174,3 +174,6 @@ function fitText(el,maxW,maxH,{min=24,max=400}={}){
 - [ ] Aucun plan statique (zoom/pan permanent).
 - [ ] Polices locales chargées, `fitText` appliqué aux titres variables.
 - [ ] Aucun layout identique 3 fois de suite.
+- [ ] Grilles de cartes (3 cards) rigoureusement centrées (`margin: 0 auto; justify-content: center;`).
+- [ ] Pas de slide/fondu répétitif : transitions alternées (3D tilt, masked wipe, blur snap, radial wipe).
+- [ ] Tracés de courbes avec curseur synchronisé sub-pixel via `path.getPointAtLength()` (zéro saut de point).
