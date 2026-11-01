@@ -66,8 +66,9 @@
 19. **Centrage Géométrique des Grilles de Cartes & Suivi SVG Sub-Pixel (`path.getPointAtLength`)** :
     - Pour les conteneurs de cartes en grille (notamment 3 cartes), toujours spécifier `margin: 0 auto; justify-content: center;` avec une largeur maximale explicite (`max-width: 1480px`). Ne jamais laisser de décalage vers la droite ou la gauche.
     - Pour les graphiques avec point traceur le long d'une courbe SVG, **interdiction absolue d'interpoler des points linéaires disjoints qui font des "sauts"**. Toujours utiliser `path.getPointAtLength(p * totalLength)` pour un ancrage continu et fluide au millième de pixel près.
-20. **Bannissement du "Slide/Fondu Répétitif" & Musique Créée de Toute Pièce** :
-    - Varier systématiquement les animations d'entrée d'une scène à l'autre : perspective 3D flip/tilt (`transformPerspective`, `rotateX/Y`), masked clip-path wipe (`clipPath: inset(...)`), blur-to-focus (`filter: blur(...)`), radial aperture wipe (`clipPath: circle(...)`), ou cascades élastiques.
+20. **Animation des Cards (Fondus Directionnels Purs & Séquentiel) & Musique Créée de Toute Pièce** :
+    - Pour les cartes (cards), bannir formellement les rotations 3D déformantes ou les inclinaisons agressives. Utiliser des fondus directionnels purs (haut, bas, côtés). Si plusieurs cartes sont présentes dans une même scène, elles doivent impérativement s'animer **une à une à la suite de façon séquentielle distincte**.
+    - Les néons/gradients d'arrière-plan doivent avoir une opacité marquée (~0.45 à 0.55) et un mouvement dynamique organique continu.
     - Ne jamais réutiliser la même boucle musicale préexistante. Composer une bande-son originale sur mesure adaptée au sujet et au rythme (via `music.py`).
 
 ---

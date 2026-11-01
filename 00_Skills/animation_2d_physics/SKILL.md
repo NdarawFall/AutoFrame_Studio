@@ -234,30 +234,25 @@ tl.to(tracker, {
 
 ---
 
-## 🎭 9. DIVERSITÉ DES CINÉMATIQUES D'ENTRÉE (BANNIR LE SLIDE/FONDU RÉPÉTITIF)
+## 🎭 9. ANIMATION DES CARDS : FONDUS DIRECTIONNELS PURS & ENTRÉE SÉQUENTIELLE UNE À UNE
 
-Il est formellement interdit d'utiliser la même transition `tl.from({ y: 30, opacity: 0 })` sur toutes les scènes consécutives. Une vraie direction artistique varie les mécaniques :
-
-1. **3D Perspective Unfolding / Drop :**
-   ```javascript
-   tl.from(card, { transformPerspective: 1000, rotateX: -25, y: -60, scale: 0.9, opacity: 0, duration: 0.8, ease: "back.out(1.5)" });
-   ```
-2. **Masked Clip-Path Wipe :**
-   ```javascript
-   tl.fromTo(element, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" });
-   ```
-3. **Blur-To-Focus Kinetic Snap :**
-   ```javascript
-   tl.fromTo(element, { filter: "blur(20px)", scale: 0.95, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" });
-   ```
-4. **Radial Aperture Expand (Circle Wipe) :**
-   ```javascript
-   tl.fromTo(container, { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(120% at 50% 50%)", duration: 0.9, ease: "power2.out" });
-   ```
-5. **Elastic Domino Cascade :**
-   ```javascript
-   tl.from(cardsArray, { y: 70, rotation: (i) => [-4, 0, 4][i], scale: 0.88, opacity: 0, stagger: 0.18, ease: "back.out(1.6)" });
-   ```
+### Règle Fondamentale pour les Cartes (Cards UI)
+* ❌ **Interdiction des Déformations 3D Agressives :** Ne JAMAIS appliquer de rotations 3D déformantes (`rotateX/Y` violents, retournements ou zooms convulsifs) sur les cartes d'information. Cela perturbe la lecture et dégrade le rendu professionnel.
+* ✅ **La Règle d'Or : Fondus Directionnels Purs :**
+  Pour les cartes, privilégier des fondus directionnels doux et maîtrisés :
+  - **Fondu vers le haut :** `tl.from(card, { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" })`
+  - **Fondu vers le bas :** `tl.from(card, { y: -40, opacity: 0, duration: 0.7, ease: "power2.out" })`
+  - **Fondu latéral (gauche/droite) :** `tl.from(card, { x: 45, opacity: 0, duration: 0.7, ease: "power2.out" })`
+* ✅ **Animation Séquentielle Obligatoire (Une à une à la suite) :**
+  Lorsqu'une scène comporte plusieurs cartes (ex: 3 cartes pays, 3 piliers), **elles doivent impérativement s'animer une à une de façon séquentielle distincte** pour guider le regard :
+  ```javascript
+  // Carte 1 s'installe
+  tl.from('#card1', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, t);
+  // Carte 2 arrive ensuite
+  tl.from('#card2', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, t + 0.8);
+  // Carte 3 conclut la série
+  tl.from('#card3', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, t + 1.6);
+  ```
 
 ---
 
@@ -265,5 +260,13 @@ Il est formellement interdit d'utiliser la même transition `tl.from({ y: 30, op
 
 * Ne jamais recycler indéfiniment la même boucle musicale préexistante.
 * Utiliser les générateurs procéduraux intégrés (`00_Skills/reconstruction_documentary/scripts/music.py`) pour composer un morceau 100% original adapté au tempo exact (BPM), à la progression dramatique et à l'identité visuelle de la composition.
+
+---
+
+## 💡 11. NÉONS & GRADIENTS D'ARRIÈRE-PLAN : OPACITÉ VISIBLE ET DÉRIVE ORGANIQUE
+
+* **Opacité Visuelle Suffisante :** L'arrière-plan ne doit pas être délavé ou quasi invisible. Les orbes néon/gradient doivent avoir une opacité marquée (~0.45 à 0.55) et des teintes riches (cyan lumineux, violet électrique, corail chaleureux).
+* **Mouvement Vivant et Continu :** Les néons doivent être animés avec GSAP sur des boucles lentes et amples (`x: 250px`, `y: 180px`, `scale: 1.15`, `yoyo: true`, `repeat: -1`) pour que l'arrière-plan respire et vive en continu sans jamais paraître figé.
+
 
 

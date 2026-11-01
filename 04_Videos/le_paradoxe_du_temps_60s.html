@@ -71,7 +71,7 @@
             transform-origin: center center;
         }
 
-        /* COUCHE 1 : DYNAMIC MESH GRADIENT BACKDROP (FOND BLANC VIVANT) */
+        /* COUCHE 1 : DYNAMIC MESH GRADIENT BACKDROP (NÉONS VIBRANTS & LUMINEUX) */
         .ambient-gradient-backdrop {
             position: absolute;
             inset: 0;
@@ -84,35 +84,35 @@
         .gradient-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(140px);
-            opacity: 0.22;
+            filter: blur(110px);
             pointer-events: none;
         }
 
         .orb-1 {
-            width: 800px;
-            height: 800px;
-            left: -100px;
-            top: -100px;
-            background: radial-gradient(circle, #38bdf8 0%, #818cf8 100%);
+            width: 900px;
+            height: 900px;
+            left: -80px;
+            top: -80px;
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.65) 0%, rgba(99, 102, 241, 0.45) 50%, transparent 75%);
+            opacity: 0.52;
         }
 
         .orb-2 {
-            width: 900px;
-            height: 900px;
-            right: -150px;
-            bottom: -150px;
-            background: radial-gradient(circle, #fb923c 0%, #f43f5e 100%);
-            opacity: 0.15;
+            width: 1000px;
+            height: 1000px;
+            right: -100px;
+            bottom: -100px;
+            background: radial-gradient(circle, rgba(244, 63, 94, 0.55) 0%, rgba(249, 115, 22, 0.45) 50%, transparent 75%);
+            opacity: 0.48;
         }
 
         .orb-3 {
-            width: 700px;
-            height: 700px;
-            left: 35%;
-            top: 25%;
-            background: radial-gradient(circle, #34d399 0%, #06b6d4 100%);
-            opacity: 0.14;
+            width: 850px;
+            height: 850px;
+            left: 32%;
+            top: 20%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.55) 0%, rgba(6, 182, 212, 0.4) 50%, transparent 75%);
+            opacity: 0.46;
         }
 
         /* MICRO-GRILLE ÉDITORIALE ÉLÉGANTE */
@@ -782,10 +782,10 @@
         defaults: { ease: 'power3.out' }
     });
 
-    // Mouvement d'ambiance lent des gradients (orbes vivantes en arrière-plan)
-    gsap.to('#orb1', { x: 120, y: 80, duration: 20, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('#orb2', { x: -100, y: -60, duration: 25, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('#orb3', { x: 80, y: -100, duration: 18, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    // Mouvement d'ambiance dynamique et continu des néons en fond (visibles & organiques)
+    gsap.to('#orb1', { x: 260, y: 160, scale: 1.15, duration: 8.5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb2', { x: -240, y: -180, scale: 1.12, duration: 10.5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb3', { x: 200, y: -150, scale: 1.2, duration: 7.8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
     // Lancement de la musique
     tl.call(() => {
@@ -797,13 +797,11 @@
 
     /* --------------------------------------------------------------------------
        PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — LE COMPTEUR DES 90 000 HEURES
-       Transitions : 3D Flip sur badge, Zoom élastique, Clip-path reveal sur sous-titre
+       Transitions : Simple fondu vertical fluide & compteur dynamique
        -------------------------------------------------------------------------- */
     tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
-    // 3D Flip drop sur le badge
-    tl.from('#p1Badge', { transformPerspective: 800, rotateX: -90, y: -40, opacity: 0, duration: 0.7, ease: 'back.out(2)' }, 0.2);
-    // Zoom élastique percutant sur le compteur
-    tl.from('#p1CounterWrap', { scale: 0.2, opacity: 0, duration: 1.0, ease: 'elastic.out(1, 0.7)' }, 0.4);
+    tl.from('#p1Badge', { y: -25, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.2);
+    tl.from('#p1CounterWrap', { y: 35, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.4);
 
     // Incrément dynamique du compteur de 0 à 90 000 avec son pop
     const p1Obj = { val: 0 };
@@ -818,84 +816,47 @@
     }, 0.5);
     tl.call(() => playSfx('chime', 0.8), null, 0.6);
 
-    // Masked Clip-Path Reveal de gauche à droite sur le sous-titre
-    tl.fromTo('#p1Subtitle', 
-        { clipPath: 'inset(0 100% 0 0)', opacity: 0, y: 15 },
-        { clipPath: 'inset(0 0% 0 0)', opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' },
-        1.4
-    );
-    // Blur-to-focus sur la punchline
-    tl.fromTo('#p1Punchline',
-        { filter: 'blur(16px)', opacity: 0, scale: 0.95 },
-        { filter: 'blur(0px)', opacity: 1, scale: 1, duration: 0.75, ease: 'power3.out' },
-        2.0
-    );
+    tl.from('#p1Subtitle', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 1.4);
+    tl.from('#p1Punchline', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 2.0);
     // Surlignage feutre jaune
     tl.to('#p1Pen', { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.5);
 
     // Sortie Plan 1
-    tl.to('#plan_1', { opacity: 0, y: -30, duration: 0.4, ease: 'power2.in' }, 3.6)
+    tl.to('#plan_1', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 3.6)
       .set('#plan_1', { display: 'none' }, 4.0);
 
     /* --------------------------------------------------------------------------
        PLAN 02 (00:04 - 00:14, 10s) : LE GRAND ÉCART MONDIAL (3 NATIONS CENTRÉES)
-       Transitions : 3D Perspective Tilt Drop + Pop élastique des drapeaux
+       Transitions : Simple fondu vers le haut, animé UNE À UNE à la suite
        -------------------------------------------------------------------------- */
     tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
-    tl.from('#p2Title', { y: 30, opacity: 0, duration: 0.6 }, 4.1);
-    tl.from('#p2Sub', { y: 20, opacity: 0, duration: 0.6 }, 4.3);
+    tl.from('#p2Title', { y: 25, opacity: 0, duration: 0.6, ease: 'power2.out' }, 4.1);
+    tl.from('#p2Sub', { y: 15, opacity: 0, duration: 0.6, ease: 'power2.out' }, 4.3);
 
-    // Entrée 3D asymétrique des 3 cartes (parfaitement centrées)
-    const p2Cards = ['#p2Card1', '#p2Card2', '#p2Card3'];
-    p2Cards.forEach((id, idx) => {
-        const rotY = idx === 0 ? -18 : (idx === 2 ? 18 : 0);
-        tl.from(id, {
-            transformPerspective: 1000,
-            rotateY: rotY,
-            rotateX: -22,
-            y: -70,
-            scale: 0.88,
-            opacity: 0,
-            duration: 0.85,
-            ease: 'back.out(1.5)'
-        }, 4.4 + (idx * 0.2));
-        tl.call(() => playSfx('pop', 0.6), null, 4.4 + (idx * 0.2));
-    });
+    // Entrée des 3 cartes UNE À UNE à la suite en simple fondu vers le haut
+    // Card 1 : États-Unis
+    tl.from('#p2Card1', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 4.5);
+    tl.call(() => playSfx('pop', 0.5), null, 4.5);
 
-    // Pop élastique avec rotation des drapeaux
-    tl.from('#p2Grid .flag-box', {
-        scale: 0,
-        rotation: -180,
-        duration: 0.6,
-        stagger: 0.2,
-        ease: 'back.out(2)'
-    }, 4.7);
+    // Card 2 : France
+    tl.from('#p2Card2', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 5.3);
+    tl.call(() => playSfx('pop', 0.5), null, 5.3);
 
-    // Sortie Plan 2
-    tl.to('#plan_2', { opacity: 0, scale: 0.96, duration: 0.4, ease: 'power2.in' }, 13.6)
+    // Card 3 : Allemagne
+    tl.from('#p2Card3', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 6.1);
+    tl.call(() => playSfx('pop', 0.5), null, 6.1);
+
+    // Sortie Plan 2 : simple fondu vers le haut
+    tl.to('#plan_2', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 13.6)
       .set('#plan_2', { display: 'none' }, 14.0);
 
     /* --------------------------------------------------------------------------
        PLAN 03 (00:14 - 00:24, 10s) : LE BAR-CHART 2D INTERACTIF
-       Transitions : Blur-to-focus cinétique à gauche + Déploiement isométrique à droite
+       Transitions : Simple fondu latéral (gauche et droite)
        -------------------------------------------------------------------------- */
     tl.set('#plan_3', { display: 'flex', opacity: 1 }, 14.0);
-    // Blur-to-focus sur la colonne texte gauche
-    tl.fromTo('#p3TextCol',
-        { filter: 'blur(20px)', opacity: 0, x: -70 },
-        { filter: 'blur(0px)', opacity: 1, x: 0, duration: 0.85, ease: 'power3.out' },
-        14.1
-    );
-    // Déploiement isométrique de la carte graphique
-    tl.from('#p3ChartCard', {
-        transformPerspective: 1200,
-        rotateY: 16,
-        rotateX: -10,
-        scale: 0.9,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'back.out(1.4)'
-    }, 14.2);
+    tl.from('#p3TextCol', { x: -40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 14.1);
+    tl.from('#p3ChartCard', { x: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 14.3);
 
     // Animation 2D des barres horizontales et compteurs de valeur
     const deObj = { val: 0 };
@@ -948,22 +909,18 @@
 
     tl.call(() => playSfx('chime', 0.7), null, 15.0);
 
-    // Sortie Plan 3
-    tl.to('#plan_3', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 23.6)
+    // Sortie Plan 3 : simple fondu vers le haut
+    tl.to('#plan_3', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 23.6)
       .set('#plan_3', { display: 'none' }, 24.0);
 
     /* --------------------------------------------------------------------------
        PLAN 04 (00:24 - 00:33, 9s) : LE DONUT DU BONHEUR (FINLANDE & SUISSE)
-       Transitions : Radial Scale Pop + Masked Wipe sur le titre
+       Transitions : Simple fondu vers le haut pour le Donut, puis cartes UNE À UNE à la suite
        -------------------------------------------------------------------------- */
     tl.set('#plan_4', { display: 'flex', opacity: 1 }, 24.0);
-    // Radial pop sur le donut card
-    tl.from('#p4DonutCard', { scale: 0.3, rotation: -35, opacity: 0, duration: 0.85, ease: 'back.out(1.8)' }, 24.1);
-    tl.fromTo('#p4NationsList .section-title',
-        { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
-        { clipPath: 'inset(0 0% 0 0)', opacity: 1, duration: 0.75, ease: 'power2.out' },
-        24.2
-    );
+    // Donut card à gauche : simple fondu vers le haut
+    tl.from('#p4DonutCard', { y: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 24.1);
+    tl.from('#p4NationsList .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 24.2);
 
     // Progression 2D du donut vectoriel (502.6 * (1 - 0.88) = 60.3)
     tl.to('#p4DonutCircle', { strokeDashoffset: 60.3, duration: 2.2, ease: 'power2.out' }, 24.4);
@@ -980,34 +937,32 @@
     }, 24.4);
     tl.call(() => playSfx('pop', 0.6), null, 24.5);
 
-    // Révélation des 2 cartes pays
-    tl.from('#p4Fi', { x: 50, opacity: 0, duration: 0.6, ease: 'power2.out' }, 25.0);
-    tl.from('#p4Ch', { x: 50, opacity: 0, duration: 0.6, ease: 'power2.out' }, 25.4);
+    // Révélation des 2 cartes pays UNE À UNE à la suite (simple fondu latéral)
+    tl.from('#p4Fi', { x: 45, opacity: 0, duration: 0.65, ease: 'power2.out' }, 25.0);
+    tl.call(() => playSfx('pop', 0.5), null, 25.0);
+    tl.from('#p4Ch', { x: 45, opacity: 0, duration: 0.65, ease: 'power2.out' }, 25.8);
+    tl.call(() => playSfx('pop', 0.5), null, 25.8);
 
-    // Sortie Plan 4
-    tl.to('#plan_4', { opacity: 0, scale: 0.95, duration: 0.4, ease: 'power2.in' }, 32.6)
+    // Sortie Plan 4 : simple fondu vers le haut
+    tl.to('#plan_4', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 32.6)
       .set('#plan_4', { display: 'none' }, 33.0);
 
     /* --------------------------------------------------------------------------
        PLAN 05 (00:33 - 00:43, 10s) : LA COURBE DE SATURATION COGNITIVE
-       Transitions : Expanding Aperture Wipe + SUIVI SUB-PIXEL CONTINU VIA path.getPointAtLength()
+       Transitions : Simple fondu vers le haut pour la carte
        -------------------------------------------------------------------------- */
     tl.set('#plan_5', { display: 'flex', opacity: 1 }, 33.0);
-    tl.from('#plan_5 .section-title', { y: 20, opacity: 0, duration: 0.6 }, 33.1);
+    tl.from('#plan_5 .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 33.1);
 
-    // Expanding Aperture Wipe (Révélation circulaire radiale du conteneur)
-    tl.fromTo('#p5GraphCard',
-        { clipPath: 'circle(0% at 50% 50%)', opacity: 0 },
-        { clipPath: 'circle(120% at 50% 50%)', opacity: 1, duration: 0.9, ease: 'power2.out' },
-        33.2
-    );
+    // Simple fondu vers le haut pour la carte du graphique
+    tl.from('#p5GraphCard', { y: 40, opacity: 0, duration: 0.7, ease: 'power2.out' }, 33.2);
 
     // Configuration mathématique du tracé SVG et du point traceur
     const curveEl = document.getElementById('p5Curve');
-    const curveLen = curveEl ? curveEl.getTotalLength() : 1100;
+    const curveLen = curveEl ? curveEl.getTotalLength() : 1005;
     gsap.set('#p5Curve', { strokeDasharray: curveLen, strokeDashoffset: curveLen });
 
-    // SUIVI MATHÉMATIQUE ABSOLU (ZÉRO SAUT DE POINT — FLUIDITÉ 100% ORGANIQUE)
+    // SUIVI MATHÉMATIQUE CONTINU SUB-PIXEL
     const p5Progress = { val: 0 };
     tl.to(p5Progress, {
         val: 1,
@@ -1031,71 +986,50 @@
 
     tl.call(() => playSfx('whoosh', 0.4), null, 34.2);
 
-    // Sortie Plan 5
-    tl.to('#plan_5', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 42.6)
+    // Sortie Plan 5 : simple fondu vers le haut
+    tl.to('#plan_5', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 42.6)
       .set('#plan_5', { display: 'none' }, 43.0);
 
     /* --------------------------------------------------------------------------
        PLAN 06 (00:43 - 00:52, 9s) : LES 3 PILIERS DU TRAVAIL MODERNE (CENTRÉS)
-       Transitions : Cascading Domino Stagger avec rotation asymétrique
+       Transitions : Simple fondu vers le haut, UNE À UNE à la suite
        -------------------------------------------------------------------------- */
     tl.set('#plan_6', { display: 'flex', opacity: 1 }, 43.0);
-    tl.from('#plan_6 .section-title', { y: 25, opacity: 0, duration: 0.6 }, 43.1);
-    tl.from('#plan_6 .body-desc', { y: 15, opacity: 0, duration: 0.6 }, 43.2);
+    tl.from('#plan_6 .section-title', { y: 20, opacity: 0, duration: 0.6, ease: 'power2.out' }, 43.1);
+    tl.from('#plan_6 .body-desc', { y: 15, opacity: 0, duration: 0.6, ease: 'power2.out' }, 43.2);
 
-    // Cascading Domino Stagger avec rotation asymétrique sur les 3 cartes
-    const p6Cards = ['#p6Card1', '#p6Card2', '#p6Card3'];
-    p6Cards.forEach((id, idx) => {
-        const t = 43.5 + (idx * 0.22);
-        const rot = idx === 0 ? -6 : (idx === 2 ? 6 : 0);
-        tl.from(id, {
-            y: 80,
-            rotation: rot,
-            opacity: 0,
-            scale: 0.88,
-            duration: 0.8,
-            ease: 'back.out(1.6)'
-        }, t);
-        // Icônes qui pulsent avec pop sonore
-        tl.from(`${id} .icon-circle`, {
-            scale: 0,
-            rotation: -90,
-            duration: 0.5,
-            ease: 'back.out(2)'
-        }, t + 0.15);
-        tl.call(() => playSfx('pop', 0.5), null, t);
-    });
+    // Entrée des 3 cartes UNE À UNE à la suite en simple fondu vers le haut
+    // Pilier 1
+    tl.from('#p6Card1', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 43.5);
+    tl.call(() => playSfx('pop', 0.5), null, 43.5);
 
-    // Sortie Plan 6
-    tl.to('#plan_6', { opacity: 0, scale: 0.95, duration: 0.4, ease: 'power2.in' }, 51.6)
+    // Pilier 2
+    tl.from('#p6Card2', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 44.4);
+    tl.call(() => playSfx('pop', 0.5), null, 44.4);
+
+    // Pilier 3
+    tl.from('#p6Card3', { y: 45, opacity: 0, duration: 0.7, ease: 'power2.out' }, 45.3);
+    tl.call(() => playSfx('pop', 0.5), null, 45.3);
+
+    // Sortie Plan 6 : simple fondu vers le haut
+    tl.to('#plan_6', { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' }, 51.6)
       .set('#plan_6', { display: 'none' }, 52.0);
 
     /* --------------------------------------------------------------------------
        PLAN 07 (00:52 - 01:00, 8s) : CLIMAX & DÉCLARATION FINALE
-       Transitions : Cinematic Zoom-In from Depth + Surlignage feutre + Pop drapeaux
+       Transitions : Simple fondu vers le haut pour la carte finale
        -------------------------------------------------------------------------- */
     tl.set('#plan_7', { display: 'flex', opacity: 1 }, 52.0);
-    // Cinematic Zoom-In from Depth
-    tl.fromTo('#p7HeroCard',
-        { scale: 1.15, filter: 'blur(12px)', opacity: 0 },
-        { scale: 1, filter: 'blur(0px)', opacity: 1, duration: 1.0, ease: 'power3.out' },
-        52.1
-    );
-    tl.from('#p7Title', { y: 25, opacity: 0, duration: 0.8 }, 52.4);
+    // Simple fondu vers le haut pour la Hero Card
+    tl.from('#p7HeroCard', { y: 35, opacity: 0, duration: 0.8, ease: 'power2.out' }, 52.1);
+    tl.from('#p7Title', { y: 20, opacity: 0, duration: 0.7, ease: 'power2.out' }, 52.4);
 
     // Déploiement majestueux du surlignage jaune feutré
-    tl.to('#p7Pen', { scaleX: 1, duration: 0.9, ease: 'power2.inOut' }, 53.6);
-    tl.call(() => playSfx('chime', 0.9), null, 53.7);
+    tl.to('#p7Pen', { scaleX: 1, duration: 0.9, ease: 'power2.inOut' }, 53.5);
+    tl.call(() => playSfx('chime', 0.9), null, 53.6);
 
-    // Stagger élastique des 4 drapeaux finaux
-    tl.from('#p7Flags > div', {
-        scale: 0,
-        y: 20,
-        opacity: 0,
-        stagger: 0.15,
-        duration: 0.6,
-        ease: 'back.out(2)'
-    }, 54.5);
+    // Simple fondu vers le haut pour les drapeaux
+    tl.from('#p7Flags', { y: 15, opacity: 0, duration: 0.7, ease: 'power2.out' }, 54.4);
 
     // Fondu final délicat vers 60.0s
     tl.to('#stage', { opacity: 0.95, duration: 1.0 }, 59.0);
