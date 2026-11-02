@@ -99,6 +99,15 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 **Preuve avant opinion** : quand on avance un fait contestable, montrer la source dans les 2 s.
 Alterner les types : jamais 3 plans du même type d'affilée.
 
+### 4.4 Montage Shorts pour Clients & Rushes Bruts (Dossier `10_Clients/`)
+- **Rôle éditeur Short** : L'utilisateur exerce également en tant qu'éditeur de vidéos courtes (Shorts, Reels, TikTok).
+- **Emplacement des rushes non montés** : Toutes les vidéos brutes et enregistrements non montés transmis par les clients sont centralisés dans le dossier racine `10_Clients/<nom_client>/`.
+- **Confidentialité & Zéro Clutter Git** : Ce dossier est strictement exclu du suivi Git (seul `10_Clients/.gitkeep` et `README.md` sont conservés). Les médias volumineux et confidentiels des clients restent 100% locaux.
+- **Workflow de montage pour clients** :
+  1. Découpage dynamique des temps morts et des respirations inutiles.
+  2. Habillage visuel vertical 9:16 percutant (typographie cinétique mot par mot, b-rolls d'illustration, zooms légers de recadrage).
+  3. Export des compositions finales dans `04_Videos/` ou `03_Chaines/` sans jamais altérer les fichiers bruts d'origine dans `10_Clients/`.
+
 ## 5. Transitions
 Principe : **80 % de cuts secs**. Une transition doit avoir une raison (changement de lieu, de temps, de chapitre, ou énergie).
 | Transition | Quand | Durée |

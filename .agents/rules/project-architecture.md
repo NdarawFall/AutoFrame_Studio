@@ -79,7 +79,7 @@ heygen-new/
 │   ├── remove_bg.cjs           # Détourage et suppression du fond d'images
 │   └── api_config.json         # Stockage local des clés API (ignoré par Git)
 ├── 08_Rendus/                  # [Éphémère] Sorties finales vidéo MP4 (ignoré par Git)
-└── 09_Pages/                   # Interface utilisateur web du studio (Home, Studio Player, Paramètres)
+├── 09_Pages/                   # Interface utilisateur web du studio (Home, Studio Player, Paramètres)
     ├── home.html               # Page d'accueil et tableau de bord principal
     ├── studio.html             # Studio de montage (player, timeline, onglets Vidéos, Rendus)
     ├── create_video.html       # Formulaire de brief et configuration de création vidéo
@@ -88,6 +88,9 @@ heygen-new/
     ├── channel.html            # Vue détaillée d'une chaîne spécifique avec ses vidéos
     ├── channel_settings.html   # Paramètres d'une chaîne (Brand Kit, couleurs, typographies)
     └── settings.html           # Paramètres généraux de l'application et gestion des clés API
+└── 10_Clients/                 # [Clients] Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)
+    ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
+    └── README.md               # Guide d'organisation des rushes par client
 ```
 
 ---
@@ -146,3 +149,4 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 | **`07_Scripts/`** | Pérenne | Moteurs d'orchestration et scripts utilitaires (`ai_director`, `tts`, `coverr`...). | Exécution et maintenance. |
 | **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre utilisateur**. |
 | **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur du Studio web. | Maintenance et affichage UI. |
+| **`10_Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git pour la confidentialité et le stockage. |

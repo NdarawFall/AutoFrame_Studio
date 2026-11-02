@@ -52,7 +52,7 @@ const activeCreationJobs = new Map();
 const USER_DATA_DIR = ROOT_DIR;
 
 if (process.env.VIBE_USER_DATA) {
-    ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus'].forEach(folder => {
+    ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus', '10_Clients'].forEach(folder => {
         const full = path.join(USER_DATA_DIR, folder);
         if (!fs.existsSync(full)) {
             try { fs.mkdirSync(full, { recursive: true }); } catch (e) {}

@@ -41,6 +41,14 @@ out/
 !08_Rendus/.gitkeep
 
 # ==============================================================================
+# VIDÉOS BRUTES CLIENTS (RUSHES NON MONTÉS - EXCLUS DE GIT POUR CONFIDENTIALITÉ & POIDS)
+# ==============================================================================
+10_Clients/**
+!10_Clients/
+!10_Clients/.gitkeep
+!10_Clients/README.md
+
+# ==============================================================================
 # ASSETS PERSONNELS (SEULE L'ARBORESCENCE DES SOUS-DOSSIERS EST CONSERVÉE SUR GITHUB)
 # ==============================================================================
 # Tous les fichiers et contenus multimédias personnels dans 01_Assets sont exclus
