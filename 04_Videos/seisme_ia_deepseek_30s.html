@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Séisme DeepSeek : Le Choc IA de Wall Street</title>
+    <!-- GSAP 3.12.5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* CHARTE 60-30-10 STRICTE */
+            --bg-obsidian: #090a10;      /* 60% Fond dominant */
+            --bg-card: #11131c;          /* 30% Surfaces et cartes */
+            --bg-card-glass: rgba(17, 19, 28, 0.85);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-accent: rgba(0, 240, 255, 0.35);
+            --accent-cyan: #00f0ff;       /* 10% Accent unique néon */
+            --accent-glow: rgba(0, 240, 255, 0.25);
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --shadow-card: 0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000000;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* CADRE MAÎTRE 16:9 STRICT — ZÉRO CONTRÔLE INTERNE, 4 COINS 100% PURS */
+        #stage {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 1920px;
+            height: 1080px;
+            background: var(--bg-obsidian);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* FOND LUMINEUX SPOTLIGHT ORGANIQUE SUBTIL */
+        .ambient-backlight {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .ambient-blob {
+            position: absolute;
+            width: 900px;
+            height: 900px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.16;
+            transform: translate(-50%, -50%);
+        }
+
+        #blobLeft {
+            top: 30%;
+            left: 20%;
+            background: #00f0ff;
+        }
+
+        #blobRight {
+            top: 70%;
+            left: 80%;
+            background: #10b981;
+        }
+
+        /* STRUCTURE DES SCÈNES (ISOLATION ABSOLUE display: none / flex) */
+        .scene {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            padding: 90px 110px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        /* TYPOGRAPHIE CINÉTIQUE STABLE SANS REFLOW */
+        .headline-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 34px;
+        }
+
+        .headline-line {
+            display: block;
+            white-space: nowrap;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            color: #ffffff;
+        }
+
+        .headline-line.highlight {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 40px rgba(0, 240, 255, 0.45);
+        }
+
+        .sub-headline {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-muted);
+            max-width: 920px;
+            line-height: 1.5;
+            letter-spacing: -0.2px;
+        }
+
+        /* SCÈNE 1 : LE CHOC DES LOGOS & CARTOUCHES FACE-À-FACE */
+        .versus-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 15px;
+        }
+
+        .entity-card {
+            flex: 1;
+            padding: 42px 48px;
+            border-radius: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .entity-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 70%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .entity-logo-wrap {
+            height: 95px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .entity-logo {
+            max-height: 85px;
+            max-width: 260px;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        }
+
+        .entity-stat-badge {
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .entity-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .entity-sub {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .versus-badge {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #1e2436;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 30px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            z-index: 10;
+        }
+
+        /* SCÈNE 2 : B-ROLL VIDÉO HARDWARE AVEC DATA-START / DATA-END */
+        .showcase-grid-video {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 1540px;
+            margin-top: 15px;
+        }
+
+        .video-shell {
+            position: relative;
+            width: 860px;
+            height: 484px; /* 16:9 */
+            border-radius: 26px;
+            overflow: hidden;
+            background: #000000;
+            border: 3px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.18);
+        }
+
+        #brollDatacenter {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .video-details-column {
+            flex: 1;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            text-align: left;
+        }
+
+        .cost-card {
+            padding: 30px 34px;
+            border-radius: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .cost-card.highlight {
+            border-color: rgba(0, 240, 255, 0.35);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(17, 19, 28, 0.95));
+        }
+
+        .cost-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .cost-label {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .cost-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* SCÈNE 3 : GRAPH DU CRASH NASDAQ & PERTE DE 593 MILLIARDS */
+        .chart-stage-container {
+            width: 100%;
+            max-width: 1420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 55px;
+            margin-top: 15px;
+        }
+
+        .chart-svg-card {
+            position: relative;
+            width: 820px;
+            height: 440px;
+            border-radius: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            padding: 32px 38px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-stats-card {
+            flex: 1;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            text-align: left;
+        }
+
+        .stat-box-crash {
+            padding: 32px 36px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.08), var(--bg-card));
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-box-crash .crash-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            color: var(--accent-rose);
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        /* SCÈNE 4 : LES 3 PILIERS DE LA DISRUPTION SÉQUENTIELLE */
+        .pillars-grid {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 32px;
+            width: 100%;
+            max-width: 1520px;
+            margin-top: 20px;
+        }
+
+        .pillar-card {
+            flex: 1;
+            padding: 42px 36px;
+            border-radius: 26px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-cyan);
+            opacity: 0.7;
+        }
+
+        .pillar-icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+            margin-bottom: 24px;
+        }
+
+        .pillar-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+
+        .pillar-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        /* SCÈNE 5 : CARTE FINALE CENTRÉE AU MILIEU ABSOLU */
+        .conclusion-wrapper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 1240px;
+            padding: 60px 70px;
+            border-radius: 36px;
+            background: linear-gradient(135deg, rgba(17, 19, 28, 0.95), rgba(9, 10, 16, 0.98));
+            border: 2px solid rgba(0, 240, 255, 0.35);
+            box-shadow: 0 40px 100px -20px rgba(0, 240, 255, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .conclusion-logo {
+            max-height: 90px;
+            margin-bottom: 28px;
+            filter: drop-shadow(0 10px 30px rgba(0, 240, 255, 0.4));
+        }
+
+        .conclusion-punchline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 18px;
+            letter-spacing: -1px;
+        }
+
+        .conclusion-sub {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage">
+        <!-- AMBIENT BACKLIGHT DYNAMIQUE -->
+        <div class="ambient-backlight">
+            <div id="blobLeft" class="ambient-blob"></div>
+            <div id="blobRight" class="ambient-blob"></div>
+        </div>
+
+        <!-- AUDIO : BANDE-SON TECH CYBERPUNK SYNCHRONISÉE SANS CONFLIT -->
+        <audio id="bgmTrack" src="../01_Assets/Musiques/deepseek_tech_30s.wav" preload="auto"></audio>
+
+        <!-- ======================================================================
+             PLAN 01 (00:00 - 00:06, 6s) : LE HOOK & CONFRONTATION DES DEUX GÉANTS
+             ====================================================================== -->
+        <section id="plan_1" class="scene">
+            <div class="headline-wrapper">
+                <span id="p1TitleLine1" class="headline-line">2026 : LE SÉISME DEEPSEEK</span>
+                <span id="p1TitleLine2" class="headline-line highlight">LE MONOPOLE IA SOUS TENSION</span>
+            </div>
+            <p id="p1Sub" class="sub-headline">Comment une architecture open-source à coût ultra-réduit a fait vaciller l'hégémonie de Wall Street.</p>
+
+            <div class="versus-container">
+                <!-- ENTITÉ 1 : NVIDIA -->
+                <div id="p1CardNvidia" class="entity-card">
+                    <div class="entity-logo-wrap">
+                        <img src="../01_Assets/Logos/nvidia.svg" alt="Nvidia Logo" class="entity-logo">
+                    </div>
+                    <div class="entity-stat-badge" style="background: rgba(118, 185, 0, 0.15); color: #76b900;">L'Ancien Paradis</div>
+                    <div class="entity-val" style="color: #76b900;">3 500 Mds $</div>
+                    <div class="entity-sub">Capitalisation boursière record basée sur des superclusters de 16 000 GPU H100.</div>
+                </div>
+
+                <!-- BADGE VERSUS CINÉMATIQUE -->
+                <div id="p1Versus" class="versus-badge">VS</div>
+
+                <!-- ENTITÉ 2 : DEEPSEEK -->
+                <div id="p1CardDeepseek" class="entity-card">
+                    <div class="entity-logo-wrap">
+                        <img src="../01_Assets/Logos/deepseek.svg" alt="DeepSeek Logo" class="entity-logo">
+                    </div>
+                    <div class="entity-stat-badge" style="background: rgba(0, 240, 255, 0.15); color: #00f0ff;">Le Disrupteur</div>
+                    <div class="entity-val" style="color: #00f0ff;">5.6 M $</div>
+                    <div class="entity-sub">Entraînement complet pour une fraction infinitésimale des budgets américains.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 02 (00:06 - 00:13, 7s) : B-ROLL VIDÉO HARDWARE & ÉQUATION DU COÛT
+             ATTRIBUTS OBLIGATOIRES : data-start="6.0" data-end="13.0" data-duration="7.0"
+             Le Studio pilote nativement la lecture automatique à 60 FPS sans à-coup.
+             ====================================================================== -->
+        <section id="plan_2" class="scene">
+            <div class="headline-wrapper">
+                <span id="p2TitleLine" class="headline-line">L'ÉQUATION DES COÛTS RÉVOLUTIONNÉE</span>
+            </div>
+            <p id="p2Sub" class="sub-headline">L'architecture Mixture-of-Experts brise le mythe des dépenses exponentielles en silicium.</p>
+
+            <div class="showcase-grid-video">
+                <!-- CONTENEUR VIDÉO B-ROLL 60 FPS SANS CONTRÔLE INTERNE -->
+                <div id="p2VideoShell" class="video-shell">
+                    <video id="brollDatacenter" 
+                           src="../01_Assets/Videos/datacenter_ai_clip.mp4" 
+                           data-start="6.0" 
+                           data-end="13.0" 
+                           data-duration="7.0" 
+                           muted loop playsinline preload="auto">
+                    </video>
+                </div>
+
+                <!-- CARTOUCHES DE CHIFFRES CHOCS -->
+                <div class="video-details-column">
+                    <div id="p2CostCard1" class="cost-card">
+                        <div class="cost-num" style="color: #f43f5e;">100 000 000 $+</div>
+                        <div class="cost-label">Modèle Propriétaire Standard</div>
+                        <div class="cost-desc">Infrastructure brute requise par les clusters traditionnels de la Silicon Valley.</div>
+                    </div>
+
+                    <div id="p2CostCard2" class="cost-card highlight">
+                        <div class="cost-num" style="color: #00f0ff;">5 576 000 $</div>
+                        <div class="cost-label">DeepSeek V3 / R1</div>
+                        <div class="cost-desc">Division des coûts par 20 grâce à une optimisation sub-algorithmique radicale.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 03 (00:13 - 00:20, 7s) : SÉISME BOURSIER & GRAPHIQUE SVG EXACT
+             Point traceur animé le long de la courbe avec path.getPointAtLength
+             ====================================================================== -->
+        <section id="plan_3" class="scene">
+            <div class="headline-wrapper">
+                <span id="p3TitleLine" class="headline-line">LUNDI NOIR SUR LE NASDAQ</span>
+            </div>
+            <p id="p3Sub" class="sub-headline">La plus violente contraction de capitalisation boursière tech de l'histoire moderne.</p>
+
+            <div class="chart-stage-container">
+                <!-- GRAPHIQUE FINANCIER VECTORIEL -->
+                <div id="p3ChartCard" class="chart-svg-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #f43f5e;">CHUTE INTRA-DAY • SEMICONDUCTEURS</span>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-muted);">SEMAINE CLÉ 2025-2026</span>
+                    </div>
+
+                    <svg id="crashSvg" width="740" height="290" viewBox="0 0 740 290" style="overflow: visible;">
+                        <defs>
+                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.35"/>
+                                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Grille de référence -->
+                        <line x1="0" y1="60" x2="740" y2="60" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"/>
+                        <line x1="0" y1="140" x2="740" y2="140" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"/>
+                        <line x1="0" y1="220" x2="740" y2="220" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"/>
+
+                        <!-- Surface sous la courbe -->
+                        <path id="crashArea" d="M 40 70 C 180 75, 300 90, 420 180 C 520 250, 620 260, 700 265 L 700 290 L 40 290 Z" fill="url(#chartGrad)" opacity="0"/>
+
+                        <!-- Courbe maîtresse du crash -->
+                        <path id="crashLine" d="M 40 70 C 180 75, 300 90, 420 180 C 520 250, 620 260, 700 265" fill="none" stroke="#f43f5e" stroke-width="4" stroke-linecap="round"/>
+
+                        <!-- Point traceur toujours à l'extrémité du trait -->
+                        <circle id="crashPoint" cx="40" cy="70" r="9" fill="#f43f5e" stroke="#ffffff" stroke-width="3" filter="drop-shadow(0 0 10px #f43f5e)"/>
+                    </svg>
+                </div>
+
+                <!-- CARTOUCHE DE STATS D'IMPACT -->
+                <div class="chart-stats-card">
+                    <div id="p3StatCard1" class="stat-box-crash">
+                        <div id="crashCounter" class="crash-num">-593 Mds $</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Évaporés en 24 Heures</div>
+                        <div style="font-size: 15px; color: var(--text-muted); line-height: 1.45;">Une chute historique remettant en cause la rente technologique du hardware ultra-coûteux.</div>
+                    </div>
+
+                    <div id="p3StatCard2" class="cost-card" style="border-left: 4px solid var(--accent-cyan);">
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 6px;">COMPUTATIONAL EFFICIENCY</div>
+                        <div style="font-size: 16px; color: #ffffff; font-weight: 600;">L'intelligence algorithmique supplante l'accumulation de force brute.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 04 (00:20 - 00:25, 5s) : LES 3 PILIERS DE LA DISRUPTION
+             Animation séquentielle pure des 3 cartes (Règle d'or n°20)
+             ====================================================================== -->
+        <section id="plan_4" class="scene">
+            <div class="headline-wrapper">
+                <span id="p4TitleLine" class="headline-line">LES 3 PILIERS DU NOUVEAU PARADIGME</span>
+            </div>
+            <p id="p4Sub" class="sub-headline">Pourquoi le monde de la tech ne reviendra plus jamais en arrière.</p>
+
+            <div class="pillars-grid">
+                <!-- PILIER 1 -->
+                <div id="p4Pillar1" class="pillar-card">
+                    <div class="pillar-icon-box">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                            <line x1="6" y1="6" x2="6.01" y2="6"/>
+                            <line x1="6" y1="18" x2="6.01" y2="18"/>
+                        </svg>
+                    </div>
+                    <div class="pillar-title">Architecture MoE Optimisée</div>
+                    <div class="pillar-desc">Seules les fractions utiles du réseau de neurones s'activent pour chaque requête, divisant l'énergie par 10.</div>
+                </div>
+
+                <!-- PILIER 2 -->
+                <div id="p4Pillar2" class="pillar-card">
+                    <div class="pillar-icon-box" style="color: var(--accent-emerald); border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.08);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <div class="pillar-title" style="color: #ffffff;">Poids Ouverts au Monde</div>
+                    <div class="pillar-desc">Poids de modèles téléchargeables et auditables, rompant avec l'opacité totale des laboratoires fermés.</div>
+                </div>
+
+                <!-- PILIER 3 -->
+                <div id="p4Pillar3" class="pillar-card">
+                    <div class="pillar-icon-box" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </div>
+                    <div class="pillar-title" style="color: #ffffff;">Démocratisation Radicale</div>
+                    <div class="pillar-desc">Toute université, startup ou chercheur indépendant peut désormais exécuter une intelligence de pointe.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 05 (00:25 - 00:30, 5s) : CARTE MAÎTRESSE CENTRÉE AU MILIEU ABSOLU
+             ====================================================================== -->
+        <section id="plan_5" class="scene">
+            <div id="p5Card" class="conclusion-wrapper">
+                <img src="../01_Assets/Logos/deepseek.svg" alt="DeepSeek" class="conclusion-logo">
+                <div id="p5Punchline" class="conclusion-punchline">
+                    « LA PUISSANCE BRUTE NE SUFFIT PLUS.<br>
+                    <span style="color: var(--accent-cyan);">L'AVENIR APPARTIENT À L'OPTIMISATION. »</span>
+                </div>
+                <div id="p5Sub" class="conclusion-sub">NOUVEL ORDRE MONDIAL DE L'INTELLIGENCE ARTIFICIELLE</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MOTEUR AUDIO SFX & TIMELINE MAÎTRESSE GSAP -->
+    <script>
+    // --- 1. MOTEUR AUDIO SFX HYBRIDE (Web Audio API haute fidélité) ---
+    let audioCtx = null;
+    function getAudioContext() {
+        if (!audioCtx) {
+            const AudioClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioClass) audioCtx = new AudioClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+        }
+        return audioCtx;
+    }
+
+    const sfxBuffers = {};
+    const sfxFiles = {
+        impact: '../01_Assets/Effets_Sonores/sfx_impact.wav',
+        glitch: '../01_Assets/Effets_Sonores/sfx_glitch.wav',
+        powerup: '../01_Assets/Effets_Sonores/sfx_powerup.wav',
+        shimmer: '../01_Assets/Effets_Sonores/sfx_shimmer.wav',
+        whoosh: '../01_Assets/Effets_Sonores/whip_whoosh.wav'
+    };
+
+    function loadSfxFiles() {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        Object.entries(sfxFiles).forEach(([name, url]) => {
+            fetch(url)
+                .then(r => r.arrayBuffer())
+                .then(buf => ctx.decodeAudioData(buf))
+                .then(decoded => { sfxBuffers[name] = decoded; })
+                .catch(() => {});
+        });
+    }
+    loadSfxFiles();
+
+    function playSfx(name, vol = 0.7) {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        if (sfxBuffers[name]) {
+            try {
+                const src = ctx.createBufferSource();
+                src.buffer = sfxBuffers[name];
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                src.connect(gain);
+                gain.connect(ctx.destination);
+                src.start(0);
+                return;
+            } catch(e) {}
+        }
+        // Synthèse de secours Web Audio API
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const t = ctx.currentTime;
+        if (name === 'impact') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120, t);
+            osc.frequency.exponentialRampToValueAtTime(35, t + 0.35);
+            gain.gain.setValueAtTime(vol, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+            osc.start(t);
+            osc.stop(t + 0.35);
+        } else if (name === 'whoosh') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(280, t);
+            osc.frequency.exponentialRampToValueAtTime(700, t + 0.25);
+            gain.gain.setValueAtTime(vol * 0.6, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            osc.start(t);
+            osc.stop(t + 0.25);
+        } else {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, t);
+            osc.frequency.exponentialRampToValueAtTime(900, t + 0.2);
+            gain.gain.setValueAtTime(vol * 0.5, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+            osc.start(t);
+            osc.stop(t + 0.2);
+        }
+    }
+
+    // --- 2. CONFIGURATION DE LA TIMELINE GSAP (DURÉE EXACTE 30.0s DÉTERMINISTE) ---
+    const isIframeMode = window.self !== window.top;
+    const bgm = document.getElementById('bgmTrack');
+    const brollEl = document.getElementById('brollDatacenter');
+
+    const tl = gsap.timeline({
+        paused: isIframeMode,
+        defaults: { ease: 'power3.out' }
+    });
+
+    // Ambiance lumineuse d'arrière-plan en mouvement subtil
+    gsap.to('#blobLeft', { x: 120, y: 80, duration: 8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#blobRight', { x: -100, y: -70, duration: 9, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+    // Démarrage de la musique de fond
+    tl.call(() => {
+        if (bgm) {
+            bgm.currentTime = 0;
+            bgm.volume = 0.65;
+            bgm.play().catch(() => {});
+        }
+    }, null, 0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 01 (00:00 - 00:06, 6s) : LE HOOK & FACE-À-FACE DES GÉANTS
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
+    tl.fromTo('#p1TitleLine1', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, 0.2);
+    tl.fromTo('#p1TitleLine2', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, 0.55);
+    tl.call(() => playSfx('impact', 0.8), null, 0.6);
+    tl.fromTo('#p1Sub', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 0.9);
+
+    // Entrée des cartes face-à-face
+    tl.fromTo('#p1CardNvidia', { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }, 1.3);
+    tl.fromTo('#p1Versus', { scale: 0, rotation: -90, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 1.6);
+    tl.call(() => playSfx('glitch', 0.7), null, 1.65);
+    tl.fromTo('#p1CardDeepseek', { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }, 1.8);
+    tl.call(() => playSfx('powerup', 0.75), null, 1.9);
+
+    // Sortie Plan 1
+    tl.to('#plan_1', { opacity: 0, y: -30, duration: 0.45, ease: 'power2.in' }, 5.5)
+      .set('#plan_1', { display: 'none' }, 6.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 02 (00:06 - 00:13, 7s) : B-ROLL HARDWARE 60 FPS & COÛTS
+       Le Studio pilote la vidéo nativement via data-start="6.0" data-end="13.0"
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_2', { display: 'flex', opacity: 1 }, 6.0);
+    tl.fromTo('#p2TitleLine', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 6.2);
+    tl.fromTo('#p2Sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 6.5);
+
+    // Reveal élégant du mockup vidéo
+    tl.fromTo('#p2VideoShell', { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.85, ease: 'power2.out' }, 6.6);
+    tl.call(() => playSfx('whoosh', 0.6), null, 6.7);
+
+    // En mode autonome hors-Studio UNIQUEMENT, déclencheur de secours
+    if (!isIframeMode) {
+        tl.call(() => {
+            if (brollEl) {
+                brollEl.currentTime = 0;
+                brollEl.play().catch(() => {});
+            }
+        }, null, 6.0);
+        tl.call(() => {
+            if (brollEl) brollEl.pause();
+        }, null, 13.0);
+    }
+
+    // Entrée séquentielle des deux cartouches de coûts
+    tl.fromTo('#p2CostCard1', { x: 45, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power3.out' }, 7.3);
+    tl.fromTo('#p2CostCard2', { x: 45, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 8.0);
+    tl.call(() => playSfx('shimmer', 0.7), null, 8.1);
+
+    // Sortie Plan 2
+    tl.to('#plan_2', { opacity: 0, y: -30, duration: 0.45, ease: 'power2.in' }, 12.5)
+      .set('#plan_2', { display: 'none' }, 13.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 03 (00:13 - 00:20, 7s) : LE CRASH DU NASDAQ & GRAPHIQUE SVG SUB-PIXEL
+       Point traceur strictement ancré à l'extrémité avec path.getPointAtLength
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_3', { display: 'flex', opacity: 1 }, 13.0);
+    tl.fromTo('#p3TitleLine', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 13.2);
+    tl.fromTo('#p3Sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 13.5);
+
+    tl.fromTo('#p3ChartCard', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 13.7);
+    tl.fromTo('#p3StatCard1', { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 14.1);
+    tl.fromTo('#p3StatCard2', { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 14.7);
+
+    // Configuration géométrique sub-pixel du tracé de crash
+    const crashLineEl = document.getElementById('crashLine');
+    const crashPointEl = document.getElementById('crashPoint');
+    const crashAreaEl = document.getElementById('crashArea');
+    const crashPathLen = crashLineEl ? crashLineEl.getTotalLength() : 780;
+
+    if (crashLineEl) {
+        crashLineEl.style.strokeDasharray = crashPathLen;
+        crashLineEl.style.strokeDashoffset = crashPathLen;
+    }
+
+    const chartProgress = { p: 0, val: 0 };
+    tl.to(chartProgress, {
+        p: 1.0,
+        val: 593,
+        duration: 3.8,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+            const p = chartProgress.p;
+            const currentDist = p * crashPathLen;
+            if (crashLineEl) {
+                crashLineEl.style.strokeDashoffset = crashPathLen - currentDist;
+            }
+            if (crashPointEl && crashLineEl) {
+                const pt = crashLineEl.getPointAtLength(currentDist);
+                crashPointEl.setAttribute('cx', pt.x);
+                crashPointEl.setAttribute('cy', pt.y);
+            }
+            const counterEl = document.getElementById('crashCounter');
+            if (counterEl) {
+                counterEl.textContent = `-${Math.round(chartProgress.val)} Mds $`;
+            }
+        }
+    }, 14.2);
+
+    tl.to('#crashArea', { opacity: 1, duration: 1.2, ease: 'power2.out' }, 16.5);
+    tl.call(() => playSfx('impact', 0.9), null, 17.5);
+
+    // Sortie Plan 3
+    tl.to('#plan_3', { opacity: 0, y: -30, duration: 0.45, ease: 'power2.in' }, 19.5)
+      .set('#plan_3', { display: 'none' }, 20.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 04 (00:20 - 00:25, 5s) : LES 3 PILIERS EN ANIMATION SÉQUENTIELLE
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_4', { display: 'flex', opacity: 1 }, 20.0);
+    tl.fromTo('#p4TitleLine', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power3.out' }, 20.1);
+    tl.fromTo('#p4Sub', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, 20.35);
+
+    // Entrée séquentielle pure des 3 piliers (une par une)
+    tl.fromTo('#p4Pillar1', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 20.6);
+    tl.call(() => playSfx('whoosh', 0.5), null, 20.65);
+
+    tl.fromTo('#p4Pillar2', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 21.3);
+    tl.call(() => playSfx('whoosh', 0.5), null, 21.35);
+
+    tl.fromTo('#p4Pillar3', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 22.0);
+    tl.call(() => playSfx('powerup', 0.7), null, 22.05);
+
+    // Sortie Plan 4
+    tl.to('#plan_4', { opacity: 0, y: -30, duration: 0.45, ease: 'power2.in' }, 24.5)
+      .set('#plan_4', { display: 'none' }, 25.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 05 (00:25 - 00:30, 5s) : CARTE MAÎTRESSE FINALE CENTRÉE AU MILIEU
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_5', { display: 'flex', opacity: 1 }, 25.0);
+    tl.fromTo('#p5Card', { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.85, ease: 'back.out(1.6)' }, 25.2);
+    tl.call(() => playSfx('impact', 0.85), null, 25.3);
+
+    tl.fromTo('#p5Punchline', { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, 25.6);
+    tl.fromTo('#p5Sub', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 26.2);
+    tl.call(() => playSfx('shimmer', 0.8), null, 26.3);
+
+    // Fondu final cinématique vers 30.0s
+    tl.to('#stage', { opacity: 0.98, duration: 0.8 }, 29.2);
+
+    // PRÉ-CHAUFFE GSAP DÉTERMINISTE
+    tl.seek(30.0).seek(0);
+
+    // EXPOSITION UNIVERSELLE POUR LE STUDIO
+    window.tl = tl;
+    window.__timeline = {
+        duration: () => 30.0,
+        seek: (t) => {
+            tl.seek(t, false);
+            if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
+                bgm.currentTime = t;
+            }
+            // En mode autonome hors-Studio uniquement :
+            if (!isIframeMode && brollEl) {
+                if (t >= 6.0 && t <= 13.0) {
+                    const targetT = t - 6.0;
+                    if (Math.abs(brollEl.currentTime - targetT) > 0.4) brollEl.currentTime = targetT;
+                    if (brollEl.paused && !tl.paused()) brollEl.play().catch(() => {});
+                } else {
+                    if (!brollEl.paused) brollEl.pause();
+                    brollEl.currentTime = 0;
+                }
+            }
+        },
+        play: () => {
+            tl.play();
+            if (!isIframeMode && brollEl && tl.time() >= 6.0 && tl.time() <= 13.0) {
+                brollEl.play().catch(() => {});
+            }
+        },
+        pause: () => {
+            tl.pause();
+            if (!isIframeMode && brollEl) brollEl.pause();
+        }
+    };
+
+    // Auto-démarrage au clic utilisateur en mode autonome
+    document.addEventListener('pointerdown', () => {
+        getAudioContext();
+        if (!isIframeMode && tl.paused()) tl.play();
+        if (!isIframeMode && brollEl && tl.time() >= 6.0 && tl.time() < 13.0) {
+            brollEl.play().catch(() => {});
+        }
+    }, { once: false });
+
+    if (!isIframeMode) {
+        tl.play();
+    }
+    </script>
+</body>
+</html>
