@@ -47,6 +47,7 @@ out/
 01_Assets/**
 !01_Assets/**/
 !01_Assets/**/.gitkeep
+!01_Assets/Illustrations/mockup_android_frame.png
 
 # ==============================================================================
 # CHAÎNES UTILISATEUR & DONNÉES LOCALES
