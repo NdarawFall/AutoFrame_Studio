@@ -2312,8 +2312,8 @@
 
                         <!-- Sous-paramètres dynamiques (Couleur unie ou Dégradé) -->
                         <div class="bg-sub-settings-box">
-                            <!-- COULEUR UNIE -->
-                            <div id="panelSolid" class="bg-sub-panel" style="display: none;">
+                            <!-- COULEUR UNIE (PRÉSENT DÈS LE DÉBUT, DÉSACTIVÉ JUSQU'À SÉLECTION DE COULEUR UNIE) -->
+                            <div id="panelSolid" class="bg-sub-panel disabled-panel" style="margin-bottom: 10px;">
                                 <div style="display: flex; align-items: center; justify-content: flex-start; gap: 14px;">
                                     <label class="form-label" style="font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
                                         Couleur Unie :
@@ -3356,7 +3356,13 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             const panelSolid = document.getElementById('panelSolid');
             const panelGradient = document.getElementById('panelGradient');
 
-            if (panelSolid) panelSolid.style.display = (type === 'solid') ? 'block' : 'none';
+            if (panelSolid) {
+                if (type === 'solid') {
+                    panelSolid.classList.remove('disabled-panel');
+                } else {
+                    panelSolid.classList.add('disabled-panel');
+                }
+            }
             if (panelGradient) {
                 if (type === 'gradient') {
                     panelGradient.classList.remove('disabled-panel');
