@@ -749,7 +749,7 @@
             <div class="video-showcase-container">
                 <!-- FRAME VIDÉO B-ROLL (MUTED, LOOP, PLAYSINLINE, AUCUN CONTRÔLE INTERNE) -->
                 <div id="p4VideoFrame" class="video-mockup-frame">
-                    <video id="brollVideo" src="../01_Assets/Videos/dakar2026_clip.mp4" muted loop playsinline preload="auto"></video>
+                    <video id="brollVideo" src="../01_Assets/Videos/dakar2026_clip.mp4" data-start="23.0" data-end="35.0" data-duration="12.0" muted loop playsinline preload="auto"></video>
                 </div>
 
                 <!-- CARTOUCHES INFORMATIFS LATÉRAUX AVEC ANIMATIONS INTERNES -->
@@ -1084,8 +1084,9 @@
     /* ==========================================================================
        CONSTRUCTION DE LA TIMELINE MAÎTRESSE GSAP (52.0s DÉTERMINISTE)
        ========================================================================== */
+    const isIframeMode = window.self !== window.top;
     const tl = gsap.timeline({
-        paused: true,
+        paused: isIframeMode,
         defaults: { ease: 'power3.out' }
     });
 
@@ -1266,13 +1267,15 @@
 
     tl.fromTo('#p4VideoFrame', { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }, 23.8);
 
-    // Démarrage garanti de la vidéo
-    tl.call(() => {
-        if (brollEl) {
-            brollEl.currentTime = 0;
-            brollEl.play().catch(e => console.warn('broll play:', e));
-        }
-    }, null, 23.0);
+    // Démarrage garanti de la vidéo en mode standalone (le Studio pilote nativement via data-start / data-end)
+    if (!isIframeMode) {
+        tl.call(() => {
+            if (brollEl) {
+                brollEl.currentTime = 0;
+                brollEl.play().catch(e => console.warn('broll play:', e));
+            }
+        }, null, 23.0);
+    }
 
     // Animations internes des cartouches latéraux
     tl.fromTo('#p4SideCard1', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 24.2);
@@ -1281,10 +1284,12 @@
     tl.fromTo('#p4SideCard2', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 25.1);
     tl.fromTo('#p4SideNum2', { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.8)' }, 25.4);
 
-    // Arrêt de la vidéo en fin de scène
-    tl.call(() => {
-        if (brollEl) brollEl.pause();
-    }, null, 35.0);
+    // Arrêt de la vidéo en fin de scène en mode standalone
+    if (!isIframeMode) {
+        tl.call(() => {
+            if (brollEl) brollEl.pause();
+        }, null, 35.0);
+    }
 
     // Sortie Plan 4
     tl.to('#plan_4', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 34.6)
@@ -1400,8 +1405,8 @@
             if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
                 bgm.currentTime = t;
             }
-            // Synchronisation de la vidéo B-roll sans autoplay sauvage ni saccades
-            if (brollEl) {
+            // Synchronisation de la vidéo B-roll uniquement en mode standalone hors-studio
+            if (!isIframeMode && brollEl) {
                 if (t >= 23.0 && t <= 35.0) {
                     const targetT = (t - 23.0);
                     if (Math.abs(brollEl.currentTime - targetT) > 0.4) {
@@ -1415,19 +1420,33 @@
                     brollEl.currentTime = 0;
                 }
             }
+        },
+        play: () => {
+            tl.play();
+            if (!isIframeMode && brollEl && tl.time() >= 23.0 && tl.time() <= 35.0) {
+                brollEl.play().catch(() => {});
+            }
+        },
+        pause: () => {
+            tl.pause();
+            if (!isIframeMode && brollEl) {
+                brollEl.pause();
+            }
         }
     };
 
-    // Auto-démarrage au clic utilisateur ou lors du chargement
+    // Auto-démarrage au clic utilisateur ou lors du chargement en mode autonome
     document.addEventListener('pointerdown', () => {
         getAudioContext();
-        if (tl.paused()) tl.play();
-        if (brollEl && tl.time() >= 23.0 && tl.time() < 35.0) {
+        if (!isIframeMode && tl.paused()) tl.play();
+        if (!isIframeMode && brollEl && tl.time() >= 23.0 && tl.time() < 35.0) {
             brollEl.play().catch(() => {});
         }
     }, { once: false });
 
-    tl.play();
+    if (!isIframeMode) {
+        tl.play();
+    }
     </script>
 </body>
 </html>

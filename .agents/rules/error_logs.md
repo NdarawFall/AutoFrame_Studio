@@ -271,3 +271,21 @@ Ce document répertorie les erreurs, pièges et régressions commis par l'IA sur
   - **Sélection des Séquences B-roll** : Toujours vérifier la nature du clip vidéo source. Bannir impérativement les teasers de promotion constitués de diaporamas de photos ou de cuts ultra-rapides. Préférer impérativement des séquences sportives d'action réelle filmées en continu à 60 FPS (ex. course de sprint 100m, match, compétition en direct) avec mouvement physique fluide et continu de caméra et d'athlètes.
   - **Bannissement Absolu des Étiquettes Factices "LIVE BROADCAST" / AI Slop** : Ne JAMAIS ajouter de pastilles, badges ou mentions fictives ("LIVE", "LIVE BROADCAST", "DIRECT TV", faux logos de chaînes) non demandées par l'utilisateur. Laisser le lecteur vidéo épuré et propre, sans surcouche parasite.
 
+---
+
+### [2026-11-02] — Attributs Déclaratifs Obligatoires (`data-start`, `data-end`) sur les Balises `<video>` & Non-Ingérence du Code de Composition
+* **Problème / Symptôme** :
+  - La vidéo B-roll intégrée dans une composition HTML saccadait complètement dans le Studio, sautant d'une image à une autre ou restant figée sur la dernière frame comme un diaporama broken.
+* **Cause technique** :
+  1. Le moteur du Studio (`studio.html`) synchronise automatiquement toutes les balises `<video>` de l'iframe à chaque frame via `vStart = parseFloat(v.dataset.start || '0')`.
+  2. En l'absence de l'attribut `data-start="23.0"`, `vStart` valait `0`. Lorsque la timeline du Studio atteignait la scène 4 (t = 24.0s), le Studio calculait un décalage de 24.0s (`timeInSeconds - 0`), ce qui dépassait la durée de la vidéo (15s). Le Studio forçait donc `v.currentTime = 24` (bridé à 15.017s) 60 fois par seconde.
+  3. Simultanément, des appels `tl.call()` ou `__timeline.seek()` dans la composition tentaient de remettre `v.currentTime = 1.0s`. Les deux boucles se battaient à 60 Hz, forçant le décodeur matériel de Chrome à sauter perpétuellement entre 0s et 15s.
+* **Règle à respecter impérativement** :
+  - **Attributs Déclaratifs Obligatoires** : Toute balise `<video>` ou `<audio>` insérée dans une composition DOIT OBLIGATOIREMENT comporter ses bornes temporelles exactes :
+    ```html
+    <video id="brollVideo" src="..." data-start="23.0" data-end="35.0" data-duration="12.0" muted loop playsinline preload="auto"></video>
+    ```
+  - **Délégation Totale au Player (HyperFrames / Studio Contract)** :
+    - En mode Studio (`isIframeMode === true`), le code de la composition ne doit JAMAIS appeler `video.play()`, `video.pause()` ni réassigner `video.currentTime`. Le Studio pilote automatiquement la lecture et les arrêts dès que la tête de lecture franchit `data-start` et `data-end`.
+    - Les appels de secours (`tl.call`) ou les recalages fins ne doivent s'exécuter qu'en mode autonome (`if (!isIframeMode)`).
+
