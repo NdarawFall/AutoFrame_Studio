@@ -1063,43 +1063,17 @@
             color: #000000;
         }
 
-                /* --- CHOIX DU FOND DE BASE : UX SPLIT CONTROLS + PLAYER GRAND CADRE --- */
+                /* --- CHOIX DU FOND DE BASE : UX ÉPURÉ SANS SOUS-TITRES, CADRE FIXE À DROITE --- */
         .bg-ux-container {
             display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 20px;
-            align-items: stretch;
-        }
-
-        .bg-player-panel {
-            order: 1;
-        }
-
-        .bg-controls-panel {
-            order: 2;
-        }
-
-        .bg-ux-container.layout-controls-left {
             grid-template-columns: 360px 1fr;
-        }
-
-        .bg-ux-container.layout-controls-left .bg-controls-panel {
-            order: 1;
-        }
-
-        .bg-ux-container.layout-controls-left .bg-player-panel {
-            order: 2;
+            gap: 20px;
+            align-items: start;
         }
 
         @media (max-width: 980px) {
-            .bg-ux-container, .bg-ux-container.layout-controls-left {
+            .bg-ux-container {
                 grid-template-columns: 1fr;
-            }
-            .bg-player-panel {
-                order: 1 !important;
-            }
-            .bg-controls-panel {
-                order: 2 !important;
             }
         }
 
@@ -1126,7 +1100,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 10px 12px;
+            padding: 10px 14px;
             cursor: pointer;
             transition: var(--transition-smooth);
             text-align: left;
@@ -1153,8 +1127,8 @@
         }
 
         .bg-type-swatch {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 6px;
             flex-shrink: 0;
             display: inline-block;
@@ -1180,21 +1154,10 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .bg-type-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
         .bg-type-title {
             font-size: 13px;
             font-weight: 700;
             color: #ffffff;
-        }
-
-        .bg-type-sub {
-            font-size: 11px;
-            color: var(--text-secondary);
         }
 
         .bg-type-indicator {
@@ -1221,37 +1184,7 @@
             border-top: 1px solid var(--border-subtle);
         }
 
-        .bg-info-note {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            padding: 10px 12px;
-        }
-
-        .bg-info-icon {
-            font-size: 16px;
-            line-height: 1;
-            margin-top: 2px;
-        }
-
-        .bg-info-text strong {
-            display: block;
-            font-size: 12px;
-            color: #ffffff;
-            margin-bottom: 2px;
-        }
-
-        .bg-info-text p {
-            font-size: 11.5px;
-            color: var(--text-secondary);
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        /* --- SÉLECTEUR COULEUR UNIE SANS EXEMPLES --- */
+        /* --- SÉLECTEUR COULEUR UNIE --- */
         .solid-picker-row {
             display: flex;
             align-items: center;
@@ -1385,13 +1318,14 @@
             border-color: rgba(239, 68, 68, 0.3);
         }
 
-        .gradient-styles-row {
+        /* --- GRILLE DIRECTION & POSITION DU DÉGRADÉ --- */
+        .gradient-directions-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 6px;
         }
 
-        .btn-grad-direction {
+        .btn-grad-dir {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
@@ -1403,25 +1337,29 @@
             text-align: center;
             transition: var(--transition-smooth);
             user-select: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .btn-grad-direction:hover {
+        .btn-grad-dir:hover {
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .btn-grad-direction.active {
+        .btn-grad-dir.active {
             color: #000000;
             background: #ffffff;
             border-color: #ffffff;
             font-weight: 700;
         }
 
-        /* --- LE PLAYER GRAND CADRE --- */
+        /* --- LE PLAYER GRAND CADRE FIXE (NE BOUGE JAMAIS) --- */
         .bg-player-panel {
             display: flex;
             flex-direction: column;
-            min-height: 380px;
+            width: 100%;
         }
 
         .player-monitor-frame {
@@ -1432,73 +1370,25 @@
             border-radius: var(--radius-md);
             overflow: hidden;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-            height: 100%;
-        }
-
-        .monitor-header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            background: #0e0e12;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .monitor-title-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .monitor-live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 8px #10b981;
-        }
-
-        .monitor-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
-
-        .monitor-meta-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .monitor-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10.5px;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-subtle);
-            padding: 2px 7px;
-            border-radius: 4px;
-        }
-
-        .monitor-tag-res {
-            color: #10b981;
-            border-color: rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.08);
+            width: 100%;
+            height: 380px;
+            min-height: 380px;
+            max-height: 380px;
+            position: relative;
         }
 
         .monitor-screen-canvas {
             position: relative;
-            flex: 1;
-            min-height: 320px;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             transition: background 0.25s ease;
             background: #000000;
-            padding: 30px;
+            padding: 24px;
+            box-sizing: border-box;
         }
 
         .monitor-grid-overlay {
@@ -1603,36 +1493,6 @@
         .mock-card-desc {
             font-size: 11px;
             opacity: 0.7;
-        }
-
-        .monitor-footer-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 16px;
-            background: #0e0e12;
-            border-top: 1px solid var(--border-subtle);
-            gap: 12px;
-        }
-
-        .monitor-css-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            flex-shrink: 0;
-        }
-
-        .monitor-css-code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: #38bdf8;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 2px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         /* --- AUDIO & SUBTITLES SELECT CARDS --- */
@@ -2168,8 +2028,8 @@
             </div>
         </section>
 
-        <!-- 2-BIS. CHOIX DU FOND DE BASE DE LA VIDÉO (UX AMÉLIORÉ : LISTE + PLAYER GRAND CADRE) -->
-        <section class="card collapsible-card" id="backgroundCardSection" style="padding: 16px 20px;">
+        <!-- 2-BIS. CHOIX DU FOND DE BASE DE LA VIDÉO (PLIÉ PAR DÉFAUT, SANS SOUS-TITRE, CADRE FIXE À DROITE) -->
+        <section class="card collapsible-card collapsed" id="backgroundCardSection" style="padding: 16px 20px;">
             <div class="collapsible-header" onclick="toggleCardSection('backgroundCardSection')">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <div class="choice-icon" style="width: 32px; height: 32px; border-radius: 8px;">
@@ -2177,7 +2037,6 @@
                     </div>
                     <div>
                         <h3 class="card-title" style="font-size: 14px; margin: 0; font-weight: 600;">Fond de Base de la Vidéo</h3>
-                        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Blanc, Noir, Dégradé (2 à 4 couleurs) ou Couleur unie avec Aperçu Player en direct</p>
                     </div>
                 </div>
                 <div class="collapse-chevron-btn">
@@ -2185,7 +2044,7 @@
                 </div>
             </div>
 
-            <div class="card-collapsible-body" style="padding-top: 16px;">
+            <div class="card-collapsible-body" style="padding-top: 16px; display: none;">
                 <div class="bg-ux-container">
                     
                     <!-- COLONNE 1 : LISTE DES TYPES DE FOND & CONTRÔLES (GAUCHE) -->
@@ -2196,80 +2055,46 @@
                                     Type d'arrière-plan :
                                 </label>
                                 <div class="bg-types-stack">
-                                    <!-- 1. BLANC -->
+                                    <!-- 1. BLANC (SANS SOUS-TITRE) -->
                                     <button type="button" class="bg-type-row-btn" id="bgRow_white" onclick="selectBackgroundType('white')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-white"></span>
-                                            <div class="bg-type-meta">
-                                                <span class="bg-type-title">Blanc</span>
-                                                <span class="bg-type-sub">Minimaliste • Titres sombres</span>
-                                            </div>
+                                            <span class="bg-type-title">Blanc</span>
                                         </div>
                                         <span class="bg-type-indicator">✓</span>
                                     </button>
 
-                                    <!-- 2. NOIR (DÉFAUT) -->
+                                    <!-- 2. NOIR (DÉFAUT, SANS SOUS-TITRE) -->
                                     <button type="button" class="bg-type-row-btn selected" id="bgRow_black" onclick="selectBackgroundType('black')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-black"></span>
-                                            <div class="bg-type-meta">
-                                                <span class="bg-type-title">Noir (Défaut)</span>
-                                                <span class="bg-type-sub">Cinématographique • Tech</span>
-                                            </div>
+                                            <span class="bg-type-title">Noir (Défaut)</span>
                                         </div>
                                         <span class="bg-type-indicator">✓</span>
                                     </button>
 
-                                    <!-- 3. DÉGRADÉ -->
+                                    <!-- 3. DÉGRADÉ (SANS SOUS-TITRE) -->
                                     <button type="button" class="bg-type-row-btn" id="bgRow_gradient" onclick="selectBackgroundType('gradient')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-gradient" id="bgRowGradientSwatch"></span>
-                                            <div class="bg-type-meta">
-                                                <span class="bg-type-title">Dégradé</span>
-                                                <span class="bg-type-sub">2 à 4 couleurs personnalisées</span>
-                                            </div>
+                                            <span class="bg-type-title">Dégradé</span>
                                         </div>
                                         <span class="bg-type-indicator">✓</span>
                                     </button>
 
-                                    <!-- 4. COULEUR UNIE -->
+                                    <!-- 4. COULEUR UNIE (SANS SOUS-TITRE) -->
                                     <button type="button" class="bg-type-row-btn" id="bgRow_solid" onclick="selectBackgroundType('solid')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-solid" id="bgRowSolidSwatch"></span>
-                                            <div class="bg-type-meta">
-                                                <span class="bg-type-title">Couleur unie</span>
-                                                <span class="bg-type-sub">Teinte sur-mesure (Hex)</span>
-                                            </div>
+                                            <span class="bg-type-title">Couleur unie</span>
                                         </div>
                                         <span class="bg-type-indicator">✓</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- SOUS-PANNEAU DYNAMIQUE SELON LE TYPE CHOISI -->
+                            <!-- SOUS-PANNEAU DYNAMIQUE SELON LE TYPE CHOISI (PAS DE PANCARTE LUMIERE / MODE BLANC / NOIR) -->
                             <div class="bg-sub-settings-box" id="bgSubSettingsBox">
-                                <!-- BLANC -->
-                                <div id="panelWhite" class="bg-sub-panel" style="display: none;">
-                                    <div class="bg-info-note">
-                                        <div class="bg-info-icon">💡</div>
-                                        <div class="bg-info-text">
-                                            <strong>Mode Blanc Lumineux</strong>
-                                            <p>Fond #FFFFFF. Les titrages passent automatiquement en noir (#09090b), avec cartes à élévation douce.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- NOIR -->
-                                <div id="panelBlack" class="bg-sub-panel">
-                                    <div class="bg-info-note">
-                                        <div class="bg-info-icon">⚡</div>
-                                        <div class="bg-info-text">
-                                            <strong>Mode Noir Profond</strong>
-                                            <p>Fond #000000. Contraste optimal 21:1, cartes sombres lisses et titrages blancs lumineux.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- COULEUR UNIE (AUCUN EXEMPLE : JUSTE CASE COULEUR ET CHAMP HEXADÉCIMAL) -->
                                 <div id="panelSolid" class="bg-sub-panel" style="display: none;">
                                     <label class="form-label" style="font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
@@ -2284,7 +2109,7 @@
                                     </div>
                                 </div>
 
-                                <!-- DÉGRADÉ (JUSQU'À 4 COULEURS, 2 PAR DÉFAUT) -->
+                                <!-- DÉGRADÉ (JUSQU'À 4 COULEURS, MULTIPLES DIRECTIONS / POSITIONS) -->
                                 <div id="panelGradient" class="bg-sub-panel" style="display: none;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                         <label class="form-label" style="font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
@@ -2297,41 +2122,41 @@
 
                                     <!-- LISTE DES 2 À 4 COULEURS -->
                                     <div class="gradient-stops-stack" id="gradientStopsStack">
-                                        <!-- Généré dynamiquement en JS -->
+                                        <!-- Généré dynamiquement en JS sans fermer la palette lors du glisser -->
                                     </div>
 
-                                    <!-- STYLE D'ORIENTATION DU DÉGRADÉ -->
+                                    <!-- DIRECTIONS ET POSITIONS DU DÉGRADÉ -->
                                     <label class="form-label" style="font-size: 11px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 14px; margin-bottom: 8px; display: block;">
-                                        Style / Orientation :
+                                        Direction & Position du Dégradé :
                                     </label>
-                                    <div class="gradient-styles-row">
-                                        <button type="button" class="btn-grad-direction active" data-dir="linear-135" onclick="setGradientDirection('linear-135', this)">Diagonal 135°</button>
-                                        <button type="button" class="btn-grad-direction" data-dir="linear-180" onclick="setGradientDirection('linear-180', this)">Vertical 180°</button>
-                                        <button type="button" class="btn-grad-direction" data-dir="radial" onclick="setGradientDirection('radial', this)">Halo Radial</button>
+                                    <div class="gradient-directions-grid">
+                                        <!-- Diagonales / Coins -->
+                                        <button type="button" class="btn-grad-dir active" data-dir="135deg" onclick="setGradientDirection('135deg', this)" title="Diagonale : Haut-Gauche vers Bas-Droite">↘ Diag. BD</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="225deg" onclick="setGradientDirection('225deg', this)" title="Diagonale : Haut-Droite vers Bas-Gauche">↙ Diag. BG</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="45deg" onclick="setGradientDirection('45deg', this)" title="Diagonale : Bas-Gauche vers Haut-Droite">↗ Diag. HD</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="315deg" onclick="setGradientDirection('315deg', this)" title="Diagonale : Bas-Droite vers Haut-Gauche">↖ Diag. HG</button>
+
+                                        <!-- Linéaires : En bas, En haut, À droite, À gauche -->
+                                        <button type="button" class="btn-grad-dir" data-dir="180deg" onclick="setGradientDirection('180deg', this)" title="Haut vers Bas (En bas seulement)">↓ En bas</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="0deg" onclick="setGradientDirection('0deg', this)" title="Bas vers Haut (En haut seulement)">↑ En haut</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="90deg" onclick="setGradientDirection('90deg', this)" title="Gauche vers Droite">→ À droite</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="270deg" onclick="setGradientDirection('270deg', this)" title="Droite vers Gauche">← À gauche</button>
+
+                                        <!-- Halos Radiaux : Centre, Haut, Bas, Coin -->
+                                        <button type="button" class="btn-grad-dir" data-dir="radial-center" onclick="setGradientDirection('radial-center', this)" title="Halo Centré">⦿ Centre</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="radial-top" onclick="setGradientDirection('radial-top', this)" title="Halo en haut seulement">▲ Halo Haut</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="radial-bottom" onclick="setGradientDirection('radial-bottom', this)" title="Halo en bas seulement">▼ Halo Bas</button>
+                                        <button type="button" class="btn-grad-dir" data-dir="radial-corner" onclick="setGradientDirection('radial-corner', this)" title="Halo dans le coin">◤ Halo Coin</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- COLONNE 2 : LE PLAYER CADRE GRAND FORMAT (DROITE) -->
+                    <!-- COLONNE 2 : LE PLAYER CADRE GRAND FORMAT FIXE (DROITE) -->
                     <div class="bg-player-panel">
                         <div class="player-monitor-frame">
-                            <!-- Barre d'état du moniteur -->
-                            <div class="monitor-header-bar">
-                                <div class="monitor-title-group">
-                                    <span class="monitor-live-dot"></span>
-                                    <span class="monitor-label">MONITEUR • APERÇU DU FOND EN DIRECT</span>
-                                </div>
-                                <div class="monitor-meta-group">
-                                    <span class="monitor-tag" id="monitorFormatTag">16:9</span>
-                                    <span class="monitor-tag monitor-tag-res">1920 × 1080</span>
-                                
-                                    <button type="button" class="monitor-tag" onclick="toggleBgLayout()" title="Inverser la disposition (Cadre gauche/droite)" style="cursor:pointer; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.22); color:#ffffff; font-weight:600; display:inline-flex; align-items:center; gap:5px;"><span>⇄</span> <span id="bgLayoutLabel">Contrôles à droite</span></button>
-                                </div>
-                            </div>
-
-                            <!-- Écran du Player (Affiche le fond en direct en temps réel) -->
+                            <!-- Écran du Player Pur (Sans barre titre moniteur ni barre CSS basse) -->
                             <div class="monitor-screen-canvas" id="monitorScreenCanvas">
                                 <div class="monitor-grid-overlay"></div>
 
@@ -2349,12 +2174,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Pied de moniteur avec le code CSS actuel -->
-                            <div class="monitor-footer-bar">
-                                <span class="monitor-css-label">CSS du fond :</span>
-                                <code class="monitor-css-code" id="monitorCssCode">background: #000000;</code>
                             </div>
                         </div>
                     </div>
@@ -3132,11 +2951,11 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         });
 
         // Gestion du style de montage (Sans template sélectionné par défaut), format, audio et sous-titres
-                // --- GESTION DU FOND DE BASE DE LA VIDÉO (UX SPLIT CONTROLS + PLAYER GRAND CADRE) ---
+                // --- GESTION DU FOND DE BASE DE LA VIDÉO (UX ÉPURÉ, CADRE FIXE, COULEURS GLISSABLES SANS FERMETURE) ---
         let currentBackgroundType = 'black'; // 'white' | 'black' | 'gradient' | 'solid'
         let currentBackgroundColor = '#000000';
-        let currentGradientColors = ['#ffffff', '#ff0033']; // 2 couleurs par défaut (ex: blanc et néon rouge)
-        let currentGradientDirection = 'linear-135';
+        let currentGradientColors = ['#ffffff', '#ff0033']; // 2 couleurs par défaut
+        let currentGradientDirection = '135deg';
         let currentBackgroundGradient = 'linear-gradient(135deg, #ffffff, #ff0033)';
 
         function renderGradientStopsUI() {
@@ -3158,10 +2977,10 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 row.innerHTML = `
                     <div class="gradient-stop-left">
                         <span class="stop-num-label">#${index + 1}</span>
-                        <input type="color" value="${color}" oninput="onGradientColorChange(${index}, this.value)" class="color-square-box" style="width:34px; height:30px;" title="Couleur #${index + 1}">
+                        <input type="color" id="gradPicker_${index}" value="${color}" oninput="onGradientColorChange(${index}, this.value)" class="color-square-box" style="width:34px; height:30px;" title="Couleur #${index + 1}">
                         <div class="hex-input-wrap" style="height:30px; width:100px;">
                             <span class="hex-prefix">#</span>
-                            <input type="text" value="${hexVal}" maxlength="6" oninput="onGradientHexChange(${index}, this.value)" class="hex-text-field" style="font-size:12px;">
+                            <input type="text" id="gradHex_${index}" value="${hexVal}" maxlength="6" oninput="onGradientHexChange(${index}, this.value)" class="hex-text-field" style="font-size:12px;">
                         </div>
                     </div>
                     ${canDelete ? `<button type="button" class="btn-remove-stop" onclick="removeGradientColorStop(${index})" title="Supprimer cette couleur">✕</button>` : `<span style="width:26px;"></span>`}
@@ -3188,25 +3007,31 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             updateLivePlayerBackground();
         }
 
+        // IMPORTANT : Ne détruit PAS le DOM pendant le glisser/saisie pour ne pas fermer la palette native !
         function onGradientColorChange(index, val) {
             if (!val) return;
             currentGradientColors[index] = val;
-            renderGradientStopsUI();
+            const hexInput = document.getElementById(`gradHex_${index}`);
+            if (hexInput) hexInput.value = val.replace('#', '').toUpperCase();
+            updateGradientCssString();
             updateLivePlayerBackground();
         }
 
         function onGradientHexChange(index, hex) {
             hex = hex.replace(/[^0-9A-Fa-f]/g, '');
             if (hex.length === 6) {
-                currentGradientColors[index] = '#' + hex;
-                renderGradientStopsUI();
+                const fullHex = '#' + hex;
+                currentGradientColors[index] = fullHex;
+                const picker = document.getElementById(`gradPicker_${index}`);
+                if (picker) picker.value = fullHex;
+                updateGradientCssString();
                 updateLivePlayerBackground();
             }
         }
 
         function setGradientDirection(dir, btnEl) {
             currentGradientDirection = dir;
-            document.querySelectorAll('.btn-grad-direction').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.btn-grad-dir').forEach(b => b.classList.remove('active'));
             if (btnEl) btnEl.classList.add('active');
             updateGradientCssString();
             updateLivePlayerBackground();
@@ -3214,12 +3039,18 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
 
         function updateGradientCssString() {
             const colorsList = currentGradientColors.join(', ');
-            if (currentGradientDirection === 'linear-135') {
+            if (currentGradientDirection.endsWith('deg')) {
+                currentBackgroundGradient = `linear-gradient(${currentGradientDirection}, ${colorsList})`;
+            } else if (currentGradientDirection === 'radial-center') {
+                currentBackgroundGradient = `radial-gradient(circle at 50% 50%, ${colorsList})`;
+            } else if (currentGradientDirection === 'radial-top') {
+                currentBackgroundGradient = `radial-gradient(ellipse at 50% 0%, ${colorsList})`;
+            } else if (currentGradientDirection === 'radial-bottom') {
+                currentBackgroundGradient = `radial-gradient(ellipse at 50% 100%, ${colorsList})`;
+            } else if (currentGradientDirection === 'radial-corner') {
+                currentBackgroundGradient = `radial-gradient(circle at 0% 0%, ${colorsList})`;
+            } else {
                 currentBackgroundGradient = `linear-gradient(135deg, ${colorsList})`;
-            } else if (currentGradientDirection === 'linear-180') {
-                currentBackgroundGradient = `linear-gradient(180deg, ${colorsList})`;
-            } else if (currentGradientDirection === 'radial') {
-                currentBackgroundGradient = `radial-gradient(ellipse at 50% 35%, ${colorsList})`;
             }
             const gradSwatch = document.getElementById('bgRowGradientSwatch');
             if (gradSwatch) gradSwatch.style.background = currentBackgroundGradient;
@@ -3259,18 +3090,11 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 }
             });
 
-            const panels = {
-                white: document.getElementById('panelWhite'),
-                black: document.getElementById('panelBlack'),
-                solid: document.getElementById('panelSolid'),
-                gradient: document.getElementById('panelGradient')
-            };
+            const panelSolid = document.getElementById('panelSolid');
+            const panelGradient = document.getElementById('panelGradient');
 
-            Object.keys(panels).forEach(key => {
-                if (panels[key]) {
-                    panels[key].style.display = (key === type) ? 'block' : 'none';
-                }
-            });
+            if (panelSolid) panelSolid.style.display = (type === 'solid') ? 'block' : 'none';
+            if (panelGradient) panelGradient.style.display = (type === 'gradient') ? 'block' : 'none';
 
             if (type === 'white') {
                 currentBackgroundColor = '#ffffff';
@@ -3286,29 +3110,8 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             updateLivePlayerBackground();
         }
 
-        
-        function toggleBgLayout() {
-            const container = document.querySelector('.bg-ux-container');
-            const label = document.getElementById('bgLayoutLabel');
-            if (!container) return;
-            const isControlsLeft = container.classList.toggle('layout-controls-left');
-            if (label) label.textContent = isControlsLeft ? 'Contrôles à gauche' : 'Contrôles à droite';
-            localStorage.setItem('vibe_bg_layout_controls_left', isControlsLeft ? '1' : '0');
-        }
-
-        function initBgLayoutPreference() {
-            const pref = localStorage.getItem('vibe_bg_layout_controls_left');
-            const container = document.querySelector('.bg-ux-container');
-            const label = document.getElementById('bgLayoutLabel');
-            if (container && pref === '1') {
-                container.classList.add('layout-controls-left');
-                if (label) label.textContent = 'Contrôles à gauche';
-            }
-        }
-
         function updateLivePlayerBackground() {
             const canvas = document.getElementById('monitorScreenCanvas');
-            const cssCode = document.getElementById('monitorCssCode');
             const headline = document.getElementById('mockStageHeadline');
             const subheadline = document.getElementById('mockStageSubheadline');
             const badge = document.getElementById('mockStageBadge');
@@ -3327,7 +3130,6 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             }
 
             canvas.style.background = appliedBg;
-            if (cssCode) cssCode.textContent = `background: ${appliedBg};`;
 
             // Détection de contraste adaptatif
             let isLight = false;
@@ -3920,7 +3722,7 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             renderStyleCards(DEFAULT_STYLES);
             renderGradientStopsUI();
             updateLivePlayerBackground();
-            initBgLayoutPreference();
+            
             selectMontageStyle('none');
             await loadTemplatesFromApi();
 

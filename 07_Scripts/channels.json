@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "ch_1793063435322",
+    "name": "Pr Marcus",
+    "platform": "YouTube",
+    "format": "16:9",
+    "colorPrimary": "#db0f20",
+    "colorSecondary": "#ffffff",
+    "fontPrimary": "Montserrat",
+    "fontSecondary": "Inter",
+    "fontAccent": "Caveat",
+    "description": "",
+    "avatar": "01_Assets/Images/channels/avatar_ch_1793063435322.png",
+    "videos": [],
+    "videoCount": 0
+  },
+  {
+    "id": "ch_1793102190223",
+    "name": "Galsen Tuto",
+    "platform": "Instagram",
+    "format": "9:16",
+    "colorPrimary": "#ff3344",
+    "colorSecondary": "#dc2626",
+    "fontPrimary": "Montserrat",
+    "fontSecondary": "Inter",
+    "fontAccent": "Caveat",
+    "description": "",
+    "avatar": "01_Assets/Images/channels/avatar_ch_1793102190223.jpg",
+    "videos": [],
+    "videoCount": 0
+  }
+]
