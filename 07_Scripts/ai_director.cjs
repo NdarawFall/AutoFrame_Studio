@@ -1204,6 +1204,7 @@ ${availableAssetsList.join('\n') || '- Aucun asset externe particulier, utilise 
    - Si un logo est disponible, affiche-le avec élégance (max-height 90-110px).
    - Si un drapeau est disponible, intègre-le (badge national circulaire ou rectangulaire stylisé, en-tête de scène, ou élément graphique).
    - Si une carte est disponible, intègre-la avec un cadrage harmonieux (border-radius 16px).
+   - Si un clip vidéo B-roll est disponible, intègre-le avec : <video src="..." data-start="T_DEBUT" data-end="T_FIN" data-duration="DUREE" muted loop playsinline preload="auto"></video>. ATTRIBUTS data-start ET data-end STRICTEMENT OBLIGATOIRES pour la synchronisation automatique 60 FPS du Studio ! Ne JAMAIS appeler video.play() ou video.pause() dans le script GSAP. BANNISSEMENT ABSOLU de tout badge factice « LIVE BROADCAST ».
 
 5. CHORÉGRAPHIE GSAP :
    - La vidéo dure exactement ${totalVideoDuration.toFixed(1)} secondes.

@@ -70,6 +70,12 @@
     - Pour les cartes (cards), bannir formellement les rotations 3D déformantes ou les inclinaisons agressives. Utiliser des fondus directionnels purs (haut, bas, côtés). Si plusieurs cartes sont présentes dans une même scène, elles doivent impérativement s'animer **une à une à la suite de façon séquentielle distincte**.
     - Les néons/gradients d'arrière-plan doivent avoir une opacité marquée (~0.45 à 0.55) et un mouvement dynamique organique continu.
     - Ne jamais réutiliser la même boucle musicale préexistante. Composer une bande-son originale sur mesure adaptée au sujet et au rythme (via `music.py`).
+21. **Intégration Vidéo HTML5 & B-Roll : Contrat Studio, Attributs Déclaratifs (`data-start`, `data-end`) et Zéro Saccade** :
+    - Toute balise `<video>` insérée dans une scène DOIT OBLIGATOIREMENT porter ses attributs temporels natifs : `<video id="..." src="..." data-start="T_DEBUT" data-end="T_FIN" data-duration="DUREE" muted loop playsinline preload="auto"></video>`.
+    - **Ne JAMAIS omettre `data-start`** : sans lui, le Studio calcule un décalage erroné depuis $t = 0$ et force `video.currentTime` 60 fois par seconde, ce qui gèle la vidéo ou la fait sauter en boucle !
+    - **Non-ingérence JS en mode Studio (`isIframeMode === true`)** : le Studio pilote automatiquement la lecture et l'arrêt dès que la tête de lecture passe sur la scène. Le script de composition ne doit JAMAIS appeler `video.play()`, `video.pause()` ni modifier `video.currentTime` quand `isIframeMode` est vrai.
+    - **B-roll d'action réelle continue (60 FPS)** : Bannir impérativement les clips promotionnels ou institutionnels qui sont en réalité des diaporamas de photos fixes découpées. Exiger une vraie prise de vue continue avec mouvement physique (athlètes, véhicules, caméra).
+    - **Interdiction formelle des étiquettes factices / AI Slop** : Ne jamais ajouter de stickers « LIVE BROADCAST », « DIRECT TV » ou faux logos télévisés non demandés.
 
 ---
 

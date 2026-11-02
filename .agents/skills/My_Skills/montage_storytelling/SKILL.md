@@ -80,7 +80,12 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 | Un processus / un schéma | Tracé manuscrit ou diagramme | `build_video_handwriting.cjs` |
 **Texte seul** : uniquement chiffres, noms propres, titres de chapitre, mots-clés (1–4 mots), citations. Jamais une phrase entière qui double la voix.
 **Image fixe** : toujours animée (Ken Burns). Éviter les images génériques de banque d'images sans rapport : mieux vaut une carte, un chiffre ou un texte qu'un faux B-roll.
-**B-roll** : choisir les 2 secondes les plus fortes du clip, pas le début ; ne jamais réutiliser le même clip ; privilégier les plans avec mouvement dirigé.
+**B-roll** : choisir les 2 secondes les plus fortes du clip, pas le début ; ne jamais réutiliser le même clip ; privilégier les plans avec mouvement réel dirigé.
+- **Contrat d'intégration HTML5 & Studio** :
+  * Déclarer OBLIGATOIREMENT les attributs temporels natifs : `<video id="brollVideo" src="..." data-start="T0" data-end="T1" data-duration="DUR" muted loop playsinline preload="auto"></video>`.
+  * En mode Studio (`isIframeMode === true`), le Studio pilote la vidéo à 100% de manière fluide et automatique. Le code JS de la composition a l'interdiction d'appeler `play()`, `pause()` ou de toucher à `currentTime`.
+  * Bannir les teasers de promotion découpés en photos (diaporama) : n'utiliser que des prises de vue d'action réelle filmées en continu à 60 FPS.
+  * Zéro étiquette factice (« LIVE BROADCAST », « DIRECT TV ») : laisser le lecteur épuré et propre.
 **Preuve avant opinion** : quand on avance un fait contestable, montrer la source dans les 2 s.
 Alterner les types : jamais 3 plans du même type d'affilée.
 
@@ -159,6 +164,10 @@ Champs `role` : `hook`, `context`, `escalation`, `proof`, `data`, `place`, `list
 - Promesse du hook jamais tenue → réécrire le hook ou le payoff.
 - CTA répété 3 fois → un seul, court.
 - Musique/SFX qui couvrent l'information clé → voir `sound_design`.
+- Balise `<video>` sans attributs `data-start` / `data-end` → le Studio calcule un décalage depuis t=0 et gèle la vidéo ou la fait sauter à 60 Hz.
+- Manipulation JS manuelle de la vidéo en mode Studio (`video.play()`, `currentTime`) → conflit destructeur avec la boucle du Studio.
+- Teaser institutionnel utilisé comme B-roll → effet diaporama d'images fixes découpées, exiger une vraie vidéo d'action continue.
+- Ajout d'étiquettes factices « LIVE BROADCAST » → AI slop strictement interdit.
 
 ## 9. Checklist qualité avant rendu
 - [ ] Hook : image forte à 0 s, voix à 0–0.2 s, promesse avant 3 s (short) / 15 s (long).
@@ -169,3 +178,4 @@ Champs `role` : `hook`, `context`, `escalation`, `proof`, `data`, `place`, `list
 - [ ] Fin : promesse payée, CTA unique ≤ 10 s (long) ou intégré/boucle (short).
 - [ ] Revoir la vidéo sans le son (le message passe-t-il ?), puis sans l'image (l'audio seul est-il clair ?).
 - [ ] Durée totale = durée du script remappé, aucune scène vide en fin.
+- [ ] B-roll vidéo : balise `<video>` avec `data-start`, `data-end`, `data-duration`, vraie séquence 60 FPS continue et zéro badge factice.

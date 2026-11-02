@@ -33,3 +33,18 @@
   ```
   Le Studio et le moteur de rendu pilotent directement cette timeline externe sans aucune interface parasite.
 
+---
+
+## 3. Gestion des Clips Vidéo & B-Roll Intégrés
+
+1. **Aucun contrôle interne sur la balise `<video>`** :
+   - Attribut `controls` formellement interdit sur toute balise `<video>`.
+   - Attributs obligatoires : `muted loop playsinline preload="auto"`.
+
+2. **Attributs Temporels Obligatoires pour la Synchronisation Studio** :
+   - Toute balise `<video>` doit déclarer ses bornes de scène :
+     ```html
+     <video id="brollVideo" src="..." data-start="23.0" data-end="35.0" data-duration="12.0" muted loop playsinline preload="auto"></video>
+     ```
+   - **En mode Studio (`isIframeMode === true`)**, le Studio démarre et arrête automatiquement la vidéo à 60 FPS sans coupure. Le code JS de la composition a l'interdiction formelle d'appeler `play()`, `pause()` ou de forcer `currentTime`.
+   - Se référer au contrat dédié : [`.agents/rules/html5-video-broll-studio-contract.md`](html5-video-broll-studio-contract.md).

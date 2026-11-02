@@ -22,6 +22,7 @@ heygen-new/
 │       ├── project-architecture.md         # Ce document maître d'architecture
 │       ├── no-unprompted-rendering.md      # INTERDICTION ABSOLUE de rendre en MP4 sans demande explicite
 │       ├── no-inner-player-controls.md     # INTERDICTION des barres de contrôle de lecture dans les vidéos HTML
+│       ├── html5-video-broll-studio-contract.md # Contrat vidéo HTML5 & B-Roll (data-start/data-end & synchronisation Studio)
 │       ├── no-reading-existing-videos.md   # Originalité visuelle & interdiction de copie
 │       ├── video_create_process.md         # Processus autonome de fabrication vidéo
 │       ├── error_logs.md                   # Journalisation des erreurs
