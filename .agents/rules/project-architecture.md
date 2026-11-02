@@ -75,6 +75,10 @@ heygen-new/
 │   ├── brandfetch.cjs          # Extraction automatique de logos officiels de marques (SVG/PNG)
 │   ├── fetch_map.cjs           # Génération de cartes géographiques et tracés d'itinéraires
 │   ├── fetch_flag.cjs          # Téléchargement de drapeaux mondiaux HD
+│   ├── fetch_football_logo.cjs # Téléchargement autonome de logos de clubs/sélections de foot (football-logos.cc)
+│   ├── cut_silences.cjs        # Découpe automatique des silences (jump-cut) pour rushes 10_Clients/
+│   ├── detect_bad_takes.cjs    # Détection automatique des mauvaises prises, hésitations et répétitions
+│   ├── auto_reframe.cjs        # Recadrage automatique 16:9 -> 9:16 vertical (crop, blur background, split)
 │   ├── normalize_audio.cjs     # Normalisation sonore professionnelle EBU R128 (-14 LUFS)
 │   ├── remove_bg.cjs           # Détourage et suppression du fond d'images
 │   └── api_config.json         # Stockage local des clés API (ignoré par Git)

@@ -54,7 +54,11 @@ Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur Git
 ├── 07_Scripts/         # Moteurs d'orchestration (ai_director, TTS, Coverr, studio-server)
 │   ├── api_config.example.json  # Gabarit public des paramètres API
 │   ├── api_config.json          # Fichier privé local (ignoré par Git)
-│   └── studio-server.cjs        # Serveur de gestion du studio
+│   ├── studio-server.cjs        # Serveur de gestion du studio
+│   ├── cut_silences.cjs         # Jump-cut & découpage automatique de silences
+│   ├── detect_bad_takes.cjs     # Détection de mauvaises prises & répétitions
+│   ├── auto_reframe.cjs         # Recadrage automatique 16:9 vers 9:16 vertical
+│   └── fetch_football_logo.cjs  # Téléchargement autonome de logos de football
 ├── 08_Rendus/          # Dossier d'exportation des vidéos finales MP4 (ignoré par Git)
 ├── 09_Pages/           # Interface utilisateur web du studio (Home, Création, Paramètres)
 ├── 10_Clients/         # Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)

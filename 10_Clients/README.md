@@ -36,3 +36,4 @@ Créez un sous-dossier par client ou par projet :
    - Poser les sous-titres cinétiques mot par mot.
    - Intégrer les B-rolls, zooms dynamiques et effets de rétention.
 3. Les compositions HTML finales sont générées dans `04_Videos/` ou `03_Chaines/` et rendues dans `08_Rendus/`.
+

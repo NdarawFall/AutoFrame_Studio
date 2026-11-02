@@ -68,6 +68,7 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 | Un chiffre, un pourcentage, un prix | Compteur animé ou graphique | `counter`, `chart.js` |
 | Une évolution dans le temps | Courbe / barres animées | `chart.js` |
 | Un lieu, un pays, un trajet | Carte animée + drapeau | `fetch_map.cjs`, `fetch_flag.cjs` |
+| Un club / équipe de football | Logo officiel HD PNG/SVG | `fetch_football_logo.cjs` |
 | Une entreprise, une marque | Logo officiel sur sa couleur | `brandfetch.cjs` |
 | Une affirmation à prouver / une source | Capture de l'article avec phrase surlignée | `record_web.cjs` + `highlight` |
 | Une personne | Photo détourée ou plan de stock | `remove_bg.cjs`, `coverr.cjs` |
