@@ -734,30 +734,33 @@
             transform: scale(1.05);
         }
 
-        /* Fondu noir progressif en bas pour faire ressortir le texte */
+        /* Fondu rouge intense progressif en bas pour faire ressortir le titre */
         .style-card-gradient-fade {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.45) 25%, rgba(0, 0, 0, 0.92) 80%, #000000 100%);
-            padding: 18px 12px 10px 12px;
+            background: linear-gradient(180deg, transparent 0%, rgba(160, 10, 30, 0.35) 20%, rgba(195, 14, 38, 0.90) 65%, #7a0815 100%);
+            padding: 38px 12px 12px 12px;
+            min-height: 68px;
             display: flex;
-            flex-direction: column;
-            gap: 3px;
+            align-items: flex-end;
             z-index: 2;
             pointer-events: none;
+            box-sizing: border-box;
         }
 
         .style-card-title {
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.15px;
+            letter-spacing: -0.2px;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            width: 100%;
+            text-align: left;
         }
 
         .style-card-desc {
