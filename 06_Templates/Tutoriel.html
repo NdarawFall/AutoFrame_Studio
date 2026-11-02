@@ -2,12 +2,33 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Template Tutoriel</title>
+    <title>Template Tutoriel Web Express - 30s</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #06080f;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            color: #f8fafc;
+            user-select: none;
+        }
+
+        #stage-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
         #stage {
             width: 1920px;
             height: 1080px;
@@ -15,26 +36,1267 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
+            background: radial-gradient(circle at 50% 10%, #151d30 0%, #080c16 60%, #03060a 100%);
             overflow: hidden;
-            background: #18181b;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
+            transform-origin: center center;
         }
+
+        /* Subtle grid background */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 900px;
+            height: 900px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.22;
+            pointer-events: none;
+            transition: background 1s ease;
+        }
+        .glow-1 { top: -200px; left: -100px; background: #06b6d4; }
+        .glow-2 { bottom: -200px; right: -100px; background: #8b5cf6; }
+
+        /* Top HUD Header */
+        .hud-header {
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            right: 60px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            padding: 0 28px;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+        }
+
+        .hud-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hud-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            border-radius: 9999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hud-tag .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        .hud-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 17px;
+            letter-spacing: 0.04em;
+            color: #f1f5f9;
+        }
+
+        /* Step Breadcrumb in HUD */
+        .hud-steps {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            transition: all 0.4s ease;
+        }
+        .step-pill.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+        .step-pill.completed {
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        .hud-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hud-timer span.live-val {
+            color: #38bdf8;
+        }
+
+        /* Bottom HUD Progress Bar */
+        .hud-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6, #10b981);
+            width: 0%;
+            z-index: 120;
+            box-shadow: 0 0 16px rgba(6, 182, 212, 0.8);
+        }
+
+        /* ========================================================
+           SCENES WRAPPER
+           ======================================================== */
+        .scene {
+            position: absolute;
+            inset: 0;
+            top: 130px;
+            bottom: 40px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ========================================================
+           SCENE 0: INTRO TEASER (0s - 3.5s)
+           ======================================================== */
+        #scene-intro {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            gap: 24px;
+        }
+
+        .intro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #a78bfa;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .intro-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 82px;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            max-width: 1400px;
+        }
+
+        .intro-title .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .intro-subtitle {
+            font-size: 26px;
+            font-weight: 600;
+            color: #94a3b8;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        .intro-subtitle .highlight-pill {
+            padding: 4px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        /* 3 Intro Steps Preview Cards */
+        .intro-steps-preview {
+            display: flex;
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .intro-step-card {
+            width: 320px;
+            padding: 24px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .intro-step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+        .intro-step-card.c1::before { background: #06b6d4; }
+        .intro-step-card.c2::before { background: #8b5cf6; }
+        .intro-step-card.c3::before { background: #10b981; }
+
+        .intro-step-card .card-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+        .intro-step-card .card-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #f1f5f9;
+        }
+
+        /* ========================================================
+           COMMON SPLIT LAYOUT FOR STEPS 1, 2, 3
+           ======================================================== */
+        .split-left {
+            width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            z-index: 20;
+        }
+
+        .step-badge-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            align-self: flex-start;
+            padding: 10px 22px;
+            border-radius: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .badge-cyan {
+            background: rgba(6, 182, 212, 0.16);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: #22d3ee;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+        }
+        .badge-purple {
+            background: rgba(139, 92, 246, 0.16);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #a78bfa;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+        }
+        .badge-green {
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .step-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 58px;
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .step-heading .accent-color-cyan { color: #38bdf8; }
+        .step-heading .accent-color-purple { color: #a855f7; }
+        .step-heading .accent-color-green { color: #10b981; }
+
+        .step-explanation {
+            font-size: 21px;
+            line-height: 1.5;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .step-explanation strong {
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        /* Bullet feature pills */
+        .step-bullets {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .bullet-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+        }
+        .bullet-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .icon-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+        .icon-purple { background: rgba(139, 92, 246, 0.2); color: #c084fc; }
+        .icon-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        .bullet-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        .bullet-text span {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* ========================================================
+           SPLIT RIGHT: MAC BROWSER MOCKUP WITH REAL VIDEO
+           ======================================================== */
+        .split-right {
+            width: 1060px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .browser-mockup {
+            width: 1020px;
+            height: 610px;
+            background: #0f172a;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(6, 182, 212, 0.08);
+            position: relative;
+            transform-origin: center right;
+        }
+
+        /* Chrome Window Top Bar */
+        .browser-topbar {
+            height: 48px;
+            background: #1e293b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            gap: 16px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .browser-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .browser-address-bar {
+            flex: 1;
+            max-width: 620px;
+            height: 32px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .browser-address-bar .lock-icon {
+            color: #10b981;
+            font-size: 12px;
+        }
+        .browser-address-bar .url-text {
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        .browser-address-bar .url-path {
+            color: #64748b;
+        }
+
+        .browser-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Video viewport inside browser */
+        .browser-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .browser-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+        }
+
+        /* Floating Interactive Motion Design Overlays on Browser */
+        .floating-hud-card {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            padding: 16px 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 30;
+        }
+
+        /* Animated Interactive Mouse Pointer */
+        .interactive-mouse {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            z-index: 50;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .click-pulse-ring {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #38bdf8;
+            top: -8px;
+            left: -8px;
+            opacity: 0;
+            transform: scale(0.2);
+            pointer-events: none;
+        }
+
+        /* Spotlight Callout Frame */
+        .spotlight-box {
+            position: absolute;
+            border: 2px solid #38bdf8;
+            border-radius: 12px;
+            background: rgba(6, 182, 212, 0.08);
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+            pointer-events: none;
+            z-index: 25;
+            display: flex;
+            align-items: flex-end;
+            padding: 8px 12px;
+        }
+        .spotlight-box .tag {
+            background: #06b6d4;
+            color: #041018;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Animated Interactive Terminal Box for Step 2 */
+        .terminal-box {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 480px;
+            background: rgba(10, 15, 29, 0.94);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 14px;
+            padding: 16px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+            z-index: 35;
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .terminal-line {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        .terminal-line .prompt-symbol { color: #c084fc; font-weight: bold; }
+        .terminal-line .cmd-text { color: #f8fafc; font-weight: 600; }
+        .terminal-line .output-success { color: #34d399; font-weight: 600; }
+
+        /* Step 3 Live Success Badge */
+        .live-deploy-card {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(6, 78, 59, 0.85);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            border-radius: 16px;
+            padding: 16px 24px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.25);
+            z-index: 35;
+        }
+        .status-dot-pulse {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 14px #34d399;
+            animation: pulseGreen 1.5s infinite;
+        }
+        @keyframes pulseGreen {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+
+        /* ========================================================
+           SCENE 4: OUTRO RECAP & CTA (27.5s - 30.0s)
+           ======================================================== */
+        #scene-outro {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 24px;
+        }
+
+        .outro-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 68px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .outro-grid {
+            display: flex;
+            gap: 28px;
+            margin: 10px 0;
+        }
+
+        .outro-card {
+            width: 380px;
+            padding: 28px 24px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .outro-card .step-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+        .card-cyan .step-num { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
+        .card-purple .step-num { background: rgba(139, 92, 246, 0.2); color: #c084fc; }
+        .card-green .step-num { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        .outro-card .card-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .outro-card .card-desc {
+            font-size: 15px;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        .outro-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 40px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 35px rgba(6, 182, 212, 0.4);
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
-    <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
-        <!-- Contenu du Template Tutoriel -->
+    <div id="stage-container">
+        <div id="stage" data-duration="30.0" data-width="1920" data-height="1080">
+            <!-- Background Grids & Glows -->
+            <div class="grid-bg"></div>
+            <div class="ambient-glow glow-1" id="ambient-glow-1"></div>
+            <div class="ambient-glow glow-2" id="ambient-glow-2"></div>
+
+            <!-- Top HUD Header -->
+            <div class="hud-header">
+                <div class="hud-left">
+                    <div class="hud-tag">
+                        <span class="dot"></span>
+                        TUTORIEL EXPRESS
+                    </div>
+                    <div class="hud-title">DÉPLOIEMENT WEB MODERNE</div>
+                </div>
+
+                <div class="hud-steps">
+                    <div class="step-pill" id="hud-pill-1">
+                        <span>01</span> DESIGN UI
+                    </div>
+                    <div class="step-pill" id="hud-pill-2">
+                        <span>02</span> GIT & CODE
+                    </div>
+                    <div class="step-pill" id="hud-pill-3">
+                        <span>03</span> CLOUD PROD
+                    </div>
+                </div>
+
+                <div class="hud-timer">
+                    TEMPS : <span class="live-val" id="hud-time">00:00</span> / 00:30
+                </div>
+            </div>
+
+            <!-- Bottom Progress Line -->
+            <div class="hud-progress-bar" id="hud-progress"></div>
+
+            <!-- ========================================================
+                 SCENE 0 : INTRO (0s - 3.5s)
+                 ======================================================== -->
+            <div class="scene" id="scene-intro">
+                <div class="intro-badge" id="intro-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    GUIDE DÉVELOPPEUR 2026
+                </div>
+
+                <h1 class="intro-title" id="intro-title">
+                    COMMENT DÉPLOYER UN PROJET WEB <br>
+                    <span class="gradient-text">EN SEULEMENT 3 ÉTAPES</span>
+                </h1>
+
+                <div class="intro-subtitle" id="intro-sub">
+                    <span>Aucune configuration complexe.</span>
+                    <span class="highlight-pill">100% Gratuit</span>
+                    <span>De zéro à la production en 30s.</span>
+                </div>
+
+                <div class="intro-steps-preview" id="intro-preview-cards">
+                    <div class="intro-step-card c1">
+                        <span class="card-num">ÉTAPE 01</span>
+                        <span class="card-name">Composants UI</span>
+                    </div>
+                    <div class="intro-step-card c2">
+                        <span class="card-num">ÉTAPE 02</span>
+                        <span class="card-name">Synchroniser Git</span>
+                    </div>
+                    <div class="intro-step-card c3">
+                        <span class="card-num">ÉTAPE 03</span>
+                        <span class="card-name">Mise en Ligne</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================
+                 SCENE 1 : STEP 01 - TAILWIND CSS (3.5s - 12.0s)
+                 ======================================================== -->
+            <div class="scene" id="scene-step1">
+                <div class="split-left">
+                    <div class="step-badge-large badge-cyan">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        ÉTAPE 01 • INTERFACE UI
+                    </div>
+
+                    <h2 class="step-heading">
+                        CHOISIR SES <br>
+                        <span class="accent-color-cyan">COMPOSANTS UI</span>
+                    </h2>
+
+                    <p class="step-explanation">
+                        Gagnez un temps précieux en utilisant une <strong>bibliothèque moderne</strong> comme <strong>Tailwind CSS</strong>. Ne repartez jamais d'une page blanche.
+                    </p>
+
+                    <div class="step-bullets">
+                        <div class="bullet-item" id="b1-1">
+                            <div class="bullet-icon icon-cyan">⚡</div>
+                            <div class="bullet-text">Composants <span>100% responsives</span> pré-optimisés</div>
+                        </div>
+                        <div class="bullet-item" id="b1-2">
+                            <div class="bullet-icon icon-cyan">🎨</div>
+                            <div class="bullet-text">Personnalisation instantanée via classes utilitaires</div>
+                        </div>
+                        <div class="bullet-item" id="b1-3">
+                            <div class="bullet-icon icon-cyan">📦</div>
+                            <div class="bullet-text">Installation en une ligne : <span>npm i tailwindcss</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-right">
+                    <div class="browser-mockup" id="browser-step1">
+                        <div class="browser-topbar">
+                            <div class="browser-controls">
+                                <div class="browser-dot dot-red"></div>
+                                <div class="browser-dot dot-yellow"></div>
+                                <div class="browser-dot dot-green"></div>
+                            </div>
+                            <div class="browser-address-bar">
+                                <span class="lock-icon">🔒</span>
+                                <span class="url-text">https://tailwindcss.com</span>
+                                <span class="url-path">/docs/installation</span>
+                            </div>
+                            <div class="browser-actions">
+                                <span>↻</span>
+                                <span>⋯</span>
+                            </div>
+                        </div>
+                        <div class="browser-content">
+                            <!-- Real Web Video Recording -->
+                            <video id="vid-step1" class="browser-video" src="../01_Assets/Videos/web_tailwind_demo.mp4" muted playsinline></video>
+
+                            <!-- Spotlight Callout Box -->
+                            <div class="spotlight-box" id="spotlight-1" style="top: 80px; left: 60px; width: 440px; height: 180px;">
+                                <span class="tag">DESIGN SYSTEM READY</span>
+                            </div>
+
+                            <!-- Animated Mouse Pointer -->
+                            <svg id="mouse-step1" class="interactive-mouse" viewBox="0 0 24 24" fill="#ffffff" stroke="#0f172a" stroke-width="1.5">
+                                <path d="M3 3l7 18 3-7 7-3L3 3z"/>
+                            </svg>
+                            <div class="click-pulse-ring" id="click-ring-1"></div>
+
+                            <!-- Floating Callout Card -->
+                            <div class="floating-hud-card" id="card-float-1" style="bottom: 30px; right: 30px;">
+                                <div style="font-size: 26px;">🚀</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 15px; color: #f8fafc;">+500 Composants Prêts</div>
+                                    <div style="font-size: 13px; color: #94a3b8;">Boutons, Modales, Navbars, Hero</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================
+                 SCENE 2 : STEP 02 - GITHUB & GIT (12.0s - 20.5s)
+                 ======================================================== -->
+            <div class="scene" id="scene-step2">
+                <div class="split-left">
+                    <div class="step-badge-large badge-purple">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                        ÉTAPE 02 • VERSIONING
+                    </div>
+
+                    <h2 class="step-heading">
+                        SYNCHRONISER <br>
+                        <span class="accent-color-purple">SUR GITHUB</span>
+                    </h2>
+
+                    <p class="step-explanation">
+                        Sauvegardez l'historique complet de votre code et connectez votre <strong>dépôt Git distant</strong> pour déclencher l'automatisation.
+                    </p>
+
+                    <div class="step-bullets">
+                        <div class="bullet-item" id="b2-1">
+                            <div class="bullet-icon icon-purple">🔄</div>
+                            <div class="bullet-text">Historique transparent de <span>chaque modification</span></div>
+                        </div>
+                        <div class="bullet-item" id="b2-2">
+                            <div class="bullet-icon icon-purple">👥</div>
+                            <div class="bullet-text">Collaboration multi-développeurs simplifiée</div>
+                        </div>
+                        <div class="bullet-item" id="b2-3">
+                            <div class="bullet-icon icon-purple">⚡</div>
+                            <div class="bullet-text">Déclencheur automatique de déploiement en push</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-right">
+                    <div class="browser-mockup" id="browser-step2">
+                        <div class="browser-topbar">
+                            <div class="browser-controls">
+                                <div class="browser-dot dot-red"></div>
+                                <div class="browser-dot dot-yellow"></div>
+                                <div class="browser-dot dot-green"></div>
+                            </div>
+                            <div class="browser-address-bar">
+                                <span class="lock-icon">🔒</span>
+                                <span class="url-text">https://github.com</span>
+                                <span class="url-path">/mon-compte/mon-app-web</span>
+                            </div>
+                            <div class="browser-actions">
+                                <span>↻</span>
+                                <span>⋯</span>
+                            </div>
+                        </div>
+                        <div class="browser-content">
+                            <!-- Real Web Video Recording -->
+                            <video id="vid-step2" class="browser-video" src="../01_Assets/Videos/web_github_demo.mp4" muted playsinline></video>
+
+                            <!-- Animated Interactive Terminal Widget -->
+                            <div class="terminal-box" id="term-box">
+                                <div class="terminal-header">
+                                    <span>bash — terminal</span>
+                                    <span>git status</span>
+                                </div>
+                                <div class="terminal-line" id="term-line-1">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="cmd-text">git add .</span>
+                                </div>
+                                <div class="terminal-line" id="term-line-2">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="cmd-text">git commit -m "feat: launch v1.0"</span>
+                                </div>
+                                <div class="terminal-line" id="term-line-3">
+                                    <span class="prompt-symbol">$</span>
+                                    <span class="cmd-text">git push origin main</span>
+                                </div>
+                                <div class="terminal-line" id="term-line-4">
+                                    <span class="output-success">✓ 3 objects written. Branch 'main' up to date!</span>
+                                </div>
+                            </div>
+
+                            <!-- Floating Badge -->
+                            <div class="floating-hud-card" id="card-float-2" style="top: 25px; right: 25px;">
+                                <div style="font-size: 24px;">🐙</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 14px; color: #f8fafc;">Dépôt Synchronisé</div>
+                                    <div style="font-size: 12px; color: #34d399;">100% Cloud backup</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================
+                 SCENE 3 : STEP 03 - VERCEL CLOUD (20.5s - 27.5s)
+                 ======================================================== -->
+            <div class="scene" id="scene-step3">
+                <div class="split-left">
+                    <div class="step-badge-large badge-green">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        ÉTAPE 03 • PRODUCTION
+                    </div>
+
+                    <h2 class="step-heading">
+                        DÉPLOIEMENT <br>
+                        <span class="accent-color-green">CLOUD 1-CLIC</span>
+                    </h2>
+
+                    <p class="step-explanation">
+                        Connectez votre dépôt à <strong>Vercel</strong> : chaque modification poussée sur Git génère un <strong>lien live mondial</strong> en moins de 10 secondes.
+                    </p>
+
+                    <div class="step-bullets">
+                        <div class="bullet-item" id="b3-1">
+                            <div class="bullet-icon icon-green">🚀</div>
+                            <div class="bullet-text">Déploiement <span>automatique & sans serveur</span></div>
+                        </div>
+                        <div class="bullet-item" id="b3-2">
+                            <div class="bullet-icon icon-green">🌐</div>
+                            <div class="bullet-text">Réseau Edge CDN mondial (temps de réponse < 20ms)</div>
+                        </div>
+                        <div class="bullet-item" id="b3-3">
+                            <div class="bullet-icon icon-green">🔒</div>
+                            <div class="bullet-text">Certificat SSL HTTPS & nom de domaine inclus</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="split-right">
+                    <div class="browser-mockup" id="browser-step3">
+                        <div class="browser-topbar">
+                            <div class="browser-controls">
+                                <div class="browser-dot dot-red"></div>
+                                <div class="browser-dot dot-yellow"></div>
+                                <div class="browser-dot dot-green"></div>
+                            </div>
+                            <div class="browser-address-bar">
+                                <span class="lock-icon">🔒</span>
+                                <span class="url-text">https://vercel.com</span>
+                                <span class="url-path">/dashboard/deployments</span>
+                            </div>
+                            <div class="browser-actions">
+                                <span>↻</span>
+                                <span>⋯</span>
+                            </div>
+                        </div>
+                        <div class="browser-content">
+                            <!-- Real Web Video Recording -->
+                            <video id="vid-step3" class="browser-video" src="../01_Assets/Videos/web_vercel_demo.mp4" muted playsinline></video>
+
+                            <!-- Live Deploy Card -->
+                            <div class="live-deploy-card" id="deploy-success-card">
+                                <div class="status-dot-pulse"></div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 16px; color: #ffffff;">STATUS : PRODUCTION ACTIVE</div>
+                                    <div style="font-size: 13px; color: #a7f3d0; font-family: 'JetBrains Mono', monospace;">https://mon-app.vercel.app</div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Edge Badge -->
+                            <div class="floating-hud-card" id="card-float-3" style="bottom: 30px; left: 30px;">
+                                <div style="font-size: 26px;">⚡</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 15px; color: #f8fafc;">Temps de build : 8.2s</div>
+                                    <div style="font-size: 13px; color: #34d399;">350 PoPs CDN Edge Mondiaux</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================
+                 SCENE 4 : OUTRO RECAP & CTA (27.5s - 30.0s)
+                 ======================================================== -->
+            <div class="scene" id="scene-outro">
+                <div class="intro-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    TUTORIEL COMPLET EN 30 SECONDES
+                </div>
+
+                <h2 class="outro-title">
+                    VOTRE PROJET EST <span style="background: linear-gradient(135deg, #10b981, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">EN LIGNE !</span>
+                </h2>
+
+                <div class="outro-grid" id="outro-grid">
+                    <div class="outro-card card-cyan">
+                        <span class="step-num">ÉTAPE 1</span>
+                        <span class="card-main">Composants UI</span>
+                        <span class="card-desc">Design rapide avec Tailwind CSS</span>
+                    </div>
+                    <div class="outro-card card-purple">
+                        <span class="step-num">ÉTAPE 2</span>
+                        <span class="card-main">Dépôt Git</span>
+                        <span class="card-desc">Code sécurisé et versionné sur GitHub</span>
+                    </div>
+                    <div class="outro-card card-green">
+                        <span class="step-num">ÉTAPE 3</span>
+                        <span class="card-main">Cloud Vercel</span>
+                        <span class="card-desc">Déploiement mondial automatique</span>
+                    </div>
+                </div>
+
+                <div class="outro-cta" id="outro-cta">
+                    <span>À VOUS DE CODER ! ENREGISTREZ CE TUTO</span>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+
+        </div>
     </div>
+
+    <!-- GSAP Choreography -->
     <script>
+        // Responsive viewport resizing
+        const stage = document.getElementById('stage');
+        function resizeStage() {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const scale = Math.min(vw / 1920, vh / 1080);
+            stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeStage);
+        resizeStage();
+
+        // Video elements
+        const vid1 = document.getElementById('vid-step1');
+        const vid2 = document.getElementById('vid-step2');
+        const vid3 = document.getElementById('vid-step3');
+
+        // Master GSAP Timeline
+        const DURATION = 30.0;
         const isIframeMode = window.self !== window.top;
         const tl = gsap.timeline({ paused: isIframeMode });
         window.tl = tl;
+
+        // Synchronize videos deterministically on scrub / seek
+        function syncVideosAtTime(t) {
+            // Video 1 (Step 1: 3.5s -> 12.0s)
+            if (t >= 3.5 && t < 12.0) {
+                const targetTime = (t - 3.5) % 4.0;
+                if (Math.abs(vid1.currentTime - targetTime) > 0.25) vid1.currentTime = targetTime;
+                if (!tl.paused() && vid1.paused) vid1.play().catch(() => {});
+            } else {
+                if (!vid1.paused) vid1.pause();
+            }
+
+            // Video 2 (Step 2: 12.0s -> 20.5s)
+            if (t >= 12.0 && t < 20.5) {
+                const targetTime = (t - 12.0) % 5.0;
+                if (Math.abs(vid2.currentTime - targetTime) > 0.25) vid2.currentTime = targetTime;
+                if (!tl.paused() && vid2.paused) vid2.play().catch(() => {});
+            } else {
+                if (!vid2.paused) vid2.pause();
+            }
+
+            // Video 3 (Step 3: 20.5s -> 27.5s)
+            if (t >= 20.5 && t < 27.5) {
+                const targetTime = (t - 20.5) % 5.0;
+                if (Math.abs(vid3.currentTime - targetTime) > 0.25) vid3.currentTime = targetTime;
+                if (!tl.paused() && vid3.paused) vid3.play().catch(() => {});
+            } else {
+                if (!vid3.paused) vid3.pause();
+            }
+
+            // HUD Timer Text & Progress Bar
+            const sec = Math.floor(t);
+            const formatted = `00:${sec < 10 ? '0' + sec : sec}`;
+            const timeEl = document.getElementById('hud-time');
+            if (timeEl && timeEl.textContent !== formatted) timeEl.textContent = formatted;
+        }
+
+        tl.eventCallback("onUpdate", () => {
+            syncVideosAtTime(tl.time());
+        });
+
+        // Global Progress Bar
+        tl.to("#hud-progress", { width: "100%", duration: DURATION, ease: "none" }, 0);
+
+        // ========================================================
+        // 1. INTRO TEASER (0.0s - 3.5s)
+        // ========================================================
+        tl.set("#scene-intro", { autoAlpha: 1, pointerEvents: "auto" }, 0);
+        tl.from("#intro-badge", { y: -30, opacity: 0, duration: 0.6, ease: "back.out(1.7)" }, 0.1);
+        tl.from("#intro-title", { scale: 0.88, opacity: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+        tl.from("#intro-sub", { y: 20, opacity: 0, duration: 0.6, ease: "power2.out" }, 0.4);
+        tl.from(".intro-step-card", { y: 40, opacity: 0, stagger: 0.12, duration: 0.6, ease: "back.out(1.5)" }, 0.7);
+
+        // Intro Exit
+        tl.to("#scene-intro", { scale: 0.94, opacity: 0, filter: "blur(8px)", duration: 0.6, ease: "power2.in" }, 3.0);
+        tl.set("#scene-intro", { autoAlpha: 0 }, 3.5);
+
+        // ========================================================
+        // 2. STEP 01 : UI DESIGN (3.5s - 12.0s)
+        // ========================================================
+        tl.set("#scene-step1", { autoAlpha: 1, pointerEvents: "auto" }, 3.5);
+        tl.set("#hud-pill-1", { className: "+=active" }, 3.5);
+
+        // Browser & Left Elements Entry
+        tl.from("#browser-step1", { x: 120, opacity: 0, scale: 0.9, duration: 0.8, ease: "power3.out" }, 3.5);
+        tl.from("#scene-step1 .step-badge-large", { x: -40, opacity: 0, duration: 0.5, ease: "back.out(1.5)" }, 3.6);
+        tl.from("#scene-step1 .step-heading", { x: -50, opacity: 0, duration: 0.7, ease: "power3.out" }, 3.8);
+        tl.from("#scene-step1 .step-explanation", { x: -30, opacity: 0, duration: 0.6, ease: "power2.out" }, 4.1);
+        tl.from("#scene-step1 .bullet-item", { x: -40, opacity: 0, stagger: 0.25, duration: 0.5, ease: "power2.out" }, 4.4);
+
+        // Spotlight & Floating HUD Elements
+        tl.from("#spotlight-1", { scale: 0.5, opacity: 0, duration: 0.6, ease: "back.out(1.5)" }, 5.2);
+        tl.from("#card-float-1", { y: 40, opacity: 0, duration: 0.7, ease: "power3.out" }, 5.8);
+
+        // Mouse Cursor Animation & Click Effect
+        tl.fromTo("#mouse-step1", 
+            { left: "80%", top: "80%", opacity: 0 },
+            { left: "30%", top: "35%", opacity: 1, duration: 1.2, ease: "power2.inOut" }, 
+            6.2
+        );
+        tl.fromTo("#click-ring-1",
+            { left: "29%", top: "34%", scale: 0.2, opacity: 1 },
+            { scale: 2.2, opacity: 0, duration: 0.6, ease: "power2.out" },
+            7.4
+        );
+        tl.to("#mouse-step1", { scale: 0.85, duration: 0.15, yoyo: true, repeat: 1 }, 7.4);
+
+        // Ambient Glow shift
+        tl.to("#ambient-glow-1", { x: 300, y: 150, duration: 4, ease: "sine.inOut" }, 3.5);
+
+        // Step 1 Exit
+        tl.to("#scene-step1", { x: -80, opacity: 0, duration: 0.5, ease: "power2.in" }, 11.5);
+        tl.set("#scene-step1", { autoAlpha: 0 }, 12.0);
+        tl.set("#hud-pill-1", { className: "-=active" }, 12.0);
+        tl.set("#hud-pill-1", { className: "+=completed" }, 12.0);
+
+        // ========================================================
+        // 3. STEP 02 : GIT & VERSIONING (12.0s - 20.5s)
+        // ========================================================
+        tl.set("#scene-step2", { autoAlpha: 1, pointerEvents: "auto" }, 12.0);
+        tl.set("#hud-pill-2", { className: "+=active" }, 12.0);
+
+        // Browser & Left Elements Entry
+        tl.from("#browser-step2", { x: 120, opacity: 0, scale: 0.92, duration: 0.8, ease: "power3.out" }, 12.0);
+        tl.from("#scene-step2 .step-badge-large", { x: -40, opacity: 0, duration: 0.5, ease: "back.out(1.5)" }, 12.1);
+        tl.from("#scene-step2 .step-heading", { x: -50, opacity: 0, duration: 0.7, ease: "power3.out" }, 12.3);
+        tl.from("#scene-step2 .step-explanation", { x: -30, opacity: 0, duration: 0.6, ease: "power2.out" }, 12.6);
+        tl.from("#scene-step2 .bullet-item", { x: -40, opacity: 0, stagger: 0.25, duration: 0.5, ease: "power2.out" }, 12.9);
+
+        // Terminal animation typing
+        tl.from("#term-box", { y: 60, opacity: 0, scale: 0.95, duration: 0.6, ease: "back.out(1.4)" }, 13.5);
+        tl.from("#term-line-1", { opacity: 0, x: -10, duration: 0.4 }, 14.2);
+        tl.from("#term-line-2", { opacity: 0, x: -10, duration: 0.4 }, 15.0);
+        tl.from("#term-line-3", { opacity: 0, x: -10, duration: 0.4 }, 16.0);
+        tl.from("#term-line-4", { opacity: 0, scale: 0.9, duration: 0.5, ease: "back.out(1.8)" }, 17.0);
+
+        tl.from("#card-float-2", { x: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, 14.5);
+
+        // Step 2 Exit
+        tl.to("#scene-step2", { x: -80, opacity: 0, duration: 0.5, ease: "power2.in" }, 20.0);
+        tl.set("#scene-step2", { autoAlpha: 0 }, 20.5);
+        tl.set("#hud-pill-2", { className: "-=active" }, 20.5);
+        tl.set("#hud-pill-2", { className: "+=completed" }, 20.5);
+
+        // ========================================================
+        // 4. STEP 03 : VERCEL CLOUD (20.5s - 27.5s)
+        // ========================================================
+        tl.set("#scene-step3", { autoAlpha: 1, pointerEvents: "auto" }, 20.5);
+        tl.set("#hud-pill-3", { className: "+=active" }, 20.5);
+
+        // Browser & Left Elements Entry
+        tl.from("#browser-step3", { x: 120, opacity: 0, scale: 0.92, duration: 0.8, ease: "power3.out" }, 20.5);
+        tl.from("#scene-step3 .step-badge-large", { x: -40, opacity: 0, duration: 0.5, ease: "back.out(1.5)" }, 20.6);
+        tl.from("#scene-step3 .step-heading", { x: -50, opacity: 0, duration: 0.7, ease: "power3.out" }, 20.8);
+        tl.from("#scene-step3 .step-explanation", { x: -30, opacity: 0, duration: 0.6, ease: "power2.out" }, 21.1);
+        tl.from("#scene-step3 .bullet-item", { x: -40, opacity: 0, stagger: 0.25, duration: 0.5, ease: "power2.out" }, 21.4);
+
+        // Deployment Success Badge & Float
+        tl.from("#deploy-success-card", { scale: 0.6, opacity: 0, duration: 0.7, ease: "back.out(1.8)" }, 22.0);
+        tl.from("#card-float-3", { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" }, 22.8);
+
+        // Step 3 Exit
+        tl.to("#scene-step3", { scale: 0.95, opacity: 0, duration: 0.5, ease: "power2.in" }, 27.0);
+        tl.set("#scene-step3", { autoAlpha: 0 }, 27.5);
+        tl.set("#hud-pill-3", { className: "-=active" }, 27.5);
+        tl.set("#hud-pill-3", { className: "+=completed" }, 27.5);
+
+        // ========================================================
+        // 5. OUTRO RECAP & CTA (27.5s - 30.0s)
+        // ========================================================
+        tl.set("#scene-outro", { autoAlpha: 1, pointerEvents: "auto" }, 27.5);
+        tl.from("#scene-outro .intro-badge", { y: -20, opacity: 0, duration: 0.4, ease: "back.out(1.5)" }, 27.5);
+        tl.from(".outro-title", { scale: 0.9, opacity: 0, duration: 0.5, ease: "power3.out" }, 27.6);
+        tl.from(".outro-card", { y: 30, opacity: 0, stagger: 0.1, duration: 0.5, ease: "back.out(1.5)" }, 27.8);
+        tl.from("#outro-cta", { scale: 0.8, opacity: 0, duration: 0.5, ease: "back.out(1.8)" }, 28.2);
+        tl.to("#outro-cta", { boxShadow: "0 0 50px rgba(6, 182, 212, 0.8)", yoyo: true, repeat: 1, duration: 0.8 }, 28.7);
+
+        // ========================================================
+        // STUDIO TIMELINE INTERFACE
+        // ========================================================
         window.__timeline = {
-            duration: () => 30.0,
-            seek: (t) => tl.seek(t, false),
-            pause: () => tl.pause(),
-            play: () => tl.play()
+            duration: () => DURATION,
+            seek: (time) => {
+                tl.seek(time, false);
+                syncVideosAtTime(time);
+            },
+            pause: () => {
+                tl.pause();
+                if (!vid1.paused) vid1.pause();
+                if (!vid2.paused) vid2.pause();
+                if (!vid3.paused) vid3.pause();
+            },
+            play: () => {
+                tl.play();
+                syncVideosAtTime(tl.time());
+            }
         };
     </script>
 </body>
 </html>
-

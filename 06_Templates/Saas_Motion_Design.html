@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,9 @@
     <!-- Polices Professionnelles : Outfit (Sans), Plus Jakarta Sans, Italianno (Script Accent) & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Italianno&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -35,7 +38,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -67,7 +71,7 @@
             position: absolute;
             inset: 0;
             background-size: 50px 50px;
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
             mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 95%);
@@ -274,9 +278,18 @@
             height: 13px;
             border-radius: 50%;
         }
-        .tl-red { background: #ef4444; }
-        .tl-yellow { background: #f59e0b; }
-        .tl-green { background: #10b981; }
+
+        .tl-red {
+            background: #ef4444;
+        }
+
+        .tl-yellow {
+            background: #f59e0b;
+        }
+
+        .tl-green {
+            background: #10b981;
+        }
 
         .search-bar-mock {
             display: flex;
@@ -614,6 +627,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="stage" data-duration="10.0" data-width="1920" data-height="1080">
@@ -637,26 +651,30 @@
                 </h1>
 
                 <p class="scene1-sub" id="s1Sub">
-                    Automatisez vos workflows complexes, centralisez vos métriques et libérez 20 heures par semaine pour vos équipes.
+                    Automatisez vos workflows complexes, centralisez vos métriques et libérez 20 heures par semaine pour
+                    vos équipes.
                 </p>
 
                 <div class="scene1-metrics-row" id="s1Metrics">
                     <div class="metric-card-mini">
-                        <div class="metric-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">⚡</div>
+                        <div class="metric-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">⚡
+                        </div>
                         <div>
                             <span class="metric-val">10x Plus Rapide</span>
                             <span class="metric-lbl">Exécution des requêtes</span>
                         </div>
                     </div>
                     <div class="metric-card-mini">
-                        <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📈</div>
+                        <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📈
+                        </div>
                         <div>
                             <span class="metric-val">+340% ROI</span>
                             <span class="metric-lbl">Dès le premier mois</span>
                         </div>
                     </div>
                     <div class="metric-card-mini">
-                        <div class="metric-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">🔒</div>
+                        <div class="metric-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">🔒
+                        </div>
                         <div>
                             <span class="metric-val">99.99% Uptime</span>
                             <span class="metric-lbl">Sécurité SOC-2 certifiée</span>
@@ -746,10 +764,12 @@
                                 </defs>
 
                                 <!-- Surface remplie sous la courbe -->
-                                <path id="chartAreaPath" class="chart-area-fill" d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30 L 1000,320 L 0,320 Z" />
+                                <path id="chartAreaPath" class="chart-area-fill"
+                                    d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30 L 1000,320 L 0,320 Z" />
 
                                 <!-- Ligne principale animée avec dasharray -->
-                                <path id="chartLinePath" class="chart-line-gradient" d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30" />
+                                <path id="chartLinePath" class="chart-line-gradient"
+                                    d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30" />
 
                                 <!-- Points pulsants sur les sommets -->
                                 <circle id="pt1" cx="380" cy="180" r="7" fill="#06b6d4" />
@@ -771,7 +791,8 @@
 
                 <!-- Curseur souris animé -->
                 <svg class="animated-mouse-cursor" id="virtualCursor" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 3L11 20L14 13L21 10L4 3Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M4 3L11 20L14 13L21 10L4 3Z" fill="#ffffff" stroke="#000000" stroke-width="2"
+                        stroke-linejoin="round" />
                 </svg>
             </div>
         </div>
@@ -784,7 +805,8 @@
                 <!-- Logo Marque -->
                 <div class="brand-logo-wrap" id="s3Brand">
                     <div class="brand-logo-icon">
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                             <polyline points="2 17 12 22 22 17"></polyline>
                             <polyline points="2 12 12 17 22 12"></polyline>
@@ -919,7 +941,7 @@
         }, 4.2);
 
         // Curseur souris virtuel : Glisse vers le bouton Auto-Pilote
-        tl.fromTo('#virtualCursor', 
+        tl.fromTo('#virtualCursor',
             { x: 300, y: 650, opacity: 0 },
             { x: 1220, y: 110, opacity: 1, duration: 1.2, ease: 'power2.inOut' },
             3.6
@@ -1055,4 +1077,5 @@
         resizeStage();
     </script>
 </body>
+
 </html>
