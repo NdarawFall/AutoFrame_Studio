@@ -304,7 +304,7 @@
         .venue-card {
             flex: 1;
             max-width: 480px;
-            padding: 38px 30px;
+            padding: 22px 22px 28px 22px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -317,22 +317,23 @@
             overflow: hidden;
         }
 
-        .venue-icon-floating {
-            width: 90px;
-            height: 90px;
-            margin-bottom: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
+        .venue-photo-wrap {
+            width: 100%;
+            height: 185px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+            position: relative;
+            background: #e2e8f0;
         }
 
-        .venue-icon-floating svg {
+        .venue-photo {
             width: 100%;
             height: 100%;
-            overflow: visible;
+            object-fit: cover;
+            object-position: center;
+            display: block;
         }
 
         .venue-loc-tag {
@@ -726,21 +727,10 @@
             <p id="p3Sub" class="main-subtitle">Une synergie géographique entre la modernité de Diamniadio, l'océan de Saly et l'histoire de Dakar.</p>
 
             <div class="venues-grid">
-                <!-- Pôle 1 : Diamniadio (Icône Stade / Arène épurée sans background) -->
+                <!-- Pôle 1 : Diamniadio (Vraie photo Stade Abdoulaye Wade) -->
                 <div id="p3Card1" class="venue-card">
-                    <div id="p3Icon1" class="venue-icon-floating">
-                        <svg viewBox="0 0 64 64" fill="none" stroke="#10b981" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                            <ellipse cx="32" cy="40" rx="28" ry="12" />
-                            <ellipse cx="32" cy="34" rx="19" ry="7" fill="rgba(16, 185, 129, 0.12)" stroke="#10b981" stroke-width="1.8" />
-                            <path d="M 4 40 L 4 22 C 4 10, 60 10, 60 22 L 60 40" />
-                            <line x1="14" y1="20" x2="14" y2="44" />
-                            <line x1="23" y1="22" x2="23" y2="47" />
-                            <line x1="32" y1="22" x2="32" y2="48" />
-                            <line x1="41" y1="22" x2="41" y2="47" />
-                            <line x1="50" y1="20" x2="50" y2="44" />
-                            <!-- Projecteur arche supérieure -->
-                            <path d="M 12 18 C 22 13, 42 13, 52 18" stroke="#f59e0b" stroke-width="2" />
-                        </svg>
+                    <div id="p3ImgWrap1" class="venue-photo-wrap">
+                        <img id="p3Img1" class="venue-photo" src="../01_Assets/Images/stade_abdoulaye_wade.jpg" alt="Stade Abdoulaye Wade" />
                     </div>
                     <span id="p3Tag1" class="venue-loc-tag">PÔLE DIAMNIADIO</span>
                     <div id="p3Title1" class="venue-title">Stade Abdoulaye Wade</div>
@@ -748,22 +738,10 @@
                     <span id="p3Chip1" class="venue-chip" style="background: #ecfdf5; color: #059669;">50 000 places • Arène Majeure</span>
                 </div>
 
-                <!-- Pôle 2 : Saly Nautique (Icône Voile / Vagues épurée sans background) -->
+                <!-- Pôle 2 : Saly Nautique (Vraie photo Plage & Océan de Saly) -->
                 <div id="p3Card2" class="venue-card">
-                    <div id="p3Icon2" class="venue-icon-floating">
-                        <svg viewBox="0 0 64 64" fill="none" stroke="#0284c7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- Vagues atlantiques -->
-                            <path d="M 4 48 C 12 43, 20 53, 28 48 C 36 43, 44 53, 52 48 C 56 46, 60 49, 60 49" stroke-width="3" />
-                            <path d="M 8 56 C 16 51, 24 61, 32 56 C 40 51, 48 61, 56 56" opacity="0.6" />
-                            <!-- Coque du bateau -->
-                            <path d="M 12 42 L 52 42 C 48 50, 16 50, 12 42 Z" fill="rgba(2, 132, 199, 0.15)" stroke-width="2.4" />
-                            <!-- Mât & Voiles triangulaires -->
-                            <line x1="32" y1="8" x2="32" y2="42" stroke-width="2.8" />
-                            <path d="M 32 10 L 48 36 L 32 36 Z" fill="rgba(2, 132, 199, 0.2)" stroke-width="2.4" />
-                            <path d="M 30 15 L 16 36 L 30 36 Z" stroke-width="2.2" />
-                            <!-- Soleil tropical en coin -->
-                            <circle cx="50" cy="14" r="6" stroke="#f59e0b" stroke-width="2" fill="rgba(245, 158, 11, 0.2)" />
-                        </svg>
+                    <div id="p3ImgWrap2" class="venue-photo-wrap">
+                        <img id="p3Img2" class="venue-photo" src="../01_Assets/Images/saly_nautique_plage.jpg" alt="Centre Nautique et Plage Saly" />
                     </div>
                     <span id="p3Tag2" class="venue-loc-tag">PÔLE SALY PORTUDAL</span>
                     <div id="p3Title2" class="venue-title">Centre Nautique & Plage</div>
@@ -771,18 +749,10 @@
                     <span id="p3Chip2" class="venue-chip" style="background: #e0f2fe; color: #0284c7;">Océan • Sports Côtiers</span>
                 </div>
 
-                <!-- Pôle 3 : Dakar Centre (Icône Flamme Olympique & Médina sans background) -->
+                <!-- Pôle 3 : Dakar Centre (Vraie photo Stade Iba Mar Diop) -->
                 <div id="p3Card3" class="venue-card">
-                    <div id="p3Icon3" class="venue-icon-floating">
-                        <svg viewBox="0 0 64 64" fill="none" stroke="#ef4444" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- Torche / Fanal -->
-                            <path d="M 22 28 L 42 28 L 36 56 L 28 56 Z" fill="rgba(239, 68, 68, 0.12)" stroke-width="2.5" />
-                            <line x1="20" y1="28" x2="44" y2="28" stroke-width="3" />
-                            <line x1="25" y1="36" x2="39" y2="36" stroke-width="2" />
-                            <!-- Flamme olympique flamboyante -->
-                            <path d="M 32 4 C 40 10, 46 18, 42 24 C 38 28, 26 28, 22 24 C 18 18, 24 10, 32 4 Z" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2.5" />
-                            <path d="M 32 12 C 36 16, 37 20, 33 24 C 29 22, 29 17, 32 12 Z" fill="#ef4444" stroke="none" />
-                        </svg>
+                    <div id="p3ImgWrap3" class="venue-photo-wrap">
+                        <img id="p3Img3" class="venue-photo" src="../01_Assets/Images/stade_iba_mar_diop.jpg" alt="Stade Iba Mar Diop" />
                     </div>
                     <span id="p3Tag3" class="venue-loc-tag">PÔLE DAKAR VILLE</span>
                     <div id="p3Title3" class="venue-title">Stade Iba Mar Diop</div>
@@ -1287,7 +1257,7 @@
     // Pôle 1 : Diamniadio (13.0s)
     tl.fromTo('#p3Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 13.0);
     tl.call(() => playSfx('whoosh', 0.4), null, 13.0);
-    tl.fromTo('#p3Icon1', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 13.2);
+    tl.fromTo('#p3ImgWrap1', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.65, ease: 'power2.out' }, 13.15);
     tl.fromTo('#p3Tag1', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 13.35);
     tl.fromTo('#p3Title1', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 13.45);
     tl.fromTo('#p3Desc1', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 13.6);
@@ -1296,7 +1266,7 @@
     // Pôle 2 : Saly (14.3s)
     tl.fromTo('#p3Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 14.3);
     tl.call(() => playSfx('whoosh', 0.4), null, 14.3);
-    tl.fromTo('#p3Icon2', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 14.5);
+    tl.fromTo('#p3ImgWrap2', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.65, ease: 'power2.out' }, 14.45);
     tl.fromTo('#p3Tag2', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 14.65);
     tl.fromTo('#p3Title2', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 14.75);
     tl.fromTo('#p3Desc2', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 14.9);
@@ -1305,7 +1275,7 @@
     // Pôle 3 : Dakar Centre (15.6s)
     tl.fromTo('#p3Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 15.6);
     tl.call(() => playSfx('shimmer', 0.5), null, 15.6);
-    tl.fromTo('#p3Icon3', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 15.8);
+    tl.fromTo('#p3ImgWrap3', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.65, ease: 'power2.out' }, 15.75);
     tl.fromTo('#p3Tag3', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 15.95);
     tl.fromTo('#p3Title3', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 16.05);
     tl.fromTo('#p3Desc3', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 16.2);
@@ -1334,16 +1304,6 @@
             brollEl.play().catch(e => console.warn('broll play:', e));
         }
     }, null, 23.0);
-
-    // Maintien actif de la lecture vidéo pendant les 12s de la scène
-    tl.to('#brollVideo', {
-        duration: 12.0,
-        onUpdate: function() {
-            if (brollEl && brollEl.paused && !tl.paused()) {
-                brollEl.play().catch(() => {});
-            }
-        }
-    }, 23.0);
 
     // Animations internes des cartouches latéraux
     tl.fromTo('#p4SideCard1', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 24.2);
@@ -1471,16 +1431,18 @@
             if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
                 bgm.currentTime = t;
             }
-            // Synchronisation de la vidéo B-roll sans autoplay sauvage
+            // Synchronisation de la vidéo B-roll sans autoplay sauvage ni saccades
             if (brollEl) {
                 if (t >= 23.0 && t <= 35.0) {
-                    const dur = brollEl.duration || 15.0;
-                    brollEl.currentTime = (t - 23.0) % dur;
-                    if (!tl.paused()) {
+                    const targetT = (t - 23.0);
+                    if (Math.abs(brollEl.currentTime - targetT) > 0.4) {
+                        brollEl.currentTime = targetT;
+                    }
+                    if (brollEl.paused && !tl.paused()) {
                         brollEl.play().catch(() => {});
                     }
                 } else {
-                    brollEl.pause();
+                    if (!brollEl.paused) brollEl.pause();
                     brollEl.currentTime = 0;
                 }
             }

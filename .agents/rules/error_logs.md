@@ -236,6 +236,28 @@ Ce document répertorie les erreurs, pièges et régressions commis par l'IA sur
       - 30% Couleur Secondaire : Surfaces de cartes `#131b2e` / bordures `#1e293b`, texte `#ffffff` & `#94a3b8`.
       - 10% Couleur d'Accent UNIQUE : ex. Ambre Doré `#f59e0b` / `#fbbf24` pour TOUS les reflets, mots-clés, lueurs et icônes.
 
+---
+
+### [2026-11-02] — Fluidité Vidéo B-roll, Photos Réelles vs Icônes & Éradication des Captures Parasites Résiduelles
+* **Problème / Symptôme** :
+  1. La vidéo B-roll saccadait et présentait des sauts d'images ("ça montre une image... ensuite une autre... puis retour sur l'ancienne").
+  2. Présence d'icônes ou de dessins stylisés non désirés au lieu de véritables photographies des infrastructures réelles (ex. Stade Abdoulaye Wade, Saly nautique, Stade Iba Mar Diop).
+  3. Fichiers de captures d'écran et d'images intermédiaires laissés sur le disque après les vérifications de rendu (dossiers `scratch/screenshots/`, images parasites `.png`, `.jpg`).
+* **Cause technique** :
+  1. Téléchargement d'un segment de flux HLS YouTube avec stream copy (`-c copy`) sans ré-encodage, produisant des timestamps PTS/DTS discontinus et non-monotones + présence d'un tween GSAP `tl.to(video, { onUpdate })` qui forçait `play()` ou perturbait le décodeur matériel du navigateur 60 fois par seconde.
+  2. Remplacement hâtif par des SVGs ou émojis alors que le brief requiert des infrastructures réelles identifiables.
+  3. Scripts de test / vérification qui écrivaient des captures d'écran sur disque sans nettoyage immédiat.
+* **Règle à respecter impérativement** :
+  - **Encodage & Lecture Vidéo B-Roll Sans Saccade** :
+    - Toujours ré-encoder les extraits vidéo téléchargés avec `libx264` à GOP court régulier (`-g 25`), timestamps monotones et `-movflags +faststart` pour un décodage matériel immédiat dans le navigateur.
+    - Ne JAMAIS brancher un tween GSAP avec `onUpdate` qui boucle sur l'élément vidéo ou assigne continuellement `currentTime`. Utiliser un simple `tl.call(() => video.play(), null, startTime)` et `tl.call(() => video.pause(), null, endTime)`.
+    - Dans les fonctions de seek de la timeline, ne corriger `currentTime` que si l'écart est supérieur à un seuil tolérant (`> 0.4s`) pour ne jamais interrompre le pipeline de décodage.
+  - **Photos Réelles du Réel** :
+    - Lorsque la vidéo traite de lieux, stades ou infrastructures existantes, télécharger et intégrer de véritables photos de haute qualité (formats 16:9 ou ratio soigné avec `object-fit: cover`) avec une entrée animée en reveal/scale.
+  - **Éradication Totale des Captures Parasites Résiduelles** :
+    - Tout script de capture ou de validation visuelle (Puppeteer / Chrome headless) doit OBLIGATOIREMENT supprimer tous les fichiers de capture et dossiers temporaires générés dès que la vérification est achevée.
+    - ZÉRO fichier `.png`, `.jpg` ou sous-dossier de capture ne doit subsister dans `scratch/` ou dans le dépôt.
+
 
 
 
