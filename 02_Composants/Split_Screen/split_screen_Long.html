@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="split_screen.css">
     <style>
         :root {
             --bg-canvas: #07090e;
@@ -43,7 +44,7 @@
         .toolbar {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 22px;
             background: rgba(255, 255, 255, 0.05);
             padding: 8px 16px;
@@ -52,6 +53,7 @@
             backdrop-filter: blur(12px);
             flex-wrap: wrap;
             justify-content: center;
+            max-width: 1000px;
         }
 
         .toolbar-title {
@@ -69,9 +71,9 @@
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #e2e8f0;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
-            padding: 7px 16px;
+            padding: 7px 14px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -145,50 +147,26 @@
             background: radial-gradient(circle at 50% 50%, #7c2d12 0%, #030712 100%);
         }
 
-        /* Séparateur Vertical (Divider) */
-        .split-divider-v {
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(180deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
-            box-shadow: 0 0 15px var(--accent-cyan);
-            position: relative;
-            z-index: 20;
-            flex-shrink: 0;
-        }
-
-        /* Séparateur Horizontal pour sous-colonnes */
-        .split-divider-h {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
-            box-shadow: 0 0 15px var(--accent-cyan);
-            position: relative;
-            z-index: 20;
-            flex-shrink: 0;
-        }
-
-        /* Badges informatifs */
+        /* Badges de statut */
         .pane-badge {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.8px;
-            z-index: 10;
-            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
+            color: #ffffff;
+            z-index: 10;
         }
 
-        .pane-badge .status-pulse {
+        .status-pulse {
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -197,22 +175,23 @@
         }
 
         .pane-badge.alt .status-pulse {
-            background: var(--accent-purple);
-            box-shadow: 0 0 10px var(--accent-purple);
+            background: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red);
         }
 
         .pane-badge.rec .status-pulse {
-            background: var(--accent-red);
-            box-shadow: 0 0 10px var(--accent-red);
-            animation: blink 1.2s infinite;
+            background: #ef4444;
+            box-shadow: 0 0 12px #ef4444;
+            animation: pulseRec 1.2s infinite;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
+        @keyframes pulseRec {
+            0% { opacity: 1; }
             50% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
-        /* Titre narratif centré */
+        /* Titre & Légende narrative */
         .pane-caption {
             position: relative;
             z-index: 5;
@@ -220,117 +199,77 @@
             font-weight: 900;
             text-align: center;
             color: #ffffff;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
+            padding: 0 32px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.9);
-            padding: 0 30px;
+            letter-spacing: 1px;
         }
 
         .pane-caption span {
-            font-size: 12px;
             display: block;
-            font-weight: 700;
+            font-size: 13px;
             color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
             letter-spacing: 2px;
             margin-bottom: 6px;
         }
 
-        /* --- 1. LAYOUT 50 / 50 (Gauche / Droite) --- */
-        .layout-50-50 {
-            flex-direction: row;
-        }
-        .layout-50-50 .long-pane {
-            flex: 1;
-        }
-
-        /* --- 2. LAYOUT FOCUS 70 / 30 --- */
-        .layout-focus-70 {
-            flex-direction: row;
-        }
-        .layout-focus-70 .long-pane:nth-child(1) {
-            flex: 1.4;
-        }
-        .layout-focus-70 .long-pane:nth-child(3) {
-            flex: 0.6;
-        }
-
-        /* --- 3. LAYOUT TRIPLE (1 Main + 2 Stacked) --- */
-        .layout-triple {
-            flex-direction: row;
-        }
-        .layout-triple .main-column {
-            flex: 1.3;
-            height: 100%;
-            position: relative;
-        }
-        .layout-triple .side-column {
-            flex: 0.7;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .layout-triple .side-column .long-pane {
-            flex: 1;
-        }
-
-        /* --- 4. LAYOUT QUAD (4 Écrans 2x2) --- */
-        .layout-quad {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 3px;
-            background: var(--accent-cyan);
-        }
-        .layout-quad .long-pane {
-            background: #0b0f19;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Badge Versus au centre */
+        /* Central VS Badge */
         .vs-badge {
             position: absolute;
-            top: 50%;
             left: 50%;
+            top: 50%;
             transform: translate(-50%, -50%);
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: #000000;
             border: 2px solid var(--accent-cyan);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 900;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
-            font-weight: 900;
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-            z-index: 40;
+            box-shadow: 0 0 25px var(--accent-cyan);
+            z-index: 30;
         }
 
-        /* Footer Meta */
+        /* Modes existants */
+        .layout-50-50 .long-pane { flex: 1; }
+        .layout-focus-70 .long-pane:nth-child(1) { flex: 0.70; }
+        .layout-focus-70 .long-pane:nth-child(3) { flex: 0.30; }
+
+        .layout-triple { display: flex; }
+        .layout-triple .main-column { flex: 0.65; height: 100%; }
+        .layout-triple .side-column { flex: 0.35; height: 100%; display: flex; flex-direction: column; }
+        .layout-triple .side-column .long-pane { flex: 1; }
+
+        .layout-quad { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+        /* Footer Meta Info */
         .long-footer-meta {
             position: absolute;
-            bottom: 18px;
+            bottom: 16px;
             left: 20px;
             right: 20px;
-            z-index: 30;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 600;
+            z-index: 30;
             pointer-events: none;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .meta-pill {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 5px 12px;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             backdrop-filter: blur(8px);
         }
     </style>
@@ -340,10 +279,14 @@
     <!-- SÉLECTEUR DE MODE SPLIT LONG -->
     <div class="toolbar">
         <span class="toolbar-title">🖥️ LONG (16:9) :</span>
-        <button class="btn-mode active" onclick="switchLongLayout('50_50', this)">50 / 50 Face-à-Face</button>
-        <button class="btn-mode" onclick="switchLongLayout('focus_70', this)">Focus 70 / 30</button>
-        <button class="btn-mode" onclick="switchLongLayout('triple', this)">Triple Cam (1 + 2)</button>
-        <button class="btn-mode" onclick="switchLongLayout('quad', this)">Quad Grid (2 × 2)</button>
+        <button class="btn-mode active" onclick="switchLongLayout('50_50', this)">50/50 Face-à-Face</button>
+        <button class="btn-mode" onclick="switchLongLayout('focus_70', this)">Focus 70/30</button>
+        <button class="btn-mode" onclick="switchLongLayout('triple', this)">Triple Cam (1+2)</button>
+        <button class="btn-mode" onclick="switchLongLayout('quad', this)">Quad Grid (2×2)</button>
+        <!-- NOUVEAUX MODES -->
+        <button class="btn-mode" onclick="switchLongLayout('diagonal', this)">Coupe Diagonale</button>
+        <button class="btn-mode" onclick="switchLongLayout('slider', this)">Slider Avant/Après</button>
+        <button class="btn-mode" onclick="switchLongLayout('tutorial_pro', this)">Tutoriel Pro 16:9</button>
     </div>
 
     <!-- ZONE DE RENDU HORIZONTALE (16:9) -->
@@ -385,12 +328,19 @@
     </div>
 
     <script>
+        let wipeTween = null;
+
         function switchLongLayout(mode, btnEl) {
             document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
             if (btnEl) btnEl.classList.add('active');
 
             const stage = document.getElementById('splitLongStage');
             const badge = document.getElementById('longLayoutBadge');
+
+            if (wipeTween) {
+                wipeTween.kill();
+                wipeTween = null;
+            }
 
             if (mode === '50_50') {
                 stage.className = 'split-long-container layout-50-50';
@@ -467,6 +417,125 @@
                 `;
                 badge.textContent = 'Mode : Quad Grid (2 × 2)';
             }
+            // --- NOUVEAU 1 : SPLIT DIAGONAL / INCLINÉ ---
+            else if (mode === 'diagonal') {
+                stage.className = 'split-long-diagonal';
+                stage.innerHTML = `
+                    <!-- Panneau Diagonale Gauche -->
+                    <div class="pane-left-diag bg-gradient-left">
+                        <div class="pane-badge" style="top:25px; left:25px;"><span class="status-pulse"></span><span>ÉQUIPE A</span></div>
+                        <div class="pane-caption" style="position:absolute; left:12%; top:42%; text-align:left;">
+                            <span>CHAMPION EN TITRE</span>
+                            REAL MADRID
+                        </div>
+                    </div>
+
+                    <!-- Ligne lumineuse oblique -->
+                    <div class="diag-line"></div>
+                    <div class="vs-badge" style="z-index:35;">VS</div>
+
+                    <!-- Panneau Diagonale Droite -->
+                    <div class="pane-right-diag bg-gradient-right">
+                        <div class="pane-badge alt" style="top:25px; right:25px; left:auto;"><span class="status-pulse"></span><span>ÉQUIPE B</span></div>
+                        <div class="pane-caption" style="position:absolute; right:12%; top:42%; text-align:right;">
+                            <span>CHALLENGER</span>
+                            MANCHESTER CITY
+                        </div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Coupe Diagonale Inclinée';
+            }
+            // --- NOUVEAU 2 : SLIDER AVANT / APRÈS (WIPE INTERACTIF) ---
+            else if (mode === 'slider') {
+                stage.className = 'split-slider-wipe';
+                stage.innerHTML = `
+                    <!-- Couche "APRÈS" (en dessous) -->
+                    <div class="layer-after bg-gradient-right">
+                        <div class="pane-badge alt" style="right:25px; left:auto;"><span class="status-pulse"></span><span>APRÈS : MONTAGE FINAL & ÉTALONNAGE</span></div>
+                        <div class="pane-caption" style="position:absolute; right:15%; top:45%;">
+                            <span style="color:#a855f7;">RÉSULTAT 4K</span>
+                            Couleurs Vives & Motion
+                        </div>
+                    </div>
+
+                    <!-- Couche "AVANT" (au-dessus avec clip-path) -->
+                    <div class="layer-before bg-gradient-left" id="layerBefore">
+                        <div class="pane-badge"><span class="status-pulse"></span><span>AVANT : RUSH BRUT CLIENT</span></div>
+                        <div class="pane-caption" style="position:absolute; left:15%; top:45%;">
+                            <span>ORIGINAL 1080P</span>
+                            Image Neutre / Terne
+                        </div>
+                    </div>
+
+                    <!-- Curseur Slider Poignée Mobile -->
+                    <div class="slider-handle-bar" id="sliderBar">
+                        <div class="slider-handle-circle">↔</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Slider Avant / Après';
+
+                // Animation automatique douce GSAP du curseur pour démonstration
+                const sliderBar = document.getElementById('sliderBar');
+                const layerBefore = document.getElementById('layerBefore');
+
+                const obj = { val: 50 };
+                wipeTween = gsap.to(obj, {
+                    val: 75,
+                    duration: 2.2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'power2.inOut',
+                    onUpdate: () => {
+                        if (sliderBar && layerBefore) {
+                            sliderBar.style.left = `${obj.val}%`;
+                            layerBefore.style.clipPath = `inset(0 ${100 - obj.val}% 0 0)`;
+                        }
+                    }
+                });
+            }
+            // --- NOUVEAU 3 : TUTORIEL PRO 16:9 ---
+            else if (mode === 'tutorial_pro') {
+                stage.className = 'split-long-tutorial-pro';
+                stage.innerHTML = `
+                    <!-- 68% Écran principal démo logicielle -->
+                    <div class="tuto-screen-main bg-gradient-left">
+                        <div class="pane-badge rec"><span class="status-pulse"></span><span>CAPTURE ÉCRAN EN DIRECT (68%)</span></div>
+                        <div class="pane-caption" style="font-size:24px;">
+                            <span>Développement & Démo</span>
+                            Interface Utilisateur Studio
+                        </div>
+                    </div>
+
+                    <!-- 32% Barre latérale du tutoriel (Étapes & Webcam) -->
+                    <div class="tuto-sidebar-steps">
+                        <div>
+                            <div style="font-family:'JetBrains Mono'; font-size:12px; font-weight:800; color:#00f0ff; letter-spacing:1px; margin-bottom:12px;">PLAN DU TUTORIEL</div>
+                            
+                            <div style="background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:10px; margin-bottom:8px; border-left:3px solid #00f0ff;">
+                                <div style="font-size:11px; color:#00f0ff; font-weight:700;">ÉTAPE 01 • TERMINÉ</div>
+                                <div style="font-size:13px; font-weight:700; color:#fff;">Initialiser le projet</div>
+                            </div>
+
+                            <div style="background:rgba(0,240,255,0.12); padding:10px 14px; border-radius:10px; margin-bottom:8px; border-left:3px solid #a855f7;">
+                                <div style="font-size:11px; color:#a855f7; font-weight:700;">ÉTAPE 02 • EN COURS</div>
+                                <div style="font-size:13px; font-weight:700; color:#fff;">Configurer les clés API</div>
+                            </div>
+
+                            <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:10px; border-left:3px solid rgba(255,255,255,0.2);">
+                                <div style="font-size:11px; color:#94a3b8; font-weight:700;">ÉTAPE 03 • SUIVANT</div>
+                                <div style="font-size:13px; font-weight:600; color:#94a3b8;">Lancer le premier export</div>
+                            </div>
+                        </div>
+
+                        <!-- Vignette Facecam formateur en bas -->
+                        <div style="height:120px; border-radius:14px; background:#000; overflow:hidden; border:1px solid rgba(255,255,255,0.2); position:relative; display:flex; align-items:center; justify-content:center;">
+                            <div class="pane-badge" style="top:8px; left:8px; padding:3px 8px; font-size:9px;"><span class="status-pulse"></span><span>CAM FORMATEUR</span></div>
+                            <div style="font-size:13px; font-weight:800; color:#94a3b8;">Facecam Présentateur</div>
+                        </div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Tutoriel Pro 16:9';
+            }
 
             // Animation douce GSAP
             gsap.from(stage.children, {
@@ -480,4 +549,3 @@
     </script>
 </body>
 </html>
-

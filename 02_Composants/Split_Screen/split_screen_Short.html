@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="split_screen.css">
     <style>
         :root {
             --bg-canvas: #090a0f;
@@ -42,7 +43,7 @@
         .toolbar {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
             background: rgba(255, 255, 255, 0.05);
             padding: 8px 14px;
@@ -51,6 +52,7 @@
             backdrop-filter: blur(12px);
             flex-wrap: wrap;
             justify-content: center;
+            max-width: 900px;
         }
 
         .toolbar-title {
@@ -68,9 +70,9 @@
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #e2e8f0;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 600;
-            padding: 7px 14px;
+            padding: 6px 13px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -101,7 +103,7 @@
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
-        /* Split container vertical */
+        /* Split container vertical standard */
         .split-short-container {
             width: 100%;
             height: 100%;
@@ -112,7 +114,6 @@
             background: #000000;
         }
 
-        /* Panneaux */
         .short-pane {
             position: relative;
             overflow: hidden;
@@ -130,7 +131,7 @@
             display: block;
         }
 
-        /* Décorations gradients pour le mockup si pas d'image */
+        /* Décorations gradients */
         .bg-gradient-top {
             background: radial-gradient(circle at 50% 30%, #312e81 0%, #0f172a 100%);
         }
@@ -140,42 +141,35 @@
         .bg-gradient-third {
             background: radial-gradient(circle at 50% 50%, #064e3b 0%, #0f172a 100%);
         }
-
-        /* Ligne de séparation (Divider) */
-        .split-divider-h {
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
-            box-shadow: 0 0 12px var(--accent-cyan);
-            position: relative;
-            z-index: 20;
-            flex-shrink: 0;
+        .bg-gradient-col1 {
+            background: radial-gradient(circle at 50% 40%, #1e3a8a 0%, #090d16 100%);
+        }
+        .bg-gradient-col2 {
+            background: radial-gradient(circle at 50% 60%, #831843 0%, #090d16 100%);
         }
 
-        /* Badges d'information sur les panneaux */
+        /* Badges flottants */
         .pane-tag {
             position: absolute;
             top: 14px;
             left: 14px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 700;
             color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.5px;
-            z-index: 10;
-            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             gap: 6px;
+            z-index: 10;
         }
 
-        .pane-tag .indicator-dot {
-            width: 7px;
-            height: 7px;
+        .indicator-dot {
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: #10b981;
             box-shadow: 0 0 8px #10b981;
@@ -186,11 +180,10 @@
             box-shadow: 0 0 8px #ef4444;
         }
 
-        /* Titre narratif centré */
         .pane-label {
             position: relative;
             z-index: 5;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 900;
             text-align: center;
             color: #ffffff;
@@ -209,27 +202,17 @@
             margin-bottom: 4px;
         }
 
-        /* --- 1. LAYOUT 50/50 ÉQUILIBRÉ --- */
+        /* Modes de base */
         .layout-50-50 .short-pane:nth-child(1) { flex: 1; }
         .layout-50-50 .short-pane:nth-child(3) { flex: 1; }
 
-        /* --- 2. LAYOUT RÉACTION (35% Speaker / 65% Gameplay ou Clip) --- */
         .layout-reaction .short-pane:nth-child(1) { flex: 0.38; }
         .layout-reaction .short-pane:nth-child(3) { flex: 0.62; }
 
-        /* --- 3. LAYOUT TRIPLE STACK (3 Paliers) --- */
         .layout-triple .short-pane { flex: 1; }
 
-        /* --- 4. LAYOUT FLOATING PiP (Fenêtre flottante) --- */
-        .layout-pip {
-            display: block !important;
-        }
-        .layout-pip .short-pane.base-fullscreen {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            inset: 0;
-        }
+        .layout-pip { display: block !important; }
+        .layout-pip .short-pane.base-fullscreen { width: 100%; height: 100%; position: absolute; inset: 0; }
         .layout-pip .pip-floating-box {
             position: absolute;
             top: 24px;
@@ -243,24 +226,24 @@
             z-index: 50;
         }
 
-        /* Badge TikTok / Short en overlay */
+        /* Footer Meta Info */
         .short-footer-meta {
             position: absolute;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            z-index: 30;
+            bottom: 14px;
+            left: 14px;
+            right: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 600;
+            z-index: 30;
             pointer-events: none;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .watermark {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -273,14 +256,20 @@
     <!-- SÉLECTEUR DE MODE SPLIT SHORT -->
     <div class="toolbar">
         <span class="toolbar-title">⚡ SHORT (9:16) :</span>
-        <button class="btn-mode active" onclick="switchLayout('50_50', this)">50 / 50 Standard</button>
-        <button class="btn-mode" onclick="switchLayout('reaction', this)">Réaction (Speaker + Démo)</button>
-        <button class="btn-mode" onclick="switchLayout('triple', this)">Triple Stack (1/3)</button>
-        <button class="btn-mode" onclick="switchLayout('pip', this)">PiP Flottant</button>
+        <button class="btn-mode active" onclick="switchLayout('50_50', this)">50/50</button>
+        <button class="btn-mode" onclick="switchLayout('reaction', this)">Réaction</button>
+        <button class="btn-mode" onclick="switchLayout('triple', this)">Triple Stack</button>
+        <button class="btn-mode" onclick="switchLayout('pip', this)">PiP</button>
+        <!-- NOUVEAUX MODES -->
+        <button class="btn-mode" onclick="switchLayout('side_by_side', this)">Côte-à-Côte (2 Col)</button>
+        <button class="btn-mode" onclick="switchLayout('square_card', this)">Card Carrée 1:1 (Réf 1)</button>
+        <button class="btn-mode" onclick="switchLayout('blur_card', this)">Card Verticale (Réf 2)</button>
+        <button class="btn-mode" onclick="switchLayout('curved_banner', this)">Bandeau Incurvé (Réf 3)</button>
+        <button class="btn-mode" onclick="switchLayout('tutorial_short', this)">Tutoriel Express</button>
     </div>
 
     <!-- ZONE DE RENDU SMARTPHONE (9:16) -->
-    <div class="stage-wrapper">
+    <div class="stage-wrapper" id="stageWrapper">
         <div id="splitStage" class="split-short-container layout-50-50">
             <!-- Haut -->
             <div class="short-pane bg-gradient-top" id="paneTop">
@@ -310,7 +299,7 @@
             </div>
         </div>
 
-        <div class="short-footer-meta">
+        <div class="short-footer-meta" id="footerMeta">
             <span class="watermark">VibeEditor Shorts 9:16</span>
             <span class="watermark" id="layoutBadge">Mode : 50/50</span>
         </div>
@@ -323,6 +312,10 @@
 
             const stage = document.getElementById('splitStage');
             const badge = document.getElementById('layoutBadge');
+            const footerMeta = document.getElementById('footerMeta');
+
+            // Reset visibilités
+            footerMeta.style.display = 'flex';
 
             if (mode === '50_50') {
                 stage.className = 'split-short-container layout-50-50';
@@ -390,6 +383,116 @@
                 `;
                 badge.textContent = 'Mode : PiP Flottant';
             }
+            // --- NOUVEAU 1 : CÔTE-À-CÔTE (2 COLONNES VERTICALES) ---
+            else if (mode === 'side_by_side') {
+                stage.className = 'split-short-side-by-side';
+                stage.innerHTML = `
+                    <div class="col-pane bg-gradient-col1">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>OPTION A</span></div>
+                        <div class="pane-label" style="font-size:16px;"><span>Joueur 01</span>Mbappé</div>
+                    </div>
+                    <div class="split-divider-v"></div>
+                    <div class="split-vs-badge">VS</div>
+                    <div class="col-pane bg-gradient-col2">
+                        <div class="pane-tag alt"><span class="indicator-dot"></span><span>OPTION B</span></div>
+                        <div class="pane-label" style="font-size:16px;"><span>Joueur 02</span>Haaland</div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Côte-à-Côte 9:16 (2 Col)';
+            }
+            // --- NOUVEAU 2A : EXACT RÉFÉRENCE 1 (split_scrren_short_1.jpg) ---
+            else if (mode === 'square_card') {
+                stage.className = 'split-short-square-card';
+                stage.innerHTML = `
+                    <!-- Fond flou d'ambiance plein écran (noir sur la réf) -->
+                    <div class="backdrop-blur-video bg-gradient-top"></div>
+                    <!-- Vraie vidéo / image dans la card carrée 1:1 arrondie (blanc sur la réf) -->
+                    <div class="card-square-content">
+                        <div class="short-pane bg-gradient-bottom" style="width:100%; height:100%;">
+                            <div class="pane-tag"><span class="indicator-dot"></span><span>CADRE 1:1 CARRÉ</span></div>
+                            <div class="pane-label" style="font-size:16px;">
+                                <span>Illustration Centrée</span>
+                                Format Carré Arrondi (Réf 1)
+                            </div>
+                        </div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Card Carrée 1:1 (Réf 1)';
+            }
+            // --- NOUVEAU 2B : EXACT RÉFÉRENCE 2 (split_scrren_short_2.jpg) ---
+            else if (mode === 'blur_card') {
+                stage.className = 'split-short-blur-card';
+                stage.innerHTML = `
+                    <!-- Fond flou d'ambiance plein écran (noir sur la réf) -->
+                    <div class="backdrop-blur-video bg-gradient-top"></div>
+                    <!-- Vraie vidéo / image dans la card arrondie centrale (blanc sur la réf) -->
+                    <div class="card-inset-content">
+                        <div class="short-pane bg-gradient-bottom" style="width:100%; height:100%;">
+                            <div class="pane-tag"><span class="indicator-dot"></span><span>MÉDIA FOCUS</span></div>
+                            <div class="pane-label">
+                                <span>Illustration Centrée</span>
+                                Vidéo Nette en Lévitation
+                            </div>
+                        </div>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Fond Flou + Card Flottante (Réf 2)';
+            }
+            // --- NOUVEAU 3 : EXACT RÉFÉRENCE 3 (split_scrren_short_3.jpg) ---
+            else if (mode === 'curved_banner') {
+                stage.className = 'split-short-curved-banner';
+                stage.innerHTML = `
+                    <!-- En-tête sur Fond Blanc -->
+                    <div class="banner-header">
+                        <span style="font-family:'JetBrains Mono'; font-size:12px; font-weight:700; color:#06b6d4; text-transform:uppercase; letter-spacing:2px;">HOOK CINÉMATIQUE</span>
+                        <h2 style="font-size:22px; font-weight:900; color:#090a0f; margin-top:4px; line-height:1.2;">L'ACTION DÉCISIVE</h2>
+                    </div>
+
+                    <!-- Bandeau Incurvé Cinéma au Centre (Zone Noire sur la réf) -->
+                    <div class="curved-media-viewport">
+                        <div class="curved-shape-container bg-gradient-top">
+                            <div class="short-pane" style="width:100%; height:100%;">
+                                <div class="pane-label">
+                                    <span>Cadre Incurvé Anamorphique</span>
+                                    Immersion Totale
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pied de page sur Fond Blanc -->
+                    <div class="banner-footer">
+                        <span style="font-size:14px; font-weight:700; color:#334155;">1080x1920 • Bandeau Incurvé</span>
+                        <p style="font-size:12px; color:#64748b; margin-top:2px;">Ombres profondes projetées en haut et en bas</p>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Bandeau Incurvé Cinéma (Réf 3)';
+            }
+            // --- NOUVEAU 4 : SPLIT SPÉCIAL TUTORIEL EXPRESS (9:16) ---
+            else if (mode === 'tutorial_short') {
+                stage.className = 'split-short-tutorial';
+                stage.innerHTML = `
+                    <!-- Haut : Écran de démo app / site web -->
+                    <div class="tuto-screen-top bg-gradient-top">
+                        <div class="pane-tag"><span class="indicator-dot"></span><span>DÉMONSTRATION EN DIRECT</span></div>
+                        <div class="pane-label" style="font-size:17px;">
+                            <span>Capture d'écran 62%</span>
+                            Interface Logicielle
+                        </div>
+                    </div>
+
+                    <!-- Bas : Carte explicative des étapes du tutoriel -->
+                    <div class="tuto-card-bottom">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span style="font-family:'JetBrains Mono'; font-size:12px; font-weight:800; color:#00f0ff;">ÉTAPE 01 / 03</span>
+                            <span style="font-size:11px; background:rgba(0,240,255,0.15); border:1px solid #00f0ff; color:#00f0ff; padding:2px 8px; border-radius:4px;">SHORT TUTO</span>
+                        </div>
+                        <h3 style="font-size:16px; font-weight:800; color:#fff; line-height:1.3;">Installer les dépendances et démarrer le serveur</h3>
+                        <p style="font-size:12px; color:#94a3b8; font-family:'JetBrains Mono'; background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">npm install && npm start</p>
+                    </div>
+                `;
+                badge.textContent = 'Mode : Tutoriel Express 9:16';
+            }
 
             // Animation douce GSAP
             gsap.from(stage.children, {
@@ -403,4 +506,3 @@
     </script>
 </body>
 </html>
-

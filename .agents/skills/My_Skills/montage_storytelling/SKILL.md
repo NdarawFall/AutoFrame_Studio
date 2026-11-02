@@ -77,7 +77,7 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 | Un mot-clé à retenir | Texte seul (1–4 mots) | `text_animation` |
 | Une citation | Carte de citation, `typewriter` | `text_animation` |
 | Une liste / des étapes | Liste révélée un item à la fois | `text_animation` |
-| Une comparaison | Split screen | `design_composition` |
+| Une comparaison / duel / tuto | Split-Screen (50/50, Diagonale, Slider Avant/Après, Fond Flou Réf 2, Bandeau Incurvé Réf 3) | `02_Composants/Split_Screen/split_screen.css` |
 | Un processus / un schéma | Tracé manuscrit ou diagramme | `build_video_handwriting.cjs` |
 **Texte seul** : uniquement chiffres, noms propres, titres de chapitre, mots-clés (1–4 mots), citations. Jamais une phrase entière qui double la voix.
 **Image fixe** : toujours animée (Ken Burns). Éviter les images génériques de banque d'images sans rapport : mieux vaut une carte, un chiffre ou un texte qu'un faux B-roll.
