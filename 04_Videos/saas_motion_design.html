@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Motion Design 10s — Animation Produit & Conversion</title>
+    <!-- GSAP 3.12 Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Polices Professionnelles : Outfit (Sans), Plus Jakarta Sans, Italianno (Script Accent) & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-title: 'Outfit', -apple-system, sans-serif;
+            --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-script: 'Italianno', cursive;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Palette 60 / 30 / 10 selon Joseph Edit Skills */
+            --bg-deep: #06080e;
+            --card-glass: rgba(13, 19, 33, 0.82);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --accent-cyan: #06b6d4;
+            --accent-violet: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-pink: #ec4899;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000000;
+            font-family: var(--font-body);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        /* --- STAGE PRINCIPAL 1920x1080 AUTOSCALÉ --- */
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            background: var(--bg-deep);
+            perspective: 1200px;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Arrière-plan cinématique : Grille tech + orbes néons réactifs */
+        .tech-grid-bg {
+            position: absolute;
+            inset: 0;
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 95%);
+            pointer-events: none;
+        }
+
+        .ambient-glow-1 {
+            position: absolute;
+            width: 900px;
+            height: 900px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.22) 0%, transparent 70%);
+            left: 15%;
+            top: 10%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            width: 850px;
+            height: 850px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+            right: 15%;
+            bottom: 5%;
+            filter: blur(85px);
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Badge Pilule Universel */
+        .saas-pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            border-radius: 99px;
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            color: #67e8f9;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22d3ee;
+            box-shadow: 0 0 10px #22d3ee;
+        }
+
+        /* Titre Dual-Font selon Joseph Edit Skills */
+        .headline-dual {
+            font-family: var(--font-title);
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            color: #ffffff;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .highlight-script {
+            font-family: var(--font-script);
+            font-size: 1.35em;
+            font-weight: 400;
+            color: #a78bfa;
+            text-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+
+        /* ==========================================================================
+           SCÈNE 1 : L'ACCROCHE (0.0s - 3.2s)
+           ========================================================================== */
+        #scene1 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            z-index: 10;
+        }
+
+        .scene1-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            max-width: 1200px;
+        }
+
+        .scene1-sub {
+            font-size: 24px;
+            color: #94a3b8;
+            max-width: 850px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Rangée de badges métriques flottants */
+        .scene1-metrics-row {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            margin-top: 20px;
+        }
+
+        .metric-card-mini {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            padding: 16px 26px;
+            border-radius: 16px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .metric-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .metric-val {
+            font-family: var(--font-title);
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .metric-lbl {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        /* ==========================================================================
+           SCÈNE 2 : L'INTERFACE SAAS & MÉTRIQUES LIVE (3.0s - 6.8s)
+           ========================================================================== */
+        #scene2 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .saas-dashboard-window {
+            width: 1380px;
+            height: 780px;
+            background: rgba(11, 17, 30, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 20px;
+            backdrop-filter: blur(30px);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* En-tête macOS */
+        .window-header {
+            height: 54px;
+            background: rgba(255, 255, 255, 0.035);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .traffic-lights {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tl-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+        }
+        .tl-red { background: #ef4444; }
+        .tl-yellow { background: #f59e0b; }
+        .tl-green { background: #10b981; }
+
+        .search-bar-mock {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+            width: 380px;
+        }
+
+        /* Corps de l'application SaaS */
+        .window-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Barre latérale gauche */
+        .sidebar-mock {
+            width: 250px;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.25);
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .sidebar-item.active {
+            background: rgba(6, 182, 212, 0.15);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        /* Contenu principal du Dashboard */
+        .dashboard-main {
+            flex: 1;
+            padding: 28px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+        }
+
+        .dash-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dash-title {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Bouton Action Auto-Pilot déclenché par curseur */
+        .btn-autopilot {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.4);
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Métriques du Dashboard en 3 cartes */
+        .stats-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card-widget {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 18px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-card-title {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-number {
+            font-family: var(--font-title);
+            font-size: 34px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .stat-card-trend {
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Zone de graphique en direct avec tracé SVG */
+        .chart-container-widget {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-line-gradient {
+            stroke: url(#cyanPurpleGrad);
+            stroke-width: 5;
+            fill: none;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 14px rgba(6, 182, 212, 0.7));
+        }
+
+        .chart-area-fill {
+            fill: url(#areaGrad);
+            opacity: 0.3;
+        }
+
+        /* Curseur souris animé */
+        .animated-mouse-cursor {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            z-index: 100;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+        }
+
+        /* Toast notification popup */
+        .toast-notification {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            background: rgba(16, 24, 40, 0.94);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.25);
+            z-index: 50;
+            transform: translateY(-80px);
+            opacity: 0;
+        }
+
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        /* ==========================================================================
+           SCÈNE 3 : LE CLIMAX & CONVERSION (6.8s - 10.0s)
+           ========================================================================== */
+        #scene3 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scene3-hero-card {
+            background: radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.8) 0%, rgba(11, 15, 26, 0.92) 80%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 28px;
+            padding: 56px 80px;
+            backdrop-filter: blur(35px);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 80px rgba(139, 92, 246, 0.25);
+            max-width: 1050px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Balayage lumineux Shimmer */
+        .scene3-hero-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 50%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        /* Logo Brand Reveal */
+        .brand-logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.5);
+        }
+
+        .brand-logo-text {
+            font-family: var(--font-title);
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .scene3-headline {
+            font-family: var(--font-title);
+            font-size: 58px;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1.2px;
+            color: #ffffff;
+        }
+
+        .scene3-sub {
+            font-size: 22px;
+            color: #94a3b8;
+            max-width: 750px;
+            line-height: 1.45;
+        }
+
+        /* Bouton CTA Principal Magnétique */
+        .cta-magnetic-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 48px;
+            border-radius: 99px;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: #ffffff;
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 800;
+            border: none;
+            box-shadow: 0 16px 40px rgba(6, 182, 212, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.2px;
+        }
+
+        .cta-arrow {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        /* Social proof : étoiles et note */
+        .social-proof-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        .stars-container {
+            display: flex;
+            gap: 4px;
+            color: #fbbf24;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stage" data-duration="10.0" data-width="1920" data-height="1080">
+        <!-- Fond Cybernétique & Grille Studio -->
+        <div class="tech-grid-bg"></div>
+        <div class="ambient-glow-1" id="glow1"></div>
+        <div class="ambient-glow-2" id="glow2"></div>
+
+        <!-- ====================================================================
+             SCÈNE 1 (0.0s - 3.2s) : HOOK & PROMESSE KINÉTIQUE
+             ==================================================================== -->
+        <div id="scene1" class="clip" data-start="0.0" data-duration="3.2">
+            <div class="scene1-content">
+                <div class="saas-pill-badge" id="s1Badge">
+                    <span class="pulse-dot"></span>
+                    <span>Plateforme SaaS Tout-en-un</span>
+                </div>
+
+                <h1 class="headline-dual" id="s1Title">
+                    Décuplez votre productivité à la <span class="highlight-script">vitesse de l'éclair</span>
+                </h1>
+
+                <p class="scene1-sub" id="s1Sub">
+                    Automatisez vos workflows complexes, centralisez vos métriques et libérez 20 heures par semaine pour vos équipes.
+                </p>
+
+                <div class="scene1-metrics-row" id="s1Metrics">
+                    <div class="metric-card-mini">
+                        <div class="metric-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">⚡</div>
+                        <div>
+                            <span class="metric-val">10x Plus Rapide</span>
+                            <span class="metric-lbl">Exécution des requêtes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card-mini">
+                        <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📈</div>
+                        <div>
+                            <span class="metric-val">+340% ROI</span>
+                            <span class="metric-lbl">Dès le premier mois</span>
+                        </div>
+                    </div>
+                    <div class="metric-card-mini">
+                        <div class="metric-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">🔒</div>
+                        <div>
+                            <span class="metric-val">99.99% Uptime</span>
+                            <span class="metric-lbl">Sécurité SOC-2 certifiée</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================================
+             SCÈNE 2 (3.0s - 6.8s) : CONSOLE SAAS EN ACTION & INTERACTION LIVE
+             ==================================================================== -->
+        <div id="scene2" class="clip" data-start="3.0" data-duration="3.8">
+            <div class="saas-dashboard-window" id="saasDashboard">
+                <!-- Header macOS -->
+                <div class="window-header">
+                    <div class="traffic-lights">
+                        <span class="tl-dot tl-red"></span>
+                        <span class="tl-dot tl-yellow"></span>
+                        <span class="tl-dot tl-green"></span>
+                    </div>
+                    <div class="search-bar-mock">
+                        <span>🔍</span>
+                        <span>Rechercher un workflow, un client ou une métrique... (⌘K)</span>
+                    </div>
+                    <div style="font-family: var(--font-mono); font-size: 13px; color: #10b981; font-weight: 700;">
+                        ● LIVE 60 FPS
+                    </div>
+                </div>
+
+                <!-- Corps de la fenêtre -->
+                <div class="window-body">
+                    <!-- Sidebar -->
+                    <div class="sidebar-mock">
+                        <div class="sidebar-item active">📊 Vue d'Ensemble</div>
+                        <div class="sidebar-item">⚡ Workflows Automatisés</div>
+                        <div class="sidebar-item">👥 Équipes & Accès</div>
+                        <div class="sidebar-item">🔗 Intégrations API</div>
+                        <div class="sidebar-item">⚙️ Paramètres</div>
+                    </div>
+
+                    <!-- Dashboard Main -->
+                    <div class="dashboard-main">
+                        <div class="dash-top-bar">
+                            <div>
+                                <h2 class="dash-title">Performances Opérationnelles</h2>
+                                <p style="font-size: 13px; color: #94a3b8;">Données synchronisées en temps réel</p>
+                            </div>
+                            <button type="button" class="btn-autopilot" id="btnAutoPilot">
+                                <span>⚡</span>
+                                <span>Activer l'Auto-Pilote</span>
+                            </button>
+                        </div>
+
+                        <!-- 3 Cartes Métriques -->
+                        <div class="stats-grid-3">
+                            <div class="stat-card-widget">
+                                <span class="stat-card-title">Revenus Automatisés (MRR)</span>
+                                <span class="stat-card-number" id="mrrNumber">184 920 €</span>
+                                <span class="stat-card-trend" style="color: #10b981;">▲ +28.4% ce mois</span>
+                            </div>
+                            <div class="stat-card-widget">
+                                <span class="stat-card-title">Tâches Exécutées par l'IA</span>
+                                <span class="stat-card-number" id="tasksNumber">1 428 900</span>
+                                <span class="stat-card-trend" style="color: #06b6d4;">⚡ 0.04s latence moy.</span>
+                            </div>
+                            <div class="stat-card-widget">
+                                <span class="stat-card-title">Taux de Rétention Client</span>
+                                <span class="stat-card-number" id="retentionNumber">98.6%</span>
+                                <span class="stat-card-trend" style="color: #a78bfa;">★ Top 1% SaaS B2B</span>
+                            </div>
+                        </div>
+
+                        <!-- Graphique Vectoriel Lumineux -->
+                        <div class="chart-container-widget">
+                            <svg class="chart-svg" viewBox="0 0 1000 320" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="cyanPurpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#06b6d4" />
+                                        <stop offset="50%" stop-color="#8b5cf6" />
+                                        <stop offset="100%" stop-color="#ec4899" />
+                                    </linearGradient>
+                                    <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.6" />
+                                        <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Surface remplie sous la courbe -->
+                                <path id="chartAreaPath" class="chart-area-fill" d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30 L 1000,320 L 0,320 Z" />
+
+                                <!-- Ligne principale animée avec dasharray -->
+                                <path id="chartLinePath" class="chart-line-gradient" d="M 0,280 L 120,240 L 250,260 L 380,180 L 520,195 L 680,110 L 840,90 L 1000,30" />
+
+                                <!-- Points pulsants sur les sommets -->
+                                <circle id="pt1" cx="380" cy="180" r="7" fill="#06b6d4" />
+                                <circle id="pt2" cx="680" cy="110" r="7" fill="#8b5cf6" />
+                                <circle id="pt3" cx="1000" cy="30" r="9" fill="#ec4899" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toast Notification qui apparaît lors du clic -->
+                <div class="toast-notification" id="toastNotif">
+                    <div class="toast-icon">✓</div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 14px; color: #ffffff;">Auto-Pilote IA Activé</div>
+                        <div style="font-size: 12px; color: #94a3b8;">1 420 workflows synchronisés avec succès</div>
+                    </div>
+                </div>
+
+                <!-- Curseur souris animé -->
+                <svg class="animated-mouse-cursor" id="virtualCursor" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 3L11 20L14 13L21 10L4 3Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- ====================================================================
+             SCÈNE 3 (6.8s - 10.0s) : CONVERSION & CALL-TO-ACTION
+             ==================================================================== -->
+        <div id="scene3" class="clip" data-start="6.8" data-duration="3.2">
+            <div class="scene3-hero-card" id="s3Card">
+                <!-- Logo Marque -->
+                <div class="brand-logo-wrap" id="s3Brand">
+                    <div class="brand-logo-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="brand-logo-text">VIBEFLOW SAAS</span>
+                </div>
+
+                <h2 class="scene3-headline" id="s3Headline">
+                    Prêt à propulser votre entreprise dans le <span class="highlight-script">futur</span> ?
+                </h2>
+
+                <p class="scene3-sub" id="s3Sub">
+                    Rejoignez dès aujourd'hui plus de 10 000 fondateurs, startups et scale-ups leaders de leur marché.
+                </p>
+
+                <!-- Bouton CTA Principal -->
+                <button type="button" class="cta-magnetic-button" id="s3CtaBtn">
+                    <span>Démarrer Gratuitement en 2 Minutes</span>
+                    <span class="cta-arrow">→</span>
+                </button>
+
+                <!-- Social Proof & Étoiles -->
+                <div class="social-proof-row" id="s3Social">
+                    <div class="stars-container">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <span>Noté 4.9/5 sur G2 & Product Hunt • Sans engagement ni carte de crédit</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ====================================================================
+         TIMELINE MAÎTRESSE GSAP (DÉTERMINISTE, SCRUB & SEEK-SAFE 10.0s)
+         ==================================================================== -->
+    <script>
+        const DURATION = 10.0;
+        const isIframeMode = window.self !== window.top;
+
+        // Préparation du tracé SVG
+        const chartLine = document.getElementById('chartLinePath');
+        const lineLength = chartLine ? chartLine.getTotalLength() : 1200;
+        if (chartLine) {
+            chartLine.style.strokeDasharray = lineLength;
+            chartLine.style.strokeDashoffset = lineLength;
+        }
+
+        // Timeline Maîtresse Unique
+        const tl = gsap.timeline({ paused: isIframeMode });
+
+        // --------------------------------------------------------------------
+        // PHASE 1 : SCÈNE 1 (0.0s -> 3.0s)
+        // --------------------------------------------------------------------
+        tl.from('#s1Badge', {
+            y: -30,
+            opacity: 0,
+            scale: 0.85,
+            duration: 0.7,
+            ease: 'power3.out'
+        }, 0.1);
+
+        tl.from('#s1Title', {
+            y: 50,
+            opacity: 0,
+            scale: 0.94,
+            duration: 0.9,
+            ease: 'power3.out'
+        }, 0.3);
+
+        tl.from('#s1Sub', {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out'
+        }, 0.5);
+
+        tl.from('.metric-card-mini', {
+            y: 40,
+            opacity: 0,
+            scale: 0.9,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'back.out(1.4)'
+        }, 0.7);
+
+        // Sortie Scène 1
+        tl.to('#scene1', {
+            opacity: 0,
+            scale: 1.06,
+            y: -40,
+            duration: 0.6,
+            ease: 'power2.in'
+        }, 2.6);
+
+        // --------------------------------------------------------------------
+        // PHASE 2 : SCÈNE 2 (3.0s -> 6.8s) - CONSOLE SAAS & ANIMATIONS LIVE
+        // --------------------------------------------------------------------
+        tl.set('#scene2', { opacity: 1, pointerEvents: 'auto' }, 2.9);
+
+        tl.from('#saasDashboard', {
+            y: 90,
+            scale: 0.88,
+            opacity: 0,
+            rotationX: 10,
+            duration: 1.0,
+            ease: 'power3.out'
+        }, 3.0);
+
+        // Tracé en direct de la courbe de croissance SVG
+        if (chartLine) {
+            tl.to(chartLine, {
+                strokeDashoffset: 0,
+                duration: 1.8,
+                ease: 'power2.out'
+            }, 3.5);
+        }
+
+        tl.from('#chartAreaPath', {
+            opacity: 0,
+            duration: 1.4,
+            ease: 'power2.out'
+        }, 3.8);
+
+        tl.from(['#pt1', '#pt2', '#pt3'], {
+            scale: 0,
+            opacity: 0,
+            stagger: 0.35,
+            duration: 0.5,
+            ease: 'back.out(2)'
+        }, 4.2);
+
+        // Curseur souris virtuel : Glisse vers le bouton Auto-Pilote
+        tl.fromTo('#virtualCursor', 
+            { x: 300, y: 650, opacity: 0 },
+            { x: 1220, y: 110, opacity: 1, duration: 1.2, ease: 'power2.inOut' },
+            3.6
+        );
+
+        // Clic sur le bouton Auto-Pilote
+        tl.to('#btnAutoPilot', {
+            scale: 0.92,
+            duration: 0.15,
+            ease: 'power1.in',
+            boxShadow: '0 0 35px rgba(6, 182, 212, 0.8)'
+        }, 4.8);
+
+        tl.to('#btnAutoPilot', {
+            scale: 1.0,
+            duration: 0.25,
+            ease: 'back.out(1.8)'
+        }, 4.95);
+
+        // Curseur s'estompe
+        tl.to('#virtualCursor', { opacity: 0, duration: 0.3 }, 5.1);
+
+        // Apparition du Toast Notification
+        tl.to('#toastNotif', {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'back.out(1.5)'
+        }, 4.9);
+
+        // Sortie Scène 2 : Zoom 3D cinématique
+        tl.to('#saasDashboard', {
+            scale: 1.15,
+            opacity: 0,
+            rotationX: -12,
+            duration: 0.7,
+            ease: 'power2.in'
+        }, 6.3);
+
+        tl.set('#scene2', { opacity: 0, pointerEvents: 'none' }, 6.8);
+
+        // --------------------------------------------------------------------
+        // PHASE 3 : SCÈNE 3 (6.8s -> 10.0s) - CLIMAX & CONVERSION
+        // --------------------------------------------------------------------
+        tl.set('#scene3', { opacity: 1, pointerEvents: 'auto' }, 6.7);
+
+        tl.from('#s3Card', {
+            y: 80,
+            scale: 0.88,
+            opacity: 0,
+            duration: 0.9,
+            ease: 'power3.out'
+        }, 6.8);
+
+        tl.from('#s3Brand', {
+            y: -20,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 7.1);
+
+        tl.from('#s3Headline', {
+            y: 30,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power3.out'
+        }, 7.3);
+
+        tl.from('#s3Sub', {
+            y: 20,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 7.5);
+
+        // Bouton CTA Pop Magnétique
+        tl.from('#s3CtaBtn', {
+            scale: 0.8,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'back.out(1.7)'
+        }, 7.7);
+
+        // Flèche du CTA s'avance dynamiquement
+        tl.to('.cta-arrow', {
+            x: 8,
+            duration: 0.4,
+            ease: 'power2.inOut',
+            repeat: 3,
+            yoyo: true
+        }, 8.4);
+
+        // Stagger sur les étoiles de preuve sociale
+        tl.from('#s3Social', {
+            opacity: 0,
+            y: 15,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 8.0);
+
+        tl.from('.stars-container span', {
+            scale: 0,
+            opacity: 0,
+            stagger: 0.08,
+            duration: 0.4,
+            ease: 'back.out(2)'
+        }, 8.1);
+
+        // Enregistrement des globales pour le Player Studio et le moteur de Rendu
+        window.tl = tl;
+        window.__timeline = {
+            duration: () => DURATION,
+            seek: (t) => tl.seek(t, false),
+            pause: () => tl.pause(),
+            play: () => {
+                if (typeof gsap !== 'undefined' && gsap.globalTimeline && gsap.globalTimeline.paused()) {
+                    gsap.globalTimeline.resume();
+                }
+                tl.play();
+            }
+        };
+
+        // Redimensionnement automatique responsive pour previews
+        function resizeStage() {
+            const stage = document.getElementById('stage');
+            if (!stage) return;
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const scale = Math.min(winW / 1920, winH / 1080);
+            stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeStage);
+        resizeStage();
+    </script>
+</body>
+</html>
