@@ -72,7 +72,7 @@
             transform-origin: center center;
         }
 
-        /* MOTIF GÉOMÉTRIQUE SÉNÉGALAIS DISCRET EN ARRIÈRE-PLAN (CRÉATIVITÉ NON-RÉPÉTITIVE) */
+        /* FOND GÉOMÉTRIQUE SÉNÉGALAIS SANS ORBES FLOUES */
         .bg-decorative-geometry {
             position: absolute;
             inset: 0;
@@ -96,14 +96,6 @@
             pointer-events: none;
         }
 
-        /* LIGNES ARCHITECTURALES VECTORIELLES FLUIDES EN FOND */
-        .ambient-architectural-lines {
-            position: absolute;
-            inset: 0;
-            z-index: 3;
-            pointer-events: none;
-        }
-
         /* SCÈNES DU FILM */
         .scene {
             position: absolute;
@@ -113,8 +105,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 70px 110px;
+            padding: 60px 100px;
             text-align: center;
+        }
+
+        /* RUBAN ZIG-ZAG ARRIÈRE-PLAN SCÈNE 2 */
+        .scene2-ribbon-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            overflow: visible;
         }
 
         /* ==========================================================================
@@ -221,6 +222,8 @@
             width: 100%;
             max-width: 1460px;
             margin-top: 44px;
+            position: relative;
+            z-index: 10;
         }
 
         .stat-card-centered {
@@ -287,7 +290,7 @@
             line-height: 1.45;
         }
 
-        /* SCÈNE 3 : 3 PÔLES HERO BADGES (REMPLACE LES DESSINS 2D) */
+        /* SCÈNE 3 : 3 PÔLES SANS EMOJIS ET SANS FOND SUR LES ICÔNES */
         .venues-grid {
             display: flex;
             align-items: stretch;
@@ -301,9 +304,10 @@
         .venue-card {
             flex: 1;
             max-width: 480px;
-            padding: 34px 28px;
+            padding: 38px 30px;
             display: flex;
             flex-direction: column;
+            align-items: center;
             border-radius: 26px;
             background: var(--bg-card);
             border: 1px solid var(--border-card);
@@ -313,32 +317,22 @@
             overflow: hidden;
         }
 
-        .venue-badge-hero {
-            width: 120px;
-            height: 120px;
-            border-radius: 28px;
-            margin: 0 auto 22px auto;
+        .venue-icon-floating {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
-            box-shadow: 0 15px 35px -8px rgba(0,0,0,0.1);
-            position: relative;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
-        .hero-diamniadio {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border: 2px solid rgba(16, 185, 129, 0.35);
-        }
-
-        .hero-saly {
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            border: 2px solid rgba(2, 132, 199, 0.35);
-        }
-
-        .hero-dakar {
-            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
-            border: 2px solid rgba(239, 68, 68, 0.35);
+        .venue-icon-floating svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
         }
 
         .venue-loc-tag {
@@ -352,7 +346,7 @@
             background: #f1f5f9;
             color: var(--text-body);
             display: inline-block;
-            margin: 0 auto 12px auto;
+            margin-bottom: 12px;
         }
 
         .venue-title {
@@ -368,7 +362,7 @@
             font-weight: 500;
             color: var(--text-muted);
             line-height: 1.45;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .venue-chip {
@@ -380,26 +374,27 @@
             display: inline-block;
         }
 
-        /* SCÈNE 4 : FRAME VIDÉO B-ROLL SANS CONTRÔLES INTERNES (LOOP PARFAIT) */
+        /* SCÈNE 4 : FRAME VIDÉO B-ROLL INTÉGRÉE AVEC SOIN (PARADE RÉELLE SANS COUPURE) */
         .video-showcase-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 48px;
+            gap: 44px;
             width: 100%;
-            max-width: 1500px;
+            max-width: 1520px;
             margin-top: 36px;
         }
 
         .video-mockup-frame {
             position: relative;
-            width: 840px;
-            height: 472px; /* 16:9 */
+            width: 880px;
+            height: 495px; /* Ratio 16:9 parfait */
             border-radius: 26px;
             background: #000000;
             border: 4px solid #ffffff;
             box-shadow: 0 30px 70px -15px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(15, 23, 42, 0.08);
             overflow: hidden;
+            display: flex;
         }
 
         #brollVideo {
@@ -519,32 +514,31 @@
             margin-top: 4px;
         }
 
-        /* SCÈNE 6 : CLIMAX AVEC GRAND LOGO OFFICIEL & DRAPEAUX DYNAMIQUES */
-        .hero-official-logo-plate {
-            width: 260px;
-            height: 260px;
-            margin: 0 auto 24px auto;
-            padding: 16px;
-            background: #ffffff;
-            border-radius: 36px;
-            border: 1px solid var(--border-card);
-            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.12);
+        /* SCÈNE 6 : LOGO EN TRANSPARENCE DIRECTE & MARQUEE DÉFILANT INFINI DES DRAPEAUX */
+        .hero-logo-transparent {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 20px auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
-        .hero-official-logo-plate img {
+        .hero-logo-transparent img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.08));
         }
 
         .slogan-box {
             background: #ffffff;
             border: 2px solid rgba(16, 185, 129, 0.4);
             border-radius: 32px;
-            padding: 38px 64px;
+            padding: 36px 64px;
             box-shadow: var(--shadow-float);
             max-width: 1280px;
             margin: 0 auto;
@@ -570,38 +564,49 @@
             line-height: 1.15;
         }
 
-        .flags-grid-dynamic {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 28px;
-            perspective: 1000px;
+        /* DRAPEAUX DÉFILANTS SANS FIN (INFINITE MARQUEE OVERFLOW) */
+        .flags-marquee-container {
+            width: 100vw;
+            max-width: 1920px;
+            margin-top: 30px;
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
         }
 
-        .flag-pill {
+        .flags-track {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 16px;
-            border-radius: 16px;
+            gap: 24px;
+            width: max-content;
+            will-change: transform;
+        }
+
+        .flag-item-large {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 22px;
+            border-radius: 20px;
             background: #ffffff;
             border: 1px solid var(--border-card);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            transform-style: preserve-3d;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            flex-shrink: 0;
         }
 
-        .flag-pill img {
-            width: 38px;
-            height: 26px;
-            border-radius: 5px;
+        .flag-item-large img {
+            width: 52px;
+            height: 35px;
+            border-radius: 6px;
             object-fit: cover;
             border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        .flag-pill span {
+        .flag-item-large span {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 14px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--text-title);
         }
@@ -612,21 +617,21 @@
     <!-- CADRE MAÎTRE 16:9 STRICT FIXE (1920x1080) -->
     <div id="stage">
 
-        <!-- FOND CRÉATIF LUXE DAKAR : MOTIFS ARCHITECTURAUX ET ÉCLATS SOLAIRES -->
+        <!-- FOND CRÉATIF LUXE DAKAR -->
         <div class="bg-decorative-geometry"></div>
         <div class="bg-grid-lines"></div>
 
         <!-- ======================================================================
-             PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — 130 ANS D'ATTENTE OLYMPIQUE
-             Logo officiel JOJ Dakar 2026 de grande taille
+             PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — GRAND LOGO OFFICIEL TRANSPARENT
+             Aucun fond blanc artificiel, logo officiel pur transparent
              ====================================================================== -->
         <section id="plan_1" class="scene">
             <div id="p1Badge" class="pill-badge">
                 <span class="dot"></span> HISTORIQUE • PREMIÈRE MONDIALE
             </div>
 
-            <!-- Grand Logo Officiel Dakar 2026 (Récupéré du CIO) -->
-            <div id="p1LogoWrap" class="hero-official-logo-plate" style="width: 200px; height: 200px; margin-bottom: 24px;">
+            <!-- Grand Logo Officiel Transparent (Sans cadre blanc) -->
+            <div id="p1LogoWrap" class="hero-logo-transparent" style="width: 220px; height: 220px; margin-bottom: 24px;">
                 <img src="../01_Assets/Logos/dakar_2026_official_logo.png" alt="Logo Officiel JOJ Dakar 2026">
             </div>
 
@@ -638,10 +643,29 @@
         </section>
 
         <!-- ======================================================================
-             PLAN 02 (00:04 - 00:12, 8s) : LES CHIFFRES CLÉS (3 CARTES CENTRÉES)
-             ANIMATIONS INTERNES COMPLÈTES (Icônes, Compteurs, Textes)
+             PLAN 02 (00:04 - 00:12, 8s) : 3 CARTES AVEC RUBAN COLORÉ EN FOND & ANIMATIONS INTERNES
+             Ruban zig-zag dynamique en arrière-plan + animations internes de chaque carte
              ====================================================================== -->
         <section id="plan_2" class="scene">
+            <!-- RUBAN DYNAMIQUE COLORÉ ZIG-ZAG EN ARRIÈRE-PLAN -->
+            <svg class="scene2-ribbon-bg" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#10b981" />
+                        <stop offset="35%" stop-color="#fcd116" />
+                        <stop offset="70%" stop-color="#ef4444" />
+                        <stop offset="100%" stop-color="#0284c7" />
+                    </linearGradient>
+                    <filter id="ribbonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#10b981" flood-opacity="0.35" />
+                    </filter>
+                </defs>
+                <!-- Tracé principal du ruban zig-zag -->
+                <path id="p2Ribbon" d="M -60 740 C 300 520, 520 860, 960 620 C 1400 380, 1650 780, 1980 500" fill="none" stroke="url(#ribbonGrad)" stroke-width="18" stroke-linecap="round" filter="url(#ribbonGlow)" />
+                <!-- Trait fin doré parallèle -->
+                <path id="p2RibbonThin" d="M -60 765 C 300 545, 520 885, 960 645 C 1400 405, 1650 805, 1980 525" fill="none" stroke="#fcd116" stroke-width="4" stroke-dasharray="12 10" stroke-linecap="round" opacity="0.8" />
+            </svg>
+
             <div id="p2Badge" class="pill-badge">
                 <span class="dot"></span> REVUE D'ACTU • DAKAR 2026
             </div>
@@ -690,8 +714,8 @@
         </section>
 
         <!-- ======================================================================
-             PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES HERO BADGES
-             REMPLACEMENT DES DESSINS 2D PAR DE GRANDS BADGES ÉVOCATEURS
+             PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES (ICÔNES PURES SANS EMOJIS NI FOND)
+             Grandes icônes vectorielles épurées flottant directement sur les cartes
              ====================================================================== -->
         <section id="plan_3" class="scene">
             <div id="p3Badge" class="pill-badge">
@@ -702,27 +726,64 @@
             <p id="p3Sub" class="main-subtitle">Une synergie géographique entre la modernité de Diamniadio, l'océan de Saly et l'histoire de Dakar.</p>
 
             <div class="venues-grid">
-                <!-- Pôle 1 : Diamniadio -->
+                <!-- Pôle 1 : Diamniadio (Icône Stade / Arène épurée sans background) -->
                 <div id="p3Card1" class="venue-card">
-                    <div id="p3Hero1" class="venue-badge-hero hero-diamniadio">🏟️</div>
+                    <div id="p3Icon1" class="venue-icon-floating">
+                        <svg viewBox="0 0 64 64" fill="none" stroke="#10b981" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="32" cy="40" rx="28" ry="12" />
+                            <ellipse cx="32" cy="34" rx="19" ry="7" fill="rgba(16, 185, 129, 0.12)" stroke="#10b981" stroke-width="1.8" />
+                            <path d="M 4 40 L 4 22 C 4 10, 60 10, 60 22 L 60 40" />
+                            <line x1="14" y1="20" x2="14" y2="44" />
+                            <line x1="23" y1="22" x2="23" y2="47" />
+                            <line x1="32" y1="22" x2="32" y2="48" />
+                            <line x1="41" y1="22" x2="41" y2="47" />
+                            <line x1="50" y1="20" x2="50" y2="44" />
+                            <!-- Projecteur arche supérieure -->
+                            <path d="M 12 18 C 22 13, 42 13, 52 18" stroke="#f59e0b" stroke-width="2" />
+                        </svg>
+                    </div>
                     <span id="p3Tag1" class="venue-loc-tag">PÔLE DIAMNIADIO</span>
                     <div id="p3Title1" class="venue-title">Stade Abdoulaye Wade</div>
                     <div id="p3Desc1" class="venue-desc">Grande arène de 50 000 places et Dakar Arena pour les compétitions reines et cérémonies.</div>
                     <span id="p3Chip1" class="venue-chip" style="background: #ecfdf5; color: #059669;">50 000 places • Arène Majeure</span>
                 </div>
 
-                <!-- Pôle 2 : Saly Nautique -->
+                <!-- Pôle 2 : Saly Nautique (Icône Voile / Vagues épurée sans background) -->
                 <div id="p3Card2" class="venue-card">
-                    <div id="p3Hero2" class="venue-badge-hero hero-saly">⛵</div>
+                    <div id="p3Icon2" class="venue-icon-floating">
+                        <svg viewBox="0 0 64 64" fill="none" stroke="#0284c7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- Vagues atlantiques -->
+                            <path d="M 4 48 C 12 43, 20 53, 28 48 C 36 43, 44 53, 52 48 C 56 46, 60 49, 60 49" stroke-width="3" />
+                            <path d="M 8 56 C 16 51, 24 61, 32 56 C 40 51, 48 61, 56 56" opacity="0.6" />
+                            <!-- Coque du bateau -->
+                            <path d="M 12 42 L 52 42 C 48 50, 16 50, 12 42 Z" fill="rgba(2, 132, 199, 0.15)" stroke-width="2.4" />
+                            <!-- Mât & Voiles triangulaires -->
+                            <line x1="32" y1="8" x2="32" y2="42" stroke-width="2.8" />
+                            <path d="M 32 10 L 48 36 L 32 36 Z" fill="rgba(2, 132, 199, 0.2)" stroke-width="2.4" />
+                            <path d="M 30 15 L 16 36 L 30 36 Z" stroke-width="2.2" />
+                            <!-- Soleil tropical en coin -->
+                            <circle cx="50" cy="14" r="6" stroke="#f59e0b" stroke-width="2" fill="rgba(245, 158, 11, 0.2)" />
+                        </svg>
+                    </div>
                     <span id="p3Tag2" class="venue-loc-tag">PÔLE SALY PORTUDAL</span>
                     <div id="p3Title2" class="venue-title">Centre Nautique & Plage</div>
                     <div id="p3Desc2" class="venue-desc">Aviron de mer, voile, surf et lutte sénégalaise traditionnelle sur le sable de l'Atlantique.</div>
                     <span id="p3Chip2" class="venue-chip" style="background: #e0f2fe; color: #0284c7;">Océan • Sports Côtiers</span>
                 </div>
 
-                <!-- Pôle 3 : Dakar Centre -->
+                <!-- Pôle 3 : Dakar Centre (Icône Flamme Olympique & Médina sans background) -->
                 <div id="p3Card3" class="venue-card">
-                    <div id="p3Hero3" class="venue-badge-hero hero-dakar">🏛️</div>
+                    <div id="p3Icon3" class="venue-icon-floating">
+                        <svg viewBox="0 0 64 64" fill="none" stroke="#ef4444" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- Torche / Fanal -->
+                            <path d="M 22 28 L 42 28 L 36 56 L 28 56 Z" fill="rgba(239, 68, 68, 0.12)" stroke-width="2.5" />
+                            <line x1="20" y1="28" x2="44" y2="28" stroke-width="3" />
+                            <line x1="25" y1="36" x2="39" y2="36" stroke-width="2" />
+                            <!-- Flamme olympique flamboyante -->
+                            <path d="M 32 4 C 40 10, 46 18, 42 24 C 38 28, 26 28, 22 24 C 18 18, 24 10, 32 4 Z" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2.5" />
+                            <path d="M 32 12 C 36 16, 37 20, 33 24 C 29 22, 29 17, 32 12 Z" fill="#ef4444" stroke="none" />
+                        </svg>
+                    </div>
                     <span id="p3Tag3" class="venue-loc-tag">PÔLE DAKAR VILLE</span>
                     <div id="p3Title3" class="venue-title">Stade Iba Mar Diop</div>
                     <div id="p3Desc3" class="venue-desc">Joyau historique totalement réhabilité au cœur de la capitale, berceau de l'énergie urbaine.</div>
@@ -732,8 +793,8 @@
         </section>
 
         <!-- ======================================================================
-             PLAN 04 (00:23 - 00:35, 12s) : B-ROLL VIDÉO SANS AUCUN PLAYER INTERNE
-             VIDÉO RÉELLE EN LOOP CONTINU SANS BLOCAGE
+             PLAN 04 (00:23 - 00:35, 12s) : B-ROLL VIDÉO DÉMARRAGE IMMÉDIAT
+             Extrait nettoyé de 15s : percussionnistes, parade olympique, ferveur de Dakar
              ====================================================================== -->
         <section id="plan_4" class="scene">
             <div id="p4Badge" class="pill-badge live-pulse">
@@ -744,7 +805,7 @@
             <p id="p4Sub" class="main-subtitle">Une ferveur populaire immense et 35 disciplines disputées à haute intensité.</p>
 
             <div class="video-showcase-container">
-                <!-- FRAME VIDÉO B-ROLL (MUTED, LOOP, PLAYSINLINE, AUCUN BOUTON) -->
+                <!-- FRAME VIDÉO B-ROLL (MUTED, LOOP, PLAYSINLINE, AUCUN CONTRÔLE INTERNE) -->
                 <div id="p4VideoFrame" class="video-mockup-frame">
                     <div class="video-corner-badge">
                         <span class="red-dot"></span> LIVE BROADCAST
@@ -770,8 +831,8 @@
         </section>
 
         <!-- ======================================================================
-             PLAN 05 (00:35 - 00:44, 9s) : GRAPH LINE MATHÉMATIQUE SANS SAUT
-             LE POINT EST TOUJOURS À L'EXTRÉMITÉ, LE TRAIT DESSINE DERRIÈRE
+             PLAN 05 (00:35 - 00:44, 9s) : LINE GRAPH STRICTEMENT EXACT
+             LE POINT EST TOUJOURS À L'EXTRÉMITÉ DU TRAIT, LE TRAIT DESSINE DERRIÈRE
              ====================================================================== -->
         <section id="plan_5" class="scene">
             <div id="p5Badge" class="pill-badge">
@@ -837,16 +898,16 @@
         </section>
 
         <!-- ======================================================================
-             PLAN 06 (00:44 - 00:52, 8s) : CLIMAX AVEC GRAND LOGO & CASCADE DRAPEAUX
-             Révélation majestueuse du logo officiel et devise bilingue
+             PLAN 06 (00:44 - 00:52, 8s) : CLIMAX AVEC GRAND LOGO PUR ET DRAPEAUX DÉFILANTS
+             Logo transparent officiel et bandeau infini des drapeaux mondiaux
              ====================================================================== -->
         <section id="plan_6" class="scene">
             <div id="p6Badge" class="pill-badge">
                 <span class="dot"></span> DEVISE OFFICIELLE • DAKAR 2026
             </div>
 
-            <!-- GRAND LOGO OFFICIEL DAKAR 2026 (HAUTEUR 250px) -->
-            <div id="p6LogoWrap" class="hero-official-logo-plate" style="width: 250px; height: 250px; margin-bottom: 22px;">
+            <!-- GRAND LOGO OFFICIEL EN TRANSPARENCE DIRECTE (SANS PLAQUE BLANCHE) -->
+            <div id="p6LogoWrap" class="hero-logo-transparent" style="width: 260px; height: 260px; margin-bottom: 20px;">
                 <img src="../01_Assets/Logos/dakar_2026_official_logo.png" alt="Dakar 2026 Official Logo">
             </div>
 
@@ -856,39 +917,108 @@
                 <div id="p6French" class="slogan-fr">« L’Afrique accueille, Dakar célèbre »</div>
             </div>
 
-            <!-- CASCADE 3D DES DRAPEAUX INTERNATIONAUX -->
-            <div id="p6Flags" class="flags-grid-dynamic">
-                <div class="flag-pill" style="border: 2px solid var(--sn-emerald);">
-                    <img src="../01_Assets/Flags/senegal.svg" alt="Sénégal">
-                    <span>Sénégal</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/kenya.svg" alt="Kenya">
-                    <span>Kenya</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/fr.svg" alt="France">
-                    <span>France</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/us.svg" alt="USA">
-                    <span>USA</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/jp.svg" alt="Japon">
-                    <span>Japon</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/de.svg" alt="Allemagne">
-                    <span>Allemagne</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/ca.svg" alt="Canada">
-                    <span>Canada</span>
-                </div>
-                <div class="flag-pill">
-                    <img src="../01_Assets/Flags/it.svg" alt="Italie">
-                    <span>Italie</span>
+            <!-- BANDEAU DÉFILANT INFINI DES DRAPEAUX INTERNATIONAUX (OVERFLOW DES DEUX CÔTÉS) -->
+            <div id="p6FlagsWrap" class="flags-marquee-container">
+                <div id="flagsTrack" class="flags-track">
+                    <!-- SÉRIE 1 DE DRAPEAUX AGRANDIS -->
+                    <div class="flag-item-large" style="border: 2px solid var(--sn-emerald);">
+                        <img src="../01_Assets/Flags/senegal.svg" alt="Sénégal">
+                        <span>Sénégal</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/kenya.svg" alt="Kenya">
+                        <span>Kenya</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/fr.svg" alt="France">
+                        <span>France</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/us.svg" alt="USA">
+                        <span>USA</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/jp.svg" alt="Japon">
+                        <span>Japon</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/de.svg" alt="Allemagne">
+                        <span>Allemagne</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/ca.svg" alt="Canada">
+                        <span>Canada</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/it.svg" alt="Italie">
+                        <span>Italie</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/gb.svg" alt="Royaume-Uni">
+                        <span>Royaume-Uni</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/ch.svg" alt="Suisse">
+                        <span>Suisse</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/kr.svg" alt="Corée du Sud">
+                        <span>Corée du Sud</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/fi.svg" alt="Finlande">
+                        <span>Finlande</span>
+                    </div>
+
+                    <!-- SÉRIE 2 DUPLIQUÉE POUR LA BOUCLE PARFAITE SANS INTERRUPTION -->
+                    <div class="flag-item-large" style="border: 2px solid var(--sn-emerald);">
+                        <img src="../01_Assets/Flags/senegal.svg" alt="Sénégal">
+                        <span>Sénégal</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/kenya.svg" alt="Kenya">
+                        <span>Kenya</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/fr.svg" alt="France">
+                        <span>France</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/us.svg" alt="USA">
+                        <span>USA</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/jp.svg" alt="Japon">
+                        <span>Japon</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/de.svg" alt="Allemagne">
+                        <span>Allemagne</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/ca.svg" alt="Canada">
+                        <span>Canada</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/it.svg" alt="Italie">
+                        <span>Italie</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/gb.svg" alt="Royaume-Uni">
+                        <span>Royaume-Uni</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/ch.svg" alt="Suisse">
+                        <span>Suisse</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/kr.svg" alt="Corée du Sud">
+                        <span>Corée du Sud</span>
+                    </div>
+                    <div class="flag-item-large">
+                        <img src="../01_Assets/Flags/fi.svg" alt="Finlande">
+                        <span>Finlande</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1028,6 +1158,25 @@
         brollEl.playsInline = true;
     }
 
+    // Configuration du ruban zig-zag Scène 2
+    const ribbonEl = document.getElementById('p2Ribbon');
+    const ribbonThinEl = document.getElementById('p2RibbonThin');
+    const ribbonLen = ribbonEl ? ribbonEl.getTotalLength() : 2400;
+    if (ribbonEl) {
+        gsap.set(ribbonEl, { strokeDasharray: ribbonLen, strokeDashoffset: ribbonLen });
+    }
+    if (ribbonThinEl) {
+        gsap.set(ribbonThinEl, { strokeDasharray: ribbonLen, strokeDashoffset: ribbonLen });
+    }
+
+    // Animation permanente du défilement des drapeaux (Infinite Marquee)
+    const marqueeTween = gsap.to('#flagsTrack', {
+        xPercent: -50,
+        duration: 22,
+        ease: 'none',
+        repeat: -1
+    });
+
     // Démarrage de la musique
     tl.call(() => {
         if (bgm) {
@@ -1038,13 +1187,13 @@
     }, null, 0);
 
     /* --------------------------------------------------------------------------
-       PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — GRAND LOGO OFFICIEL
+       PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — GRAND LOGO OFFICIEL TRANSPARENT
        -------------------------------------------------------------------------- */
     tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
     tl.fromTo('#p1Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
 
-    // Grand Logo Officiel Dakar 2026 : apparition majestueuse avec léger zoom arrière
-    tl.fromTo('#p1LogoWrap', { scale: 1.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: 'power3.out' }, 0.3);
+    // Grand Logo Transparent : apparition majestueuse
+    tl.fromTo('#p1LogoWrap', { scale: 1.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: 'power3.out' }, 0.3);
     tl.call(() => playSfx('impact', 0.6), null, 0.4);
 
     // Titre Monopoliche : mot par mot avec fondu vertical
@@ -1057,14 +1206,25 @@
       .set('#plan_1', { display: 'none' }, 4.0);
 
     /* --------------------------------------------------------------------------
-       PLAN 02 (00:04 - 00:12, 8s) : 3 CARTES CENTRÉES AVEC ANIMATIONS INTERNES
-       Chaque carte apparaît, puis son icône, son chiffre et ses textes s'animent
+       PLAN 02 (00:04 - 00:12, 8s) : 3 CARTES AVEC RUBAN COLORÉ ZIG-ZAG EN FOND
        -------------------------------------------------------------------------- */
     tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
     tl.fromTo('#p2Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 4.1);
 
     titleFadeWordsUp(tl, '#p2Title', 4.2, { dur: 0.65, stagger: 0.1, y: 28 });
     subtitleSlideUp(tl, '#p2Sub', 4.6, { dur: 0.65, y: 20 });
+
+    // DÉPLOIEMENT DU RUBAN COLORÉ ZIG-ZAG EN ARRIÈRE-PLAN (de gauche à droite)
+    if (ribbonEl) {
+        tl.fromTo(ribbonEl, { strokeDashoffset: ribbonLen }, { strokeDashoffset: 0, duration: 3.8, ease: 'power2.out' }, 4.2);
+    }
+    if (ribbonThinEl) {
+        tl.fromTo(ribbonThinEl, { strokeDashoffset: ribbonLen }, { strokeDashoffset: 0, duration: 3.8, ease: 'power2.out' }, 4.3);
+    }
+
+    // Ondulation organique continue du ruban en arrière-plan
+    gsap.to('#p2Ribbon', { y: 20, duration: 4.5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#p2RibbonThin', { y: -18, duration: 5.0, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
     // --- CARTE 1 : 206 CNO (Entrée à 4.9s) ---
     tl.fromTo('#p2Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 4.9);
@@ -1116,7 +1276,7 @@
       .set('#plan_2', { display: 'none' }, 12.0);
 
     /* --------------------------------------------------------------------------
-       PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES HERO BADGES AVEC ANIMATIONS INTERNES
+       PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES (ICÔNES PURES SANS BACKGROUND)
        -------------------------------------------------------------------------- */
     tl.set('#plan_3', { display: 'flex', opacity: 1 }, 12.0);
     tl.fromTo('#p3Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 12.1);
@@ -1127,7 +1287,7 @@
     // Pôle 1 : Diamniadio (13.0s)
     tl.fromTo('#p3Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 13.0);
     tl.call(() => playSfx('whoosh', 0.4), null, 13.0);
-    tl.fromTo('#p3Hero1', { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 13.2);
+    tl.fromTo('#p3Icon1', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 13.2);
     tl.fromTo('#p3Tag1', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 13.35);
     tl.fromTo('#p3Title1', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 13.45);
     tl.fromTo('#p3Desc1', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 13.6);
@@ -1136,7 +1296,7 @@
     // Pôle 2 : Saly (14.3s)
     tl.fromTo('#p3Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 14.3);
     tl.call(() => playSfx('whoosh', 0.4), null, 14.3);
-    tl.fromTo('#p3Hero2', { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 14.5);
+    tl.fromTo('#p3Icon2', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 14.5);
     tl.fromTo('#p3Tag2', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 14.65);
     tl.fromTo('#p3Title2', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 14.75);
     tl.fromTo('#p3Desc2', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 14.9);
@@ -1145,7 +1305,7 @@
     // Pôle 3 : Dakar Centre (15.6s)
     tl.fromTo('#p3Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 15.6);
     tl.call(() => playSfx('shimmer', 0.5), null, 15.6);
-    tl.fromTo('#p3Hero3', { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 15.8);
+    tl.fromTo('#p3Icon3', { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(2)' }, 15.8);
     tl.fromTo('#p3Tag3', { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 15.95);
     tl.fromTo('#p3Title3', { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 16.05);
     tl.fromTo('#p3Desc3', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 16.2);
@@ -1157,7 +1317,7 @@
 
     /* --------------------------------------------------------------------------
        PLAN 04 (00:23 - 00:35, 12s) : B-ROLL VIDÉO SANS AUCUN CONTRÔLE INTERNE
-       Lecture assurée en loop permanent et fluide durant toute la scène
+       Lecture assurée dès t=23s sans freeze initial
        -------------------------------------------------------------------------- */
     tl.set('#plan_4', { display: 'flex', opacity: 1 }, 23.0);
     tl.fromTo('#p4Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 23.1);
@@ -1213,7 +1373,7 @@
 
     tl.fromTo('#p5GraphCard', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 35.8);
 
-    // CONFIGURATION RIGORISTE DU TRACÉ COURBE & DU POINT TRACEUR
+    // Configuration mathématique du tracé courbe & du point traceur
     const lineEl = document.getElementById('graphLine');
     const pathTotalLen = lineEl ? lineEl.getTotalLength() : 820;
     if (lineEl) {
@@ -1272,12 +1432,12 @@
       .set('#plan_5', { display: 'none' }, 44.0);
 
     /* --------------------------------------------------------------------------
-       PLAN 06 (00:44 - 00:52, 8s) : CLIMAX AVEC GRAND LOGO & CASCADE 3D DRAPEAUX
+       PLAN 06 (00:44 - 00:52, 8s) : CLIMAX AVEC GRAND LOGO PUR & DRAPEAUX DÉFILANTS
        -------------------------------------------------------------------------- */
     tl.set('#plan_6', { display: 'flex', opacity: 1 }, 44.0);
     tl.fromTo('#p6Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 44.1);
 
-    // Grand Logo Officiel Dakar 2026 : zoom-in prestigieux
+    // Grand Logo Transparent Dakar 2026 : zoom-in majestueux
     tl.fromTo('#p6LogoWrap', { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.85, ease: 'back.out(1.8)' }, 44.3);
     tl.call(() => playSfx('impact', 0.8), null, 44.4);
 
@@ -1291,13 +1451,9 @@
     titleMultiFontSlide(tl, '#p6French', 45.5, { dur: 0.75, y: 20 });
     tl.call(() => playSfx('chime', 0.8), null, 45.6);
 
-    // CASCADE 3D DYNAMIQUE DES 8 DRAPEAUX (ENTRÉE EN VAGUE ROTATIVE)
-    tl.fromTo('.flag-pill',
-        { y: 40, opacity: 0, scale: 0.5, rotateY: 50 },
-        { y: 0, opacity: 1, scale: 1, rotateY: 0, duration: 0.65, stagger: 0.08, ease: 'back.out(2)' },
-        46.3
-    );
-    tl.call(() => playSfx('shimmer', 0.6), null, 46.5);
+    // BANDEAU DÉFILANT INFINI DES DRAPEAUX : ENTRÉE EN SLIDE
+    tl.fromTo('#p6FlagsWrap', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 46.2);
+    tl.call(() => playSfx('shimmer', 0.6), null, 46.4);
 
     // Fondu final vers 52.0s
     tl.to('#stage', { opacity: 0.96, duration: 1.0 }, 51.0);
@@ -1318,7 +1474,7 @@
             // Synchronisation de la vidéo B-roll sans autoplay sauvage
             if (brollEl) {
                 if (t >= 23.0 && t <= 35.0) {
-                    const dur = brollEl.duration || 8.04;
+                    const dur = brollEl.duration || 15.0;
                     brollEl.currentTime = (t - 23.0) % dur;
                     if (!tl.paused()) {
                         brollEl.play().catch(() => {});
