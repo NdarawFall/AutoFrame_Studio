@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résumé Officiel CAN 2026 au Maroc - 3 Minutes</title>
+    <!-- Polices Typographiques Premium (Règle 80/20) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Librairie GSAP 3.12.5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* ======================================================================
+           RESET & PARAMÈTRES GLOBAUX DU CANEVAS (1920x1080)
+           ====================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        :root {
+            /* Charte 60/30/10 Inspirée du Royaume Chérifien & de l'Élite Sportive */
+            --bg-deep: #070a13;
+            --bg-card: rgba(15, 23, 42, 0.72);
+            --border-card: rgba(255, 255, 255, 0.09);
+            --border-card-gold: rgba(245, 158, 11, 0.35);
+            --shadow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+
+            --accent-gold: #f59e0b;
+            --accent-gold-bright: #fbbf24;
+            --accent-morocco-red: #c1272d;
+            --accent-morocco-green: #006233;
+            --accent-emerald: #10b981;
+            --accent-cyan: #06b6d4;
+
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: #03060a;
+            color: var(--text-body);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #stage {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            background: var(--bg-deep);
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.95);
+        }
+
+        /* Arrière-plan cinématique dynamique & zébrage lumineux subtil */
+        .stage-backdrop {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 18% 22%, rgba(193, 39, 45, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 82% 78%, rgba(0, 98, 51, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 55%),
+                linear-gradient(180deg, #070a13 0%, #0a0e1c 50%, #060810 100%);
+            z-index: 1;
+        }
+
+        /* Trame géométrique discrète rappelant les mosaïques arabesques et le gazon */
+        .stage-mesh {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+            background-size: 80px 80px;
+            background-position: center center;
+            z-index: 2;
+            opacity: 0.85;
+        }
+
+        /* Halo d'ambiance zénithal */
+        .ambient-aurora {
+            position: absolute;
+            width: 1400px;
+            height: 500px;
+            top: -150px;
+            left: 260px;
+            background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.14), transparent 70%);
+            filter: blur(80px);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ======================================================================
+           CONTENEURS SCÉNIQUES & MARGES DE SÉCURITÉ (4 COINS VIERGES)
+           ====================================================================== */
+        .scene {
+            position: absolute;
+            inset: 0;
+            padding: 85px 110px; /* Marges de sécurité garanties */
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+        }
+
+        /* ÉTIQUETTE / BADGE ÉDITORIAL */
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 22px;
+            border-radius: 9999px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent-gold-bright);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
+            margin-bottom: 16px;
+        }
+
+        .pill-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold);
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.6; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* TITRAGE CINÉTIQUE (RÈGLE 80/20) */
+        .main-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-align: center;
+            color: var(--text-title);
+            line-height: 1.15;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            text-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .main-title .word-span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .main-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 21px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 1080px;
+            line-height: 1.5;
+            margin-bottom: 34px;
+        }
+
+        /* ======================================================================
+           SCÈNE 1 : LE HOOK & LE TROPHÉE OFFICIEL D'OR
+           ====================================================================== */
+        .trophy-showcase {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 10px;
+        }
+
+        .trophy-image-box {
+            position: relative;
+            width: 620px;
+            height: 480px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-card-gold);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.2);
+            flex-shrink: 0;
+        }
+
+        .trophy-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 25%;
+            display: block;
+        }
+
+        .trophy-content-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item-pill {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 20px 26px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .feature-icon-bubble {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold-bright);
+            font-size: 24px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .feature-item-text h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin-bottom: 4px;
+        }
+
+        .feature-item-text p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* ======================================================================
+           SCÈNE 2 : LES TEMPLES DU TOURNOI (STADES DE RABAT ET TANGER)
+           ====================================================================== */
+        .stadiums-grid {
+            display: flex;
+            gap: 36px;
+            width: 100%;
+            max-width: 1540px;
+            margin-top: 15px;
+        }
+
+        .stadium-card {
+            flex: 1;
+            border-radius: 26px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stadium-photo-frame {
+            width: 100%;
+            height: 290px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            background: #0f172a;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .stadium-photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .stadium-badge-tag {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-gold);
+            display: inline-block;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .stadium-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-title);
+            margin-bottom: 8px;
+        }
+
+        .stadium-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 18px;
+        }
+
+        .stadium-capacity-pill {
+            margin-top: auto;
+            padding: 10px 18px;
+            border-radius: 14px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: var(--accent-gold-bright);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+        }
+
+        /* ======================================================================
+           SCÈNE 3 : LES CHIFFRES CLÉS DU TOURNOI (3 CARTES JUMELLES)
+           ====================================================================== */
+        .metrics-grid {
+            display: flex;
+            gap: 32px;
+            width: 100%;
+            max-width: 1540px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .metric-card {
+            flex: 1;
+            padding: 44px 32px;
+            border-radius: 26px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .metric-icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .metric-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 78px;
+            font-weight: 800;
+            color: var(--text-title);
+            line-height: 1;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+
+        .metric-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-gold-bright);
+            margin-bottom: 10px;
+        }
+
+        .metric-sub {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* Ruban ondulant en arrière-plan */
+        .p3-background-ribbon {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            overflow: visible;
+        }
+
+        /* ======================================================================
+           SCÈNE 4 : LE GRAPHIQUE MATHÉMATIQUE EXACT
+           ====================================================================== */
+        .chart-card-wrapper {
+            width: 100%;
+            max-width: 1460px;
+            padding: 34px 44px;
+            border-radius: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .chart-svg-box {
+            width: 100%;
+            height: 380px;
+            position: relative;
+        }
+
+        .chart-svg-box svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-milestones-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chart-milestone-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 240px;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        .chart-milestone-phase {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-milestone-detail {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-title);
+        }
+
+        .chart-milestone-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ======================================================================
+           SCÈNE 5 : LE DUEL DES ROIS DU TOURNOI (BRAHIM DÍAZ VS SADIO MANÉ)
+           ====================================================================== */
+        .kings-duo-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 1540px;
+            margin-top: 15px;
+        }
+
+        .player-card {
+            flex: 1;
+            border-radius: 26px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .player-photo-wrap {
+            width: 100%;
+            height: 320px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #0f172a;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .player-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            display: block;
+        }
+
+        .player-award-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold-bright);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-title);
+            margin-bottom: 6px;
+        }
+
+        .player-nation-pill {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .player-stat-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .player-big-stat {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--accent-gold-bright);
+            line-height: 1;
+        }
+
+        .player-stat-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+
+        /* ======================================================================
+           SCÈNE 6 : LA BATAILLE POUR LE PODIUM (NIGERIA BRONZE)
+           ====================================================================== */
+        .bronze-showcase {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 1440px;
+            margin-top: 15px;
+        }
+
+        .match-score-board {
+            flex: 1.1;
+            padding: 38px;
+            border-radius: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .match-teams-duel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin: 28px 0;
+        }
+
+        .duel-team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 180px;
+        }
+
+        .duel-team img {
+            width: 80px;
+            height: 52px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .duel-team-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .duel-score-center {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 72px;
+            font-weight: 800;
+            color: var(--accent-gold-bright);
+            letter-spacing: -2px;
+        }
+
+        .duel-score-sep {
+            color: var(--text-muted);
+            font-size: 48px;
+        }
+
+        .match-info-strip {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .bronze-side-points {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ======================================================================
+           SCÈNE 7 : LA FINALE ÉLECTRIQUE DE RABAT (MAROC - SÉNÉGAL)
+           ====================================================================== */
+        .final-clash-container {
+            width: 100%;
+            max-width: 1480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+            margin-top: 15px;
+        }
+
+        .final-score-stage {
+            width: 100%;
+            padding: 38px 60px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(193, 39, 45, 0.15) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(0, 98, 51, 0.15) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .final-nation-block {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            width: 360px;
+        }
+
+        .final-nation-block.right {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .final-flag-box {
+            width: 100px;
+            height: 66px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .final-flag-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .final-team-meta h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 34px;
+            font-weight: 900;
+            color: var(--text-title);
+        }
+
+        .final-team-meta p {
+            font-size: 14px;
+            color: var(--accent-gold-bright);
+            font-weight: 600;
+        }
+
+        .final-score-digits {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 96px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -3px;
+            text-shadow: 0 0 35px rgba(245, 158, 11, 0.4);
+        }
+
+        .final-details-row {
+            display: flex;
+            gap: 28px;
+            width: 100%;
+        }
+
+        .final-card-sub {
+            flex: 1;
+            padding: 24px 28px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            backdrop-filter: blur(16px);
+        }
+
+        .final-card-sub h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 19px;
+            color: var(--accent-gold-bright);
+            margin-bottom: 8px;
+        }
+
+        .final-card-sub p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* ======================================================================
+           SCÈNE 8 : ÉPILOGUE & DÉFILEMENT INFINI DES 24 DRAPEAUX (MARQUEE)
+           ====================================================================== */
+        .epilogue-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .slogan-grand-plate {
+            padding: 34px 50px;
+            border-radius: 26px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card-gold);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            margin-bottom: 40px;
+        }
+
+        .slogan-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        .flags-marquee-container {
+            width: 100vw;
+            position: absolute;
+            bottom: 90px;
+            left: 0;
+            overflow: hidden;
+            display: flex;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            z-index: 20;
+        }
+
+        .flags-track {
+            display: flex;
+            gap: 22px;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        .flag-pill-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .flag-pill-item img {
+            width: 32px;
+            height: 22px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .flag-pill-item span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+    </style>
+</head>
+<body>
+    <div id="viewport">
+        <div id="stage">
+            <!-- Arrière-plan & Lumières Zénithales -->
+            <div class="stage-backdrop"></div>
+            <div class="stage-mesh"></div>
+            <div class="ambient-aurora"></div>
+
+            <!-- ======================================================================
+                 PLAN 01 (00:00 - 00:22, 22s) : L'OUVERTURE ROYALE & LE TROPHÉE
+                 ====================================================================== -->
+            <section id="plan_1" class="scene">
+                <div id="p1Badge" class="pill-badge">
+                    <span class="dot"></span> TOTALENERGIES CAF CAN MAROC 2026
+                </div>
+                <h1 id="p1Title" class="main-title">L'ÉPOPÉE DU FOOTBALL AFRICAIN</h1>
+                <p id="p1Sub" class="main-subtitle">24 nations continentales réunies au Royaume chérifien pour une compétition légendaire.</p>
+
+                <div id="p1TrophyBox" class="trophy-showcase">
+                    <div class="trophy-image-box">
+                        <img src="../01_Assets/Images/can_trophee_officiel.jpg" alt="Trophée Officiel de la CAN">
+                    </div>
+                    <div class="trophy-content-side">
+                        <div id="p1Pill1" class="feature-item-pill">
+                            <div class="feature-icon-bubble">35</div>
+                            <div class="feature-item-text">
+                                <h4>35e Édition Historique</h4>
+                                <p>Un tournoi d'exception disputé dans des arènes de niveau international.</p>
+                            </div>
+                        </div>
+                        <div id="p1Pill2" class="feature-item-pill">
+                            <div class="feature-icon-bubble">🇲🇦</div>
+                            <div class="feature-item-text">
+                                <h4>L'Hospitalité du Maroc</h4>
+                                <p>6 grandes métropoles mobilisées pour offrir la plus grande CAN de l'histoire.</p>
+                            </div>
+                        </div>
+                        <div id="p1Pill3" class="feature-item-pill">
+                            <div class="feature-icon-bubble">🏆</div>
+                            <div class="feature-item-text">
+                                <h4>La Quête du Graal</h4>
+                                <p>Des favoris ultra-affûtés et des affiches d'anthologie à chaque tour.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 02 (00:22 - 00:44, 22s) : LES TEMPLES DU TOURNOI
+                 ====================================================================== -->
+            <section id="plan_2" class="scene">
+                <div id="p2Badge" class="pill-badge">
+                    <span class="dot"></span> INFRASTRUCTURES D'ÉLITE
+                </div>
+                <h2 id="p2Title" class="main-title">DES ARÈNES DE CLASSE MONDIALE</h2>
+                <p id="p2Sub" class="main-subtitle">Des joyaux architecturaux préfigurant l'organisation de la Coupe du Monde 2030.</p>
+
+                <div class="stadiums-grid">
+                    <div id="p2Card1" class="stadium-card">
+                        <div class="stadium-photo-frame">
+                            <img src="../01_Assets/Images/can_stade_rabat.jpg" alt="Complexe Sportif Prince Moulay Abdellah">
+                        </div>
+                        <span class="stadium-badge-tag">RABAT • THÉÂTRE DE LA FINALE</span>
+                        <div class="stadium-name">Prince Moulay Abdellah</div>
+                        <p class="stadium-desc">Entièrement reconstruit avec les standards FIFA les plus stricts, arène principale des cérémonies et du choc final.</p>
+                        <div class="stadium-capacity-pill">🏟️ 69 500 Places Assises</div>
+                    </div>
+
+                    <div id="p2Card2" class="stadium-card">
+                        <div class="stadium-photo-frame">
+                            <img src="../01_Assets/Images/can_stade_tanger.jpg" alt="Grand Stade de Tanger Ibn-Batouta">
+                        </div>
+                        <span class="stadium-badge-tag">TANGER • JOYAU DU DÉTROIT</span>
+                        <div class="stadium-name">Grand Stade Ibn-Batouta</div>
+                        <p class="stadium-desc">Un amphithéâtre ultra-moderne au carrefour de deux continents, théâtre de duels mémorables et de ferveur populaire.</p>
+                        <div class="stadium-capacity-pill">🏟️ 65 000 Places Assises</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 03 (00:44 - 01:06, 22s) : LES CHIFFRES CLÉS DU TOURNOI
+                 ====================================================================== -->
+            <section id="plan_3" class="scene">
+                <!-- Ruban graphique d'ambiance -->
+                <svg class="p3-background-ribbon" viewBox="0 0 1920 1080" fill="none">
+                    <path id="p3Ribbon" d="M -60,680 C 350,820 620,440 960,620 C 1300,800 1550,510 1980,640" stroke="url(#p3RibbonGrad)" stroke-width="6" stroke-linecap="round" opacity="0.35" />
+                    <defs>
+                        <linearGradient id="p3RibbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#c1272d" />
+                            <stop offset="50%" stop-color="#f59e0b" />
+                            <stop offset="100%" stop-color="#006233" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <div id="p3Badge" class="pill-badge">
+                    <span class="dot"></span> BILAN QUANTITATIF
+                </div>
+                <h2 id="p3Title" class="main-title">LES CHIFFRES D'UN RECORD CONTINENTAL</h2>
+                <p id="p3Sub" class="main-subtitle">Une compétition suivie par plus d'un milliard de téléspectateurs à travers le globe.</p>
+
+                <div class="metrics-grid">
+                    <div id="p3Card1" class="metric-card">
+                        <div class="metric-top-bar" style="background: var(--accent-morocco-red);"></div>
+                        <div class="metric-icon-box">🌍</div>
+                        <div id="p3Num1" class="metric-number">24</div>
+                        <div class="metric-label">Nations en Compétition</div>
+                        <p class="metric-sub">Les meilleures sélections africaines réparties dans 6 groupes hautement relevés.</p>
+                    </div>
+
+                    <div id="p3Card2" class="metric-card">
+                        <div class="metric-top-bar" style="background: var(--accent-gold);"></div>
+                        <div class="metric-icon-box">⚽</div>
+                        <div id="p3Num2" class="metric-number">52</div>
+                        <div class="metric-label">Matchs Disputés</div>
+                        <p class="metric-sub">118 buts inscrits, un football offensif spectaculaire et des prolongations irrespirables.</p>
+                    </div>
+
+                    <div id="p3Card3" class="metric-card">
+                        <div class="metric-top-bar" style="background: var(--accent-morocco-green);"></div>
+                        <div class="metric-icon-box">🏟️</div>
+                        <div id="p3Num3" class="metric-number">1.8M</div>
+                        <div class="metric-label">Spectateurs en Arène</div>
+                        <p class="metric-sub">Un taux de remplissage moyen record et une passion festive dans tout le Maroc.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 04 (01:06 - 01:28, 22s) : MONTÉE EN INTENSITÉ (LINE GRAPH EXACT)
+                 ====================================================================== -->
+            <section id="plan_4" class="scene">
+                <div id="p4Badge" class="pill-badge">
+                    <span class="dot"></span> TRAJECTOIRE DU TOURNOI
+                </div>
+                <h2 id="p4Title" class="main-title">MONTÉE EN PUISSANCE TACTIQUE</h2>
+                <p id="p4Sub" class="main-subtitle">Une montée graduelle de la dramaturgie et de l'intensité jusqu'au dénouement.</p>
+
+                <div class="chart-card-wrapper">
+                    <div class="chart-svg-box">
+                        <svg viewBox="0 0 1380 340" fill="none">
+                            <defs>
+                                <linearGradient id="curveFillGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.32" />
+                                    <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0" />
+                                </linearGradient>
+                                <clipPath id="chartClip">
+                                    <rect id="chartClipRect" x="0" y="0" width="80" height="340" />
+                                </clipPath>
+                            </defs>
+
+                            <!-- Lignes de repère horizontales discrètes -->
+                            <line x1="80" y1="280" x2="1300" y2="280" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+                            <line x1="80" y1="200" x2="1300" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+                            <line x1="80" y1="120" x2="1300" y2="120" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+
+                            <!-- Surface ombrée sous la courbe -->
+                            <g clip-path="url(#chartClip)">
+                                <path d="M 80,270 C 400,260 680,180 980,110 C 1140,75 1240,40 1300,32 L 1300,280 L 80,280 Z" fill="url(#curveFillGrad)" />
+                            </g>
+
+                            <!-- Trajectoire principale dorée -->
+                            <path id="graphLine" d="M 80,270 C 400,260 680,180 980,110 C 1140,75 1240,40 1300,32" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" />
+
+                            <!-- Point traceur mathématiquement exact à la pointe -->
+                            <circle id="graphPulse" cx="80" cy="270" r="16" fill="rgba(245, 158, 11, 0.25)" />
+                            <circle id="graphPoint" cx="80" cy="270" r="7.5" fill="#ffffff" stroke="#f59e0b" stroke-width="3.5" />
+                        </svg>
+                    </div>
+
+                    <div class="chart-milestones-row">
+                        <div id="mStone1" class="chart-milestone-item">
+                            <span class="chart-milestone-phase">Phase de Poules</span>
+                            <span class="chart-milestone-detail">68 Buts Marqués</span>
+                            <span class="chart-milestone-sub">Round d'observation & surprises</span>
+                        </div>
+                        <div id="mStone2" class="chart-milestone-item">
+                            <span class="chart-milestone-phase">Huitièmes & Quarts</span>
+                            <span class="chart-milestone-detail">Éliminations Chocs</span>
+                            <span class="chart-milestone-sub">Sortie précoce de cadors</span>
+                        </div>
+                        <div id="mStone3" class="chart-milestone-item">
+                            <span class="chart-milestone-phase">Demi-Finales</span>
+                            <span class="chart-milestone-detail">Intensité Maximale</span>
+                            <span class="chart-milestone-sub">Défenses d'acier & prolongations</span>
+                        </div>
+                        <div id="mStone4" class="chart-milestone-item">
+                            <span class="chart-milestone-phase" style="color: #fbbf24;">La Grande Finale</span>
+                            <span class="chart-milestone-detail">Climax Électrique</span>
+                            <span class="chart-milestone-sub">69 500 spectateurs en fusion</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 05 (01:28 - 01:52, 24s) : LES ROIS DU TOURNOI
+                 ====================================================================== -->
+            <section id="plan_5" class="scene">
+                <div id="p5Badge" class="pill-badge">
+                    <span class="dot"></span> DISTINCTIONS INDIVIDUELLES
+                </div>
+                <h2 id="p5Title" class="main-title">DEUX HÉROS AU SOMMET DU CONTINENT</h2>
+                <p id="p5Sub" class="main-subtitle">La consécration de deux maestros ayant marqué chaque match de leur empreinte.</p>
+
+                <div class="kings-duo-container">
+                    <!-- Brahim Díaz -->
+                    <div id="p5Card1" class="player-card">
+                        <div class="player-photo-wrap">
+                            <img src="../01_Assets/Images/can_brahim_diaz.jpg" alt="Brahim Díaz Maroc">
+                            <div class="player-award-badge">🥇 SOULIER D'OR</div>
+                        </div>
+                        <div class="player-name">Brahim Díaz</div>
+                        <div class="player-nation-pill">MAROC • LIONS DE L'ATLAS</div>
+                        <div class="player-stat-row">
+                            <div class="player-big-stat">5</div>
+                            <div class="player-stat-desc">Buts inscrits durant la compétition, dont 2 décisifs en phase éliminatoire.</div>
+                        </div>
+                    </div>
+
+                    <!-- Sadio Mané -->
+                    <div id="p5Card2" class="player-card">
+                        <div class="player-photo-wrap">
+                            <img src="../01_Assets/Images/can_sadio_mane.jpg" alt="Sadio Mané Sénégal">
+                            <div class="player-award-badge">⭐ MEILLEUR JOUEUR (MVP)</div>
+                        </div>
+                        <div class="player-name">Sadio Mané</div>
+                        <div class="player-nation-pill">SÉNÉGAL • LIONS DE LA TÉRANGA</div>
+                        <div class="player-stat-row">
+                            <div class="player-big-stat">MVP</div>
+                            <div class="player-stat-desc">Leadership exemplaire, 3 passes décisives et moteur du parcours sénégalais.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 06 (01:52 - 02:14, 22s) : LE CARRÉ D'AS & LE NIGERIA EN BRONZE
+                 ====================================================================== -->
+            <section id="plan_6" class="scene">
+                <div id="p6Badge" class="pill-badge">
+                    <span class="dot"></span> PODIUM CONTINENTAL
+                </div>
+                <h2 id="p6Title" class="main-title">LE NIGERIA DÉCROCHE LE BRONZE</h2>
+                <p id="p6Sub" class="main-subtitle">Un choc de prestige à Casablanca entre deux géants du football africain.</p>
+
+                <div class="bronze-showcase">
+                    <div id="p6ScoreCard" class="match-score-board">
+                        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent-gold); letter-spacing: 2px;">
+                            PETITE FINALE • STADE MOHAMMED V
+                        </div>
+                        <div class="match-teams-duel">
+                            <div class="duel-team">
+                                <img src="../01_Assets/Logos/nigeria.svg" alt="Nigeria">
+                                <span class="duel-team-name">Nigeria</span>
+                            </div>
+                            <div class="duel-score-center">
+                                <span>2</span>
+                                <span class="duel-score-sep">-</span>
+                                <span>1</span>
+                            </div>
+                            <div class="duel-team">
+                                <img src="../01_Assets/Logos/egypt.svg" alt="Égypte">
+                                <span class="duel-team-name">Égypte</span>
+                            </div>
+                        </div>
+                        <div class="match-info-strip">
+                            Médaille de bronze remportée par les Super Eagles face aux Pharaons d'Égypte.
+                        </div>
+                    </div>
+
+                    <div class="bronze-side-points">
+                        <div id="p6Point1" class="feature-item-pill">
+                            <div class="feature-icon-bubble" style="color: #10b981;">🦅</div>
+                            <div class="feature-item-text">
+                                <h4>Offensive Redoutable</h4>
+                                <p>Un tandem offensif Lookman - Osimhen décisif dans les moments cruciaux.</p>
+                            </div>
+                        </div>
+                        <div id="p6Point2" class="feature-item-pill">
+                            <div class="feature-icon-bubble" style="color: #f59e0b;">🥉</div>
+                            <div class="feature-item-text">
+                                <h4>9e Médaille de Bronze</h4>
+                                <p>Le Nigeria confirme sa constance historique sur le podium africain.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 07 (02:14 - 02:40, 26s) : LA FINALE ÉLECTRIQUE DE RABAT
+                 ====================================================================== -->
+            <section id="plan_7" class="scene">
+                <div id="p7Badge" class="pill-badge" style="background: rgba(193, 39, 45, 0.15); border-color: rgba(193, 39, 45, 0.4); color: #f87171;">
+                    <span class="dot" style="background: #ef4444; box-shadow: 0 0 10px #ef4444;"></span> LE CHOC SUPRÊME • 18 JANVIER 2026
+                </div>
+                <h2 id="p7Title" class="main-title">MAROC - SÉNÉGAL : TENSION ULTIME</h2>
+                <p id="p7Sub" class="main-subtitle">Une confrontation titanesque devant 69 500 spectateurs au Complexe Prince Moulay Abdellah.</p>
+
+                <div class="final-clash-container">
+                    <div id="p7ScoreBox" class="final-score-stage">
+                        <div class="final-nation-block">
+                            <div class="final-flag-box">
+                                <img src="../01_Assets/Logos/morocco.svg" alt="Maroc">
+                            </div>
+                            <div class="final-team-meta">
+                                <h3>MAROC</h3>
+                                <p>Lions de l'Atlas • Pays Hôte</p>
+                            </div>
+                        </div>
+
+                        <div class="final-score-digits">
+                            <span>0</span>
+                            <span style="font-size: 54px; opacity: 0.6;">-</span>
+                            <span style="color: #4ade80;">1</span>
+                        </div>
+
+                        <div class="final-nation-block right">
+                            <div class="final-flag-box">
+                                <img src="../01_Assets/Logos/senegal.svg" alt="Sénégal">
+                            </div>
+                            <div class="final-team-meta">
+                                <h3>SÉNÉGAL</h3>
+                                <p>Lions de la Téranga</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="final-details-row">
+                        <div id="p7Info1" class="final-card-sub">
+                            <h4>Prolongations Déterminantes</h4>
+                            <p>But décisif inscrit à la 98e minute par Pape Gueye sur une frappe limpide sous la barre.</p>
+                        </div>
+                        <div id="p7Info2" class="final-card-sub">
+                            <h4>Mendy Impérial</h4>
+                            <p>Six arrêts réflexes décisifs dans le dernier quart d'heure face aux assauts marocains.</p>
+                        </div>
+                        <div id="p7Info3" class="final-card-sub">
+                            <h4>Ferveur & Dramaturgie</h4>
+                            <p>Une intensité physique et tactique qui restera dans les annales du football africain.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================================================================
+                 PLAN 08 (02:40 - 03:00, 20s) : ÉPILOGUE & LE RUBAN DES 24 NATIONS
+                 ====================================================================== -->
+            <section id="plan_8" class="scene">
+                <div id="p8Badge" class="pill-badge">
+                    <span class="dot"></span> HÉRITAGE CONTINENTAL
+                </div>
+                <h2 id="p8Title" class="main-title">L'AFRIQUE RAYONNE SUR LE MONDE</h2>
+                <p id="p8Sub" class="main-subtitle">Le football africain affirme sa puissance avant le rendez-vous planétaire du Mondial 2030.</p>
+
+                <div class="epilogue-content">
+                    <div id="p8SloganPlate" class="slogan-grand-plate">
+                        <div class="slogan-title">
+                            « Une organisation modèle, une ferveur populaire immense, et des champions entrés dans la légende. »
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ruban continu infini des drapeaux africains (Marquee) -->
+                <div id="p8FlagsMarquee" class="flags-marquee-container">
+                    <div id="p8FlagsTrack" class="flags-track">
+                        <!-- Première passe de drapeaux -->
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/maroc.svg" alt="Maroc"><span>Maroc</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/senegal.svg" alt="Sénégal"><span>Sénégal</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/nigeria.svg" alt="Nigeria"><span>Nigeria</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/egypte.svg" alt="Égypte"><span>Égypte</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/cameroun.svg" alt="Cameroun"><span>Cameroun</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/cote_ivoire.svg" alt="Côte d'Ivoire"><span>Côte d'Ivoire</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/algerie.svg" alt="Algérie"><span>Algérie</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/ghana.svg" alt="Ghana"><span>Ghana</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/mali.svg" alt="Mali"><span>Mali</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/afrique_du_sud.svg" alt="Afrique du Sud"><span>Afrique du Sud</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/tunisie.svg" alt="Tunisie"><span>Tunisie</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/rdc.svg" alt="RDC"><span>RDC</span></div>
+
+                        <!-- Seconde passe pour la boucle infinie sans saut -->
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/maroc.svg" alt="Maroc"><span>Maroc</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/senegal.svg" alt="Sénégal"><span>Sénégal</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/nigeria.svg" alt="Nigeria"><span>Nigeria</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/egypte.svg" alt="Égypte"><span>Égypte</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/cameroun.svg" alt="Cameroun"><span>Cameroun</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/cote_ivoire.svg" alt="Côte d'Ivoire"><span>Côte d'Ivoire</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/algerie.svg" alt="Algérie"><span>Algérie</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/ghana.svg" alt="Ghana"><span>Ghana</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/mali.svg" alt="Mali"><span>Mali</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/afrique_du_sud.svg" alt="Afrique du Sud"><span>Afrique du Sud</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/tunisie.svg" alt="Tunisie"><span>Tunisie</span></div>
+                        <div class="flag-pill-item"><img src="../01_Assets/Flags/rdc.svg" alt="RDC"><span>RDC</span></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         SCRIPT D'ANIMATION GSAP & SOUND DESIGN SYNTHÉTISÉ (SANS MUSIQUE NI VOIX)
+         ====================================================================== -->
+    <script>
+    /* --------------------------------------------------------------------------
+       1. MOTEUR DE SOUND DESIGN PROCÉDURAL (WEB AUDIO API)
+       Effets sonores purs sans musique de fond ni voix off
+       -------------------------------------------------------------------------- */
+    let audioCtx = null;
+
+    function getAudioContext() {
+        if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) {
+                audioCtx = new AudioContextClass();
+            }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
+
+    function playSfx(type, vol = 0.5) {
+        try {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+
+            if (type === 'impact') {
+                // Sub-bass sine drop percutant + filtre passe-bas
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(110, now);
+                osc.frequency.exponentialRampToValueAtTime(28, now + 0.35);
+
+                gain.gain.setValueAtTime(vol * 0.9, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } else if (type === 'whoosh') {
+                // Balayage d'air filtré cinétique
+                const bufferSize = ctx.sampleRate * 0.4;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.Q.value = 3.5;
+                filter.frequency.setValueAtTime(250, now);
+                filter.frequency.exponentialRampToValueAtTime(1400, now + 0.18);
+                filter.frequency.exponentialRampToValueAtTime(200, now + 0.38);
+
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.01, now);
+                gain.gain.linearRampToValueAtTime(vol * 0.6, now + 0.18);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start(now);
+                noise.stop(now + 0.42);
+            } else if (type === 'chime') {
+                // Tintement d'or harmonique
+                const freqs = [523.25, 659.25, 783.99, 1046.50];
+                freqs.forEach((f, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + idx * 0.04);
+                    gain.gain.setValueAtTime(vol * 0.35, now + idx * 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 0.8);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.04);
+                    osc.stop(now + idx * 0.04 + 0.85);
+                });
+            } else if (type === 'whistle') {
+                // Sifflet d'arbitre modulé réaliste
+                [2750, 2980].forEach(f => {
+                    const osc = ctx.createOscillator();
+                    const lfo = ctx.createOscillator();
+                    const lfoGain = ctx.createGain();
+                    const gain = ctx.createGain();
+
+                    lfo.frequency.setValueAtTime(24, now);
+                    lfoGain.gain.setValueAtTime(50, now);
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(osc.frequency);
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(f, now);
+
+                    gain.gain.setValueAtTime(0.01, now);
+                    gain.gain.linearRampToValueAtTime(vol * 0.35, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    lfo.start(now);
+                    osc.start(now);
+                    lfo.stop(now + 0.52);
+                    osc.stop(now + 0.52);
+                });
+            } else if (type === 'click') {
+                // Tic sec pour jalons et compteurs
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1400, now);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
+                gain.gain.setValueAtTime(vol * 0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            }
+        } catch(e) {}
+    }
+
+    /* --------------------------------------------------------------------------
+       2. RESPONSIVE SCALE AUTO DU STAGE (1920x1080 TOUJOURS HOMOTHÉTIQUE)
+       -------------------------------------------------------------------------- */
+    function adjustScale() {
+        const stage = document.getElementById('stage');
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const scale = Math.min(vw / 1920, vh / 1080);
+        stage.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', adjustScale);
+    adjustScale();
+
+    /* --------------------------------------------------------------------------
+       3. OUTILS D'ANIMATION TYPOGRAPHIQUE (WORD BY WORD ET LINE SLIDE)
+       -------------------------------------------------------------------------- */
+    function splitWordsIntoSpans(selector) {
+        const el = document.querySelector(selector);
+        if (!el) return [];
+        const words = el.innerText.trim().split(/\s+/);
+        el.innerHTML = words.map(w => `<span class="word-span">${w}</span>`).join(' ');
+        return el.querySelectorAll('.word-span');
+    }
+
+    function titleWordsFadeUp(timeline, selector, startTime, { dur = 0.6, stagger = 0.09, y = 26 } = {}) {
+        const spans = splitWordsIntoSpans(selector);
+        if (!spans || spans.length === 0) return;
+        timeline.fromTo(spans, {
+            y: y,
+            opacity: 0
+        }, {
+            y: 0,
+            opacity: 1,
+            duration: dur,
+            stagger: stagger,
+            ease: 'power2.out'
+        }, startTime);
+    }
+
+    function subtitleSlideUp(timeline, selector, startTime, { dur = 0.65, y = 20 } = {}) {
+        timeline.fromTo(selector, {
+            y: y,
+            opacity: 0
+        }, {
+            y: 0,
+            opacity: 1,
+            duration: dur,
+            ease: 'power2.out'
+        }, startTime);
+    }
+
+    /* --------------------------------------------------------------------------
+       4. CONSTRUCTION DE LA GRANDE TIMELINE GSAP (DURÉE STRICTE : 180.0 SECONDES)
+       -------------------------------------------------------------------------- */
+    const tl = gsap.timeline({ paused: true });
+
+    // DÉFILEMENT INFINI DES DRAPEAUX EN ARRIÈRE-PLAN (PLAN 8)
+    gsap.to('#p8FlagsTrack', {
+        xPercent: -50,
+        duration: 25,
+        ease: 'none',
+        repeat: -1
+    });
+
+    /* ==========================================================================
+       PLAN 01 (00:00 - 00:22, 22s) : L'OUVERTURE ROYALE & LE TROPHÉE OFFICIEL
+       ========================================================================== */
+    tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0.0);
+    tl.fromTo('#p1Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
+
+    titleWordsFadeUp(tl, '#p1Title', 0.4, { dur: 0.7, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p1Sub', 0.9, { dur: 0.7, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.5), null, 0.4);
+
+    // Boîte du trophée officiel
+    tl.fromTo('.trophy-image-box', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: 'power2.out' }, 1.3);
+    tl.call(() => playSfx('impact', 0.6), null, 1.4);
+    tl.call(() => playSfx('chime', 0.7), null, 1.6);
+
+    // Cartouches latéraux informatifs
+    tl.fromTo('#p1Pill1', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 2.0);
+    tl.fromTo('#p1Pill2', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 2.6);
+    tl.fromTo('#p1Pill3', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power2.out' }, 3.2);
+
+    // Sortie Plan 1
+    tl.to('#plan_1', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 21.5)
+      .set('#plan_1', { display: 'none' }, 22.0);
+
+    /* ==========================================================================
+       PLAN 02 (00:22 - 00:44, 22s) : LES TEMPLES DU TOURNOI (RABAT & TANGER)
+       ========================================================================== */
+    tl.set('#plan_2', { display: 'flex', opacity: 1 }, 22.0);
+    tl.fromTo('#p2Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 22.2);
+
+    titleWordsFadeUp(tl, '#p2Title', 22.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p2Sub', 22.8, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.4), null, 22.4);
+
+    // Carte 1 : Stade Prince Moulay Abdellah Rabat
+    tl.fromTo('#p2Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 23.4);
+    tl.call(() => playSfx('impact', 0.5), null, 23.5);
+
+    // Carte 2 : Grand Stade de Tanger Ibn-Batouta
+    tl.fromTo('#p2Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 24.2);
+    tl.call(() => playSfx('impact', 0.5), null, 24.3);
+
+    // Sortie Plan 2
+    tl.to('#plan_2', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 43.5)
+      .set('#plan_2', { display: 'none' }, 44.0);
+
+    /* ==========================================================================
+       PLAN 03 (00:44 - 01:06, 22s) : LES CHIFFRES CLÉS DU TOURNOI (3 CARTES JUMELLES)
+       ========================================================================== */
+    tl.set('#plan_3', { display: 'flex', opacity: 1 }, 44.0);
+    tl.fromTo('#p3Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 44.2);
+
+    titleWordsFadeUp(tl, '#p3Title', 44.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p3Sub', 44.8, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.5), null, 44.4);
+
+    // Ruban ondulant zébré
+    tl.fromTo('#p3Ribbon', { strokeDashoffset: 1400, opacity: 0 }, { strokeDashoffset: 0, opacity: 0.4, duration: 2.2, ease: 'power2.out' }, 44.6);
+
+    // Apparition des 3 cartes jumelles
+    tl.fromTo('#p3Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 45.4);
+    tl.fromTo('#p3Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 46.1);
+    tl.fromTo('#p3Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 46.8);
+
+    // Compteurs incrémentaux
+    const cnt1 = { val: 0 };
+    tl.to(cnt1, {
+        val: 24,
+        duration: 1.4,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('p3Num1');
+            if (el) el.innerText = Math.round(cnt1.val);
+        }
+    }, 45.6);
+    tl.call(() => playSfx('click', 0.4), null, 46.0);
+
+    const cnt2 = { val: 0 };
+    tl.to(cnt2, {
+        val: 52,
+        duration: 1.4,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const el = document.getElementById('p3Num2');
+            if (el) el.innerText = Math.round(cnt2.val);
+        }
+    }, 46.3);
+    tl.call(() => playSfx('click', 0.4), null, 46.7);
+
+    // Sortie Plan 3
+    tl.to('#plan_3', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 65.5)
+      .set('#plan_3', { display: 'none' }, 66.0);
+
+    /* ==========================================================================
+       PLAN 04 (01:06 - 01:28, 22s) : MONTÉE EN INTENSITÉ (LINE GRAPH EXACT)
+       ========================================================================== */
+    tl.set('#plan_4', { display: 'flex', opacity: 1 }, 66.0);
+    tl.fromTo('#p4Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 66.2);
+
+    titleWordsFadeUp(tl, '#p4Title', 66.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p4Sub', 66.8, { dur: 0.65, y: 20 });
+
+    tl.fromTo('.chart-card-wrapper', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 67.2);
+    tl.call(() => playSfx('impact', 0.5), null, 67.3);
+
+    // Configuration mathématique du tracé
+    const lineEl = document.getElementById('graphLine');
+    const pathTotalLen = lineEl ? lineEl.getTotalLength() : 1300;
+    if (lineEl) {
+        lineEl.style.strokeDasharray = pathTotalLen;
+        lineEl.style.strokeDashoffset = pathTotalLen;
+    }
+    const clipRect = document.getElementById('chartClipRect');
+
+    const lineProgress = { p: 0 };
+    tl.to(lineProgress, {
+        p: 1.0,
+        duration: 6.0,
+        ease: 'power1.inOut',
+        onUpdate: () => {
+            const p = lineProgress.p;
+            const currentDist = p * pathTotalLen;
+
+            if (lineEl) {
+                lineEl.style.strokeDashoffset = pathTotalLen - currentDist;
+            }
+
+            // Calcul trigonométrique exact du point traceur
+            if (lineEl) {
+                const pt = lineEl.getPointAtLength(currentDist);
+                const dot = document.getElementById('graphPoint');
+                const pulse = document.getElementById('graphPulse');
+                if (dot) {
+                    dot.setAttribute('cx', pt.x.toFixed(2));
+                    dot.setAttribute('cy', pt.y.toFixed(2));
+                }
+                if (pulse) {
+                    pulse.setAttribute('cx', pt.x.toFixed(2));
+                    pulse.setAttribute('cy', pt.y.toFixed(2));
+                }
+            }
+
+            // Révélation de la surface ombrée
+            if (clipRect) {
+                clipRect.setAttribute('width', (80 + p * (1300 - 80)).toFixed(2));
+            }
+        }
+    }, 67.8);
+
+    // Apparition synchronisée des 4 jalons temporels
+    tl.to('#mStone1', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 68.4);
+    tl.call(() => playSfx('click', 0.4), null, 68.5);
+
+    tl.to('#mStone2', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 70.0);
+    tl.call(() => playSfx('click', 0.4), null, 70.1);
+
+    tl.to('#mStone3', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 71.6);
+    tl.call(() => playSfx('click', 0.4), null, 71.7);
+
+    tl.to('#mStone4', { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(2)' }, 73.2);
+    tl.call(() => playSfx('chime', 0.7), null, 73.3);
+
+    // Sortie Plan 4
+    tl.to('#plan_4', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 87.5)
+      .set('#plan_4', { display: 'none' }, 88.0);
+
+    /* ==========================================================================
+       PLAN 05 (01:28 - 01:52, 24s) : LE DUEL DES ROIS DU TOURNOI
+       ========================================================================== */
+    tl.set('#plan_5', { display: 'flex', opacity: 1 }, 88.0);
+    tl.fromTo('#p5Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 88.2);
+
+    titleWordsFadeUp(tl, '#p5Title', 88.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p5Sub', 88.8, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.5), null, 88.4);
+
+    // Carte Brahim Díaz
+    tl.fromTo('#p5Card1', { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 89.4);
+    tl.call(() => playSfx('impact', 0.6), null, 89.5);
+
+    // Carte Sadio Mané
+    tl.fromTo('#p5Card2', { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 90.2);
+    tl.call(() => playSfx('impact', 0.6), null, 90.3);
+    tl.call(() => playSfx('chime', 0.7), null, 90.5);
+
+    // Sortie Plan 5
+    tl.to('#plan_5', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 111.5)
+      .set('#plan_5', { display: 'none' }, 112.0);
+
+    /* ==========================================================================
+       PLAN 06 (01:52 - 02:14, 22s) : LA BATAILLE POUR LE PODIUM (NIGERIA BRONZE)
+       ========================================================================== */
+    tl.set('#plan_6', { display: 'flex', opacity: 1 }, 112.0);
+    tl.fromTo('#p6Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 112.2);
+
+    titleWordsFadeUp(tl, '#p6Title', 112.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p6Sub', 112.8, { dur: 0.65, y: 20 });
+
+    tl.fromTo('#p6ScoreCard', { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }, 113.4);
+    tl.call(() => playSfx('whistle', 0.5), null, 113.5);
+
+    tl.fromTo('#p6Point1', { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 114.2);
+    tl.fromTo('#p6Point2', { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 114.8);
+    tl.call(() => playSfx('impact', 0.5), null, 114.9);
+
+    // Sortie Plan 6
+    tl.to('#plan_6', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 133.5)
+      .set('#plan_6', { display: 'none' }, 134.0);
+
+    /* ==========================================================================
+       PLAN 07 (02:14 - 02:40, 26s) : LA FINALE ÉLECTRIQUE DE RABAT (MAROC - SÉNÉGAL)
+       ========================================================================== */
+    tl.set('#plan_7', { display: 'flex', opacity: 1 }, 134.0);
+    tl.fromTo('#p7Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 134.2);
+
+    titleWordsFadeUp(tl, '#p7Title', 134.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p7Sub', 134.8, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.5), null, 134.4);
+
+    // Tableau d'affichage de la finale
+    tl.fromTo('#p7ScoreBox', { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.85, ease: 'back.out(1.5)' }, 135.4);
+    tl.call(() => playSfx('impact', 0.8), null, 135.5);
+    tl.call(() => playSfx('whistle', 0.7), null, 136.0);
+
+    // Cartouches de détails tactiques
+    tl.fromTo('#p7Info1', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 136.8);
+    tl.fromTo('#p7Info2', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 137.4);
+    tl.fromTo('#p7Info3', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 138.0);
+    tl.call(() => playSfx('chime', 0.7), null, 138.2);
+
+    // Sortie Plan 7
+    tl.to('#plan_7', { opacity: 0, y: -25, duration: 0.5, ease: 'power2.in' }, 159.5)
+      .set('#plan_7', { display: 'none' }, 160.0);
+
+    /* ==========================================================================
+       PLAN 08 (02:40 - 03:00, 20s) : ÉPILOGUE & DÉFILEMENT INFINI DES DRAPEAUX
+       ========================================================================== */
+    tl.set('#plan_8', { display: 'flex', opacity: 1 }, 160.0);
+    tl.fromTo('#p8Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 160.2);
+
+    titleWordsFadeUp(tl, '#p8Title', 160.4, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p8Sub', 160.8, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('whoosh', 0.5), null, 160.4);
+
+    tl.fromTo('#p8SloganPlate', { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.85, ease: 'power2.out' }, 161.4);
+    tl.call(() => playSfx('chime', 0.8), null, 161.6);
+
+    tl.fromTo('#p8FlagsMarquee', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 162.2);
+    tl.call(() => playSfx('impact', 0.5), null, 162.4);
+
+    // Fondu final vers 180.0s
+    tl.to('#stage', { opacity: 0.98, duration: 1.0 }, 179.0);
+
+    // Pré-chauffe GSAP déterministe
+    tl.seek(180.0).seek(0);
+
+    // Enregistrement de la timeline pour l'inspection et le scrub sans désynchronisation
+    window.tl = tl;
+    window.__timeline = {
+        duration: () => 180.0,
+        seek: (t) => {
+            tl.seek(t, false);
+        }
+    };
+
+    // Démarrage audio et timeline au clic ou chargement
+    document.addEventListener('pointerdown', () => {
+        getAudioContext();
+        if (tl.paused()) tl.play();
+    }, { once: false });
+
+    tl.play();
+    </script>
+</body>
+</html>
