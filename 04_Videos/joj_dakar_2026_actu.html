@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="fr" data-format="16x9">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOJ Dakar 2026 : Revue d'Actu Historique (52s)</title>
+    <!-- Polices officielles de prestige : Plus Jakarta Sans (Corps UI & Chiffres), Outfit (Titres Majeurs), Space Grotesk (Labels Données) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=Source+Serif+4:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           RESET & CANVAS 16:9 RIGOREUX (STUDIO D'ANIMATION PRO)
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        :root {
+            --W: 1920px;
+            --H: 1080px;
+
+            /* PALETTE LIGHT DAKAR 2026 (Règle 60/30/10) */
+            --bg-base: #f8fafc;                    /* 60% : Blanc studio soyeux */
+            --bg-card: rgba(255, 255, 255, 0.94); /* 30% : Cartes immaculées */
+            --border-card: rgba(226, 232, 240, 0.85);
+            --text-title: #0f172a;                 /* Noir ardoise profond */
+            --text-body: #475569;                  /* Gris de lecture équilibré */
+            --text-muted: #94a3b8;                 /* Métadonnées */
+
+            /* ACCENTS OLYMPIQUES & TÉRANGA (10%) */
+            --sn-green: #00853f;                   /* Vert Téranga officiel */
+            --sn-yellow: #fcd116;                  /* Jaune Or officiel */
+            --sn-red: #e31b23;                     /* Rouge Sénégal officiel */
+            --oly-blue: #0284c7;                   /* Bleu Atlantique */
+            --emerald-vibrant: #10b981;
+            --amber-vibrant: #f59e0b;
+
+            /* SYSTÈME D'OMBRE PORTEE STUDIO */
+            --shadow-subtle: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+            --shadow-card: 0 20px 35px -10px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(15, 23, 42, 0.04);
+            --shadow-float: 0 30px 60px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05);
+            --shadow-glow-green: 0 12px 30px -5px rgba(16, 185, 129, 0.25);
+            --shadow-glow-gold: 0 12px 30px -5px rgba(245, 158, 11, 0.25);
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #0b0f19;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-title);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* CADRE MAÎTRE 16:9 FIXE — AUCUN TEXTE OU OVERLAY DANS LES 4 COINS */
+        #stage {
+            position: relative;
+            width: var(--W);
+            height: var(--H);
+            background: var(--bg-base);
+            overflow: hidden;
+            box-shadow: 0 0 120px rgba(0, 0, 0, 0.85);
+            transform-origin: center center;
+        }
+
+        /* FOND NÉON VIBRANT EN MOUVEMENT CONTINU (OPACITÉ AUGMENTÉE) */
+        .ambient-gradient-backdrop {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+            background: #ffffff;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        /* NÉON VERT TÉRANGA */
+        .orb-1 {
+            width: 850px;
+            height: 850px;
+            left: -100px;
+            top: -100px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.72) 0%, rgba(5, 150, 105, 0.45) 50%, transparent 75%);
+            opacity: 0.62;
+        }
+
+        /* NÉON JAUNE OR SOLAIRE */
+        .orb-2 {
+            width: 950px;
+            height: 950px;
+            right: -120px;
+            bottom: -120px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.68) 0%, rgba(217, 119, 6, 0.4) 50%, transparent 75%);
+            opacity: 0.58;
+        }
+
+        /* NÉON CYAN / BLEU OCÉAN ATLANTIQUE */
+        .orb-3 {
+            width: 800px;
+            height: 800px;
+            left: 35%;
+            top: 15%;
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.65) 0%, rgba(14, 165, 233, 0.38) 50%, transparent 75%);
+            opacity: 0.55;
+        }
+
+        /* NÉON ROUGE ÉNERGIE */
+        .orb-4 {
+            width: 700px;
+            height: 700px;
+            right: 25%;
+            top: -80px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.55) 0%, rgba(220, 38, 38, 0.3) 50%, transparent 75%);
+            opacity: 0.48;
+        }
+
+        /* GRILLE DISCRÈTE STUDIO */
+        .grid-texture {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background-size: 54px 54px;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.028) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.028) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        /* SCÈNES DU FILM (SCÈNES TOTALEMENT ISOLÉES) */
+        .scene {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 110px;
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           TYPOGRAPHIE & MOT-PAR-MOT RESPECTANT STRICTEMENT LA LIGNE DE BASE
+           ========================================================================== */
+        .w-wrap {
+            display: inline-block;
+            overflow: visible;
+            margin-right: 0.28em;
+            vertical-align: baseline;
+        }
+
+        .w-wrap:last-child {
+            margin-right: 0;
+        }
+
+        .w-inner {
+            display: inline-block;
+            will-change: transform, opacity;
+            vertical-align: baseline;
+        }
+
+        /* BADGES STUDIO */
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 22px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-subtle);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #0f172a;
+            margin-bottom: 22px;
+            backdrop-filter: blur(8px);
+        }
+
+        .pill-badge .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--sn-green);
+            box-shadow: 0 0 10px var(--sn-green);
+        }
+
+        .pill-badge.live-pulse .dot {
+            background-color: var(--sn-red);
+            box-shadow: 0 0 12px var(--sn-red);
+            animation: pulseDot 1.4s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.6; }
+        }
+
+        .main-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.12;
+            letter-spacing: -1.5px;
+            color: var(--text-title);
+            margin-bottom: 18px;
+            max-width: 1480px;
+        }
+
+        .main-subtitle {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 25px;
+            font-weight: 500;
+            line-height: 1.45;
+            color: var(--text-body);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .editorial-accent {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+            font-weight: 700;
+            color: var(--sn-green);
+        }
+
+        /* ==========================================================================
+           COMPOSANTS UI : CARTES STUDIO HARMONISÉES
+           ========================================================================== */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 28px;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(14px);
+            transition: border-color 0.3s ease;
+        }
+
+        /* SCÈNE 2 : 3 CARTES RIGOUREUSEMENT CENTRÉES */
+        .cards-row-centered {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 36px;
+            width: 100%;
+            max-width: 1460px;
+            margin-top: 44px;
+        }
+
+        .stat-card-centered {
+            flex: 1;
+            max-width: 450px;
+            padding: 44px 34px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-centered::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+
+        .card-green::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .card-gold::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .card-red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+        .stat-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            color: var(--text-title);
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-title);
+            margin-bottom: 8px;
+        }
+
+        .stat-sub {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* SCÈNE 3 : LES 3 PÔLES D'EXCEPTION (DA 2D HOMOGÈNE) */
+        .venues-grid {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 32px;
+            width: 100%;
+            max-width: 1520px;
+            margin-top: 40px;
+        }
+
+        .venue-card {
+            flex: 1;
+            max-width: 480px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            text-align: left;
+        }
+
+        .venue-img-wrap {
+            width: 100%;
+            height: 230px;
+            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .venue-img-wrap img {
+            width: 95%;
+            height: 95%;
+            object-fit: contain;
+        }
+
+        .venue-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .venue-loc-tag {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: var(--text-body);
+        }
+
+        .venue-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-title);
+            margin-bottom: 6px;
+        }
+
+        .venue-desc {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-body);
+            line-height: 1.45;
+        }
+
+        /* SCÈNE 4 : FRAME VIDÉO B-ROLL SANS CONTRÔLES INTERNES */
+        .video-showcase-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            width: 100%;
+            max-width: 1480px;
+            margin-top: 36px;
+        }
+
+        .video-mockup-frame {
+            position: relative;
+            width: 820px;
+            height: 462px; /* Ratio 16:9 strict */
+            border-radius: 24px;
+            background: #0f172a;
+            border: 3px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        /* ÉLÉMENT VIDÉO STRICTEMENT SYNCHRONISÉ - AUCUN CONTRÔLE INTERNE */
+        #brollVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .video-corner-badge {
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            z-index: 5;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .video-corner-badge .red-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulseDot 1.2s infinite;
+        }
+
+        .video-info-side {
+            flex: 1;
+            max-width: 540px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .video-side-card {
+            padding: 28px;
+            border-radius: 22px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+        }
+
+        .video-side-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--sn-green);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        /* SCÈNE 5 : DONUT CHART CONTINU MATHEMATIQUE SANS SAUTS */
+        .donut-showcase-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            width: 100%;
+            max-width: 1440px;
+            margin-top: 36px;
+        }
+
+        .donut-visual-wrap {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .donut-center-info {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .donut-center-pct {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 80px;
+            font-weight: 800;
+            color: var(--text-title);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .donut-center-label {
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--sn-green);
+            margin-top: 6px;
+        }
+
+        .donut-details-list {
+            flex: 1;
+            max-width: 620px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            text-align: left;
+        }
+
+        .donut-item-card {
+            padding: 20px 26px;
+            border-radius: 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .donut-item-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        /* SCÈNE 6 : CLIMAX & SLOGAN BILINGUE */
+        .hero-emblem-wrap {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 24px auto;
+            filter: drop-shadow(0 15px 30px rgba(16, 185, 129, 0.25));
+        }
+
+        .hero-emblem-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slogan-box {
+            background: #ffffff;
+            border: 2px solid rgba(16, 185, 129, 0.35);
+            border-radius: 28px;
+            padding: 38px 56px;
+            box-shadow: var(--shadow-float);
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .slogan-wolof {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--sn-green);
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+
+        .slogan-fr {
+            font-family: 'Outfit', sans-serif;
+            font-size: 50px;
+            font-weight: 900;
+            color: var(--text-title);
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .nations-flag-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 26px;
+        }
+
+        .nations-flag-strip img {
+            width: 44px;
+            height: 30px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            object-fit: cover;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CADRE MAÎTRE 16:9 STRICT FIXE (1920x1080) -->
+    <div id="stage">
+
+        <!-- COUCHE 1 : FOND NÉON VIBRANT EN MOUVEMENT FLUIDE (OPACITÉ VISIBLE) -->
+        <div class="ambient-gradient-backdrop">
+            <div id="orb1" class="gradient-orb orb-1"></div>
+            <div id="orb2" class="gradient-orb orb-2"></div>
+            <div id="orb3" class="gradient-orb orb-3"></div>
+            <div id="orb4" class="gradient-orb orb-4"></div>
+        </div>
+
+        <!-- COUCHE 2 : GRILLE STUDIO -->
+        <div class="grid-texture"></div>
+
+        <!-- ======================================================================
+             PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — 130 ANS D'ATTENTE OLYMPIQUE
+             Titre monopoliche animé mot par mot avec fondu vers le haut
+             ====================================================================== -->
+        <section id="plan_1" class="scene">
+            <div id="p1Badge" class="pill-badge">
+                <span class="dot"></span> HISTORIQUE • PREMIÈRE MONDIALE
+            </div>
+
+            <!-- Stylized Dakar 2026 Logo Flame -->
+            <div id="p1FlameWrap" style="width: 140px; height: 140px; margin-bottom: 20px;">
+                <img src="../01_Assets/Logos/dakar2026_logo.svg" alt="JOJ Dakar 2026" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+
+            <!-- Titre Monopoliche : mot par mot fondu vers le haut -->
+            <h1 id="p1Title" class="main-title">130 ANS D’ATTENTE OLYMPIQUE</h1>
+
+            <!-- Sous-titre : slide vers le haut standard -->
+            <p id="p1Sub" class="main-subtitle">L’Afrique accueille pour la première fois de l’histoire les Jeux Olympiques.</p>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 02 (00:04 - 00:12, 8s) : LES CHIFFRES CLÉS (3 CARTES CENTRÉES)
+             3 cartes de tailles rigoureusement égales, parfaitement centrées
+             ====================================================================== -->
+        <section id="plan_2" class="scene">
+            <div id="p2Badge" class="pill-badge">
+                <span class="dot"></span> REVUE D'ACTU • DAKAR 2026
+            </div>
+
+            <!-- Titre Monopoliche -->
+            <h2 id="p2Title" class="main-title">LES CHIFFRES D'UN RECORD MONDIAL</h2>
+            <p id="p2Sub" class="main-subtitle">Une jeunesse planétaire réunie sous le signe de la fraternité et de l’excellence.</p>
+
+            <!-- 3 CARTES STRICTEMENT CENTRÉES -->
+            <div class="cards-row-centered">
+                <!-- Card 1 : 206 CNO -->
+                <div id="p2Card1" class="glass-card stat-card-centered card-green">
+                    <div class="stat-icon-wrap">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <div id="p2Num1" class="stat-number">206</div>
+                    <div class="stat-label">Comités Nationaux</div>
+                    <div class="stat-sub">Tous les continents présents dans la capitale de la Téranga.</div>
+                </div>
+
+                <!-- Card 2 : 2 700 Athlètes -->
+                <div id="p2Card2" class="glass-card stat-card-centered card-gold">
+                    <div class="stat-icon-wrap">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div id="p2Num2" class="stat-number">2 700</div>
+                    <div class="stat-label">Athlètes (14-17 ans)</div>
+                    <div class="stat-sub">L'élite de la nouvelle génération sportive mondiale.</div>
+                </div>
+
+                <!-- Card 3 : 50/50 Parité Absolue -->
+                <div id="p2Card3" class="glass-card stat-card-centered card-red">
+                    <div class="stat-icon-wrap">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="9" x2="19" y2="9"/>
+                            <line x1="5" y1="15" x2="19" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="stat-number">50 / 50</div>
+                    <div class="stat-label">Parité Absolue</div>
+                    <div class="stat-sub">Égalité stricte féminine / masculine, une première historique.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES D'EXCEPTION (DA 2D HOMOGÈNE)
+             3 illustrations architecturales coordonnées : Stade Wade, Saly, Iba Mar Diop
+             ====================================================================== -->
+        <section id="plan_3" class="scene">
+            <div id="p3Badge" class="pill-badge">
+                <span class="dot"></span> INFRASTRUCTURES OLYMPIQUES
+            </div>
+
+            <!-- Titre Monopoliche -->
+            <h2 id="p3Title" class="main-title">3 PÔLES D'EXCEPTION RÉUNIS</h2>
+            <p id="p3Sub" class="main-subtitle">Une synergie architecturale entre la modernité de Diamniadio, l'océan de Saly et l'histoire de Dakar.</p>
+
+            <div class="venues-grid">
+                <!-- Pôle 1 : Diamniadio -->
+                <div id="p3Card1" class="venue-card">
+                    <div class="venue-img-wrap">
+                        <img src="../01_Assets/Illustrations/stade_abdoulaye_wade.svg" alt="Stade Abdoulaye Wade Diamniadio">
+                    </div>
+                    <div class="venue-badge-row">
+                        <span class="venue-loc-tag">PÔLE DIAMNIADIO</span>
+                        <span style="font-weight: 700; color: #10b981; font-size: 14px;">50 000 places</span>
+                    </div>
+                    <div class="venue-title">Stade Abdoulaye Wade</div>
+                    <div class="venue-desc">Cœur battant des cérémonies et des compétitions reines d'athlétisme et de football.</div>
+                </div>
+
+                <!-- Pôle 2 : Saly Nautical -->
+                <div id="p3Card2" class="venue-card">
+                    <div class="venue-img-wrap">
+                        <img src="../01_Assets/Illustrations/plage_saly_nautique.svg" alt="Pôle Côtier de Saly">
+                    </div>
+                    <div class="venue-badge-row">
+                        <span class="venue-loc-tag">PÔLE SALY PORTUDAL</span>
+                        <span style="font-weight: 700; color: #0284c7; font-size: 14px;">Océan Atlantique</span>
+                    </div>
+                    <div class="venue-title">Centre Nautique & Plage</div>
+                    <div class="venue-desc">Aviron de mer, voile, surf et lutte sénégalaise traditionnelle sur le sable fin.</div>
+                </div>
+
+                <!-- Pôle 3 : Dakar Centre -->
+                <div id="p3Card3" class="venue-card">
+                    <div class="venue-img-wrap">
+                        <img src="../01_Assets/Illustrations/stade_iba_mar_diop.svg" alt="Stade Iba Mar Diop Dakar">
+                    </div>
+                    <div class="venue-badge-row">
+                        <span class="venue-loc-tag">PÔLE DAKAR VILLE</span>
+                        <span style="font-weight: 700; color: #ef4444; font-size: 14px;">Médina & Corniche</span>
+                    </div>
+                    <div class="venue-title">Stade Iba Mar Diop</div>
+                    <div class="venue-desc">Totalement modernisé au cœur de la capitale, berceau de l'héritage sportif populaire.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 04 (00:23 - 00:35, 12s) : AU CŒUR DE L'ACTION (B-ROLL VIDÉO SANS PLAYER)
+             Mockup épuré, vidéo synchronisée rigoureusement sans boutons internes
+             ====================================================================== -->
+        <section id="plan_4" class="scene">
+            <div id="p4Badge" class="pill-badge live-pulse">
+                <span class="dot"></span> EN DIRECT • DAKAR 2026
+            </div>
+
+            <h2 id="p4Title" class="main-title">LA COMPÉTITION EST LANCÉE</h2>
+            <p id="p4Sub" class="main-subtitle">Une ferveur populaire immense et 35 disciplines disputées à haute intensité.</p>
+
+            <div class="video-showcase-container">
+                <!-- FRAME VIDÉO B-ROLL (STRICTEMENT SANS CONTRÔLES) -->
+                <div id="p4VideoFrame" class="video-mockup-frame">
+                    <div class="video-corner-badge">
+                        <span class="red-dot"></span> LIVE BROADCAST
+                    </div>
+                    <video id="brollVideo" src="../01_Assets/Videos/dakar2026_clip.mp4" muted playsinline preload="auto"></video>
+                </div>
+
+                <!-- CARTOUCHES INFORMATIFS LATÉRAUX -->
+                <div id="p4Side" class="video-info-side">
+                    <div class="video-side-card">
+                        <div class="video-side-num">35 Sports</div>
+                        <div style="font-size: 19px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Au Programme Olympique</div>
+                        <div style="font-size: 15px; color: #64748b; line-height: 1.4;">25 sports olympiques majeurs et 10 sports d'engagement et de démonstration culturelle.</div>
+                    </div>
+
+                    <div class="video-side-card">
+                        <div class="video-side-num" style="color: #f59e0b;">50 000+</div>
+                        <div style="font-size: 19px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Spectateurs en Arène</div>
+                        <div style="font-size: 15px; color: #64748b; line-height: 1.4;">Une ambiance électrique célébrant l'hospitalité légendaire du peuple sénégalais.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 05 (00:35 - 00:44, 9s) : HÉRITAGE DURABLE & TÉRANGA (DONUT 2D SANS SAUT)
+             Suivi trigonométrique continu 60fps du point traceur
+             ====================================================================== -->
+        <section id="plan_5" class="scene">
+            <div id="p5Badge" class="pill-badge">
+                <span class="dot"></span> HÉRITAGE & ÉCOLOGIE
+            </div>
+
+            <h2 id="p5Title" class="main-title">UN MODÈLE DURABLE POUR L'AFRIQUE</h2>
+            <p id="p5Sub" class="main-subtitle">Des investissements pensés pour servir la jeunesse pour les cinquante prochaines années.</p>
+
+            <div class="donut-showcase-container">
+                <!-- RADIAL GAUGE 2D CALCULÉ MATHÉMATIQUEMENT -->
+                <div id="p5GaugeCard" class="glass-card" style="padding: 30px; border-radius: 28px;">
+                    <div class="donut-visual-wrap">
+                        <svg class="donut-svg" viewBox="0 0 360 360">
+                            <!-- Track d'arrière-plan -->
+                            <circle cx="180" cy="180" r="140" fill="none" stroke="#e2e8f0" stroke-width="22" />
+                            <!-- Arc animé en vert Téranga -->
+                            <circle id="p5Donut" cx="180" cy="180" r="140" fill="none" stroke="url(#donutGrad)" stroke-width="22" stroke-linecap="round" stroke-dasharray="879.64" stroke-dashoffset="879.64" />
+                            <!-- Point traceur mathématique sans saut -->
+                            <circle id="p5Dot" cx="180" cy="40" r="14" fill="#ffffff" stroke="#10b981" stroke-width="5" />
+                            
+                            <defs>
+                                <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981" />
+                                    <stop offset="100%" stop-color="#0284c7" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+
+                        <!-- Indicateur central -->
+                        <div class="donut-center-info">
+                            <div id="p5PctText" class="donut-center-pct">0%</div>
+                            <div class="donut-center-label">Pérennité Garantie</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 BLOCS DE VALIDATION HÉRITAGE -->
+                <div class="donut-details-list">
+                    <div id="p5Item1" class="donut-item-card">
+                        <div class="donut-item-icon">🌱</div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 20px; color: #0f172a;">100% Sites Rénovés ou Éco-Conçus</div>
+                            <div style="font-size: 15px; color: #64748b;">Aucun éléphant blanc : chaque infrastructure a une affectation communautaire post-jeux.</div>
+                        </div>
+                    </div>
+
+                    <div id="p5Item2" class="donut-item-card">
+                        <div class="donut-item-icon" style="background: #eff6ff; color: #2563eb;">🚆</div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 20px; color: #0f172a;">Mobilité Propre (TER & Bus Électriques)</div>
+                            <div style="font-size: 15px; color: #64748b;">Liaison rapide et décarbonée entre Dakar Centre, l'Aéroport AIBD et Diamniadio.</div>
+                        </div>
+                    </div>
+
+                    <div id="p5Item3" class="donut-item-card">
+                        <div class="donut-item-icon" style="background: #fffbeb; color: #d97706;">🎓</div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 20px; color: #0f172a;">Formation de 15 000 Bénévoles Locaux</div>
+                            <div style="font-size: 15px; color: #64748b;">Compétences durables transmises en gestion d'événements, logistique et secourisme.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PLAN 06 (00:44 - 00:52, 8s) : CLIMAX & SLOGAN OFFICIEL BILINGUE
+             Emblème officiel Dakar 2026 + Devise officielle Wolof & Français
+             ====================================================================== -->
+        <section id="plan_6" class="scene">
+            <div id="p6Badge" class="pill-badge">
+                <span class="dot"></span> DEVISE OFFICIELLE • DAKAR 2026
+            </div>
+
+            <!-- Logo officiel Dakar 2026 -->
+            <div id="p6Emblem" class="hero-emblem-wrap">
+                <img src="../01_Assets/Logos/dakar2026_logo.svg" alt="Dakar 2026 Flame and Rings">
+            </div>
+
+            <!-- Boîte de Slogan Officiel Bilingue -->
+            <div id="p6SloganCard" class="slogan-box">
+                <!-- Wolof officiel -->
+                <div id="p6Wolof" class="slogan-wolof">« Afrig Dalal, Ndakaaru Jëmël »</div>
+                <!-- Français officiel : Titre Multipolice en slide bloc -->
+                <div id="p6French" class="slogan-fr">« L’Afrique accueille, Dakar célèbre »</div>
+            </div>
+
+            <!-- Bandeau de drapeaux des participants -->
+            <div id="p6Flags" class="nations-flag-strip">
+                <img src="../01_Assets/Flags/senegal.svg" alt="Sénégal" title="Sénégal">
+                <img src="../01_Assets/Flags/kenya.svg" alt="Kenya" title="Kenya">
+                <img src="../01_Assets/Flags/fr.svg" alt="France" title="France">
+                <img src="../01_Assets/Flags/us.svg" alt="USA" title="USA">
+                <img src="../01_Assets/Flags/jp.svg" alt="Japon" title="Japon">
+                <img src="../01_Assets/Flags/de.svg" alt="Allemagne" title="Allemagne">
+                <img src="../01_Assets/Flags/ca.svg" alt="Canada" title="Canada">
+                <img src="../01_Assets/Flags/it.svg" alt="Italie" title="Italie">
+            </div>
+        </section>
+
+    </div>
+
+    <!-- PISTES AUDIO OFFICIELLES (CHARGÉES LOCALEMENT SANS DÉPENDANCE EXTERNE) -->
+    <audio id="bgm" src="../01_Assets/Musiques/dakar_2026_joj.wav" preload="auto"></audio>
+    <audio id="sfxWhoosh" src="../01_Assets/Effets_Sonores/whip_whoosh.wav" preload="auto"></audio>
+    <audio id="sfxChime" src="../01_Assets/Effets_Sonores/brand_chime.wav" preload="auto"></audio>
+    <audio id="sfxImpact" src="../01_Assets/Effets_Sonores/sfx_impact.wav" preload="auto"></audio>
+    <audio id="sfxShimmer" src="../01_Assets/Effets_Sonores/sfx_shimmer.wav" preload="auto"></audio>
+
+    <script>
+    /* ==========================================================================
+       GESTIONNAIRE AUDIO & SFX DÉTERMINISTE
+       ========================================================================== */
+    const bgm = document.getElementById('bgm');
+    const sfx = {
+        whoosh: document.getElementById('sfxWhoosh'),
+        chime: document.getElementById('sfxChime'),
+        impact: document.getElementById('sfxImpact'),
+        shimmer: document.getElementById('sfxShimmer')
+    };
+
+    let audioCtx = null;
+    function getAudioContext() {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
+
+    function playSfx(name, vol = 0.5) {
+        try {
+            const el = sfx[name];
+            if (el) {
+                el.currentTime = 0;
+                el.volume = vol;
+                el.play().catch(() => {});
+            }
+        } catch (e) {}
+    }
+
+    /* ==========================================================================
+       REDIMENSIONNEMENT RESPONSIF DU CANVAS 1920x1080
+       ========================================================================== */
+    const stage = document.getElementById('stage');
+    function fitStage() {
+        const ww = window.innerWidth;
+        const wh = window.innerHeight;
+        const scale = Math.min(ww / 1920, wh / 1080);
+        stage.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    /* ==========================================================================
+       FONCTIONS D'ANIMATION DE TEXTE (MY_SKILLS & RÈGLES FORMELLES)
+       - Titre monopoliche : mot par mot avec fondu vers le haut (DÉFAUT TITRE)
+       - Titre multipolice / citation : slide bloc entier sans casser le layout
+       - Sous-titre : slide vers le haut ou de droite à gauche
+       ========================================================================== */
+    function splitWordsClean(el) {
+        if (typeof el === 'string') el = document.querySelector(el);
+        if (!el) return [];
+        const text = el.textContent.normalize('NFC').trim();
+        el.setAttribute('aria-label', text);
+        el.textContent = '';
+        const ws = text.split(/\s+/);
+        return ws.map((w, i) => {
+            const wrap = document.createElement('span');
+            wrap.className = 'w-wrap';
+            if (i === ws.length - 1) wrap.style.marginRight = '0';
+            const inner = document.createElement('span');
+            inner.className = 'w-inner';
+            inner.textContent = w;
+            wrap.appendChild(inner);
+            el.appendChild(wrap);
+            return inner;
+        });
+    }
+
+    // Titre monopoliche : mot par mot avec fondu vers le haut (RÈGLE PAR DÉFAUT)
+    function titleFadeWordsUp(timeline, el, t = 0, { dur = 0.65, stagger = 0.1, y = 28, ease = 'power2.out' } = {}) {
+        const words = splitWordsClean(el);
+        if (words.length > 0) {
+            timeline.fromTo(words,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, stagger: stagger, ease: ease },
+                t
+            );
+            return t + dur + (words.length - 1) * stagger;
+        }
+        return t;
+    }
+
+    // Titre multipolice : slide vers le haut en bloc (Interdiction de mot-par-mot si fontes mixtes)
+    function titleMultiFontSlide(timeline, el, t = 0, { dur = 0.75, y = 30, ease = 'power2.out' } = {}) {
+        const target = typeof el === 'string' ? document.querySelector(el) : el;
+        if (target) {
+            timeline.fromTo(target,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, ease: ease },
+                t
+            );
+            return t + dur;
+        }
+        return t;
+    }
+
+    // Sous-titre par défaut n°1 : slide vers le haut
+    function subtitleSlideUp(timeline, el, t = 0, { dur = 0.7, y = 22, ease = 'power2.out' } = {}) {
+        const target = typeof el === 'string' ? document.querySelector(el) : el;
+        if (target) {
+            timeline.fromTo(target,
+                { y: y, opacity: 0 },
+                { y: 0, opacity: 1, duration: dur, ease: ease },
+                t
+            );
+            return t + dur;
+        }
+        return t;
+    }
+
+    /* ==========================================================================
+       CONSTRUCTION DE LA TIMELINE MAÎTRESSE GSAP (52.0 SECONDES DÉTERMINISTE)
+       ========================================================================== */
+    const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: 'power3.out' }
+    });
+
+    // MOUVEMENT DYNAMIQUE CONTINU DES NÉONS EN FOND (OPACITÉ AUGMENTÉE & MOUVEMENT ORGANIQUE)
+    gsap.to('#orb1', { x: 240, y: 150, scale: 1.15, duration: 8.5, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb2', { x: -220, y: -160, scale: 1.12, duration: 10.2, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb3', { x: 180, y: -140, scale: 1.18, duration: 7.6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    gsap.to('#orb4', { x: -160, y: 120, scale: 1.14, duration: 9.0, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+    // Démarrage de la piste musicale
+    tl.call(() => {
+        if (bgm) {
+            bgm.currentTime = 0;
+            bgm.volume = 0.85;
+            bgm.play().catch(() => {});
+        }
+    }, null, 0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 01 (00:00 - 00:04, 4s) : LE HOOK — 130 ANS D'ATTENTE OLYMPIQUE
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_1', { display: 'flex', opacity: 1 }, 0);
+    tl.fromTo('#p1Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
+    tl.fromTo('#p1FlameWrap', { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.6)' }, 0.3);
+    tl.call(() => playSfx('impact', 0.6), null, 0.4);
+
+    // Titre Monopoliche : mot par mot avec fondu vers le haut
+    titleFadeWordsUp(tl, '#p1Title', 0.5, { dur: 0.65, stagger: 0.1, y: 28 });
+
+    // Sous-titre : slide vers le haut standard
+    subtitleSlideUp(tl, '#p1Sub', 1.3, { dur: 0.65, y: 20 });
+    tl.call(() => playSfx('shimmer', 0.5), null, 1.4);
+
+    // Sortie Plan 1
+    tl.to('#plan_1', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 3.6)
+      .set('#plan_1', { display: 'none' }, 4.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 02 (00:04 - 00:12, 8s) : LES 3 CARTES RECORD CENTRÉES
+       Entrée UNE À UNE en simple fondu vers le haut
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_2', { display: 'flex', opacity: 1 }, 4.0);
+    tl.fromTo('#p2Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 4.1);
+
+    // Titre Monopoliche : mot par mot avec fondu vers le haut
+    titleFadeWordsUp(tl, '#p2Title', 4.2, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p2Sub', 4.6, { dur: 0.65, y: 20 });
+
+    // ENTRÉE DES 3 CARTES UNE À UNE À LA SUITE EN SIMPLE FONDU VERS LE HAUT
+    // Card 1 : 206 CNO
+    tl.fromTo('#p2Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 5.0);
+    tl.call(() => playSfx('whoosh', 0.4), null, 5.0);
+
+    // Card 2 : 2 700 Athlètes
+    tl.fromTo('#p2Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 5.8);
+    tl.call(() => playSfx('whoosh', 0.4), null, 5.8);
+
+    // Card 3 : 50/50 Parité
+    tl.fromTo('#p2Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 6.6);
+    tl.call(() => playSfx('chime', 0.6), null, 6.6);
+
+    // Sortie Plan 2
+    tl.to('#plan_2', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 11.6)
+      .set('#plan_2', { display: 'none' }, 12.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 03 (00:12 - 00:23, 11s) : LES 3 PÔLES D'EXCEPTION (DA 2D HOMOGÈNE)
+       Entrée UNE À UNE en simple fondu vers le haut
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_3', { display: 'flex', opacity: 1 }, 12.0);
+    tl.fromTo('#p3Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 12.1);
+
+    // Titre Monopoliche
+    titleFadeWordsUp(tl, '#p3Title', 12.2, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p3Sub', 12.6, { dur: 0.65, y: 20 });
+
+    // Cartes des Pôles avec dessins 2D harmonisés, animées UNE À UNE
+    tl.fromTo('#p3Card1', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 13.2);
+    tl.call(() => playSfx('whoosh', 0.4), null, 13.2);
+
+    tl.fromTo('#p3Card2', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 14.2);
+    tl.call(() => playSfx('whoosh', 0.4), null, 14.2);
+
+    tl.fromTo('#p3Card3', { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' }, 15.2);
+    tl.call(() => playSfx('shimmer', 0.6), null, 15.2);
+
+    // Sortie Plan 3
+    tl.to('#plan_3', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 22.6)
+      .set('#plan_3', { display: 'none' }, 23.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 04 (00:23 - 00:35, 12s) : B-ROLL VIDÉO SYNCHRONISÉ SANS BOUTONS INTERNES
+       RÈGLE STRICTE : La vidéo interne ne doit pas démarrer seule.
+       Pilotage déterministe via tl.call() et window.__timeline.seek()
+       -------------------------------------------------------------------------- */
+    const brollEl = document.getElementById('brollVideo');
+
+    tl.set('#plan_4', { display: 'flex', opacity: 1 }, 23.0);
+    tl.fromTo('#p4Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 23.1);
+
+    // Titre Monopoliche
+    titleFadeWordsUp(tl, '#p4Title', 23.2, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p4Sub', 23.6, { dur: 0.65, y: 20 });
+
+    // Révélation du mockup vidéo et des cartouches latéraux
+    tl.fromTo('#p4VideoFrame', { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }, 23.8);
+    tl.fromTo('#p4Side', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 24.2);
+
+    // PILOTAGE DE LA LECTURE VIDÉO : DÉMARRAGE À 23.0s, ARRÊT À 35.0s
+    tl.call(() => {
+        if (brollEl) {
+            brollEl.currentTime = 0;
+            brollEl.play().catch(() => {});
+        }
+    }, null, 23.0);
+
+    tl.call(() => {
+        if (brollEl) {
+            brollEl.pause();
+        }
+    }, null, 35.0);
+
+    // Sortie Plan 4
+    tl.to('#plan_4', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 34.6)
+      .set('#plan_4', { display: 'none' }, 35.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 05 (00:35 - 00:44, 9s) : HÉRITAGE DURABLE (DONUT 2D CONTINU SANS SAUT)
+       Calcul trigonométrique sub-pixel sans saut
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_5', { display: 'flex', opacity: 1 }, 35.0);
+    tl.fromTo('#p5Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 35.1);
+
+    titleFadeWordsUp(tl, '#p5Title', 35.2, { dur: 0.65, stagger: 0.1, y: 28 });
+    subtitleSlideUp(tl, '#p5Sub', 35.6, { dur: 0.65, y: 20 });
+
+    tl.fromTo('#p5GaugeCard', { x: -35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 35.8);
+
+    // Entrée séquentielle des 3 items d'héritage
+    tl.fromTo('#p5Item1', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 36.2);
+    tl.fromTo('#p5Item2', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 37.0);
+    tl.fromTo('#p5Item3', { x: 35, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 37.8);
+
+    // ANIMATION MATHÉMATIQUE STRICTEMENT CONTINUE DU DONUT 2D (CIRCUMFÉRENCE = 879.64)
+    const donutCircumference = 879.64;
+    const donutProgress = { val: 0 };
+
+    tl.to(donutProgress, {
+        val: 1.0,
+        duration: 3.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+            const p = donutProgress.val;
+            // 1. Déroulement propre de l'arc de cercle
+            const donutEl = document.getElementById('p5Donut');
+            if (donutEl) {
+                donutEl.style.strokeDashoffset = (donutCircumference * (1 - p)).toFixed(2);
+            }
+            // 2. Chiffre textuel synchronisé
+            const pctText = document.getElementById('p5PctText');
+            if (pctText) {
+                pctText.textContent = Math.round(p * 100) + '%';
+            }
+            // 3. Position trigonométrique absolue continue du point traceur (cx=180, cy=180, r=140)
+            const angle = -Math.PI / 2 + (p * 2 * Math.PI);
+            const dotX = 180 + 140 * Math.cos(angle);
+            const dotY = 180 + 140 * Math.sin(angle);
+            const dotEl = document.getElementById('p5Dot');
+            if (dotEl) {
+                dotEl.setAttribute('cx', dotX.toFixed(2));
+                dotEl.setAttribute('cy', dotY.toFixed(2));
+            }
+        }
+    }, 36.0);
+
+    tl.call(() => playSfx('impact', 0.5), null, 36.4);
+
+    // Sortie Plan 5
+    tl.to('#plan_5', { opacity: 0, y: -25, duration: 0.4, ease: 'power2.in' }, 43.6)
+      .set('#plan_5', { display: 'none' }, 44.0);
+
+    /* --------------------------------------------------------------------------
+       PLAN 06 (00:44 - 00:52, 8s) : CLIMAX & DEVISE OFFICIELLE BILINGUE
+       Slogan Wolof & Français + Emblème & drapeaux
+       -------------------------------------------------------------------------- */
+    tl.set('#plan_6', { display: 'flex', opacity: 1 }, 44.0);
+    tl.fromTo('#p6Badge', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 44.1);
+
+    // Emblème officiel Dakar 2026 avec impact
+    tl.fromTo('#p6Emblem', { scale: 0.75, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.5)' }, 44.3);
+    tl.call(() => playSfx('impact', 0.8), null, 44.4);
+
+    // Boîte du slogan : simple fondu vers le haut
+    tl.fromTo('#p6SloganCard', { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 44.8);
+
+    // Slogan Wolof (italique)
+    tl.fromTo('#p6Wolof', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 45.1);
+
+    // Slogan Français : Titre Multipolice en slide bloc
+    titleMultiFontSlide(tl, '#p6French', 45.4, { dur: 0.75, y: 20 });
+    tl.call(() => playSfx('chime', 0.8), null, 45.5);
+
+    // Bandeau des drapeaux des nations
+    tl.fromTo('#p6Flags', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 46.2);
+
+    // Fondu final délicat vers 52.0s
+    tl.to('#stage', { opacity: 0.96, duration: 1.0 }, 51.0);
+
+    // PRÉ-CHAUFFE GSAP DÉTERMINISTE (Évite tout décalage sur seek arrière)
+    tl.seek(52.0).seek(0);
+
+    // ENREGISTREMENT DE LA TIMELINE POUR L'INSPECTION ET LE SCRUB DÉTERMINISTE
+    window.tl = tl;
+    window.__timeline = {
+        duration: () => 52.0,
+        seek: (t) => {
+            tl.seek(t, false);
+            // Synchronisation de la musique
+            if (bgm && Math.abs(bgm.currentTime - t) > 0.3) {
+                bgm.currentTime = t;
+            }
+            // Synchronisation déterministe de la vidéo B-roll sans autoplay sauvage
+            if (brollEl) {
+                if (t >= 23.0 && t <= 35.0) {
+                    const videoDuration = brollEl.duration || 8.0;
+                    brollEl.currentTime = (t - 23.0) % videoDuration;
+                    if (tl.isActive() && !tl.paused()) {
+                        brollEl.play().catch(() => {});
+                    } else {
+                        brollEl.pause();
+                    }
+                } else {
+                    brollEl.pause();
+                    brollEl.currentTime = 0;
+                }
+            }
+        }
+    };
+
+    // Auto-démarrage au clic utilisateur ou lors du chargement de la composition
+    document.addEventListener('click', () => {
+        getAudioContext();
+        if (tl.paused()) tl.play();
+    }, { once: true });
+
+    // Démarrage par défaut
+    tl.play();
+    </script>
+</body>
+</html>
