@@ -198,5 +198,7 @@ function fitText(el,maxW,maxH,{min=24,max=400}={}){
 - [ ] Polices locales chargées, `fitText` appliqué aux titres variables.
 - [ ] Aucun layout identique 3 fois de suite.
 - [ ] Grilles de cartes (3 cards) rigoureusement centrées (`margin: 0 auto; justify-content: center;`).
+- [ ] Scènes symétriques ou audio/voix : centrage horizontal absolu de TOUS les éléments (titre, badge, sous-titres avec `text-align: center; margin: 0 auto; align-self: center;`).
+- [ ] Gradient text mot par mot : styles `-webkit-background-clip: text` appliqués aussi sur les inners (`.gradient, .gradient .w-inner`) pour éviter le texte transparent.
 - [ ] Pas de slide/fondu répétitif : transitions alternées (3D tilt, masked wipe, blur snap, radial wipe).
 - [ ] Tracés de courbes avec curseur synchronisé sub-pixel via `path.getPointAtLength()` (zéro saut de point).

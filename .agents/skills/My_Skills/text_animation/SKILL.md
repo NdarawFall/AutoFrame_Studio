@@ -359,6 +359,8 @@ Majuscules : réserver aux shorts. Ponctuation : retirer virgules/points finaux 
 | Espaces fines bizarres dans les nombres | `Intl` fr-FR utilise U+202F | `.replace(/\u202f/g,'\u00a0')` |
 | Texte qui déborde en 9:16 | longueur fixe | `fitText` (voir `design_composition`) |
 | Émojis différents entre aperçu et rendu | police emoji système | Éviter dans les titres animés ou utiliser des SVG |
+| Texte dégradé rendu invisible lors du split | Héritage de `-webkit-text-fill-color: transparent` sans clip sur les enfants | Cibler les inners en CSS : `.gradient, .gradient .w-inner { background: ...; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }` |
+| Animation « slide/fade de présentation » | Animation fade/slide de bloc entier | Proscrit : animer mot par mot (`maskReveal`, `titleFadeWordsUp`, `w-wrap-mask`) avec cadence et anticipation |
 
 ## 7. Checklist avant de rendre
 - [ ] Aucune API temps réel (`setTimeout`, `random`, `Date`).

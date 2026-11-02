@@ -244,3 +244,4 @@ function cameraOrbit3D(tl, cardSelector, startTime, duration, angle = 18) {
 - [ ] Les mouvements de caméra respectent-ils les zones de sécurité (aucun élément critique rogné) ?
 - [ ] La caméra s'immobilise-t-elle ou ralentit-elle lors des moments de lecture dense ?
 - [ ] Le retour arrière (`seek(t)`) dans le studio reproduit-il fidèlement la position exacte de la caméra ?
+

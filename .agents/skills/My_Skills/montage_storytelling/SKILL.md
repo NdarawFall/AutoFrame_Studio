@@ -178,6 +178,9 @@ Champs `role` : `hook`, `context`, `escalation`, `proof`, `data`, `place`, `list
 - Manipulation JS manuelle de la vidéo en mode Studio (`video.play()`, `currentTime`) → conflit destructeur avec la boucle du Studio.
 - Teaser institutionnel utilisé comme B-roll → effet diaporama d'images fixes découpées, exiger une vraie vidéo d'action continue.
 - Ajout d'étiquettes factices « LIVE BROADCAST » → AI slop strictement interdit.
+- Révélation prématurée du produit en intro (spoiler logo / « X présente Y ») → Interdiction formelle de montrer le logo ou le nom du produit dès l'Acte 1 ; poser d'abord le décor, une atmosphère mystérieuse ou une question existentielle pour faire monter la tension dramatique avant la révélation.
+- Fausse interface IA à base de « cartes marketing » → Dans une UI de chat (ChatGPT, SaaS), l'IA ne répond jamais avec des cartes multicolores factices. Exiger une vraie réponse : paragraphe limpide, tableau Markdown structuré, liste à puces et curseur de streaming clignotant.
+- Barre de progression ou minuteur non sollicité → Ne jamais insérer de barre de progression (timeline line) en bas d'écran ni de timer dans les coins sauf demande explicite.
 
 ## 9. Checklist qualité avant rendu
 - [ ] Hook : image forte à 0 s, voix à 0–0.2 s, promesse avant 3 s (short) / 15 s (long).
