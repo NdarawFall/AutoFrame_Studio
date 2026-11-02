@@ -61,6 +61,22 @@ Un seul système de texte « parlé » à l'écran à la fois : si un titre appa
 - Reproduire les couleurs de marque via `brandfetch.cjs` pour toute scène qui parle d'une entreprise.
 - Contrer le soleil / les petits écrans : contraste franc, pas de gris sur gris, pas de fines polices claires.
 
+### 5.1 Règles de Contraste Absolu & Lisibilité des Logos et Cartes
+1. **Contraste Logos & Éléments Graphiques (Zéro Noir sur Sombre)** :
+   - Vérifier impérativement le `fill` et les couleurs internes de tout logo SVG ou PNG.
+   - **INTERDICTION FORMELLE** d'afficher un logo sombre/noir (ex: texte noir de NVIDIA, Apple noir, etc.) sur un fond ou une carte sombre (gris foncé, bleu nuit, noir).
+   - Si le fond de la carte est sombre, le logo doit être clair/blanc (`filter: brightness(0) invert(1)` ou SVG adapté), OU la surface sous le logo doit être un réceptacle clair/blanc à haut contraste.
+   - Si le fond de la vidéo est clair, le logo doit être sombre.
+   - Ratio de contraste minimal : 4.5:1 pour le texte courant, 7:1 pour les logos et titrages clés.
+
+2. **Taille et Impact des Logos** :
+   - Ne jamais reléguer un logo officiel dans une boîte miniature timide. Les logos doivent être **grands, affirmés et immédiatement identifiables** (largeur typique 300px–450px selon le ratio, hauteur 90px–140px).
+
+3. **Design Lisse des Cartes (Zéro Bordure Colorée Artificielle)** :
+   - Les cartes doivent être lisses, sobres et élégantes.
+   - **INTERDICTION FORMELLE** d'ajouter des liserés ou bordures en couleur vive sur un côté, en haut ou en bas (pas de bandeau néon supérieur, pas de `border-left: 4px solid var(--accent)`).
+   - Les contours de cartes doivent être neutres et discrets : un fin trait gris clair subtil (`border: 1px solid rgba(255, 255, 255, 0.1)` ou gris clair neutre).
+
 ## 6. Composition d'une scène : les 5 couches
 1. `bg` — fond (dégradé, vidéo B-roll, carte). Toujours en lent mouvement (`scale 1→1.06–1.10` sur la durée de la scène, ease `none`).
 2. `mid` — sujet / média principal (image détourée, capture web, logo, drapeau).

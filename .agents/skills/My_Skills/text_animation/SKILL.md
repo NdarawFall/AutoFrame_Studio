@@ -31,6 +31,9 @@ Easing : entrée = `expo.out` / `power3.out` (premium, net) ; impact = `back.out
 
 Cohérence : UNE animation « de base » pour tous les titres d'une vidéo + UNE animation « signature » réservée aux moments d'impact (hook, chiffre choc, chute). Jamais plus de 2 familles.
 
+> ⚠️ **RÈGLE CRITIQUE UTILISATEUR — INTERDICTION DU SIMPLE FONDU EN BLOC :**
+> Ne JAMAIS animer les titres en un simple fondu global de tout le bloc (`opacity: 0 -> 1` basique sans découpage). Les titres doivent impérativement être animés **mot par mot** (kinetic typography via `splitWordsClean` / `titleFadeWordsUp` ou cascade séquentielle). Cela apporte le dynamisme professionnel et élimine l'effet statique amateur.
+
 ## 2. Quand utiliser quoi
 
 ### 🌟 LES ANIMATIONS PAR DÉFAUT (Standards Obligatoires)
