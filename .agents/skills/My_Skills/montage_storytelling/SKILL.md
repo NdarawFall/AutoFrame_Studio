@@ -82,10 +82,20 @@ Règle d'or : **ne pas redire à l'écran ce qui est dit**. L'écran apporte ce 
 **Image fixe** : toujours animée (Ken Burns). Éviter les images génériques de banque d'images sans rapport : mieux vaut une carte, un chiffre ou un texte qu'un faux B-roll.
 **B-roll** : choisir les 2 secondes les plus fortes du clip, pas le début ; ne jamais réutiliser le même clip ; privilégier les plans avec mouvement réel dirigé.
 - **Contrat d'intégration HTML5 & Studio** :
+  * **Détection & Nettoyage de Gel au Début (freezedetect)** : Tout clip vidéo téléchargé ou sourcé doit impérativement être vérifié via `ffmpeg -i <file> -vf freezedetect=n=-60dB:d=0.5 -f null -`. Si un gel statique initial est détecté (titre fixe, freeze d'intro de 1s à 4s), il est **OBLIGATOIRE** de couper le début avec `ffmpeg -ss <T_debut_mouvement> -i <file> -c:v libx264 -preset fast -crf 18 -movflags +faststart <trimmed>` pour que le mouvement de caméra soit immédiat dès la milliseconde 0.
+  * **Maintien du Pipeline GPU (Zéro display: none)** : Ne jamais utiliser `display: none` sur les conteneurs `.scene` qui hébergent des balises `<video>`. En Chromium et Puppeteer, `display: none` détruit le cache de décodage GPU et provoque un freeze/stutter au changement de scène. Utiliser obligatoirement :
+    `display: flex; position: absolute; inset: 0; visibility: hidden; opacity: 0; pointer-events: none;`
+    et basculer `visibility: visible / hidden` via `syncSceneVisibility(t)` synchronisé avec la timeline GSAP.
   * Déclarer OBLIGATOIREMENT les attributs temporels natifs : `<video id="brollVideo" src="..." data-start="T0" data-end="T1" data-duration="DUR" muted loop playsinline preload="auto"></video>`.
   * En mode Studio (`isIframeMode === true`), le Studio pilote la vidéo à 100% de manière fluide et automatique. Le code JS de la composition a l'interdiction d'appeler `play()`, `pause()` ou de toucher à `currentTime`.
   * Bannir les teasers de promotion découpés en photos (diaporama) : n'utiliser que des prises de vue d'action réelle filmées en continu à 60 FPS.
   * Zéro étiquette factice (« LIVE BROADCAST », « DIRECT TV ») : laisser le lecteur épuré et propre.
+- **Règle de Silence & Scrubbing de la Timeline** :
+  * Si la consigne utilisateur demande « sans musique » ou « sans audio », la composition ne doit comporter AUCUNE balise `<audio>` et AUCUN déclenchement de son.
+  * Pendant le déplacement du curseur (scrub / seek) de la timeline dans le Studio, le silence absolu doit être respecté : aucun son parasite ne doit jouer pendant le glissement.
+- **Rythme Posé & Animations Déliées (Zéro Mouvement Rushé)** :
+  * Ne jamais précipiter les éléments avec des durées trop courtes (bannir les animations à 0.3s-0.4s sur du contenu documentaire, corporate ou d'actualité).
+  * Les titrages, punchlines et cartes doivent s'animer de manière majestueuse et lisible : durées de **0.9s à 1.2s** avec easing progressif (`power2.out`), stagger aéré (0.10s à 0.14s entre les mots), pour donner une sensation d'envergure et d'élégance.
 **Preuve avant opinion** : quand on avance un fait contestable, montrer la source dans les 2 s.
 Alterner les types : jamais 3 plans du même type d'affilée.
 

@@ -1063,6 +1063,168 @@
             color: #000000;
         }
 
+                /* --- CHOIX DU FOND DE BASE (BLANC, NOIR, DÉGRADÉ, COULEUR UNIE) --- */
+        .bg-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+        }
+
+        .bg-choice-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            user-select: none;
+        }
+
+        .bg-choice-card:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: var(--bg-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .bg-choice-card.selected {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 1px #ffffff, 0 8px 24px rgba(255, 255, 255, 0.12);
+        }
+
+        .bg-preview-box {
+            width: 100%;
+            height: 52px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            transition: all 0.25s ease;
+        }
+
+        .bg-preview-white {
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .bg-preview-black {
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .bg-preview-gradient {
+            background: radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .bg-preview-solid {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .bg-preview-label-dark {
+            color: #09090b;
+        }
+
+        .bg-preview-label-light {
+            color: #ffffff;
+        }
+
+        .bg-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bg-card-header-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bg-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .bg-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .bg-check-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+            transition: var(--transition-smooth);
+        }
+
+        .bg-choice-card.selected .bg-check-dot {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .gradient-presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+
+        .gradient-preset-pill {
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .gradient-preset-pill:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .gradient-preset-pill.selected {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 1px #ffffff, 0 4px 12px rgba(255, 255, 255, 0.15);
+        }
+
+        .color-swatch-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .color-swatch-dot:hover {
+            transform: scale(1.15);
+            border-color: #ffffff;
+        }
+
+
         /* --- AUDIO & SUBTITLES SELECT CARDS --- */
         .audio-choice-card {
             background: var(--bg-surface);
@@ -1591,6 +1753,129 @@
                             <span class="format-desc">Instagram Feed, Carré standard (1080 × 1080)</span>
                         </div>
                         <div class="format-check-dot">✓</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2-BIS. CHOIX DU FOND DE BASE DE LA VIDÉO -->
+        <section class="card collapsible-card" id="backgroundCardSection" style="padding: 16px 20px;">
+            <div class="collapsible-header" onclick="toggleCardSection('backgroundCardSection')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="choice-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title" style="font-size: 14px; margin: 0; font-weight: 600;">Fond de Base de la Vidéo</h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Blanc, Noir, Dégradé ou Couleur unie personnalisée</p>
+                    </div>
+                </div>
+                <div class="collapse-chevron-btn">
+                    <svg class="collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="card-collapsible-body" style="padding-top: 16px;">
+                <div class="bg-options-grid">
+                    <!-- OPTION 1 : BLANC -->
+                    <div class="bg-choice-card" id="bgCard_white" onclick="selectBackgroundType('white')">
+                        <div class="bg-preview-box bg-preview-white">
+                            <span class="bg-preview-label-dark">Aa</span>
+                        </div>
+                        <div class="bg-card-info">
+                            <div class="bg-card-header-line">
+                                <span class="bg-name">Blanc</span>
+                                <span class="bg-check-dot">✓</span>
+                            </div>
+                            <span class="bg-desc">Fond blanc lumineux (#ffffff), titrages sombres & cartes claires.</span>
+                        </div>
+                    </div>
+
+                    <!-- OPTION 2 : NOIR (DÉFAUT) -->
+                    <div class="bg-choice-card selected" id="bgCard_black" onclick="selectBackgroundType('black')">
+                        <div class="bg-preview-box bg-preview-black">
+                            <span class="bg-preview-label-light">Aa</span>
+                        </div>
+                        <div class="bg-card-info">
+                            <div class="bg-card-header-line">
+                                <span class="bg-name">Noir</span>
+                                <span class="bg-check-dot">✓</span>
+                            </div>
+                            <span class="bg-desc">Fond noir pur (#000000), contraste cinématographique & tech.</span>
+                        </div>
+                    </div>
+
+                    <!-- OPTION 3 : DÉGRADÉ -->
+                    <div class="bg-choice-card" id="bgCard_gradient" onclick="selectBackgroundType('gradient')">
+                        <div class="bg-preview-box bg-preview-gradient" id="bgPreviewGradientBox">
+                            <span class="bg-preview-label-light">Aa</span>
+                        </div>
+                        <div class="bg-card-info">
+                            <div class="bg-card-header-line">
+                                <span class="bg-name">Dégradé</span>
+                                <span class="bg-check-dot">✓</span>
+                            </div>
+                            <span class="bg-desc">Nuances subtiles et relief de profondeur immersif.</span>
+                        </div>
+                    </div>
+
+                    <!-- OPTION 4 : COULEUR UNIE -->
+                    <div class="bg-choice-card" id="bgCard_solid" onclick="selectBackgroundType('solid')">
+                        <div class="bg-preview-box bg-preview-solid" id="bgPreviewSolidBox">
+                            <span class="bg-preview-label-light" id="bgPreviewSolidLabel">Aa</span>
+                        </div>
+                        <div class="bg-card-info">
+                            <div class="bg-card-header-line">
+                                <span class="bg-name">Couleur unie</span>
+                                <span class="bg-check-dot">✓</span>
+                            </div>
+                            <span class="bg-desc">Teinte unie sur-mesure ou via pipette de couleur.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOUS-OPTIONS DÉGRADÉ -->
+                <div id="gradientSubOptions" style="display: none; margin-top: 14px; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+                    <div style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">
+                        Styles de dégradés prêts à l'emploi :
+                    </div>
+                    <div class="gradient-presets-grid">
+                        <div class="gradient-preset-pill selected" onclick="selectGradientPreset('tech_slate', this)" data-grad="radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%)" style="background: radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%);">
+                            <span>Deep Tech</span>
+                        </div>
+                        <div class="gradient-preset-pill" onclick="selectGradientPreset('midnight_blue', this)" data-grad="linear-gradient(135deg, #0b1329 0%, #020617 100%)" style="background: linear-gradient(135deg, #0b1329 0%, #020617 100%);">
+                            <span>Midnight Blue</span>
+                        </div>
+                        <div class="gradient-preset-pill" onclick="selectGradientPreset('dark_purple', this)" data-grad="radial-gradient(ellipse at 50% 30%, #1e112a 0%, #07030a 100%)" style="background: radial-gradient(ellipse at 50% 30%, #1e112a 0%, #07030a 100%);">
+                            <span>Dark Nebula</span>
+                        </div>
+                        <div class="gradient-preset-pill" onclick="selectGradientPreset('subtle_charcoal', this)" data-grad="linear-gradient(180deg, #18191c 0%, #090a0c 100%)" style="background: linear-gradient(180deg, #18191c 0%, #090a0c 100%);">
+                            <span>Charcoal Soft</span>
+                        </div>
+                        <div class="gradient-preset-pill" onclick="selectGradientPreset('light_studio', this)" data-grad="linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%)" style="background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%); color: #000;">
+                            <span>Studio Light</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOUS-OPTIONS COULEUR UNIE -->
+                <div id="solidSubOptions" style="display: none; margin-top: 14px; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+                    <div style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">
+                        Sélectionner une teinte unie :
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="color" id="solidColorPicker" value="#111827" oninput="updateSolidColor(this.value)" style="width: 44px; height: 38px; border-radius: 6px; border: 1px solid var(--border-subtle); background: transparent; cursor: pointer;">
+                            <input type="text" id="solidColorHex" value="#111827" onchange="updateSolidColor(this.value)" style="width: 95px; padding: 8px 10px; background: #000; border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                        </div>
+                        <div class="color-swatches-row" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" class="color-swatch-dot" style="background: #0f172a;" onclick="updateSolidColor('#0f172a')" title="Navy Dark"></button>
+                            <button type="button" class="color-swatch-dot" style="background: #18181b;" onclick="updateSolidColor('#18181b')" title="Zinc Sombre"></button>
+                            <button type="button" class="color-swatch-dot" style="background: #1e1b4b;" onclick="updateSolidColor('#1e1b4b')" title="Indigo Deep"></button>
+                            <button type="button" class="color-swatch-dot" style="background: #14532d;" onclick="updateSolidColor('#14532d')" title="Forest Green"></button>
+                            <button type="button" class="color-swatch-dot" style="background: #7f1d1d;" onclick="updateSolidColor('#7f1d1d')" title="Crimson"></button>
+                            <button type="button" class="color-swatch-dot" style="background: #f8fafc; border: 1px solid #cbd5e1;" onclick="updateSolidColor('#f8fafc')" title="White Warm"></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2365,6 +2650,69 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         });
 
         // Gestion du style de montage (Sans template sélectionné par défaut), format, audio et sous-titres
+                // Gestion du fond de base de la vidéo (Blanc, Noir, Dégradé, Couleur unie)
+        let currentBackgroundType = 'black';
+        let currentBackgroundColor = '#000000';
+        let currentBackgroundGradient = 'radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%)';
+
+        function selectBackgroundType(type) {
+            currentBackgroundType = type;
+            ['white', 'black', 'gradient', 'solid'].forEach(t => {
+                const card = document.getElementById(`bgCard_${t}`);
+                if (card) {
+                    if (t === type) card.classList.add('selected');
+                    else card.classList.remove('selected');
+                }
+            });
+
+            const gradSub = document.getElementById('gradientSubOptions');
+            const solidSub = document.getElementById('solidSubOptions');
+            if (gradSub) gradSub.style.display = (type === 'gradient') ? 'block' : 'none';
+            if (solidSub) solidSub.style.display = (type === 'solid') ? 'block' : 'none';
+
+            if (type === 'white') {
+                currentBackgroundColor = '#ffffff';
+            } else if (type === 'black') {
+                currentBackgroundColor = '#000000';
+            }
+        }
+
+        function selectGradientPreset(presetKey, el) {
+            document.querySelectorAll('.gradient-preset-pill').forEach(p => p.classList.remove('selected'));
+            if (el) el.classList.add('selected');
+            const gradVal = el ? el.getAttribute('data-grad') : '';
+            if (gradVal) {
+                currentBackgroundGradient = gradVal;
+                const previewBox = document.getElementById('bgPreviewGradientBox');
+                if (previewBox) previewBox.style.background = gradVal;
+            }
+        }
+
+        function updateSolidColor(val) {
+            if (!val) return;
+            currentBackgroundColor = val;
+            const picker = document.getElementById('solidColorPicker');
+            const hex = document.getElementById('solidColorHex');
+            const previewBox = document.getElementById('bgPreviewSolidBox');
+            const previewLabel = document.getElementById('bgPreviewSolidLabel');
+
+            if (picker && picker.value !== val) picker.value = val;
+            if (hex && hex.value !== val) hex.value = val.toUpperCase();
+            if (previewBox) previewBox.style.background = val;
+
+            if (previewLabel) {
+                let isLight = false;
+                if (val.startsWith('#') && val.length >= 7) {
+                    const r = parseInt(val.slice(1, 3), 16);
+                    const g = parseInt(val.slice(3, 5), 16);
+                    const b = parseInt(val.slice(5, 7), 16);
+                    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    isLight = lum > 140;
+                }
+                previewLabel.className = isLight ? 'bg-preview-label-dark' : 'bg-preview-label-light';
+            }
+        }
+
         let currentSelectedStyle = 'none';
         let currentSelectedFormat = null;
         let currentAudioOption = null;
@@ -3126,6 +3474,9 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 useTemplate,
                 template: currentSelectedStyle,
                 format,
+                backgroundType: currentBackgroundType,
+                backgroundColor: currentBackgroundColor,
+                backgroundGradient: currentBackgroundGradient,
                 audioSetup: currentAudioOption,
                 subtitles: currentSubtitlesOption,
                 subtitleType: currentSubtitlesOption ? currentSubtitleType : 'none',

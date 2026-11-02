@@ -100,14 +100,15 @@ if (!fs.existsSync(activeConfigPath)) {
 }
 
 const server = http.createServer(async (req, res) => {
+    const cleanUrl = req.url.split('?')[0];
     // Redirection racine immédiate
-    if (req.url === '/' || req.url === '') {
+    if (cleanUrl === '/' || cleanUrl === '') {
         res.writeHead(302, { 'Location': '/09_Pages/home.html' });
         return res.end();
     }
 
     // 1. API pour lister les fichiers des dossiers
-    if (req.url === '/api/files' && req.method === 'GET') {
+    if (cleanUrl === '/api/files' && req.method === 'GET') {
         const chainesDir = path.join(ROOT_DIR, '03_Chaines');
         const videosDir = path.join(ROOT_DIR, '04_Videos');
         const rendusDir = path.join(ROOT_DIR, '08_Rendus');
@@ -222,12 +223,12 @@ const server = http.createServer(async (req, res) => {
             console.error('Erreur lecture dossiers :', e);
         }
 
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify({ videos, rendus }));
     }
 
     // 1-BIS. API pour lister les templates de 06_Templates
-    if (req.url === '/api/templates' && req.method === 'GET') {
+    if (cleanUrl === '/api/templates' && req.method === 'GET') {
         const tplDir = path.join(ROOT_DIR, '06_Templates');
         let templates = [];
         try {
@@ -301,18 +302,18 @@ const server = http.createServer(async (req, res) => {
         } catch (e) {
             console.error('Erreur lecture templates :', e);
         }
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify(templates));
     }
 
     // 2. API pour obtenir l'état du rendu
-    if (req.url === '/api/render-status' && req.method === 'GET') {
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    if (cleanUrl === '/api/render-status' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify(renderState));
     }
 
     // 3. API pour lancer un rendu
-    if (req.url === '/api/render' && req.method === 'POST') {
+    if (cleanUrl === '/api/render' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -333,7 +334,7 @@ const server = http.createServer(async (req, res) => {
                 logs: [`Démarrage du rendu pour : ${videoName}`]
             };
 
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
             res.end(JSON.stringify({ message: 'Rendu démarré', video: videoName }));
 
             // Exécution asynchrone du rendu
@@ -343,7 +344,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 4. API pour annuler un rendu en cours
-    if (req.url === '/api/cancel-render' && req.method === 'POST') {
+    if (cleanUrl === '/api/cancel-render' && req.method === 'POST') {
         if (currentRenderProcess && renderState.isRendering) {
             try {
                 if (process.platform === 'win32') {
@@ -357,30 +358,34 @@ const server = http.createServer(async (req, res) => {
             renderState.statusText = 'Rendu interrompu par l\'utilisateur';
             renderState.progress = 0;
             renderState.logs.push('⛔ Rendu arrêté.');
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
             return res.end(JSON.stringify({ success: true, message: 'Rendu annulé' }));
         }
         res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         return res.end(JSON.stringify({ error: 'Aucun rendu en cours' }));
     }
 
-    // 5. API pour supprimer une vidéo
-    if (req.url === '/api/delete-video' && req.method === 'POST') {
+    // 5. API pour supprimer une vidéo (avec nettoyage channels.json et anti-cache)
+    if (cleanUrl === '/api/delete-video' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
             try {
-                const data = JSON.parse(body);
-                const videoTarget = data.video;
+                const data = JSON.parse(body || '{}');
+                const rawTarget = decodeURIComponent(data.video || '').trim();
+                const videoTarget = rawTarget.replace(/^[\\/\\]+/, '');
                 if (!videoTarget) {
                     res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                     return res.end(JSON.stringify({ error: 'Chemin de vidéo manquant' }));
                 }
 
-                // Résolution sécurisée du fichier
-                let filePath = path.resolve(ROOT_DIR, videoTarget);
+                // Résolution sécurisée du fichier (tolérance relative, absolue et sous-dossiers)
+                let filePath = path.join(ROOT_DIR, videoTarget);
                 if (!fs.existsSync(filePath)) {
                     filePath = path.join(ROOT_DIR, '04_Videos', path.basename(videoTarget));
+                }
+                if (!fs.existsSync(filePath)) {
+                    filePath = path.resolve(ROOT_DIR, videoTarget);
                 }
                 if (!fs.existsSync(filePath)) {
                     // Chercher dans 03_Chaines
@@ -399,8 +404,38 @@ const server = http.createServer(async (req, res) => {
 
                 if (fs.existsSync(filePath) && filePath.endsWith('.html')) {
                     fs.unlinkSync(filePath);
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                    return res.end(JSON.stringify({ success: true, message: `Vidéo ${videoTarget} supprimée` }));
+
+                    // Synchroniser channels.json au cas où la vidéo appartenait à une chaîne
+                    try {
+                        const channelsPath = path.join(ROOT_DIR, '07_Scripts', 'channels.json');
+                        if (fs.existsSync(channelsPath)) {
+                            let channels = JSON.parse(fs.readFileSync(channelsPath, 'utf8') || '[]');
+                            let changed = false;
+                            const baseFn = path.basename(filePath);
+                            channels.forEach(ch => {
+                                if (ch.videos && Array.isArray(ch.videos)) {
+                                    const initialLen = ch.videos.length;
+                                    ch.videos = ch.videos.filter(v => (v.file !== baseFn && v.path !== videoTarget));
+                                    if (ch.videos.length !== initialLen) {
+                                        ch.videoCount = ch.videos.length;
+                                        changed = true;
+                                    }
+                                }
+                            });
+                            if (changed) {
+                                fs.writeFileSync(channelsPath, JSON.stringify(channels, null, 2), 'utf8');
+                            }
+                        }
+                    } catch (e) {}
+
+                    res.writeHead(200, {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    });
+                    return res.end(JSON.stringify({ success: true, message: 'Vidéo ' + videoTarget + ' supprimée' }));
                 }
                 res.writeHead(404, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({ error: 'Fichier non trouvé' }));
@@ -413,7 +448,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5b. API pour lister les assets existants (rétro-compatibilité)
-    if (req.url === '/api/assets-files' && req.method === 'GET') {
+    if (cleanUrl === '/api/assets-files' && req.method === 'GET') {
         const assetsDir = path.join(ROOT_DIR, '01_Assets');
         const getFiles = (dir) => {
             try {
@@ -430,12 +465,12 @@ const server = http.createServer(async (req, res) => {
             musiques: getFiles(path.join(assetsDir, 'Musiques')),
             videos: getFiles(path.join(assetsDir, 'Videos'))
         };
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify(result));
     }
 
     // 5b-bis. API Catalogue Complet d'Assets Récursif (Médiathèque Avancée)
-    if (req.url === '/api/assets-catalog' && req.method === 'GET') {
+    if (cleanUrl === '/api/assets-catalog' && req.method === 'GET') {
         try {
             const assetsDir = path.join(ROOT_DIR, '01_Assets');
             const formatBytes = (bytes) => {
@@ -545,7 +580,7 @@ const server = http.createServer(async (req, res) => {
                 categoriesCount: categories.length
             };
 
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
             return res.end(JSON.stringify({
                 success: true,
                 stats,
@@ -560,7 +595,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5b-ter. API pour supprimer un asset dans 01_Assets
-    if (req.url === '/api/delete-asset' && req.method === 'POST') {
+    if (cleanUrl === '/api/delete-asset' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -583,7 +618,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
                     fs.unlinkSync(targetPath);
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({ success: true, message: 'Fichier supprimé avec succès' }));
                 }
 
@@ -599,7 +634,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5c. API pour uploader un fichier directement dans 01_Assets
-    if (req.url === '/api/upload-asset' && req.method === 'POST') {
+    if (cleanUrl === '/api/upload-asset' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -630,7 +665,7 @@ const server = http.createServer(async (req, res) => {
                     ? `01_Assets/${category}/${subfolder}/${safeName}` 
                     : `01_Assets/${category}/${safeName}`;
 
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 
                     success: true, 
                     filename: safeName, 
@@ -648,7 +683,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5c-bis. API pour détourer une image ou vidéo sur fond vert (Chroma Keying)
-    if (req.url === '/api/chroma-key' && req.method === 'POST') {
+    if (cleanUrl === '/api/chroma-key' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -688,7 +723,7 @@ const server = http.createServer(async (req, res) => {
                 });
 
                 const relOutPath = `01_Assets/${outCat}/${outName}`;
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({
                     success: true,
                     type: result.type,
@@ -705,7 +740,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5d. API pour démarrer la génération vidéo IA autonome en tâche de fond (Temps réel)
-    if (req.url === '/api/create-video-start' && req.method === 'POST') {
+    if (cleanUrl === '/api/create-video-start' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -768,7 +803,7 @@ const server = http.createServer(async (req, res) => {
                     }
                 })();
 
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 
                     success: true, 
                     jobId: jobId 
@@ -802,7 +837,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (!job) {
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
             return res.end(JSON.stringify({ 
                 success: true, 
                 status: 'completed', 
@@ -812,7 +847,7 @@ const server = http.createServer(async (req, res) => {
             }));
         }
 
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify({
             success: true,
             status: job.status,
@@ -827,7 +862,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5f. API synchrone de génération (rétrocompatibilité)
-    if (req.url === '/api/create-video' && req.method === 'POST') {
+    if (cleanUrl === '/api/create-video' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -837,7 +872,7 @@ const server = http.createServer(async (req, res) => {
                     console.log(`[AI Pipeline ${percent}%] ${logMsg}`);
                 });
 
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 
                     success: true, 
                     fileName: result.fileName, 
@@ -853,7 +888,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5e. API pour sauvegarder ou charger les clés & paramètres dans api_config.json
-    if (req.url === '/api/settings') {
+    if (cleanUrl === '/api/settings') {
         const configPath = getResolvedConfigPath();
 
         if (req.method === 'GET') {
@@ -864,7 +899,7 @@ const server = http.createServer(async (req, res) => {
                 } else {
                     cfg = { ...DEFAULT_CONFIG };
                 }
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(cfg));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -887,7 +922,7 @@ const server = http.createServer(async (req, res) => {
                     const updated = { ...existingCfg, ...incoming };
                     fs.writeFileSync(configPath, JSON.stringify(updated, null, 2), 'utf8');
 
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({ success: true, settings: updated }));
                 } catch (err) {
                     res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -903,14 +938,14 @@ const server = http.createServer(async (req, res) => {
         const coverrModule = require('./coverr.cjs');
 
         // Test de clé API Coverr
-        if (req.url === '/api/coverr/test' && req.method === 'POST') {
+        if (cleanUrl === '/api/coverr/test' && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => { body += chunk; });
             req.on('end', async () => {
                 try {
                     const data = JSON.parse(body || '{}');
                     const testResult = await coverrModule.testCoverrKey(data.key);
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify(testResult));
                 } catch (e) {
                     res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -938,7 +973,7 @@ const server = http.createServer(async (req, res) => {
                     isVertical
                 });
 
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(searchResults));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -947,7 +982,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Téléchargement d'une vidéo Coverr vers les assets locaux
-        if (req.url === '/api/coverr/download' && req.method === 'POST') {
+        if (cleanUrl === '/api/coverr/download' && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => { body += chunk; });
             req.on('end', async () => {
@@ -967,7 +1002,7 @@ const server = http.createServer(async (req, res) => {
 
                     const relativePath = path.relative(ROOT_DIR, destPath).replace(/\\/g, '/');
 
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({
                         success: true,
                         message: 'Vidéo Coverr téléchargée avec succès dans les assets !',
@@ -1044,7 +1079,7 @@ const server = http.createServer(async (req, res) => {
         };
 
         if (req.method === 'GET') {
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
             return res.end(JSON.stringify(readChannels()));
         }
 
@@ -1075,7 +1110,7 @@ const server = http.createServer(async (req, res) => {
                         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
                     }
                     writeChannels(channels);
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({ success: true, channels }));
                 } catch (err) {
                     res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1112,7 +1147,7 @@ const server = http.createServer(async (req, res) => {
                         fs.rmSync(chFolder, { recursive: true, force: true });
                     }
 
-                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({ success: true, channels }));
                 } catch (err) {
                     res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1124,7 +1159,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5e3. API pour ouvrir directement l'explorateur Windows dans le dossier sécurisé VibeEditor (%APPDATA%/VibeEditor)
-    if (req.url === '/api/open-projects-folder') {
+    if (cleanUrl === '/api/open-projects-folder') {
         const targetOpen = USER_DATA_DIR;
         const { exec } = require('child_process');
         if (process.platform === 'win32') {
@@ -1134,7 +1169,7 @@ const server = http.createServer(async (req, res) => {
         } else {
             exec(`xdg-open "${targetOpen}"`);
         }
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify({ success: true, path: targetOpen }));
     }
 
@@ -1154,7 +1189,7 @@ const server = http.createServer(async (req, res) => {
             try {
                 const { fetchElevenLabsVoices } = require('./generate_voice.cjs');
                 const result = await fetchElevenLabsVoices(keyToUse || savedKey);
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
                 res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1193,7 +1228,7 @@ const server = http.createServer(async (req, res) => {
             try {
                 const { fetchElevenLabsSubscription } = require('./generate_voice.cjs');
                 const result = await fetchElevenLabsSubscription(keyToUse || savedKey);
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
                 res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1217,7 +1252,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5g. API pour générer une voix off via ElevenLabs
-    if (req.url === '/api/tts/generate' && req.method === 'POST') {
+    if (cleanUrl === '/api/tts/generate' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -1245,7 +1280,7 @@ const server = http.createServer(async (req, res) => {
                     out: outPath
                 });
 
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({
                     success: true,
                     engine: 'elevenlabs',
@@ -1265,7 +1300,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5h. API YouTube Clip & Transcription
-    if (req.url === '/api/youtube/info' && req.method === 'POST') {
+    if (cleanUrl === '/api/youtube/info' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -1273,7 +1308,7 @@ const server = http.createServer(async (req, res) => {
                 const { getVideoInfo } = require('./youtube_clip.cjs');
                 const data = JSON.parse(body || '{}');
                 const info = await getVideoInfo(data.url);
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ success: true, info }));
             } catch (err) {
                 res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1283,7 +1318,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (req.url === '/api/youtube/transcript' && req.method === 'POST') {
+    if (cleanUrl === '/api/youtube/transcript' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -1291,7 +1326,7 @@ const server = http.createServer(async (req, res) => {
                 const { getVideoTranscript } = require('./youtube_clip.cjs');
                 const data = JSON.parse(body || '{}');
                 const result = await getVideoTranscript(data.url, data.lang || 'fr');
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
                 res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1301,7 +1336,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (req.url === '/api/youtube/download' && req.method === 'POST') {
+    if (cleanUrl === '/api/youtube/download' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -1314,7 +1349,7 @@ const server = http.createServer(async (req, res) => {
                     end: data.end,
                     outputPath: data.out
                 });
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1325,7 +1360,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5i. API Cartes (Maps HD sans watermark)
-    if (req.url === '/api/maps/generate' && req.method === 'POST') {
+    if (cleanUrl === '/api/maps/generate' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
@@ -1348,7 +1383,7 @@ const server = http.createServer(async (req, res) => {
                     height,
                     outPath: data.out
                 });
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });

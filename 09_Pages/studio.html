@@ -2535,7 +2535,7 @@
         // --- CHARGEMENT DYNAMIQUE DES FICHIERS ET RENDUS (AVEC DÉDOUBLONNAGE ET CACHE) ---
         async function fetchWorkspaceFiles() {
             try {
-                const res = await fetch('/api/files');
+                const res = await fetch('/api/files?t=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) return;
                 const data = await res.json();
                 
@@ -2707,20 +2707,62 @@
             try {
                 const res = await fetch('/api/delete-video', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
                     body: JSON.stringify({ video: videoName })
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    showToast(`✓ Vidéo supprimée avec succès`);
+                    showToast('✓ Vidéo supprimée avec succès');
                     closeDeleteModal();
+
+                    // Nettoyage immédiat du cache localStorage local pour éviter toute résurrection au reload
+                    try {
+                        const rawCached = localStorage.getItem(CACHE_KEY_VIDEOS);
+                        if (rawCached) {
+                            let cachedList = JSON.parse(rawCached);
+                            if (Array.isArray(cachedList)) {
+                                const baseName = videoName.split('/').pop();
+                                cachedList = cachedList.filter(v => {
+                                    const vPath = typeof v === 'string' ? v : (v.path || v.file || v.name);
+                                    return vPath !== videoName && !vPath.endsWith('/' + baseName);
+                                });
+                                lastVideosJson = JSON.stringify(cachedList);
+                                localStorage.setItem(CACHE_KEY_VIDEOS, lastVideosJson);
+                            }
+                        }
+                    } catch(e) {}
+
+                    // Retrait visuel immédiat dans le DOM
+                    const cardToDelete = document.querySelector(`#videoListContainer .item-card[data-src="${videoName}"]`) ||
+                                         document.querySelector(`#videoListContainer .item-card[data-src*="${videoName.split('/').pop()}"]`);
+                    if (cardToDelete) cardToDelete.remove();
+
+                    // Nettoyage de l'URL et de la vidéo active si c'était celle supprimée
+                    const currentActiveName = (activeVideoPath || '').split('/').pop();
+                    const deletedName = videoName.split('/').pop();
+                    if (activeVideoPath === videoName || currentActiveName === deletedName) {
+                        activeVideoPath = '';
+                        localStorage.removeItem(CACHE_KEY_ACTIVE);
+                        // Nettoyer l'URL du navigateur pour empêcher que le paramètre ?video=deleted ne recharge la vidéo au reload
+                        if (window.history && window.history.replaceState) {
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                    }
+
+                    // Synchronisation fraîche serveur
                     await fetchWorkspaceFiles();
+
+                    // Basculer automatiquement sur la première vidéo disponible
                     const firstCard = document.querySelector('#videoListContainer .item-card');
                     if (firstCard) {
                         firstCard.click();
+                    } else {
+                        // Plus aucune vidéo restante
+                        previewFrame.src = 'about:blank';
+                        document.getElementById('activeCompositionName').textContent = 'Aucune vidéo';
                     }
                 } else {
-                    showToast(`Erreur : ${data.error || 'Impossible de supprimer la vidéo'}`);
+                    showToast('Erreur : ' + (data.error || 'Impossible de supprimer la vidéo'));
                     closeDeleteModal();
                 }
             } catch (err) {

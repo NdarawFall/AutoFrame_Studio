@@ -77,6 +77,12 @@ Un seul système de texte « parlé » à l'écran à la fois : si un titre appa
    - **INTERDICTION FORMELLE** d'ajouter des liserés ou bordures en couleur vive sur un côté, en haut ou en bas (pas de bandeau néon supérieur, pas de `border-left: 4px solid var(--accent)`).
    - Les contours de cartes doivent être neutres et discrets : un fin trait gris clair subtil (`border: 1px solid rgba(255, 255, 255, 0.1)` ou gris clair neutre).
 
+4. **Harmonie et Contraste selon le Type de Fond (Blanc, Noir, Dégradé, Couleur unie)** :
+   - **Fond Blanc (`#ffffff`)** : titrages sombres (`#09090b`), sous-titres gris ardoise (`#475569`), cartes blanches surélevées (`#ffffff` avec fine ombre `0 10px 30px rgba(0,0,0,0.06)` et bordure `rgba(0,0,0,0.08)`). Logos clairs proscrits : logos sombres/colorés uniquement.
+   - **Fond Noir (`#000000`)** : titrages blanc pur (`#ffffff`), cartes sombres lisses (`#0d1117`), bordure subtile (`rgba(255,255,255,0.12)`). Tout logo sombre doit avoir un réceptacle blanc.
+   - **Fond Dégradé** : gradient radial ou linéaire subtil et profond (ex: `radial-gradient(ellipse at 50% 20%, #1e2029 0%, #08080c 100%)`). Garantir un contraste de 7:1 sur toute la zone de texte.
+   - **Fond Couleur unie** : adapter dynamiquement la couleur du texte et des cartes selon la luminance (`isColorLight`). Ne jamais forcer du blanc sur un fond jaune ou du noir sur un fond marine.
+
 ## 6. Composition d'une scène : les 5 couches
 1. `bg` — fond (dégradé, vidéo B-roll, carte). Toujours en lent mouvement (`scale 1→1.06–1.10` sur la durée de la scène, ease `none`).
 2. `mid` — sujet / média principal (image détourée, capture web, logo, drapeau).
@@ -148,6 +154,7 @@ tl.fromTo('.panel',{clipPath:'inset(0 100% 0 0 round 24px)'},{clipPath:'inset(0 
 | `getBBox()` = 0 ou NaN → division par zéro | Ne jamais mesurer un élément `display:none` ; utiliser `visibility:hidden` + opacité, ou `pathLength="1"` pour les tracés |
 | Rotation SVG autour de (0,0) | `transformBox:'fill-box'; transformOrigin:'50% 50%'` ou `svgOrigin:'x y'` |
 | Texte qui déborde (titres longs, 9:16) | `fitText` ci-dessous, puis couper à 2 lignes |
+| `display:none` sur conteneurs avec `<video>` → gel GPU / stutter | Maintien permanent en mémoire GPU : `display:flex; position:absolute; inset:0; visibility:hidden; opacity:0; pointer-events:none;` et bascule `visibility:visible` synchronisée |
 | Vidéos B-roll désynchronisées en rendu | Piloter `video.currentTime` depuis la timeline (`onUpdate`) et attendre `seeked` ; `muted playsinline preload="auto"` ; l'audio vient du mixage FFmpeg, jamais de la balise |
 | `object-fit` oublié → étirement | `object-fit:cover` partout sauf logos (`contain`) |
 | Images énormes → rendu lent | `sharp` : max 2× la taille d'affichage, WebP/PNG |

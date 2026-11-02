@@ -19,10 +19,10 @@ Le rendu est frame par frame (Puppeteer). Toute animation DOIT être une fonctio
 ## 1. Règles d'or de timing
 | Élément | Valeur |
 |---|---|
-| Entrée titre | 0.5–0.8 s (long) · 0.3–0.5 s (short) |
+| Entrée titre (posée & majestueuse) | 0.9–1.2 s (calme et lisible, zéro effet rushé) |
 | Sortie | 60 % de l'entrée, ease `power2.in`. Aucune sortie si un cut suit : le cut EST la sortie |
-| Stagger caractères | 0.02–0.04 s · mots : 0.07–0.12 s |
-| Temps de lecture minimum affiché | `max(0.8 s, nbMots × 0.3 s)` après la fin de l'entrée |
+| Stagger mots | 0.10–0.14 s (aéré, permet de lire chaque mot sans sursaut) |
+| Temps de lecture minimum affiché | `max(1.0 s, nbMots × 0.35 s)` après la fin de l'entrée |
 | Mots max à l'écran | short : 6 · long : 12 (hors sous-titres) |
 | Sous-titres | 2–4 mots/bloc (short) · 6–9 mots, 2 lignes max (long) |
 | Texte avant la voix | le texte apparaît 0–0.15 s AVANT le mot prononcé, jamais après |

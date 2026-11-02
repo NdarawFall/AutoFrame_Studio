@@ -636,6 +636,7 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exact
 - Images fournies par l'utilisateur : ${JSON.stringify(payload.images || [])}
 - Style sélectionné : ${payload.template || payload.style || 'Libre (sans template)'}
 - Chaîne associée : ${channelId || 'Aucune (vidéo autonome)'}
+- Fond de base imposé par l'utilisateur : ${payload.backgroundType || 'black'} (${payload.backgroundType === 'white' ? 'Blanc pur #ffffff' : (payload.backgroundType === 'solid' ? (payload.backgroundColor || '#111827') : (payload.backgroundType === 'gradient' ? (payload.backgroundGradient || 'Dégradé') : 'Noir pur #000000'))})
 ${hasCustomScript ? `
 - SCRIPT HORODATÉ FOURNI PAR L'UTILISATEUR (OBLIGATOIRE ET STRICTEMENT RESPECTÉ) :
 """
@@ -674,7 +675,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             pitch: prompt || 'Composition vidéo dynamique',
             targetDuration: promptDuration || 20.0,
             background: {
-                type: 'black',
+                type: payload.backgroundType || 'black',
                 global: '#000000',
                 textMain: '#ffffff',
                 textMuted: '#94a3b8'
@@ -1074,14 +1075,28 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     onProgress('step_gsap_code', 'Génération dynamique du code (HTML, CSS, GSAP) par Gemini...', 85, isUsingTemplate ? `L'IA adapte l'archétype "${chosenTemplate}" au brief utilisateur...` : `L'IA conçoit une architecture visuelle sur-mesure pour "${prompt.slice(0, 30)}..."`, 'info');
 
     // Paramétrage flexible du fond (Blanc, Noir, Couleur unie, Dégradé)
+    const userBgType = payload.backgroundType;
     const bgPlan = plan.background || {};
     let baseBg = bgPlan.global || plan.theme?.primaryColor || '#000000';
-    if (bgPlan.type === 'white') baseBg = '#ffffff';
-    else if (bgPlan.type === 'black') baseBg = '#000000';
-
-    // Neutraliser les bleus ardoise/navy indésirables non demandés
-    if (typeof baseBg === 'string' && /#0f172a|#1e293b|#0b1329|#090d16|#071228/i.test(baseBg) && !/bleu|blue|cyan|navy/i.test(prompt)) {
+    if (userBgType === 'white') {
+        baseBg = '#ffffff';
+    } else if (userBgType === 'black') {
         baseBg = '#000000';
+    } else if (userBgType === 'solid') {
+        baseBg = payload.backgroundColor || '#111827';
+    } else if (userBgType === 'gradient') {
+        baseBg = payload.backgroundGradient || 'radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%)';
+    } else if (bgPlan.type === 'white') {
+        baseBg = '#ffffff';
+    } else if (bgPlan.type === 'black') {
+        baseBg = '#000000';
+    }
+
+    // Neutraliser les bleus ardoise/navy indésirables non demandés seulement si l'utilisateur n'a pas explicitement choisi un fond uni ou dégradé
+    if (!userBgType || userBgType === 'black') {
+        if (typeof baseBg === 'string' && /#0f172a|#1e293b|#0b1329|#090d16|#071228/i.test(baseBg) && !/bleu|blue|cyan|navy/i.test(prompt)) {
+            baseBg = '#000000';
+        }
     }
 
     const isLight = isColorLight(baseBg);
