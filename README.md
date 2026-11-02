@@ -58,7 +58,9 @@ Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur Git
 │   ├── cut_silences.cjs         # Jump-cut & découpage automatique de silences
 │   ├── detect_bad_takes.cjs     # Détection de mauvaises prises & répétitions
 │   ├── auto_reframe.cjs         # Recadrage automatique 16:9 vers 9:16 vertical
-│   └── fetch_football_logo.cjs  # Téléchargement autonome de logos de football
+│   ├── fetch_football_logo.cjs  # Téléchargement autonome de logos de football
+│   ├── fetch_sportsdb.cjs       # Téléchargement de portraits joueurs détourés (PNG) & badges (TheSportsDB)
+│   └── fetch_music.cjs          # Téléchargement de musiques libres de droit par genre/mood (Incompetech)
 ├── 08_Rendus/          # Dossier d'exportation des vidéos finales MP4 (ignoré par Git)
 ├── 09_Pages/           # Interface utilisateur web du studio (Home, Création, Paramètres)
 ├── 10_Clients/         # Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)

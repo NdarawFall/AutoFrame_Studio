@@ -66,15 +66,19 @@
             box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
         }
 
-        /* Arrière-plan cinématique : Grille tech + orbes néons réactifs */
-        .tech-grid-bg {
+        /* Arrière-plan cinématique : Halos d'ambiance organiques continus (Zéro grille) */
+        .ambient-auras {
             position: absolute;
             inset: 0;
-            background-size: 50px 50px;
-            background-image:
-                linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-            mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 95%);
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .aura-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
             pointer-events: none;
         }
 
@@ -131,6 +135,12 @@
         }
 
         /* Titre Dual-Font selon Joseph Edit Skills */
+        .k-word {
+            display: inline-block;
+            transform-origin: center bottom;
+            will-change: transform, opacity;
+        }
+
         .headline-dual {
             font-family: var(--font-title);
             font-size: 64px;
@@ -632,7 +642,10 @@
 
     <div id="stage" data-duration="10.0" data-width="1920" data-height="1080">
         <!-- Fond Cybernétique & Grille Studio -->
-        <div class="tech-grid-bg"></div>
+        <div class="ambient-auras">
+            <div class="aura-orb aura-1"></div>
+            <div class="aura-orb aura-2"></div>
+        </div>
         <div class="ambient-glow-1" id="glow1"></div>
         <div class="ambient-glow-2" id="glow2"></div>
 
@@ -647,7 +660,7 @@
                 </div>
 
                 <h1 class="headline-dual" id="s1Title">
-                    Décuplez votre productivité à la <span class="highlight-script">vitesse de l'éclair</span>
+                    <span class="k-word">Décuplez</span> <span class="k-word">votre</span> <span class="k-word">productivité</span> <span class="k-word">à</span> <span class="k-word">la</span> <span class="highlight-script k-word">vitesse de l'éclair</span>
                 </h1>
 
                 <p class="scene1-sub" id="s1Sub">
@@ -859,6 +872,25 @@
         // Timeline Maîtresse Unique
         const tl = gsap.timeline({ paused: isIframeMode });
 
+        // Animation continue des auras d'ambiance (Zéro grille statique)
+        gsap.to('.aura-1', {
+            x: 60,
+            y: 40,
+            duration: 6,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+        gsap.to('.aura-2', {
+            x: -50,
+            y: -35,
+            duration: 7.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+
+
         // --------------------------------------------------------------------
         // PHASE 1 : SCÈNE 1 (0.0s -> 3.0s)
         // --------------------------------------------------------------------
@@ -870,13 +902,14 @@
             ease: 'power3.out'
         }, 0.1);
 
-        tl.from('#s1Title', {
-            y: 50,
+        tl.from('#s1Title .k-word', {
+            y: 45,
             opacity: 0,
-            scale: 0.94,
-            duration: 0.9,
-            ease: 'power3.out'
-        }, 0.3);
+            rotateX: -35,
+            stagger: 0.07,
+            duration: 0.75,
+            ease: 'back.out(1.5)'
+        }, 0.25);
 
         tl.from('#s1Sub', {
             y: 30,

@@ -79,6 +79,8 @@ heygen-new/
 │   ├── cut_silences.cjs        # Découpe automatique des silences (jump-cut) pour rushes 10_Clients/
 │   ├── detect_bad_takes.cjs    # Détection automatique des mauvaises prises, hésitations et répétitions
 │   ├── auto_reframe.cjs        # Recadrage automatique 16:9 -> 9:16 vertical (crop, blur background, split)
+│   ├── fetch_sportsdb.cjs      # Téléchargement de portraits joueurs détourés (PNG) & badges (TheSportsDB)
+│   ├── fetch_music.cjs         # Téléchargement de musiques libres de droit par genre/mood (Incompetech)
 │   ├── normalize_audio.cjs     # Normalisation sonore professionnelle EBU R128 (-14 LUFS)
 │   ├── remove_bg.cjs           # Détourage et suppression du fond d'images
 │   └── api_config.json         # Stockage local des clés API (ignoré par Git)

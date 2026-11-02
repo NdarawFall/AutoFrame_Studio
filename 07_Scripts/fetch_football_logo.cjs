@@ -305,3 +305,4 @@ if (require.main === module) {
 }
 
 module.exports = { fetchFootballLogo, searchFootballLogos, FOOTBALL_LOGOS_DIR };
+
