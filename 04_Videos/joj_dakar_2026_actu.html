@@ -406,34 +406,6 @@
             pointer-events: none;
         }
 
-        .video-corner-badge {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 5;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 18px;
-            border-radius: 9999px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            color: #ffffff;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .video-corner-badge .red-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ef4444;
-            animation: pulseDot 1.2s infinite;
-        }
-
         .video-info-side {
             flex: 1;
             max-width: 540px;
@@ -777,9 +749,6 @@
             <div class="video-showcase-container">
                 <!-- FRAME VIDÉO B-ROLL (MUTED, LOOP, PLAYSINLINE, AUCUN CONTRÔLE INTERNE) -->
                 <div id="p4VideoFrame" class="video-mockup-frame">
-                    <div class="video-corner-badge">
-                        <span class="red-dot"></span> LIVE BROADCAST
-                    </div>
                     <video id="brollVideo" src="../01_Assets/Videos/dakar2026_clip.mp4" muted loop playsinline preload="auto"></video>
                 </div>
 

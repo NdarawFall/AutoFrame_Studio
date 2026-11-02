@@ -258,7 +258,16 @@ Ce document répertorie les erreurs, pièges et régressions commis par l'IA sur
     - Tout script de capture ou de validation visuelle (Puppeteer / Chrome headless) doit OBLIGATOIREMENT supprimer tous les fichiers de capture et dossiers temporaires générés dès que la vérification est achevée.
     - ZÉRO fichier `.png`, `.jpg` ou sous-dossier de capture ne doit subsister dans `scratch/` ou dans le dépôt.
 
+---
 
-
-
+### [2026-11-02] — B-roll Continu vs Teaser Diaporama & Bannissement des Badges Factices ("LIVE BROADCAST" / AI Slop)
+* **Problème / Symptôme** :
+  1. La vidéo B-roll intégrée dans la composition paraissait saccadée et ressemblait à un diaporama de photos montées bout-à-bout plutôt qu'à une vraie vidéo continue en mouvement.
+  2. Présence d'une étiquette décorative non demandée "LIVE BROADCAST" avec un point rouge clignotant sur le lecteur vidéo, qualifiée d'AI slop par l'utilisateur.
+* **Cause technique** :
+  1. Le clip source YouTube téléchargé provenait d'un teaser promotionnel officiel qui était en réalité un montage rapide de photographies fixes avec transitions rythmées (effet diaporama / slideshow cut), et non une séquence sportive filmée en prise de vue réelle continue.
+  2. Zèle de l'IA ajoutant des badges décoratifs type "télé / direct" (`.video-corner-badge`) pour faire "habillage broadcast" sans aucune consigne de l'utilisateur.
+* **Règle à respecter impérativement** :
+  - **Sélection des Séquences B-roll** : Toujours vérifier la nature du clip vidéo source. Bannir impérativement les teasers de promotion constitués de diaporamas de photos ou de cuts ultra-rapides. Préférer impérativement des séquences sportives d'action réelle filmées en continu à 60 FPS (ex. course de sprint 100m, match, compétition en direct) avec mouvement physique fluide et continu de caméra et d'athlètes.
+  - **Bannissement Absolu des Étiquettes Factices "LIVE BROADCAST" / AI Slop** : Ne JAMAIS ajouter de pastilles, badges ou mentions fictives ("LIVE", "LIVE BROADCAST", "DIRECT TV", faux logos de chaînes) non demandées par l'utilisateur. Laisser le lecteur vidéo épuré et propre, sans surcouche parasite.
 
