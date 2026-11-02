@@ -3240,6 +3240,9 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         const sessionAssetSuffix = Math.floor(1000 + Math.random() * 9000).toString();
 
         function applyAppInitialDefaults() {
+            renderStyleCards(DEFAULT_STYLES);
+            renderGradientStopsUI();
+
             // 1. Format par défaut : 16:9 (rectangle)
             selectVideoFormat('16:9');
 
@@ -3739,8 +3742,7 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                     <div class="style-image-card${isSelected}" id="styleCard_${style.id}" data-style-id="${style.id}" onclick="selectMontageStyle('${style.id}')">
                         <img class="style-card-bg-img" src="${style.image}" alt="${escapeHtml(style.title)}" loading="lazy" onerror="this.onerror=null; this.src='/01_Assets/Images/styles/style_none.jpg'">
                         <div class="style-card-gradient-fade">
-                            <span class="style-card-title">${escapeHtml(style.title)}</span>
-                            <p class="style-card-desc">${escapeHtml(style.desc || '')}</p>
+                            <span class="style-card-title">${escapeHtml(style.title)}</span>
                         </div>
                         <div class="style-card-check">✓</div>
                     </div>`;
