@@ -1359,27 +1359,57 @@
             font-weight: 700;
         }
 
-        /* --- LE PLAYER GRAND CADRE FIXE (NE BOUGE JAMAIS) --- */
+        /* --- LE PLAYER GRAND CADRE ADAPTATIF AU FORMAT CHOISI (RECTANGLE 16:9, SHORT 9:16, CARRÉ 1:1) --- */
         .bg-player-panel {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             min-height: 660px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
         }
 
         .player-monitor-frame {
             display: flex;
             flex-direction: column;
-            background: #000000;
+            background: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: var(--radius-md);
             overflow: hidden;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-            width: 100%;
-            height: 100%;
-            min-height: 660px;
             position: relative;
             box-sizing: border-box;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Format 16:9 - Paysage / Rectangle standard */
+        .player-monitor-frame.ratio-16-9 {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 16 / 9;
+            height: auto;
+        }
+
+        /* Format 9:16 - Portrait / Short vertical */
+        .player-monitor-frame.ratio-9-16 {
+            height: 580px;
+            aspect-ratio: 9 / 16;
+            width: auto;
+            max-width: 100%;
+        }
+
+        /* Format 1:1 - Carré */
+        .player-monitor-frame.ratio-1-1 {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            height: auto;
         }
 
         .monitor-screen-canvas {
@@ -1391,9 +1421,37 @@
             justify-content: center;
             overflow: hidden;
             transition: background 0.25s ease;
-            background: #000000;
+            background: #ffffff;
             padding: 24px;
             box-sizing: border-box;
+        }
+
+        .player-monitor-frame.ratio-9-16 .monitor-screen-canvas {
+            padding: 20px 14px;
+        }
+
+        .player-monitor-frame.ratio-9-16 .mock-stage-headline {
+            font-size: 19px;
+            letter-spacing: -0.3px;
+        }
+
+        .player-monitor-frame.ratio-9-16 .mock-stage-subheadline {
+            font-size: 11px;
+            max-width: 250px;
+        }
+
+        .player-monitor-frame.ratio-9-16 .mock-stage-card {
+            max-width: 270px;
+            padding: 10px 12px;
+            gap: 8px;
+        }
+
+        .player-monitor-frame.ratio-1-1 .mock-stage-headline {
+            font-size: 22px;
+        }
+
+        .player-monitor-frame.ratio-1-1 .mock-stage-card {
+            max-width: 320px;
         }
 
         .monitor-grid-overlay {
@@ -1997,7 +2055,7 @@
             <div class="card-collapsible-body" style="display: none; padding-top: 16px;">
                 <div class="format-cards-grid">
                     <!-- 16:9 -->
-                    <div class="format-choice-card" id="formatCard_16_9" onclick="selectVideoFormat('16:9')">
+                    <div class="format-choice-card selected" id="formatCard_16_9" onclick="selectVideoFormat('16:9')">
                         <div class="format-icon-box">
                             <div class="format-shape shape-16-9"></div>
                         </div>
@@ -2061,7 +2119,7 @@
                                 </label>
                                 <div class="bg-types-stack">
                                     <!-- 1. BLANC (SANS SOUS-TITRE) -->
-                                    <button type="button" class="bg-type-row-btn" id="bgRow_white" onclick="selectBackgroundType('white')">
+                                    <button type="button" class="bg-type-row-btn selected" id="bgRow_white" onclick="selectBackgroundType('white')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-white"></span>
                                             <span class="bg-type-title">Blanc</span>
@@ -2070,7 +2128,7 @@
                                     </button>
 
                                     <!-- 2. NOIR (DÉFAUT, SANS SOUS-TITRE) -->
-                                    <button type="button" class="bg-type-row-btn selected" id="bgRow_black" onclick="selectBackgroundType('black')">
+                                    <button type="button" class="bg-type-row-btn" id="bgRow_black" onclick="selectBackgroundType('black')">
                                         <div class="bg-type-row-left">
                                             <span class="bg-type-swatch swatch-black"></span>
                                             <span class="bg-type-title">Noir (Défaut)</span>
@@ -2160,7 +2218,7 @@
 
                     <!-- COLONNE 2 : LE PLAYER CADRE GRAND FORMAT FIXE (DROITE) -->
                     <div class="bg-player-panel">
-                        <div class="player-monitor-frame">
+                        <div class="player-monitor-frame ratio-16-9">
                             <!-- Écran du Player Pur (Sans barre titre moniteur ni barre CSS basse) -->
                             <div class="monitor-screen-canvas" id="monitorScreenCanvas">
                                 <div class="monitor-grid-overlay"></div>
@@ -2272,7 +2330,7 @@
                             </div>
 
                             <!-- OPTION 5 : SANS AUDIO -->
-                            <div class="audio-choice-card" id="audioCardNone" onclick="selectAudioOption('none')">
+                            <div class="audio-choice-card selected" id="audioCardNone" onclick="selectAudioOption('none')">
                                 <div class="choice-card-header">
                                     <div class="choice-icon">
                                         <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
@@ -2322,7 +2380,7 @@
                                 <p class="choice-desc">Incruste des sous-titres paramétrables en bas de l'écran synchronisés à la voix.</p>
                             </div>
 
-                            <div class="audio-choice-card" id="subCardNo" onclick="selectSubtitlesOption(false)">
+                            <div class="audio-choice-card selected" id="subCardNo" onclick="selectSubtitlesOption(false)">
                                 <div class="choice-card-header">
                                     <div class="choice-icon">
                                         <svg viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -2957,8 +3015,8 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
 
         // Gestion du style de montage (Sans template sélectionné par défaut), format, audio et sous-titres
                 // --- GESTION DU FOND DE BASE DE LA VIDÉO (UX ÉPURÉ, CADRE FIXE, COULEURS GLISSABLES SANS FERMETURE) ---
-        let currentBackgroundType = 'black'; // 'white' | 'black' | 'gradient' | 'solid'
-        let currentBackgroundColor = '#000000';
+        let currentBackgroundType = 'white'; // 'white' | 'black' | 'gradient' | 'solid'
+        let currentBackgroundColor = '#ffffff';
         let currentGradientColors = ['#ffffff', '#ff0033']; // 2 couleurs par défaut
         let currentGradientDirection = '135deg';
         let currentBackgroundGradient = 'linear-gradient(135deg, #ffffff, #ff0033)';
@@ -3181,10 +3239,22 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         // Suffixe aléatoire à 4 chiffres unique pour identifier et lier tous les assets d'une même vidéo autonome
         const sessionAssetSuffix = Math.floor(1000 + Math.random() * 9000).toString();
 
+        function applyAppInitialDefaults() {
+            // 1. Format par défaut : 16:9 (rectangle)
+            selectVideoFormat('16:9');
+
+            // 2. Montage et piste audio par défaut : Sans audio
+            selectAudioOption('none');
+
+            // 3. Modèles de sous-titres par défaut : Sans sous-titres
+            selectSubtitlesOption(false);
+
+            // 4. Fond de base par défaut : Blanc
+            selectBackgroundType('white');
+        }
+
         function selectVideoFormat(fmt) {
             currentSelectedFormat = fmt;
-            const monitorTag = document.getElementById('monitorFormatTag');
-            if (monitorTag) monitorTag.textContent = fmt;
             ['16:9', '9:16', '1:1'].forEach(f => {
                 const idSafe = f.replace(':', '_');
                 const card = document.getElementById(`formatCard_${idSafe}`);
@@ -3193,7 +3263,21 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                     else card.classList.remove('selected');
                 }
             });
+            updateBgPlayerFormat(fmt);
             updateCreationFormValidation();
+        }
+
+        function updateBgPlayerFormat(fmt) {
+            const frame = document.querySelector('.player-monitor-frame');
+            if (!frame) return;
+            frame.classList.remove('ratio-16-9', 'ratio-9-16', 'ratio-1-1');
+            if (fmt === '9:16') {
+                frame.classList.add('ratio-9-16');
+            } else if (fmt === '1:1') {
+                frame.classList.add('ratio-1-1');
+            } else {
+                frame.classList.add('ratio-16-9');
+            }
         }
 
         function updateUploadBoxesVisibility(opt) {
@@ -3722,17 +3806,30 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             selectMontageStyle(styleId);
         }
 
+        document.addEventListener('DOMContentLoaded', applyAppInitialDefaults);
         window.addEventListener('load', async () => {
+            applyAppInitialDefaults();
             // Affichage des cartes de style avec Sans Template ("Libre") sélectionné par défaut
             renderStyleCards(DEFAULT_STYLES);
             renderGradientStopsUI();
-            updateLivePlayerBackground();
+
+            // 1. Format par défaut : 16:9 (rectangle)
+            selectVideoFormat('16:9');
+
+            // 2. Montage et piste audio par défaut : Sans audio
+            selectAudioOption('none');
+
+            // 3. Modèles de sous-titres par défaut : Sans sous-titres
+            selectSubtitlesOption(false);
+
+            // 4. Fond de base par défaut : Blanc
+            selectBackgroundType('white');
             
             selectMontageStyle('none');
             await loadTemplatesFromApi();
 
             // Par défaut dans Format, Audio et Sous-titres, RIEN n'est sélectionné
-            updateUploadBoxesVisibility('full_mix');
+            updateUploadBoxesVisibility('none');
 
             if (currentChannelId) {
                 try {
