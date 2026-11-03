@@ -1362,11 +1362,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         const queryVideo = urlParams.get('video');
         let activeVideoPath = '';
+        function normalizeVideoPath(p) {
+            if (!p) return '';
+            let s = String(p).trim().replace(/^\/+/, '');
+            if (!s.includes('/') && !s.startsWith('04_Videos') && !s.startsWith('03_Chaines')) {
+                s = '04_Videos/' + s;
+            }
+            return s;
+        }
         if (queryVideo) {
-            activeVideoPath = queryVideo;
+            activeVideoPath = normalizeVideoPath(queryVideo);
             localStorage.setItem(CACHE_KEY_ACTIVE, activeVideoPath);
         } else {
-            activeVideoPath = localStorage.getItem(CACHE_KEY_ACTIVE) || '';
+            activeVideoPath = normalizeVideoPath(localStorage.getItem(CACHE_KEY_ACTIVE) || '');
         }
         let lastVideosJson = localStorage.getItem(CACHE_KEY_VIDEOS) || '';
         let lastRendusJson = localStorage.getItem(CACHE_KEY_RENDUS) || '';
@@ -1989,7 +1997,7 @@
 
             // 2. Recharger l'iframe en forçant l'invalidation du cache
             const cacheBuster = '?t=' + Date.now();
-            previewFrame.src = activeVideoPath + cacheBuster;
+            previewFrame.src = '/' + activeVideoPath.replace(/^\/+/, '') + cacheBuster;
 
             // 3. Réinitialiser la timeline au début
             currentFrame = 0;
@@ -2422,8 +2430,9 @@
                 const fnLower = chosenName.toLowerCase();
                 const isShort = fnLower.includes('short') || fnLower.includes('tiktok') || fnLower.includes('reels') || fnLower.includes('9-16') || fnLower.includes('portrait');
                 setFormat(isShort ? '9:16' : '16:9');
-                if (!previewFrame.src.endsWith(targetPath)) {
-                    previewFrame.src = targetPath;
+                const resolvedTarget = '/' + targetPath.replace(/^\/+/, '');
+                if (!previewFrame.src.endsWith(targetPath) && !previewFrame.src.endsWith(resolvedTarget)) {
+                    previewFrame.src = resolvedTarget;
                 }
             }
         }
@@ -2495,8 +2504,9 @@
             }
             setFormat(detectedFmt);
 
-            if (!previewFrame.src.endsWith(videoSrc)) {
-                previewFrame.src = videoSrc;
+            const resolvedSelect = '/' + videoSrc.replace(/^\/+/, '');
+            if (!previewFrame.src.endsWith(videoSrc) && !previewFrame.src.endsWith(resolvedSelect)) {
+                previewFrame.src = resolvedSelect;
             }
 
             currentFrame = 0;
@@ -2570,7 +2580,7 @@
                     const fileName = activeVideoPath.split('/').pop();
                     const nameEl = document.getElementById('activeCompositionName');
                     if (nameEl) nameEl.textContent = fileName;
-                    if (previewFrame) previewFrame.src = activeVideoPath;
+                    if (previewFrame && activeVideoPath) previewFrame.src = '/' + activeVideoPath.replace(/^\/+/, '');
                 }
 
                 // 2. Restaurer la liste des vidéos

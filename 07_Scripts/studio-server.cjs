@@ -140,8 +140,13 @@ const server = http.createServer(async (req, res) => {
                     if (stageMatch) {
                         duration = parseFloat(stageMatch[1]);
                     } else {
-                        const durMatch = content.match(/duration:\s*([0-9.]+)/i);
-                        if (durMatch) duration = parseFloat(durMatch[1]);
+                        const configMatch = content.match(/VIDEO_CONFIG\s*=\s*\{[^}]*duration:\s*([0-9.]+)/i);
+                        if (configMatch) {
+                            duration = parseFloat(configMatch[1]);
+                        } else {
+                            const durMatch = content.match(/duration:\s*([0-9.]+)/i);
+                            if (durMatch) duration = parseFloat(durMatch[1]);
+                        }
                     }
 
                     // Format
@@ -1429,7 +1434,16 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    const isInsideRoot = filePath.startsWith(ROOT_DIR);
+        // Résolution intelligente : si non trouvé, vérifier dans 04_Videos/
+    if (!fs.existsSync(filePath)) {
+        const baseName = path.basename(reqPath);
+        const inVideos = path.join(ROOT_DIR, '04_Videos', baseName);
+        if (fs.existsSync(inVideos)) {
+            filePath = inVideos;
+        }
+    }
+
+const isInsideRoot = filePath.startsWith(ROOT_DIR);
     const isInsideUserData = Boolean(process.env.VIBE_USER_DATA && filePath.startsWith(process.env.VIBE_USER_DATA));
     if (!isInsideRoot && !isInsideUserData) {
         res.writeHead(403);

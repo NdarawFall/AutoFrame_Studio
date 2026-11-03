@@ -287,11 +287,20 @@
             pointer-events: none;
         }
     </style>
+    <script>
+        window.VIDEO_CONFIG = {
+            duration: 10.0,
+            fps: 60,
+            format: '16:9',
+            width: 1920,
+            height: 1080
+        };
+    </script>
 </head>
 <body>
 
     <div id="stage-container">
-        <div id="stage">
+        <div id="stage" data-duration="10.0" data-width="1920" data-height="1080">
 
             <!-- 1. SPOTLIGHT BLANC INTENSE MOBILE -->
             <div id="spotlight-disc"></div>
