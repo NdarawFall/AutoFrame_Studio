@@ -49,59 +49,24 @@
             transform: translate(-50%, -50%);
             background: #000000;
             overflow: hidden;
-            box-shadow: 0 0 100px rgba(0, 0, 0, 0.95);
         }
 
         /* ==========================================================================
-           1. SYSTÈME DE SPOTLIGHT & FAISCEAU LUMINEUX VOLUMÉTRIQUE (TORCHE / SPOT)
-           Seule la zone où regarde l'œil est illuminée par la lumière blanche !
+           1. FAISCEAU DIRECTIONNEL ÉPURÉ (ŒIL -> CARTE CIBLÉE)
+           Aucun halo blanc baveux sur l'œil ni sur le décor !
            ========================================================================== */
-        
-        /* Disque lumineux blanc intense focalisé */
-        #spotlight-disc {
-            position: absolute;
-            width: 820px;
-            height: 820px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, 
-                rgba(255, 255, 255, 0.98) 0%, 
-                rgba(255, 255, 255, 0.65) 28%, 
-                rgba(255, 255, 255, 0.22) 60%, 
-                transparent 100%);
-            filter: blur(45px);
-            pointer-events: none;
-            z-index: 5;
-            transform: translate(-50%, -50%);
-            left: 960px;
-            top: 340px;
-            opacity: 0;
-            mix-blend-mode: screen;
-        }
-
-        /* Cône volumétrique lumineux (Faisceau comme un projecteur de cinéma/lampe torche) */
-        #light-cone-svg {
+        #light-beam-svg {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 6;
-            opacity: 0;
+            z-index: 10;
             mix-blend-mode: screen;
-            filter: blur(12px);
-        }
-
-        /* Masque d'obscurité totale qui bloque tout sauf le spot */
-        #ambient-vignette {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 8;
-            background: radial-gradient(circle 950px at 960px 540px, transparent 15%, rgba(0, 0, 0, 0.85) 55%, #000000 90%);
         }
 
         /* ==========================================================================
-           2. CONTENEUR & ANATOMIE DE L'ŒIL RÉALISTE
+           2. CONTENEUR DE L'ŒIL RÉALISTE (OUVERT DÈS LE DÉPART, SANS HALO)
            ========================================================================== */
         #eye-container {
             position: absolute;
@@ -124,6 +89,8 @@
 
         /* ==========================================================================
            3. CARTES INTERACTIVES (Card 1 à Gauche, Card 2 à Droite)
+           La carte regardée est CLAIRE avec lumière nette sur les bords.
+           L'autre carte est SOMBRE. Pas de projecteur baveux !
            ========================================================================== */
         .tech-card {
             position: absolute;
@@ -134,40 +101,25 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: rgba(13, 17, 28, 0.95);
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), 0 0 70px rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
+            background: #0a0e1a;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95);
             z-index: 20;
             transform-origin: center center;
             opacity: 0;
-            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+            /* Pas de transitions CSS pour garantir un scrubbing GSAP 100% deterministe et reactif */
         }
 
         /* Card 1 — Gauche */
         #card-left {
             left: 170px;
             top: 530px;
-            border-left: 4px solid #00f0ff;
         }
 
         /* Card 2 — Droite */
         #card-right {
             right: 170px;
             top: 530px;
-            border-right: 4px solid #a855f7;
-        }
-
-        /* Halo de lumière blanche intense qui s'allume quand la carte est regardée */
-        .card-spot-light {
-            position: absolute;
-            inset: -50px;
-            border-radius: 50px;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.18) 45%, transparent 75%);
-            filter: blur(35px);
-            z-index: -1;
-            opacity: 0;
-            pointer-events: none;
         }
 
         .card-pill-tag {
@@ -185,17 +137,15 @@
         }
 
         .tag-cyan {
-            background: rgba(0, 240, 255, 0.2);
-            border: 1px solid rgba(0, 240, 255, 0.6);
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(0, 240, 255, 0.5);
             color: #00f0ff;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
 
         .tag-purple {
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid rgba(168, 85, 247, 0.6);
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.5);
             color: #c084fc;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
         }
 
         .card-title {
@@ -220,7 +170,7 @@
             align-items: center;
             justify-content: space-between;
             padding-top: 18px;
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-top: 1px solid rgba(255, 255, 255, 0.10);
         }
 
         .metric-value {
@@ -269,7 +219,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.35);
             letter-spacing: 3px;
             text-transform: uppercase;
             z-index: 35;
@@ -291,25 +241,24 @@
     <div id="stage-container">
         <div id="stage" data-duration="10.0" data-width="1920" data-height="1080">
 
-            <!-- 1. SPOTLIGHT BLANC INTENSE MOBILE -->
-            <div id="spotlight-disc"></div>
-
-            <!-- Faisceau lumineux volumétrique SVG -->
-            <svg id="light-cone-svg" viewBox="0 0 1920 1080">
+            <!-- 1. FAISCEAU DIRECTIONNEL ÉPURÉ SANS HALO BAVEUX -->
+            <svg id="light-beam-svg" viewBox="0 0 1920 1080">
                 <defs>
-                    <linearGradient id="coneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
-                        <stop offset="50%" stop-color="#ffffff" stop-opacity="0.35" />
-                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05" />
+                    <linearGradient id="beamLeftGrad" x1="960" y1="330" x2="405" y2="695" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.40" />
+                        <stop offset="60%" stop-color="#00f0ff" stop-opacity="0.14" />
+                        <stop offset="100%" stop-color="#00f0ff" stop-opacity="0.0" />
+                    </linearGradient>
+                    <linearGradient id="beamRightGrad" x1="960" y1="330" x2="1515" y2="695" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.40" />
+                        <stop offset="60%" stop-color="#c084fc" stop-opacity="0.14" />
+                        <stop offset="100%" stop-color="#c084fc" stop-opacity="0.0" />
                     </linearGradient>
                 </defs>
-                <polygon id="conePolygon" points="960,330 760,700 1160,700" fill="url(#coneGrad)" />
+                <polygon id="beamPolygon" points="960,330 960,330 960,330" fill="url(#beamLeftGrad)" opacity="0" />
             </svg>
 
-            <!-- Masque d'obscurité ambiante -->
-            <div id="ambient-vignette"></div>
-
-            <!-- 2. ŒIL RÉALISTE AVEC FORME ANATOMIQUE COMPLÈTE (ALMOND SHAPE) DÈS LE DÉPART -->
+            <!-- 2. ŒIL RÉALISTE : OUVERT DÈS LE DÉPART (FRAME 0) -->
             <div id="eye-container">
                 <svg id="eye-svg" viewBox="-220 -130 440 260">
                     <defs>
@@ -330,22 +279,14 @@
                             <stop offset="100%" stop-color="#082f49" />
                         </radialGradient>
 
-                        <!-- Dégradé volumétrique de peau pour la paupière fermée -->
-                        <radialGradient id="eyelidClosedGrad" cx="50%" cy="40%" r="65%">
-                            <stop offset="0%" stop-color="#1e293b" />
-                            <stop offset="65%" stop-color="#0f172a" />
-                            <stop offset="100%" stop-color="#020617" />
-                        </radialGradient>
-
                         <!-- Dégradé du contour orbital -->
                         <linearGradient id="orbitalBorderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="rgba(255,255,255,0.18)" />
-                            <stop offset="50%" stop-color="rgba(255,255,255,0.45)" />
-                            <stop offset="100%" stop-color="rgba(255,255,255,0.18)" />
+                            <stop offset="0%" stop-color="rgba(255,255,255,0.2)" />
+                            <stop offset="50%" stop-color="rgba(255,255,255,0.5)" />
+                            <stop offset="100%" stop-color="rgba(255,255,255,0.2)" />
                         </linearGradient>
 
-                        <!-- ClipPath d'ouverture/fermeture de l'œil -->
-                        <!-- Centré sur (0,0) : hauteur max y = -95 à +95 -->
+                        <!-- ClipPath d'ouverture/fermeture de l'œil (Ouvert dès le départ) -->
                         <clipPath id="eyeOpeningClip">
                             <path id="eyeOpeningPath" d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" />
                         </clipPath>
@@ -358,26 +299,17 @@
                         </radialGradient>
                     </defs>
 
-                    <!-- A. BASE ORBITALE : FORME ANATOMIQUE COMPLÈTE DE L'ŒIL DÈS LE DÉPART -->
+                    <!-- A. BASE ORBITALE : FORME EN AMANDE NATURELLE -->
                     <path id="eyeSocketBase" 
                           d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" 
-                          fill="url(#eyelidClosedGrad)" 
+                          fill="url(#scleraGrad)" 
                           stroke="url(#orbitalBorderGrad)" 
                           stroke-width="2" />
 
-                    <!-- Fente de fermeture naturelle & ombrage palpébral (visible quand l'œil est fermé) -->
-                    <g id="closedLidGroup">
-                        <!-- Ombre douce de frange de cils fermés -->
-                        <path d="M -160,0 Q 0,26 160,0" fill="none" stroke="#050811" stroke-width="6" opacity="0.75" />
-                        <!-- Ligne de jonction anatomique où les paupières se rencontrent -->
-                        <path id="closedLidSeam" d="M -170,0 Q -80,18 0,22 Q 80,18 170,0" 
-                              fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" />
-                    </g>
-
-                    <!-- Canthus interne (coin de l'œil anatomique) -->
+                    <!-- Canthus interne (coin anatomique) -->
                     <path d="M -175,0 Q -166,-6 -158,0 Q -166,6 -175,0 Z" fill="rgba(244, 114, 182, 0.3)" />
 
-                    <!-- B. GLOBE OCULAIRE DÉCOUPÉ PAR LE CLIPPING D'OUVERTURE -->
+                    <!-- B. GLOBE OCULAIRE DÉCOUPÉ PAR LE CLIPPING DES PAUPIÈRES -->
                     <g clip-path="url(#eyeOpeningClip)" id="eyeballLayer">
                         <!-- Sclère blanche ombrée 3D -->
                         <rect x="-220" y="-130" width="440" height="260" fill="url(#scleraGrad)" />
@@ -410,11 +342,11 @@
 
                     <!-- C. BORD ANATOMIQUE DES PAUPIÈRES OUVERTES -->
                     <path id="eyelidBorder" d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" 
-                          fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="2.5" stroke-linecap="round" opacity="0" />
+                          fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="2.5" stroke-linecap="round" />
 
-                    <!-- Ligne de cils supérieurs quand l'œil est ouvert -->
+                    <!-- Ligne de cils supérieurs -->
                     <path id="eyelashLineUpper" d="M -155,-18 Q 0,-100 155,-18" 
-                          fill="none" stroke="rgba(203, 213, 225, 0.5)" stroke-width="2" stroke-dasharray="3 4" opacity="0" />
+                          fill="none" stroke="rgba(203, 213, 225, 0.5)" stroke-width="2" stroke-dasharray="3 4" />
 
                     <!-- Pli palpébral supérieur naturel (Crease) -->
                     <path id="eyelidCrease" d="M -145,-15 Q 0,-45 145,-15" 
@@ -424,7 +356,6 @@
 
             <!-- 3. CARTE 1 : GAUCHE (Apparition Élastique 3D) -->
             <div class="tech-card" id="card-left">
-                <div class="card-spot-light" id="card-spot-left"></div>
                 <div>
                     <span class="card-pill-tag tag-cyan">
                         <span style="width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff;"></span>
@@ -451,7 +382,6 @@
 
             <!-- 4. CARTE 2 : DROITE (Apparition Glissement Cinétique & Flou) -->
             <div class="tech-card" id="card-right">
-                <div class="card-spot-light" id="card-spot-right"></div>
                 <div>
                     <span class="card-pill-tag tag-purple">
                         <span style="width:7px; height:7px; border-radius:50%; background:#c084fc; box-shadow:0 0 8px #c084fc;"></span>
@@ -497,30 +427,26 @@
         window.addEventListener('resize', scaleStage);
         scaleStage();
 
-        // Éléments du Spotlight & Faisceau
-        const spotlightDisc = document.getElementById('spotlight-disc');
-        const conePolygon = document.getElementById('conePolygon');
-        const lightConeSvg = document.getElementById('light-cone-svg');
-
-        const spotState = {
-            x: 960,
-            y: 330,
+        // Gestion du faisceau directionnel
+        const beamState = {
+            x2: 960,
+            y2: 330,
+            x3: 960,
+            y3: 330,
             opacity: 0,
-            scale: 0.6,
-            coneOpacity: 0
+            target: 'none'
         };
 
-        function updateSpotlight() {
-            if (spotlightDisc) {
-                spotlightDisc.style.left = `${spotState.x}px`;
-                spotlightDisc.style.top = `${spotState.y}px`;
-                spotlightDisc.style.opacity = spotState.opacity;
-                spotlightDisc.style.transform = `translate(-50%, -50%) scale(${spotState.scale})`;
-            }
-            if (lightConeSvg && conePolygon) {
-                lightConeSvg.style.opacity = spotState.coneOpacity;
-                const w = 280 * spotState.scale;
-                conePolygon.setAttribute('points', `960,330 ${spotState.x - w},${spotState.y} ${spotState.x + w},${spotState.y}`);
+        function updateBeam() {
+            const poly = document.getElementById('beamPolygon');
+            if (poly) {
+                poly.setAttribute('points', `960,330 ${beamState.x2},${beamState.y2} ${beamState.x3},${beamState.y3}`);
+                poly.style.opacity = beamState.opacity;
+                if (beamState.x2 < 960) {
+                    poly.setAttribute('fill', 'url(#beamLeftGrad)');
+                } else {
+                    poly.setAttribute('fill', 'url(#beamRightGrad)');
+                }
             }
         }
 
@@ -529,94 +455,51 @@
         // ======================================================================
         const tl = gsap.timeline({ 
             paused: isIframeMode,
-            onUpdate: updateSpotlight
+            onUpdate: updateBeam
         });
         window.tl = tl;
         window.timeline = tl;
 
-        // Chemins SVG anatomiques centrés sur (0,0) pour le clignement réaliste :
+        // Chemins SVG anatomiques :
         const PATH_OPEN = "M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z";
         const PATH_CLOSED = "M -175,0 Q 0,22 175,0 Q 0,22 -175,0 Z";
         const PATH_SQUINT = "M -175,0 Q 0,-48 175,0 Q 0,55 -175,0 Z";
 
-        // État initial à t = 0 : L'œil a sa forme complète d'amande visible mais paupière fermée
-        gsap.set('#eyeOpeningPath', { attr: { d: PATH_CLOSED } });
-        gsap.set('#eyelidBorder', { attr: { d: PATH_CLOSED }, opacity: 0 });
-        gsap.set('#closedLidGroup', { opacity: 1 });
-        gsap.set('#eyelashLineUpper', { opacity: 0 });
-        gsap.set('#eyelidCrease', { opacity: 0.55, y: 6 });
+        // État initial à t = 0 : Œil OUVERT dès le départ, alerte et centré
+        gsap.set(['#eyeOpeningPath', '#eyelidBorder'], { attr: { d: PATH_OPEN } });
+        gsap.set('#eyelashLineUpper', { opacity: 1 });
+        gsap.set('#eyelidCrease', { opacity: 1, y: 0 });
         gsap.set('#eyeGazeGroup', { x: 0, y: 0 });
-        gsap.set('#eyeSocketBase', { opacity: 0.95 });
-        gsap.set(spotState, { x: 960, y: 330, opacity: 0, scale: 0.5, coneOpacity: 0 });
-        updateSpotlight();
+        gsap.set('#pupilCircle', { attr: { r: 26 } });
+        gsap.set('#eyeSocketBase', { opacity: 1 });
+        gsap.set(beamState, { opacity: 0, target: 'none' });
+        updateBeam();
 
         // ----------------------------------------------------------------------
-        // PHASE 1 : LE RÉVEIL & CLIGNEMENT RÉALISTE (0.0s -> 1.8s)
+        // PHASE 1 : OBSERVATION INITIALE & PREMIER CLIGNEMENT NATUREL (0.0s -> 1.8s)
+        // L'œil est ouvert dès la frame 0 !
         // ----------------------------------------------------------------------
-        // À 0.3s : La lumière s'allume au centre et l'œil s'ouvre avec morphing des paupières
-        tl.to(spotState, {
-            opacity: 0.9,
-            scale: 0.85,
-            duration: 0.7,
-            ease: 'power2.out'
-        }, 0.3);
-
-        tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
-            attr: { d: PATH_OPEN },
-            duration: 0.8,
-            ease: 'power2.inOut'
-        }, 0.3);
-
-        tl.to('#eyelidBorder', {
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power1.out'
-        }, 0.4);
-
-        tl.to('#closedLidGroup', {
-            opacity: 0,
-            duration: 0.5,
-            ease: 'power1.out'
-        }, 0.35);
-
-        tl.to('#eyelashLineUpper', {
-            opacity: 1,
-            duration: 0.6,
-            ease: 'power1.out'
-        }, 0.45);
-
-        tl.to('#eyelidCrease', {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'power2.out'
-        }, 0.3);
-
-        // Premier clignement naturel rapide (Blink 1) : fermeture en 0.10s, réouverture en 0.14s
+        // Premier clignement naturel rapide (Blink 1) à 0.90s : fermeture en 0.10s, réouverture en 0.14s
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_CLOSED },
             duration: 0.10,
             ease: 'power2.in'
-        }, 1.15);
-        tl.to('#eyelidBorder', { opacity: 0, duration: 0.08 }, 1.15);
-        tl.to('#closedLidGroup', { opacity: 1, duration: 0.08 }, 1.15);
-        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.08 }, 1.15);
-        tl.to('#eyelidCrease', { opacity: 0.4, y: 6, duration: 0.10 }, 1.15);
+        }, 0.90);
+        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.08 }, 0.90);
+        tl.to('#eyelidCrease', { opacity: 0.4, y: 6, duration: 0.10 }, 0.90);
 
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_OPEN },
             duration: 0.14,
             ease: 'power2.out'
-        }, 1.25);
-        tl.to('#eyelidBorder', { opacity: 1, duration: 0.10 }, 1.27);
-        tl.to('#closedLidGroup', { opacity: 0, duration: 0.10 }, 1.27);
-        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 1.27);
-        tl.to('#eyelidCrease', { opacity: 1, y: 0, duration: 0.14 }, 1.25);
+        }, 1.00);
+        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 1.02);
+        tl.to('#eyelidCrease', { opacity: 1, y: 0, duration: 0.14 }, 1.00);
 
         // ----------------------------------------------------------------------
         // PHASE 2 : APPARITION CARD 1 & POURSUITE DU REGARD / LUMIÈRE (1.8s -> 4.5s)
         // ----------------------------------------------------------------------
-        // Animation Entrée Card 1 (Élastique 3D / Pop depuis le haut-gauche)
+        // Entrée Card 1 (Élastique 3D / Pop depuis le haut-gauche)
         tl.fromTo('#card-left', 
             {
                 opacity: 0,
@@ -649,27 +532,30 @@
 
         // Dilatation pupillaire
         tl.to('#pupilCircle', {
-            attr: { r: 30 },
+            attr: { r: 31 },
             duration: 0.35,
             ease: 'power2.out'
         }, 2.05);
 
-        // LE SPOTLIGHT BALAYE VERS LA GAUCHE & ILLUMINE CARD 1 !
-        tl.to(spotState, {
-            x: 405,
-            y: 695,
-            scale: 1.15,
-            opacity: 1.0,
-            coneOpacity: 0.55,
-            duration: 0.65,
+        // FAISCEAU DIRECTIONNEL VERS CARD 1 & LUMIÈRE NETTE SUR LES BORDS
+        tl.call(() => { beamState.target = 'left'; }, null, 1.95);
+        tl.to(beamState, {
+            x2: 170,
+            y2: 695,
+            x3: 640,
+            y3: 695,
+            opacity: 0.35,
+            duration: 0.50,
             ease: 'power3.out'
         }, 2.0);
 
-        tl.to('#card-spot-left', {
-            opacity: 1,
-            duration: 0.5,
+        // Lumière vive sur les bords de Card 1 (active-left)
+        tl.to('#card-left', {
+            borderColor: '#00f0ff',
+            boxShadow: '0 0 35px rgba(0, 240, 255, 0.65), inset 0 0 20px rgba(0, 240, 255, 0.14), 0 40px 90px rgba(0, 0, 0, 0.95)',
+            duration: 0.4,
             ease: 'power2.out'
-        }, 2.1);
+        }, 2.0);
 
         // Lévitation douce de Card 1
         tl.to('#card-left', {
@@ -680,7 +566,7 @@
             ease: 'sine.inOut'
         }, 2.75);
 
-        // Micro-clignement naturel pendant l'observation
+        // Micro-squint d'accommodation pendant l'analyse
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_SQUINT },
             duration: 0.11,
@@ -695,7 +581,7 @@
         // ----------------------------------------------------------------------
         // PHASE 3 : APPARITION CARD 2 & BASCULE DU REGARD / LUMIÈRE (4.6s -> 7.4s)
         // ----------------------------------------------------------------------
-        // Animation Entrée Card 2 (Totalement différente : glissement cinétique net avec skew)
+        // Entrée Card 2 (Glissement cinétique net avec skew)
         tl.fromTo('#card-right',
             {
                 opacity: 0,
@@ -720,41 +606,48 @@
         tl.to('#eyeGazeGroup', {
             x: 55,
             y: 18,
+            duration: 0.52,
+            ease: 'power3.inOut'
+        }, 4.8);
+
+        // Adaptation pupillaire
+        tl.to('#pupilCircle', {
+            attr: { r: 24 },
+            duration: 0.22,
+            ease: 'power1.in'
+        }, 4.8);
+        tl.to('#pupilCircle', {
+            attr: { r: 30 },
+            duration: 0.35,
+            ease: 'power2.out'
+        }, 5.05);
+
+        // BASCULE DE LUMIÈRE : CARD 1 S'ÉTEINT (SOMBRE), CARD 2 S'ALLUME (CLAIRE + BORDS LUMINEUX)
+        tl.to('#card-left', {
+            opacity: 0.10,
+            borderColor: 'rgba(255, 255, 255, 0.05)',
+            boxShadow: 'none',
+            duration: 0.45,
+            ease: 'power2.inOut'
+        }, 4.8);
+
+        tl.call(() => { beamState.target = 'right'; }, null, 4.95);
+        tl.to(beamState, {
+            x2: 1280,
+            y2: 695,
+            x3: 1750,
+            y3: 695,
+            opacity: 0.35,
             duration: 0.55,
             ease: 'power3.inOut'
         }, 4.8);
 
-        // Rétraction puis re-dilatation pupillaire
-        tl.to('#pupilCircle', {
-            attr: { r: 24 },
-            duration: 0.25,
-            ease: 'power1.in'
-        }, 4.8);
-        tl.to('#pupilCircle', {
-            attr: { r: 29 },
-            duration: 0.35,
+        tl.to('#card-right', {
+            borderColor: '#c084fc',
+            boxShadow: '0 0 35px rgba(192, 132, 252, 0.65), inset 0 0 20px rgba(192, 132, 252, 0.14), 0 40px 90px rgba(0, 0, 0, 0.95)',
+            duration: 0.45,
             ease: 'power2.out'
-        }, 5.1);
-
-        // LE SPOTLIGHT BALAYE L'ÉCRAN : CARD 1 REPLONGE DANS LE NOIR, CARD 2 S'ILLUMINE !
-        tl.to('#card-spot-left', { opacity: 0, duration: 0.4 }, 4.8);
-        tl.to('#card-left', { opacity: 0.08, duration: 0.5, ease: 'power2.in' }, 4.9);
-
-        tl.to(spotState, {
-            x: 1515,
-            y: 695,
-            scale: 1.15,
-            opacity: 1.0,
-            coneOpacity: 0.55,
-            duration: 0.65,
-            ease: 'power3.inOut'
-        }, 4.8);
-
-        tl.to('#card-spot-right', {
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.out'
-        }, 5.1);
+        }, 4.95);
 
         // Lévitation douce de Card 2
         tl.to('#card-right', {
@@ -766,85 +659,68 @@
         }, 5.45);
 
         // ----------------------------------------------------------------------
-        // PHASE 4 : RETOUR AU CENTRE & CLIGNEMENT DE FERMETURE (7.5s -> 10.0s)
+        // PHASE 4 : RETOUR AU CENTRE & CLIGNEMENT DE FERMETURE (7.4s -> 10.0s)
         // ----------------------------------------------------------------------
-        // L'œil revient au centre et fixe le spectateur
+        // L'œil revient au centre pour fixer le spectateur
         tl.to('#eyeGazeGroup', {
             x: 0,
             y: 0,
-            duration: 0.6,
+            duration: 0.55,
             ease: 'power2.inOut'
-        }, 7.5);
+        }, 7.4);
 
-        // Le spotlight revient au centre et s'élargit
-        tl.to('#card-spot-right', { opacity: 0.35, duration: 0.6 }, 7.5);
-        tl.to('#card-left', { opacity: 0.65, duration: 0.6 }, 7.5);
+        // Faisceau s'éteint et les cartes replongent dans l'obscurité
+        tl.to(beamState, {
+            opacity: 0,
+            duration: 0.50,
+            ease: 'power2.out'
+        }, 7.4);
 
-        tl.to(spotState, {
-            x: 960,
-            y: 500,
-            scale: 1.8,
-            opacity: 0.85,
-            coneOpacity: 0.2,
-            duration: 0.8,
-            ease: 'power2.inOut'
-        }, 7.5);
+        tl.to(['#card-left', '#card-right'], {
+            opacity: 0.10,
+            borderColor: 'rgba(255, 255, 255, 0.05)',
+            boxShadow: 'none',
+            duration: 0.55,
+            ease: 'power2.out'
+        }, 7.4);
 
-        // Clignement final (Blink 3) à 8.6s
+        // Clignement naturel (Blink 2) à 8.6s
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_CLOSED },
-            duration: 0.11,
+            duration: 0.10,
             ease: 'power2.in'
         }, 8.6);
-        tl.to('#eyelidBorder', { opacity: 0, duration: 0.08 }, 8.6);
-        tl.to('#closedLidGroup', { opacity: 1, duration: 0.08 }, 8.6);
         tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.08 }, 8.6);
+        tl.to('#eyelidCrease', { opacity: 0.4, y: 6, duration: 0.10 }, 8.6);
 
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_OPEN },
-            duration: 0.15,
+            duration: 0.14,
             ease: 'power2.out'
-        }, 8.71);
-        tl.to('#eyelidBorder', { opacity: 1, duration: 0.10 }, 8.73);
-        tl.to('#closedLidGroup', { opacity: 0, duration: 0.10 }, 8.73);
-        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 8.73);
+        }, 8.70);
+        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 8.72);
+        tl.to('#eyelidCrease', { opacity: 1, y: 0, duration: 0.14 }, 8.70);
 
-        // Fermeture définitive des paupières et extinction progressive dans le noir
+        // Fermeture définitive et extinction dans le noir à 9.4s
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_CLOSED },
-            duration: 0.75,
+            duration: 0.65,
             ease: 'power2.inOut'
-        }, 9.15);
-        tl.to('#eyelidBorder', { opacity: 0, duration: 0.4 }, 9.2);
-        tl.to('#closedLidGroup', { opacity: 1, duration: 0.5 }, 9.25);
-        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.4 }, 9.15);
+        }, 9.40);
+        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.35 }, 9.40);
 
         tl.to('#eyelidCrease', {
             opacity: 0,
             y: 8,
-            duration: 0.6,
+            duration: 0.55,
             ease: 'power2.in'
-        }, 9.15);
+        }, 9.40);
 
-        tl.to('#eyeSocketBase', {
+        tl.to(['#eyeSocketBase', '#card-left', '#card-right', '#bottom-caption'], {
             opacity: 0,
-            duration: 0.75,
+            duration: 0.60,
             ease: 'power2.in'
-        }, 9.25);
-
-        tl.to(spotState, {
-            opacity: 0,
-            scale: 0.2,
-            coneOpacity: 0,
-            duration: 0.75,
-            ease: 'power2.in'
-        }, 9.15);
-
-        tl.to(['#card-left', '#card-right', '#bottom-caption'], {
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power2.in'
-        }, 9.25);
+        }, 9.45);
 
         // ======================================================================
         // INTERFACE TIMELINE STUDIO DÉTERMINISTE (window.__timeline & window.tl)
@@ -853,18 +729,18 @@
             duration: () => DURATION,
             seek: (time) => {
                 tl.seek(time, false);
-                updateSpotlight();
+                updateBeam();
             },
             pause: () => {
                 tl.pause();
-                updateSpotlight();
+                updateBeam();
             },
             play: () => {
                 tl.play();
             }
         };
 
-        // Support complémentaire postMessage pour robustesse maximale
+        // Support complémentaire postMessage
         window.addEventListener('message', (event) => {
             const data = event.data;
             if (!data) return;
