@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Design Example - Recreation</title>
+    <!--
+      status: "ready"
+      duration: 25.82
+      format: "16:9"
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #stage-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #stage {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            background-color: #060212;
+            overflow: hidden;
+            transform-origin: center center;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Ambient Glow Background */
+        .ambient-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .ambient-glow-1 {
+            position: absolute;
+            width: 1200px;
+            height: 1200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 35, 210, 0.35) 0%, rgba(55, 18, 140, 0.16) 45%, rgba(6, 2, 18, 0) 70%);
+            top: 50%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            filter: blur(50px);
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            width: 1000px;
+            height: 1000px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(35, 20, 110, 0.3) 0%, rgba(15, 8, 50, 0.12) 50%, rgba(6, 2, 18, 0) 75%);
+            top: 40%;
+            left: 30%;
+            transform: translate(-50%, -50%);
+            filter: blur(60px);
+        }
+
+        /* Master Scene Template: Always absolute, inset 0 */
+        .scene {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 1920px !important;
+            height: 1080px !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 2;
+        }
+
+        /* =========================================================================
+           SCENE 1: Vertical 3D Carousel of Cards
+           ========================================================================= */
+        #scene-1 {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        .carousel-track {
+            position: relative;
+            width: 820px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .metric-card {
+            position: absolute;
+            width: 760px;
+            height: 156px;
+            padding: 0 44px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform-origin: center center;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        .metric-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-value {
+            font-size: 46px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .metric-label {
+            font-size: 20px;
+            font-weight: 400;
+            color: #94a3b8;
+            letter-spacing: -0.2px;
+        }
+
+        .metric-icon-wrap {
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .metric-icon-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.7) 0%, rgba(147, 51, 234, 0.2) 60%, transparent 80%);
+            filter: blur(10px);
+        }
+
+        .metric-icon-svg {
+            position: relative;
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            color: #ffffff;
+        }
+
+        /* =========================================================================
+           SCENE 2: Vertical Glowing Timeline
+           ========================================================================= */
+        #scene-2 {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 360px;
+        }
+
+        .timeline-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 520px;
+        }
+
+        .timeline-vertical-line {
+            position: absolute;
+            left: 172px;
+            top: 24px;
+            width: 2px;
+            height: 472px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+            transform-origin: top center;
+            transform: scaleY(0);
+        }
+
+        .timeline-row {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(40px);
+        }
+
+        .timeline-time {
+            width: 140px;
+            text-align: right;
+            font-size: 26px;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .timeline-node {
+            position: relative;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            box-shadow: 0 0 14px #ffffff, 0 0 25px rgba(255, 255, 255, 0.9);
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        .timeline-card {
+            padding: 18px 36px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            font-size: 28px;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+            white-space: nowrap;
+        }
+
+        .timeline-row.active .timeline-card {
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(168, 85, 247, 0.35);
+        }
+
+        /* =========================================================================
+           SCENE 3: Kinetic Branching & Neon Curve Convergence
+           ========================================================================= */
+        #scene-3 {
+            position: absolute;
+            inset: 0;
+        }
+
+        .branch-item {
+            position: absolute;
+            left: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 220px;
+            gap: 16px;
+            opacity: 0;
+            transform: translateX(-30px);
+            z-index: 5;
+        }
+
+        .branch-name {
+            font-size: 26px;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+        }
+
+        .branch-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .branch-dot::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: inherit;
+            filter: blur(6px);
+            opacity: 0.8;
+        }
+
+        .curves-svg {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .curve-path {
+            fill: none;
+            stroke-width: 3.5px;
+            stroke-linecap: round;
+        }
+
+        .sync-title-container {
+            position: absolute;
+            left: 1040px;
+            top: 540px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        .sync-heading {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+
+        .c-yellow { color: #facc15; }
+        .c-pink   { color: #ec4899; }
+        .c-purple { color: #a855f7; }
+        .c-blue   { color: #3b82f6; }
+        .c-green  { color: #22c55e; }
+
+        /* =========================================================================
+           SCENE 4: Workflow Automation Rate
+           ========================================================================= */
+        #scene-4 {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 70px;
+        }
+
+        .rates-title {
+            font-size: 52px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -1.2px;
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        .bars-container {
+            width: 1160px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .rate-block {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .rate-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            width: 100%;
+        }
+
+        .rate-label {
+            font-size: 26px;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+        }
+
+        .rate-value {
+            font-size: 34px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            height: 100%;
+            width: 0%;
+            border-radius: 9999px;
+        }
+
+        .fill-1 {
+            background: linear-gradient(90deg, #ffffff 0%, #60a5fa 30%, #818cf8 65%, #6366f1 100%);
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.65);
+        }
+
+        .fill-2 {
+            background: linear-gradient(90deg, #ffffff 0%, #f472b6 35%, #c084fc 70%, #a855f7 100%);
+            box-shadow: 0 0 25px rgba(244, 114, 182, 0.65);
+        }
+
+        .bar-glow-head {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            filter: blur(8px);
+            opacity: 0.9;
+        }
+
+        /* =========================================================================
+           SCENE 5: Giant Stat & Neon Sine Wave
+           ========================================================================= */
+        #scene-5 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .giant-stat {
+            position: absolute;
+            font-size: 380px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.085);
+            letter-spacing: -8px;
+            user-select: none;
+            opacity: 0;
+            transform: scale(0.92);
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .sine-wave-svg {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .sine-wave-path {
+            fill: none;
+            stroke: #22c55e;
+            stroke-width: 5px;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 12px #22c55e) drop-shadow(0 0 30px rgba(34, 197, 94, 0.8));
+        }
+
+        .sine-head-glow {
+            fill: #ffffff;
+            filter: drop-shadow(0 0 10px #22c55e) drop-shadow(0 0 20px #ffffff);
+            opacity: 0;
+        }
+
+        .profit-subtitle {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        /* =========================================================================
+           SCENE 6: Central Hub & App Ecosystem Orbit
+           ========================================================================= */
+        #scene-6 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hub-canvas-svg {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hub-line-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.8);
+            stroke-width: 2.5px;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+        }
+
+        .hub-center-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .hub-center-badge {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            opacity: 0;
+            transform: scale(0.6);
+        }
+
+        .hub-logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .app-badge {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            opacity: 0;
+            transform: scale(0.4);
+        }
+
+        .app-icon {
+            width: 58px;
+            height: 58px;
+        }
+
+        /* =========================================================================
+           SCENE 7: Actionable Insights Bar Cylinders
+           ========================================================================= */
+        #scene-7 {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .insights-header {
+            position: absolute;
+            top: 140px;
+            width: 1240px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .insights-title {
+            font-size: 46px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -1px;
+        }
+
+        .monthly-pill {
+            padding: 10px 28px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(15px);
+            font-size: 18px;
+            font-weight: 500;
+            color: #cbd5e1;
+            letter-spacing: -0.2px;
+        }
+
+        .capsules-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 52px;
+            height: 480px;
+            margin-top: 60px;
+        }
+
+        .capsule-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            opacity: 0;
+            transform: translateY(60px);
+        }
+
+        .capsule-track {
+            position: relative;
+            width: 120px;
+            height: 380px;
+            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .capsule-liquid {
+            width: 100%;
+            height: 0%;
+            border-radius: 0 0 60px 60px;
+            background: linear-gradient(to top, rgba(76, 29, 149, 0.75) 0%, rgba(109, 40, 217, 0.55) 70%, rgba(139, 92, 246, 0.7) 100%);
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 0 20px rgba(139, 92, 246, 0.35);
+            position: relative;
+        }
+
+        .liquid-sheen {
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.5);
+            filter: blur(1px);
+        }
+
+        .month-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: #94a3b8;
+            letter-spacing: -0.2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Player -->
+    <audio id="bg-audio" preload="auto">
+        <source src="../01_Assets/Audio_Mix/motion_design_example_audio.mp3" type="audio/mpeg">
+        <source src="../01_Assets/Audio_Mix/motion_design_example_audio.m4a" type="audio/mp4">
+    </audio>
+
+    <div id="stage-container">
+        <div id="stage" data-duration="25.82" data-format="16:9">
+            <!-- Ambient Background Glows -->
+            <div class="ambient-bg">
+                <div class="ambient-glow-1"></div>
+                <div class="ambient-glow-2"></div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 1: Carousel 3D Cards
+                 =============================================================== -->
+            <div id="scene-1" class="scene">
+                <div class="carousel-track">
+                    <!-- Card 0: 32 Active Deals (Bottom Peek) -->
+                    <div id="card-0" class="metric-card">
+                        <div class="metric-info">
+                            <span class="metric-value">32 Active Deals</span>
+                            <span class="metric-label">Sales pipeline tracking</span>
+                        </div>
+                        <div class="metric-icon-wrap">
+                            <div class="metric-icon-glow"></div>
+                            <svg class="metric-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="3"></rect>
+                                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card 1: +$24,580 -->
+                    <div id="card-1" class="metric-card">
+                        <div class="metric-info">
+                            <span class="metric-value">+$24,580</span>
+                            <span class="metric-label">Revenue generated this month</span>
+                        </div>
+                        <div class="metric-icon-wrap">
+                            <div class="metric-icon-glow"></div>
+                            <svg class="metric-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="4 17 10 11 15 16 21 8"></polyline>
+                                <polyline points="16 8 21 8 21 13"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: 12h Saved -->
+                    <div id="card-2" class="metric-card">
+                        <div class="metric-info">
+                            <span class="metric-value">12h Saved</span>
+                            <span class="metric-label">Weekly automation efficiency</span>
+                        </div>
+                        <div class="metric-icon-wrap">
+                            <div class="metric-icon-glow"></div>
+                            <svg class="metric-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <polyline points="12 7 12 12 15.5 14"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: 18 Countries -->
+                    <div id="card-3" class="metric-card">
+                        <div class="metric-info">
+                            <span class="metric-value">18 Countries</span>
+                            <span class="metric-label">Global client coverage</span>
+                        </div>
+                        <div class="metric-icon-wrap">
+                            <div class="metric-icon-glow"></div>
+                            <svg class="metric-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: 4.8 Rating (Top Peek) -->
+                    <div id="card-4" class="metric-card">
+                        <div class="metric-info">
+                            <span class="metric-value">4.8 Rating</span>
+                            <span class="metric-label">Customer satisfaction score</span>
+                        </div>
+                        <div class="metric-icon-wrap">
+                            <div class="metric-icon-glow"></div>
+                            <svg class="metric-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 2: Vertical Glowing Timeline
+                 =============================================================== -->
+            <div id="scene-2" class="scene">
+                <div class="timeline-container">
+                    <div class="timeline-vertical-line" id="timeline-line"></div>
+
+                    <!-- Row 1 -->
+                    <div class="timeline-row" id="tl-row-1">
+                        <span class="timeline-time">07:45 am</span>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-card">Marketing Analytics Strategy Review</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="timeline-row" id="tl-row-2">
+                        <span class="timeline-time">10:15 am</span>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-card">UX Research Session</div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="timeline-row active" id="tl-row-3">
+                        <span class="timeline-time">12:30 pm</span>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-card">CRM Platform Dashboard Update</div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="timeline-row" id="tl-row-4">
+                        <span class="timeline-time">04:00 pm</span>
+                        <div class="timeline-node"></div>
+                        <div class="timeline-card">Investor Pitch Deck</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 3: Everything in sync & Curved Beziers
+                 =============================================================== -->
+            <div id="scene-3" class="scene">
+                <!-- Left 7 Labels & Dots positioned at exact Y coordinates (240 to 840) -->
+                <div class="branch-item" id="branch-item-1" style="top: 233px;">
+                    <span class="branch-name">Analytics</span>
+                    <div class="branch-dot" style="background-color: #facc15;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-2" style="top: 333px;">
+                    <span class="branch-name">CRM</span>
+                    <div class="branch-dot" style="background-color: #22c55e;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-3" style="top: 433px;">
+                    <span class="branch-name">Payments</span>
+                    <div class="branch-dot" style="background-color: #e879f9;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-4" style="top: 533px;">
+                    <span class="branch-name">Cloud</span>
+                    <div class="branch-dot" style="background-color: #3b82f6;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-5" style="top: 633px;">
+                    <span class="branch-name">AI</span>
+                    <div class="branch-dot" style="background-color: #c084fc;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-6" style="top: 733px;">
+                    <span class="branch-name">Marketing</span>
+                    <div class="branch-dot" style="background-color: #10b981;"></div>
+                </div>
+                <div class="branch-item" id="branch-item-7" style="top: 833px;">
+                    <span class="branch-name">Security</span>
+                    <div class="branch-dot" style="background-color: #eab308;"></div>
+                </div>
+
+                <!-- SVG Curved Beziers connecting (500, y) to (1030, 540) -->
+                <svg class="curves-svg" viewBox="0 0 1920 1080">
+                    <defs>
+                        <filter id="glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="5" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <path id="curve-1" class="curve-path" stroke="#facc15" d="M 500 240 C 720 240, 920 540, 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-2" class="curve-path" stroke="#22c55e" d="M 500 340 C 730 340, 920 540, 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-3" class="curve-path" stroke="#e879f9" d="M 500 440 C 740 440, 920 540, 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-4" class="curve-path" stroke="#3b82f6" d="M 500 540 L 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-5" class="curve-path" stroke="#c084fc" d="M 500 640 C 740 640, 920 540, 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-6" class="curve-path" stroke="#10b981" d="M 500 740 C 730 740, 920 540, 1030 540" filter="url(#glow-filter)" />
+                    <path id="curve-7" class="curve-path" stroke="#eab308" d="M 500 840 C 720 840, 920 540, 1030 540" filter="url(#glow-filter)" />
+                </svg>
+
+                <!-- Title "Everything in sync" -->
+                <div class="sync-title-container" id="sync-title">
+                    <h2 class="sync-heading">
+                        <span class="c-yellow">E</span><span class="c-pink">very</span><span class="c-purple">thing</span> <span class="c-blue">in</span> <span class="c-green">sync</span>
+                    </h2>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 4: Workflow Automation Rate
+                 =============================================================== -->
+            <div id="scene-4" class="scene">
+                <h2 class="rates-title" id="rates-title">Workflow Automation Rate</h2>
+                <div class="bars-container">
+                    <!-- Bar 1 -->
+                    <div class="rate-block" id="rate-block-1">
+                        <div class="rate-meta">
+                            <span class="rate-label">Tasks Automated</span>
+                            <span class="rate-value" id="rate-val-1">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill fill-1" id="rate-bar-1">
+                                <div class="bar-glow-head"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bar 2 -->
+                    <div class="rate-block" id="rate-block-2">
+                        <div class="rate-meta">
+                            <span class="rate-label">Manual Processing</span>
+                            <span class="rate-value" id="rate-val-2">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill fill-2" id="rate-bar-2">
+                                <div class="bar-glow-head"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 5: Giant Stat 125% & Wave Line
+                 =============================================================== -->
+            <div id="scene-5" class="scene">
+                <span class="giant-stat" id="giant-stat-num">0%</span>
+
+                <svg class="sine-wave-svg" viewBox="0 0 1920 1080">
+                    <path id="sine-wave" class="sine-wave-path" d="M 140 880 Q 320 800 460 700 T 780 570 T 1100 500 T 1440 520 T 1780 340" />
+                    <circle id="sine-head" class="sine-head-glow" r="7" cx="140" cy="880" />
+                </svg>
+
+                <span class="profit-subtitle" id="profit-sub">*Annual profit growth</span>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 6: Central Hub (LOGO) & App Ecosystem
+                 =============================================================== -->
+            <div id="scene-6" class="scene">
+                <div class="hub-center-glow" id="hub-glow"></div>
+
+                <svg class="hub-canvas-svg" viewBox="0 0 1920 1080">
+                    <!-- Connector paths radiating from (960, 540) to the 6 apps -->
+                    <!-- 1. TikTok: (670, 270) -->
+                    <path id="hub-line-1" class="hub-line-path" d="M 960 540 L 670 270" />
+                    <!-- 2. Gmail: (460, 540) -->
+                    <path id="hub-line-2" class="hub-line-path" d="M 960 540 L 460 540" />
+                    <!-- 3. Messages: (670, 810) -->
+                    <path id="hub-line-3" class="hub-line-path" d="M 960 540 L 670 810" />
+                    <!-- 4. Twitch: (1250, 270) -->
+                    <path id="hub-line-4" class="hub-line-path" d="M 960 540 L 1250 270" />
+                    <!-- 5. YouTube: (1460, 540) -->
+                    <path id="hub-line-5" class="hub-line-path" d="M 960 540 L 1460 540" />
+                    <!-- 6. Discord: (1250, 810) -->
+                    <path id="hub-line-6" class="hub-line-path" d="M 960 540 L 1250 810" />
+
+                    <!-- Glowing connection dots on endpoints -->
+                    <circle id="hub-p-1" cx="670" cy="270" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                    <circle id="hub-p-2" cx="460" cy="540" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                    <circle id="hub-p-3" cx="670" cy="810" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                    <circle id="hub-p-4" cx="1250" cy="270" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                    <circle id="hub-p-5" cx="1460" cy="540" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                    <circle id="hub-p-6" cx="1250" cy="810" r="5" fill="#ffffff" style="filter: drop-shadow(0 0 8px #ffffff);" />
+                </svg>
+
+                <!-- Center LOGO Badge (960, 540) -->
+                <div class="hub-center-badge" id="hub-center" style="left: 890px; top: 470px;">
+                    <span class="hub-logo-text">(LOGO)</span>
+                </div>
+
+                <!-- 1. TikTok (Top Left, centered at 670, 270) -->
+                <div class="app-badge" id="app-1" style="left: 610px; top: 210px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <path fill="#25F4EE" d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5 2.54 2.54 0 0 1-1.63-.6 2.52 2.52 0 0 1-.96-1.9 2.6 2.6 0 0 1 2.59-2.6c.32 0 .63.06.91.18V9.72a5.67 5.67 0 0 0-.91-.07A5.673 5.673 0 0 0 4.2 15.32a5.69 5.69 0 0 0 5.68 5.68 5.65 5.65 0 0 0 5.56-4.57V9.08a7.35 7.35 0 0 0 4.36 1.42V7.41a4.29 4.29 0 0 1-3.2-1.59z"/>
+                        <path fill="#FE2C55" d="M19.8 7.41a7.35 7.35 0 0 1-4.36-1.42v6.32a5.65 5.65 0 0 1-5.56 4.57 5.69 5.69 0 0 1-5.68-5.68 5.67 5.67 0 0 1 5.66-5.67c.3 0 .6.02.91.07v3.06a2.6 2.6 0 0 0-.91-.18 2.6 2.6 0 0 0-2.59 2.6 2.52 2.52 0 0 0 .96 1.9 2.54 2.54 0 0 0 1.63.6 2.592 2.592 0 0 0 2.59-2.5V3h3.09a4.28 4.28 0 0 0 1.06 2.82 4.29 4.29 0 0 0 3.2 1.59z" opacity="0.85"/>
+                    </svg>
+                </div>
+
+                <!-- 2. Gmail (Middle Left, centered at 460, 540) -->
+                <div class="app-badge" id="app-2" style="left: 400px; top: 480px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22 6.5v11c0 1.1-.9 2-2 2h-2V9.8l-6 4.5-6-4.5V19.5H4c-1.1 0-2-.9-2-2v-11c0-1.5 1.7-2.3 2.9-1.4L12 10.4l7.1-5.3c1.2-.9 2.9-.1 2.9 1.4z"/>
+                        <path fill="#EA4335" d="M18 19.5h2c1.1 0 2-.9 2-2V6.5c0-1.5-1.7-2.3-2.9-1.4L12 10.4V19.5h6z"/>
+                        <path fill="#FBBC05" d="M4 6.5v11c0 1.1.9 2 2 2h2V10.4L12 5.1 4.9 5.1C3.7 5.1 4 5.8 4 6.5z"/>
+                        <path fill="#34A853" d="M4 17.5c0 1.1.9 2 2 2h2v-9.1L4 7.5v10z"/>
+                    </svg>
+                </div>
+
+                <!-- 3. Messages (Bottom Left, centered at 670, 810) -->
+                <div class="app-badge" id="app-3" style="left: 610px; top: 750px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <rect x="2" y="2" width="20" height="20" rx="6" fill="#34C759"/>
+                        <path fill="#ffffff" d="M12 5.5c-4.14 0-7.5 2.8-7.5 6.25 0 1.95 1.08 3.7 2.77 4.85l-.71 2.65c-.09.34.25.64.56.49l3.05-1.45c.59.14 1.2.21 1.83.21 4.14 0 7.5-2.8 7.5-6.25S16.14 5.5 12 5.5z"/>
+                    </svg>
+                </div>
+
+                <!-- 4. Twitch (Top Right, centered at 1250, 270) -->
+                <div class="app-badge" id="app-4" style="left: 1190px; top: 210px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <path fill="#9146FF" d="M4.26 2L2 6.52V20h5.22v2.5h2.61L12.48 20h3.91L22 14.43V2H4.26zm15.13 11.3l-3.26 3.27h-4.57l-2.28 2.28v-2.28H6.52V4.61h12.87v8.69z"/>
+                        <rect x="14.83" y="7.5" width="2" height="4.5" fill="#ffffff"/>
+                        <rect x="10.26" y="7.5" width="2" height="4.5" fill="#ffffff"/>
+                    </svg>
+                </div>
+
+                <!-- 5. YouTube (Middle Right, centered at 1460, 540) -->
+                <div class="app-badge" id="app-5" style="left: 1400px; top: 480px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <path fill="#FF0000" d="M23.5 6.2c-.3-1.1-1.2-2-2.3-2.3C19.2 3.4 12 3.4 12 3.4s-7.2 0-9.2.5c-1.1.3-2 1.2-2.3 2.3C0 8.2 0 12 0 12s0 3.8.5 5.8c.3 1.1 1.2 2 2.3 2.3 2 .5 9.2.5 9.2.5s7.2 0 9.2-.5c1.1-.3 2-1.2 2.3-2.3.5-2 .5-5.8.5-5.8s0-3.8-.5-5.8z"/>
+                        <polygon points="9.6 8.6 15.8 12 9.6 15.4 9.6 8.6" fill="#ffffff"/>
+                    </svg>
+                </div>
+
+                <!-- 6. Discord (Bottom Right, centered at 1250, 810) -->
+                <div class="app-badge" id="app-6" style="left: 1190px; top: 750px;">
+                    <svg class="app-icon" viewBox="0 0 24 24">
+                        <path fill="#5865F2" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.1.1 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.53 2.12 5.24 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.08-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.01.02.05.03.08.02 1.72-.53 3.45-1.33 5.25-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.03-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 7: Actionable Insights Bar Cylinders
+                 =============================================================== -->
+            <div id="scene-7" class="scene">
+                <div class="insights-header" id="insights-header">
+                    <h2 class="insights-title">Actionable Insights</h2>
+                    <div class="monthly-pill">Monthly</div>
+                </div>
+
+                <div class="capsules-row">
+                    <!-- Column 1: mar (80%) -->
+                    <div class="capsule-col" id="col-mar">
+                        <div class="capsule-track">
+                            <div class="capsule-liquid" id="liquid-mar" style="height: 0%;">
+                                <div class="liquid-sheen"></div>
+                            </div>
+                        </div>
+                        <span class="month-name">mar</span>
+                    </div>
+
+                    <!-- Column 2: apr (60%) -->
+                    <div class="capsule-col" id="col-apr">
+                        <div class="capsule-track">
+                            <div class="capsule-liquid" id="liquid-apr" style="height: 0%;">
+                                <div class="liquid-sheen"></div>
+                            </div>
+                        </div>
+                        <span class="month-name">apr</span>
+                    </div>
+
+                    <!-- Column 3: may (35%) -->
+                    <div class="capsule-col" id="col-may">
+                        <div class="capsule-track">
+                            <div class="capsule-liquid" id="liquid-may" style="height: 0%;">
+                                <div class="liquid-sheen"></div>
+                            </div>
+                        </div>
+                        <span class="month-name">may</span>
+                    </div>
+
+                    <!-- Column 4: jun (45%) -->
+                    <div class="capsule-col" id="col-jun">
+                        <div class="capsule-track">
+                            <div class="capsule-liquid" id="liquid-jun" style="height: 0%;">
+                                <div class="liquid-sheen"></div>
+                            </div>
+                        </div>
+                        <span class="month-name">jun</span>
+                    </div>
+
+                    <!-- Column 5: jul (88%) -->
+                    <div class="capsule-col" id="col-jul">
+                        <div class="capsule-track">
+                            <div class="capsule-liquid" id="liquid-jul" style="height: 0%;">
+                                <div class="liquid-sheen"></div>
+                            </div>
+                        </div>
+                        <span class="month-name">jul</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- GSAP Master Animation Script -->
+    <script>
+        // Responsive Scaling to fit any viewport perfectly while keeping 1920x1080 internal resolution
+        function resizeStage() {
+            const stage = document.getElementById('stage');
+            const cw = window.innerWidth;
+            const ch = window.innerHeight;
+            const scale = Math.min(cw / 1920, ch / 1080);
+            stage.style.transform = `scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeStage);
+        resizeStage();
+
+        // Audio element
+        const audio = document.getElementById('bg-audio');
+
+        // Master GSAP Timeline (Duration: 25.82s)
+        const tl = gsap.timeline({
+            paused: true,
+            defaults: { ease: "power2.out" }
+        });
+
+        const hubLengths = [400, 500, 400, 400, 500, 400];
+
+        // Initialize SVG path lengths
+        function initSvgPaths() {
+            for (let i = 1; i <= 7; i++) {
+                const p = document.getElementById(`curve-${i}`);
+                if (p) {
+                    const len = p.getTotalLength();
+                    p.style.strokeDasharray = len;
+                    p.style.strokeDashoffset = len;
+                }
+            }
+
+            const wave = document.getElementById('sine-wave');
+            if (wave) {
+                const wlen = wave.getTotalLength();
+                wave.style.strokeDasharray = wlen;
+                wave.style.strokeDashoffset = wlen;
+            }
+
+            for (let i = 1; i <= 6; i++) {
+                const l = document.getElementById(`hub-line-${i}`);
+                if (l) {
+                    const len = hubLengths[i - 1];
+                    l.style.strokeDasharray = len;
+                    l.style.strokeDashoffset = len;
+                }
+            }
+        }
+        initSvgPaths();
+
+        const rateVal1 = document.getElementById('rate-val-1');
+        const rateVal2 = document.getElementById('rate-val-2');
+        const giantStatNum = document.getElementById('giant-stat-num');
+        const wave = document.getElementById('sine-wave');
+        const waveHead = document.getElementById('sine-head');
+
+        // Dynamic element update function (deterministic on any time t)
+        function updateDynamicCounters(t) {
+            // Scene 4 Counters
+            if (t >= 12.8 && t <= 16.0) {
+                const p1 = Math.min(1, Math.max(0, (t - 12.8) / 1.8));
+                const ease1 = 1 - Math.pow(1 - p1, 2);
+                rateVal1.textContent = Math.round(ease1 * 93) + "%";
+
+                const p2 = Math.min(1, Math.max(0, (t - 12.95) / 1.8));
+                const ease2 = 1 - Math.pow(1 - p2, 2);
+                rateVal2.textContent = Math.round(ease2 * 61) + "%";
+            } else if (t < 12.8) {
+                rateVal1.textContent = "0%";
+                rateVal2.textContent = "0%";
+            } else if (t > 16.0) {
+                rateVal1.textContent = "93%";
+                rateVal2.textContent = "61%";
+            }
+
+            // Scene 5 Giant Stat & Wave Head Point
+            if (t >= 16.1 && t <= 18.5) {
+                const pStat = Math.min(1, Math.max(0, (t - 16.1) / 1.8));
+                const easeStat = 1 - Math.pow(1 - pStat, 2);
+                giantStatNum.textContent = Math.round(easeStat * 125) + "%";
+            } else if (t < 16.1) {
+                giantStatNum.textContent = "0%";
+            } else {
+                giantStatNum.textContent = "125%";
+            }
+
+            if (wave && waveHead) {
+                const wlen = wave.getTotalLength();
+                if (t >= 16.1 && t <= 18.2) {
+                    const pWave = Math.min(1, Math.max(0, (t - 16.1) / 1.8));
+                    const easeWave = 1 - Math.pow(1 - pWave, 2);
+                    const pt = wave.getPointAtLength(easeWave * wlen);
+                    if (pt) {
+                        waveHead.setAttribute('cx', pt.x);
+                        waveHead.setAttribute('cy', pt.y);
+                        waveHead.setAttribute('opacity', '1');
+                    }
+                } else if (t < 16.1) {
+                    waveHead.setAttribute('opacity', '0');
+                }
+            }
+        }
+
+        // =====================================================================
+        // BUILD TIMELINE CHOREOGRAPHY (Total: 25.82s)
+        // =====================================================================
+
+        // ---------------------------------------------------------------------
+        // SCENE 1: Vertical 3D Wheel/Carousel (0.00s -> 3.50s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-1", { autoAlpha: 1 }, 0.0);
+
+        // Initial setup of cards at t = 0
+        tl.set("#card-1", { y: 0, scale: 1, opacity: 1, zIndex: 10 }, 0);
+        tl.set("#card-0", { y: 190, scale: 0.78, opacity: 0.35, zIndex: 5 }, 0);
+        tl.set("#card-2", { y: 380, scale: 0.6, opacity: 0, zIndex: 4 }, 0);
+        tl.set("#card-3", { y: 500, scale: 0.5, opacity: 0, zIndex: 3 }, 0);
+        tl.set("#card-4", { y: -380, scale: 0.6, opacity: 0, zIndex: 2 }, 0);
+
+        // Turn 1 (0.80s - 1.80s): Wheel rotates up -> Card 2 rolls to center!
+        tl.to("#card-0", { y: 380, scale: 0.6, opacity: 0, duration: 0.9, ease: "power2.inOut" }, 0.8);
+        tl.to("#card-1", { y: -190, scale: 0.78, opacity: 0.35, zIndex: 5, duration: 0.9, ease: "power2.inOut" }, 0.8);
+        tl.to("#card-2", { y: 0, scale: 1, opacity: 1, zIndex: 10, duration: 0.9, ease: "power2.inOut" }, 0.8);
+        tl.to("#card-3", { y: 190, scale: 0.78, opacity: 0.35, zIndex: 6, duration: 0.9, ease: "power2.inOut" }, 0.8);
+
+        // Turn 2 (2.00s - 2.90s): Wheel rotates up -> Card 3 rolls to center!
+        tl.to("#card-1", { y: -380, scale: 0.6, opacity: 0, duration: 0.85, ease: "power2.inOut" }, 2.0);
+        tl.to("#card-2", { y: -190, scale: 0.78, opacity: 0.35, zIndex: 5, duration: 0.85, ease: "power2.inOut" }, 2.0);
+        tl.to("#card-3", { y: 0, scale: 1, opacity: 1, zIndex: 10, duration: 0.85, ease: "power2.inOut" }, 2.0);
+        tl.to("#card-4", { y: -190, scale: 0.78, opacity: 0.35, zIndex: 4, duration: 0.85, ease: "power2.inOut" }, 2.0);
+
+        // Exit Scene 1 (3.10s -> 3.50s)
+        tl.to("#scene-1", { opacity: 0, scale: 0.94, duration: 0.4, ease: "power2.in" }, 3.1);
+        tl.set("#scene-1", { autoAlpha: 0 }, 3.5);
+
+        // ---------------------------------------------------------------------
+        // SCENE 2: Glowing Timeline (3.50s -> 6.80s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-2", { autoAlpha: 1 }, 3.5);
+
+        // Line draws down
+        tl.to("#timeline-line", { scaleY: 1, duration: 1.8, ease: "power2.out" }, 3.5);
+
+        // Rows slide in staggered
+        const rows = ["#tl-row-1", "#tl-row-2", "#tl-row-3", "#tl-row-4"];
+        rows.forEach((row, idx) => {
+            tl.to(row, {
+                opacity: 1,
+                x: 0,
+                duration: 0.65,
+                ease: "back.out(1.2)"
+            }, 3.65 + idx * 0.35);
+        });
+
+        // Pulsing active card
+        tl.to("#tl-row-3 .timeline-card", {
+            scale: 1.03,
+            boxShadow: "0 10px 40px rgba(168, 85, 247, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3)",
+            duration: 0.6,
+            yoyo: true,
+            repeat: 2,
+            ease: "sine.inOut"
+        }, 5.0);
+
+        // Exit Scene 2 (6.30s -> 6.80s)
+        tl.to("#scene-2", { opacity: 0, scale: 0.95, duration: 0.45, ease: "power2.in" }, 6.35);
+        tl.set("#scene-2", { autoAlpha: 0 }, 6.8);
+
+        // ---------------------------------------------------------------------
+        // SCENE 3: Kinetic Branching & Neon Curve Convergence (6.80s -> 12.50s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-3", { autoAlpha: 1 }, 6.8);
+
+        // Title appears with subtle glow
+        tl.fromTo("#sync-title", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 6.85);
+
+        // Curves draw in sequentially towards title
+        for (let i = 1; i <= 7; i++) {
+            const p = document.getElementById(`curve-${i}`);
+            if (p) {
+                const len = p.getTotalLength();
+                tl.fromTo(p, {
+                    strokeDashoffset: len
+                }, {
+                    strokeDashoffset: 0,
+                    duration: 1.1,
+                    ease: "power2.out"
+                }, 7.0 + (i - 1) * 0.12);
+            }
+        }
+
+        // Left Labels pop in as curves reach them
+        for (let i = 1; i <= 7; i++) {
+            tl.to(`#branch-item-${i}`, {
+                opacity: 1,
+                x: 0,
+                duration: 0.6,
+                ease: "back.out(1.4)"
+            }, 7.4 + (i - 1) * 0.12);
+        }
+
+        // Subtle electric breathing / pulse on title
+        tl.to(".sync-heading", {
+            scale: 1.025,
+            duration: 1.2,
+            yoyo: true,
+            repeat: 2,
+            ease: "sine.inOut"
+        }, 8.6);
+
+        // Exit Scene 3 (11.80s -> 12.50s)
+        tl.to("#scene-3", { opacity: 0, scale: 0.95, duration: 0.5, ease: "power2.in" }, 11.9);
+        tl.set("#scene-3", { autoAlpha: 0 }, 12.5);
+
+        // ---------------------------------------------------------------------
+        // SCENE 4: Workflow Automation Rate (12.50s -> 16.00s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-4", { autoAlpha: 1 }, 12.5);
+
+        // Title drops in
+        tl.to("#rates-title", { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.2)" }, 12.55);
+
+        // Blocks slide in
+        tl.to("#rate-block-1", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 12.7);
+        tl.to("#rate-block-2", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 12.85);
+
+        // Progress bar fills grow to their percentage
+        tl.to("#rate-bar-1", { width: "93%", duration: 1.8, ease: "power2.out" }, 12.8);
+        tl.to("#rate-bar-2", { width: "61%", duration: 1.8, ease: "power2.out" }, 12.95);
+
+        // Exit Scene 4 (15.40s -> 16.00s)
+        tl.to("#scene-4", { opacity: 0, scale: 0.96, duration: 0.45, ease: "power2.in" }, 15.45);
+        tl.set("#scene-4", { autoAlpha: 0 }, 16.0);
+
+        // ---------------------------------------------------------------------
+        // SCENE 5: Giant Stat 125% & Neon Sine Wave (16.00s -> 18.50s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-5", { autoAlpha: 1 }, 16.0);
+
+        // Giant stat pops in
+        tl.to("#giant-stat-num", { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }, 16.05);
+        tl.to("#profit-sub", { opacity: 1, duration: 0.6, ease: "power2.out" }, 16.3);
+
+        // Neon Wave line draws across
+        if (wave) {
+            const wlen = wave.getTotalLength();
+            tl.fromTo(wave, {
+                strokeDashoffset: wlen
+            }, {
+                strokeDashoffset: 0,
+                duration: 1.8,
+                ease: "power2.out"
+            }, 16.1);
+        }
+
+        // Exit Scene 5 (18.10s -> 18.50s)
+        tl.to("#scene-5", { opacity: 0, scale: 1.05, duration: 0.35, ease: "power2.in" }, 18.15);
+        tl.set("#scene-5", { autoAlpha: 0 }, 18.5);
+
+        // ---------------------------------------------------------------------
+        // SCENE 6: Central Hub (LOGO) & App Orbit (18.50s -> 21.50s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-6", { autoAlpha: 1 }, 18.5);
+
+        // Center badge pops in
+        tl.to("#hub-glow", { opacity: 1, duration: 0.6, ease: "power2.out" }, 18.5);
+        tl.to("#hub-center", { opacity: 1, scale: 1, duration: 0.65, ease: "back.out(1.7)" }, 18.55);
+
+        // Lines and endpoints radiate outward
+        for (let i = 1; i <= 6; i++) {
+            const l = document.getElementById(`hub-line-${i}`);
+            if (l) {
+                const len = hubLengths[i - 1];
+                tl.fromTo(l, {
+                    strokeDashoffset: len
+                }, {
+                    strokeDashoffset: 0,
+                    duration: 0.7,
+                    ease: "power2.out"
+                }, 18.75 + (i - 1) * 0.05);
+            }
+
+            tl.fromTo(`#hub-p-${i}`, {
+                scale: 0,
+                transformOrigin: "center center",
+                opacity: 0
+            }, {
+                scale: 1,
+                opacity: 1,
+                duration: 0.4,
+                ease: "back.out(2)"
+            }, 19.1 + (i - 1) * 0.05);
+        }
+
+        // 6 App badges pop in
+        for (let i = 1; i <= 6; i++) {
+            tl.to(`#app-${i}`, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.5)"
+            }, 19.0 + (i - 1) * 0.06);
+        }
+
+        // Floating gentle breathing
+        tl.to("#scene-6", {
+            scale: 1.03,
+            duration: 1.2,
+            yoyo: true,
+            repeat: 1,
+            ease: "sine.inOut"
+        }, 19.6);
+
+        // Exit Scene 6 (21.10s -> 21.50s)
+        tl.to("#scene-6", { opacity: 0, scale: 0.92, duration: 0.35, ease: "power2.in" }, 21.15);
+        tl.set("#scene-6", { autoAlpha: 0 }, 21.5);
+
+        // ---------------------------------------------------------------------
+        // SCENE 7: Actionable Insights Bar Cylinders (21.50s -> 25.82s)
+        // ---------------------------------------------------------------------
+        tl.set("#scene-7", { autoAlpha: 1 }, 21.5);
+
+        // Header appears
+        tl.to("#insights-header", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 21.55);
+
+        // 5 Columns rise from bottom
+        const cols = [
+            { id: "#col-mar", liquid: "#liquid-mar", target: "80%" },
+            { id: "#col-apr", liquid: "#liquid-apr", target: "60%" },
+            { id: "#col-may", liquid: "#liquid-may", target: "35%" },
+            { id: "#col-jun", liquid: "#liquid-jun", target: "45%" },
+            { id: "#col-jul", liquid: "#liquid-jul", target: "88%" }
+        ];
+
+        cols.forEach((col, idx) => {
+            tl.to(col.id, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "back.out(1.2)"
+            }, 21.75 + idx * 0.12);
+
+            tl.to(col.liquid, {
+                height: col.target,
+                duration: 1.3,
+                ease: "power2.out"
+            }, 21.95 + idx * 0.12);
+        });
+
+        // Gentle liquid wave oscillation
+        cols.forEach((col, idx) => {
+            tl.to(col.liquid, {
+                scaleY: 1.025,
+                transformOrigin: "bottom center",
+                duration: 0.9,
+                yoyo: true,
+                repeat: 2,
+                ease: "sine.inOut"
+            }, 23.2 + idx * 0.08);
+        });
+
+        // Final graceful fade to black at exact end
+        tl.to("#stage", {
+            opacity: 0,
+            duration: 0.6,
+            ease: "power2.inOut"
+        }, 25.2);
+
+        // Ticker for smooth dynamic updates during playback
+        gsap.ticker.add(() => {
+            updateDynamicCounters(tl.time());
+        });
+
+        // =====================================================================
+        // SYNC WITH AUDIO & STUDIO PLAYER CONTROLS
+        // =====================================================================
+        let isSeeking = false;
+
+        window.__timeline = {
+            duration: 25.82,
+            play: function() {
+                tl.play();
+                if (audio) {
+                    audio.play().catch(() => {});
+                }
+            },
+            pause: function() {
+                tl.pause();
+                if (audio) {
+                    audio.pause();
+                }
+            },
+            seek: function(timeInSeconds) {
+                isSeeking = true;
+                const t = Math.max(0, Math.min(25.82, timeInSeconds));
+                tl.seek(t);
+                updateDynamicCounters(t);
+                if (audio) {
+                    audio.currentTime = t;
+                }
+                isSeeking = false;
+            },
+            getCurrentTime: function() {
+                return tl.time();
+            }
+        };
+
+        window.tl = tl;
+
+        // Auto-play on user click/interaction anywhere if not embedded in iframe with external controller
+        document.addEventListener('click', () => {
+            if (tl.paused()) {
+                window.__timeline.play();
+            } else {
+                window.__timeline.pause();
+            }
+        });
+
+        // Auto start if loaded standalone
+        if (window.parent === window) {
+            window.__timeline.play();
+        }
+    </script>
+</body>
+</html>
