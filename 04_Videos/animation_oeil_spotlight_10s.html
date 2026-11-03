@@ -116,17 +116,6 @@
             justify-content: center;
         }
 
-        .eye-ambient-halo {
-            position: absolute;
-            width: 540px;
-            height: 330px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 75%);
-            filter: blur(40px);
-            z-index: -1;
-            pointer-events: none;
-        }
-
         #eye-svg {
             width: 100%;
             height: 100%;
@@ -320,9 +309,8 @@
             <!-- Masque d'obscurité ambiante -->
             <div id="ambient-vignette"></div>
 
-            <!-- 2. ŒIL RÉALISTE CENTRÉ À (0,0) DANS LE VIEWBOX -->
+            <!-- 2. ŒIL RÉALISTE AVEC FORME ANATOMIQUE COMPLÈTE (ALMOND SHAPE) DÈS LE DÉPART -->
             <div id="eye-container">
-                <div class="eye-ambient-halo"></div>
                 <svg id="eye-svg" viewBox="-220 -130 440 260">
                     <defs>
                         <!-- Shading 3D sphérique de la sclère -->
@@ -342,10 +330,24 @@
                             <stop offset="100%" stop-color="#082f49" />
                         </radialGradient>
 
+                        <!-- Dégradé volumétrique de peau pour la paupière fermée -->
+                        <radialGradient id="eyelidClosedGrad" cx="50%" cy="40%" r="65%">
+                            <stop offset="0%" stop-color="#1e293b" />
+                            <stop offset="65%" stop-color="#0f172a" />
+                            <stop offset="100%" stop-color="#020617" />
+                        </radialGradient>
+
+                        <!-- Dégradé du contour orbital -->
+                        <linearGradient id="orbitalBorderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="rgba(255,255,255,0.18)" />
+                            <stop offset="50%" stop-color="rgba(255,255,255,0.45)" />
+                            <stop offset="100%" stop-color="rgba(255,255,255,0.18)" />
+                        </linearGradient>
+
                         <!-- ClipPath d'ouverture/fermeture de l'œil -->
                         <!-- Centré sur (0,0) : hauteur max y = -95 à +95 -->
                         <clipPath id="eyeOpeningClip">
-                            <path id="eyeOpeningPath" d="M -170,0 Q 0,-100 170,0 Q 0,100 -170,0 Z" />
+                            <path id="eyeOpeningPath" d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" />
                         </clipPath>
 
                         <!-- Reflet lumineux spéculaire -->
@@ -356,9 +358,28 @@
                         </radialGradient>
                     </defs>
 
-                    <!-- Globe oculaire découpé par les paupières -->
-                    <g clip-path="url(#eyeOpeningClip)">
-                        <!-- Sclère blanche -->
+                    <!-- A. BASE ORBITALE : FORME ANATOMIQUE COMPLÈTE DE L'ŒIL DÈS LE DÉPART -->
+                    <path id="eyeSocketBase" 
+                          d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" 
+                          fill="url(#eyelidClosedGrad)" 
+                          stroke="url(#orbitalBorderGrad)" 
+                          stroke-width="2" />
+
+                    <!-- Fente de fermeture naturelle & ombrage palpébral (visible quand l'œil est fermé) -->
+                    <g id="closedLidGroup">
+                        <!-- Ombre douce de frange de cils fermés -->
+                        <path d="M -160,0 Q 0,26 160,0" fill="none" stroke="#050811" stroke-width="6" opacity="0.75" />
+                        <!-- Ligne de jonction anatomique où les paupières se rencontrent -->
+                        <path id="closedLidSeam" d="M -170,0 Q -80,18 0,22 Q 80,18 170,0" 
+                              fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" />
+                    </g>
+
+                    <!-- Canthus interne (coin de l'œil anatomique) -->
+                    <path d="M -175,0 Q -166,-6 -158,0 Q -166,6 -175,0 Z" fill="rgba(244, 114, 182, 0.3)" />
+
+                    <!-- B. GLOBE OCULAIRE DÉCOUPÉ PAR LE CLIPPING D'OUVERTURE -->
+                    <g clip-path="url(#eyeOpeningClip)" id="eyeballLayer">
+                        <!-- Sclère blanche ombrée 3D -->
                         <rect x="-220" y="-130" width="440" height="260" fill="url(#scleraGrad)" />
 
                         <!-- Vaisseaux & profondeur -->
@@ -384,16 +405,20 @@
                         </g>
 
                         <!-- Ombre naturelle sous la paupière supérieure -->
-                        <path d="M -170,0 Q 0,-90 170,0 Q 0,-50 -170,0 Z" fill="rgba(15, 23, 42, 0.35)" />
+                        <path d="M -175,0 Q 0,-95 175,0 Q 0,-45 -175,0 Z" fill="rgba(15, 23, 42, 0.4)" />
                     </g>
 
-                    <!-- Contour anatomique des paupières -->
-                    <path id="eyelidBorder" d="M -170,0 Q 0,-100 170,0 Q 0,100 -170,0 Z" 
-                          fill="none" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+                    <!-- C. BORD ANATOMIQUE DES PAUPIÈRES OUVERTES -->
+                    <path id="eyelidBorder" d="M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z" 
+                          fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="2.5" stroke-linecap="round" opacity="0" />
 
-                    <!-- Pli palpébral supérieur (Crease) -->
-                    <path id="eyelidCrease" d="M -145,-25 Q 0,-125 145,-25" 
-                          fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="2.5" stroke-linecap="round" />
+                    <!-- Ligne de cils supérieurs quand l'œil est ouvert -->
+                    <path id="eyelashLineUpper" d="M -155,-18 Q 0,-100 155,-18" 
+                          fill="none" stroke="rgba(203, 213, 225, 0.5)" stroke-width="2" stroke-dasharray="3 4" opacity="0" />
+
+                    <!-- Pli palpébral supérieur naturel (Crease) -->
+                    <path id="eyelidCrease" d="M -145,-15 Q 0,-45 145,-15" 
+                          fill="none" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1.8" stroke-linecap="round" />
                 </svg>
             </div>
 
@@ -509,22 +534,26 @@
         window.tl = tl;
         window.timeline = tl;
 
-        // Chemins SVG centrés sur (0,0) pour le clignement réaliste :
-        const PATH_OPEN = "M -170,0 Q 0,-100 170,0 Q 0,100 -170,0 Z";
-        const PATH_CLOSED = "M -170,0 Q 0,0 170,0 Q 0,0 -170,0 Z";
-        const PATH_SQUINT = "M -170,0 Q 0,-45 170,0 Q 0,45 -170,0 Z";
+        // Chemins SVG anatomiques centrés sur (0,0) pour le clignement réaliste :
+        const PATH_OPEN = "M -175,0 Q 0,-95 175,0 Q 0,95 -175,0 Z";
+        const PATH_CLOSED = "M -175,0 Q 0,22 175,0 Q 0,22 -175,0 Z";
+        const PATH_SQUINT = "M -175,0 Q 0,-48 175,0 Q 0,55 -175,0 Z";
 
-        // État initial à t = 0 : Œil totalement fermé dans le noir complet
-        gsap.set(['#eyeOpeningPath', '#eyelidBorder'], { attr: { d: PATH_CLOSED } });
-        gsap.set('#eyelidCrease', { opacity: 0, y: 15 });
+        // État initial à t = 0 : L'œil a sa forme complète d'amande visible mais paupière fermée
+        gsap.set('#eyeOpeningPath', { attr: { d: PATH_CLOSED } });
+        gsap.set('#eyelidBorder', { attr: { d: PATH_CLOSED }, opacity: 0 });
+        gsap.set('#closedLidGroup', { opacity: 1 });
+        gsap.set('#eyelashLineUpper', { opacity: 0 });
+        gsap.set('#eyelidCrease', { opacity: 0.55, y: 6 });
         gsap.set('#eyeGazeGroup', { x: 0, y: 0 });
+        gsap.set('#eyeSocketBase', { opacity: 0.95 });
         gsap.set(spotState, { x: 960, y: 330, opacity: 0, scale: 0.5, coneOpacity: 0 });
         updateSpotlight();
 
         // ----------------------------------------------------------------------
         // PHASE 1 : LE RÉVEIL & CLIGNEMENT RÉALISTE (0.0s -> 1.8s)
         // ----------------------------------------------------------------------
-        // À 0.3s : La lumière s'allume au centre et l'œil s'ouvre lentement
+        // À 0.3s : La lumière s'allume au centre et l'œil s'ouvre avec morphing des paupières
         tl.to(spotState, {
             opacity: 0.9,
             scale: 0.85,
@@ -537,6 +566,24 @@
             duration: 0.8,
             ease: 'power2.inOut'
         }, 0.3);
+
+        tl.to('#eyelidBorder', {
+            opacity: 1,
+            duration: 0.5,
+            ease: 'power1.out'
+        }, 0.4);
+
+        tl.to('#closedLidGroup', {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power1.out'
+        }, 0.35);
+
+        tl.to('#eyelashLineUpper', {
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power1.out'
+        }, 0.45);
 
         tl.to('#eyelidCrease', {
             opacity: 1,
@@ -551,14 +598,20 @@
             duration: 0.10,
             ease: 'power2.in'
         }, 1.15);
-        tl.to('#eyelidCrease', { opacity: 0.2, duration: 0.10 }, 1.15);
+        tl.to('#eyelidBorder', { opacity: 0, duration: 0.08 }, 1.15);
+        tl.to('#closedLidGroup', { opacity: 1, duration: 0.08 }, 1.15);
+        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.08 }, 1.15);
+        tl.to('#eyelidCrease', { opacity: 0.4, y: 6, duration: 0.10 }, 1.15);
 
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_OPEN },
             duration: 0.14,
             ease: 'power2.out'
         }, 1.25);
-        tl.to('#eyelidCrease', { opacity: 1, duration: 0.14 }, 1.25);
+        tl.to('#eyelidBorder', { opacity: 1, duration: 0.10 }, 1.27);
+        tl.to('#closedLidGroup', { opacity: 0, duration: 0.10 }, 1.27);
+        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 1.27);
+        tl.to('#eyelidCrease', { opacity: 1, y: 0, duration: 0.14 }, 1.25);
 
         // ----------------------------------------------------------------------
         // PHASE 2 : APPARITION CARD 1 & POURSUITE DU REGARD / LUMIÈRE (1.8s -> 4.5s)
@@ -743,11 +796,18 @@
             duration: 0.11,
             ease: 'power2.in'
         }, 8.6);
+        tl.to('#eyelidBorder', { opacity: 0, duration: 0.08 }, 8.6);
+        tl.to('#closedLidGroup', { opacity: 1, duration: 0.08 }, 8.6);
+        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.08 }, 8.6);
+
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
             attr: { d: PATH_OPEN },
             duration: 0.15,
             ease: 'power2.out'
         }, 8.71);
+        tl.to('#eyelidBorder', { opacity: 1, duration: 0.10 }, 8.73);
+        tl.to('#closedLidGroup', { opacity: 0, duration: 0.10 }, 8.73);
+        tl.to('#eyelashLineUpper', { opacity: 1, duration: 0.10 }, 8.73);
 
         // Fermeture définitive des paupières et extinction progressive dans le noir
         tl.to(['#eyeOpeningPath', '#eyelidBorder'], {
@@ -755,13 +815,22 @@
             duration: 0.75,
             ease: 'power2.inOut'
         }, 9.15);
+        tl.to('#eyelidBorder', { opacity: 0, duration: 0.4 }, 9.2);
+        tl.to('#closedLidGroup', { opacity: 1, duration: 0.5 }, 9.25);
+        tl.to('#eyelashLineUpper', { opacity: 0, duration: 0.4 }, 9.15);
 
         tl.to('#eyelidCrease', {
             opacity: 0,
-            y: 12,
+            y: 8,
             duration: 0.6,
             ease: 'power2.in'
         }, 9.15);
+
+        tl.to('#eyeSocketBase', {
+            opacity: 0,
+            duration: 0.75,
+            ease: 'power2.in'
+        }, 9.25);
 
         tl.to(spotState, {
             opacity: 0,
