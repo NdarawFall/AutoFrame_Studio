@@ -506,6 +506,8 @@
             paused: isIframeMode,
             onUpdate: updateSpotlight
         });
+        window.tl = tl;
+        window.timeline = tl;
 
         // Chemins SVG centrés sur (0,0) pour le clignement réaliste :
         const PATH_OPEN = "M -170,0 Q 0,-100 170,0 Q 0,100 -170,0 Z";
@@ -776,33 +778,35 @@
         }, 9.25);
 
         // ======================================================================
-        // PROTOCOLE STUDIO TIMELINE (POSTMESSAGE)
-        // Permet au Studio de piloter la lecture, pause et scrubber avec précision
+        // INTERFACE TIMELINE STUDIO DÉTERMINISTE (window.__timeline & window.tl)
         // ======================================================================
+        window.__timeline = {
+            duration: () => DURATION,
+            seek: (time) => {
+                tl.seek(time, false);
+                updateSpotlight();
+            },
+            pause: () => {
+                tl.pause();
+                updateSpotlight();
+            },
+            play: () => {
+                tl.play();
+            }
+        };
+
+        // Support complémentaire postMessage pour robustesse maximale
         window.addEventListener('message', (event) => {
             const data = event.data;
             if (!data) return;
 
             if (data.type === 'seek') {
                 const targetTime = (data.time !== undefined) ? data.time : (data.progress !== undefined ? data.progress * DURATION : 0);
-                tl.pause();
-                tl.time(targetTime);
-                updateSpotlight();
+                window.__timeline.seek(targetTime);
             } else if (data.type === 'play') {
-                tl.play();
+                window.__timeline.play();
             } else if (data.type === 'pause') {
-                tl.pause();
-            }
-        });
-
-        // Envoi régulier du temps au Studio parent
-        tl.eventCallback('onUpdate', () => {
-            if (isIframeMode) {
-                window.parent.postMessage({
-                    type: 'timeupdate',
-                    currentTime: tl.time(),
-                    duration: DURATION
-                }, '*');
+                window.__timeline.pause();
             }
         });
     </script>
