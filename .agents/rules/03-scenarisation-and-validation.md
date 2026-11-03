@@ -56,4 +56,3 @@ Avant tout codage, l'IA doit structurer sa proposition comme suit :
 ## 3. Déclenchement de la Génération
 * L'IA attend la confirmation ou les modifications demandées par l'utilisateur (*« C'est bon, tu peux générer »*, *« Change la scène 3 »*, etc.).
 * Dès validation, l'IA génère la composition dans `04_Videos/` en respectant scrupuleusement le script validé.
-

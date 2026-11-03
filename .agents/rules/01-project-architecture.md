@@ -8,7 +8,9 @@
 >    - Toute la configuration se fait exclusivement à travers l'interface graphique ([`09_Pages/settings.html`](../../09_Pages/settings.html)).
 >    - Les clés et réglages sont persistés dans `07_Scripts/api_config.json` (qui reste strictement exclu de Git).
 >    - Si une clé API est manquante lors d'une tentative de création vidéo, l'application le signale par une modale claire invitant l'utilisateur à coller sa clé dans l'écran des Paramètres.
-> 4. **Règle d'or d'économie de tokens & lecture préalable** : L'IA doit consulter ce document pour connaître la topologie exacte sans jamais fouiller aveuglément les répertoires.
+> 4. **Organisation Stricte des Règles et des Skills** :
+>    - Le dossier `.agents/rules/` est **strictement réservé aux règles de gouvernance de l'IA** (maximum 5 à 6 fichiers thématiques). Ne jamais créer de dossier `skills` dans `.agents/`.
+>    - Tous les skills, guides et documentations techniques du projet résident exclusivement dans `00_Skills/`.
 
 ---
 
@@ -18,15 +20,12 @@
 heygen-new/
 ├── package.json                # Dépendances & scripts ("npm start", "npm run studio", "npm run render")
 ├── .agents/
-│   └── rules/                  # Règles strictes de gouvernance pour l'IA
-│       ├── project-architecture.md         # Ce document maître d'architecture
-│       ├── no-unprompted-rendering.md      # INTERDICTION ABSOLUE de rendre en MP4 sans demande explicite
-│       ├── no-inner-player-controls.md     # INTERDICTION des barres de contrôle de lecture dans les vidéos HTML
-│       ├── html5-video-broll-studio-contract.md # Contrat vidéo HTML5 & B-Roll (data-start/data-end & synchronisation Studio)
-│       ├── no-reading-existing-videos.md   # Originalité visuelle & interdiction de copie
-│       ├── video_create_process.md         # Processus autonome de fabrication vidéo
-│       ├── error_logs.md                   # Journalisation des erreurs
-│       └── structure-skills-and-rules.md   # Structure de séparation règles / skills
+│   └── rules/                  # Règles strictes de gouvernance pour l'IA (5 fichiers maîtres consolidés)
+│       ├── 01-project-architecture.md          # Architecture, arborescence, pages et stack
+│       ├── 02-video-creation-matrix.md         # Matrice des 22 règles de création vidéo, DA & logos
+│       ├── 03-scenarisation-and-validation.md  # Protocole de scénarisation et validation préalable
+│       ├── 04-studio-and-rendering-contract.md # Contrat Studio, vidéo HTML5, B-Roll & politique de rendu
+│       └── 05-error-logs.md                    # Registre des erreurs évitées et post-mortems
 ├── 00_Skills/                  # Compétences et savoir-faire autonomes de l'IA
 │   ├── tegaki_handwriting/     # Moteur d'animation d'écriture manuscrite vectorielle SVG
 │   ├── video_design_mastery/   # 17 principes de design vidéo (typographie 80/20, 60/30/10, contrastes)
@@ -86,32 +85,22 @@ heygen-new/
 │   └── api_config.json         # Stockage local des clés API (ignoré par Git)
 ├── 08_Rendus/                  # [Éphémère] Sorties finales vidéo MP4 (ignoré par Git)
 ├── 09_Pages/                   # Interface utilisateur web du studio (Home, Studio Player, Paramètres)
-    ├── home.html               # Page d'accueil et tableau de bord principal
-    ├── studio.html             # Studio de montage (player, timeline, onglets Vidéos, Rendus)
-    ├── create_video.html       # Formulaire de brief et configuration de création vidéo
-    ├── video_processus.html    # Suivi visuel et terminal des étapes de fabrication de la vidéo
-    ├── channels.html           # Bibliothèque des chaînes et des vidéos sans chaîne
-    ├── channel.html            # Vue détaillée d'une chaîne spécifique avec ses vidéos
-    ├── channel_settings.html   # Paramètres d'une chaîne (Brand Kit, couleurs, typographies)
-    └── settings.html           # Paramètres généraux de l'application et gestion des clés API
-└── 10_Clients/                 # [Clients] Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)
+│   ├── home.html               # Page d'accueil et tableau de bord principal
+│   ├── studio.html             # Studio de montage (player, timeline, onglets Vidéos, Rendus)
+│   ├── create_video.html       # Formulaire de brief et configuration de création vidéo
+│   ├── video_processus.html    # Suivi visuel et terminal des étapes de fabrication de la vidéo
+│   ├── channels.html           # Bibliothèque des chaînes et des vidéos sans chaîne
+│   ├── channel.html            # Vue détaillée d'une chaîne spécifique avec ses vidéos
+│   ├── channel_settings.html   # Paramètres d'une chaîne (Brand Kit, couleurs, typographies)
+│   └── settings.html           # Paramètres généraux de l'application et gestion des clés API
+└── 10_Clients/                 # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
     ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
     └── README.md               # Guide d'organisation des rushes par client
 ```
 
 ---
 
-## 2. Règle Stricte de Rendu Vidéo (Interdiction d'Initiative IA)
-
-> [!CAUTION]
-> **L'IA NE DOIT JAMAIS DÉCLENCHER DE RENDU MP4 SANS DEMANDE EXPLICITE DE L'UTILISATEUR.**
-> Consultez obligatoirement la règle dédiée : [`.agents/rules/no-unprompted-rendering.md`](no-unprompted-rendering.md).
-> - La création de vidéo consiste à concevoir la composition HTML interactive (GSAP, Three.js, CSS), à générer les assets audio/images et à mettre à disposition le lien interactif dans le Studio.
-> - Le script `render.cjs` ou l'appel `/api/render` ne doit être exécuté **QUE** si l'utilisateur ordonne expressément : *« Lance le rendu »*, *« Exporte en MP4 »*, etc.
-
----
-
-## 3. Règle Stricte de Nommage des Fichiers & Suffixes Identiques
+## 2. Règle Stricte de Nommage des Fichiers & Suffixes Identiques
 
 Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vidéo et ses médias :
 
@@ -131,28 +120,28 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 
 ---
 
-## 4. Statut & Cycle de Vie du Fichier Vidéo
+## 3. Statut & Cycle de Vie du Fichier Vidéo
 
 1. **Création préalable immédiate** : Dès la soumission d'une demande, le fichier HTML de destination est créé avec le statut `status: "processing"`.
 2. **Affichage dans `channels.html` / `channel.html`** : La vidéo apparaît tout de suite avec le badge 🟡 *« En cours de création... »*.
 3. **Redirection conditionnelle** :
    - Si `status === "processing"` : Le clic redirige vers [`09_Pages/video_processus.html?video=...`](../../09_Pages/video_processus.html) pour visualiser la progression en direct.
-   - Si `status === "completed"` : Le clic ouvre la vidéo dans le lecteur interactif [`09_Pages/studio.html?video=...`](../../09_Pages/studio.html).
+   - Si `status === "completed"` ou `"ready"` : Le clic ouvre la vidéo dans le lecteur interactif [`09_Pages/studio.html?video=...`](../../09_Pages/studio.html).
 
 ---
 
-## 5. Résumé des Responsabilités par Dossier
+## 4. Tableau des Responsabilités par Dossier
 
 | Dossier | Nature | Rôle Principal | Droit de Modification IA |
 | :--- | :--- | :--- | :--- |
 | **`00_Skills/`** | Pérenne | Guides et skills spécialisés réutilisables (design, physique 2D, narration). | Lecture seule (sauf ajout d'un nouveau skill). |
 | **`01_Assets/`** | Pérenne | Rangement de tous les médias utilisés par les vidéos. | Ajout de fichiers avec le suffixe unique. |
-| **`02_Composants/`**| Pérenne | Éléments graphiques, transitions et blocs HTML/CSS prêts. | Lecture et réutilisation dans les scènes. |
+| **`02_Composants/`**| Pérenne | Éléments graphiques, transitions et briques HTML/CSS réutilisables. | Lecture et réutilisation dans les scènes. |
 | **`03_Chaines/`** | Données | Dossiers personnels de chaque chaîne de l'utilisateur. | Création des vidéos finales de chaîne. |
 | **`04_Videos/`** | Éphémère | Vidéos créées sans chaîne (autonomes). | Création de nouvelles vidéos avec suffixe à 4 chiffres. |
-| **`05_Scenes/`** | Éphémère | Scènes modulaires unitaires générées par l'IA. | Écriture des scènes intermédiaires. |
+| **`05_Scenes/`** | Éphémère | Scènes modulaires unitaires générées par l'IA. | Écriture des scènes intermédiaires si multi-projets. |
 | **`06_Templates/`** | Pérenne | Modèles maîtres de structures vidéo. | Lecture et duplication comme base de montage. |
 | **`07_Scripts/`** | Pérenne | Moteurs d'orchestration et scripts utilitaires (`ai_director`, `tts`, `coverr`...). | Exécution et maintenance. |
-| **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre utilisateur**. |
+| **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre explicite utilisateur**. |
 | **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur du Studio web. | Maintenance et affichage UI. |
-| **`10_Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git pour la confidentialité et le stockage. |
+| **`10_Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git. |
