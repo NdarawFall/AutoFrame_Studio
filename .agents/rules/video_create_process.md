@@ -77,6 +77,10 @@
     - **Non-ingérence JS en mode Studio (`isIframeMode === true`)** : le Studio pilote automatiquement la lecture et l'arrêt dès que la tête de lecture passe sur la scène. Le script de composition ne doit JAMAIS appeler `video.play()`, `video.pause()` ni modifier `video.currentTime` quand `isIframeMode` est vrai.
     - **B-roll d'action réelle continue (60 FPS)** : Bannir impérativement les clips promotionnels ou institutionnels qui sont en réalité des diaporamas de photos fixes découpées. Exiger une vraie prise de vue continue avec mouvement physique (athlètes, véhicules, caméra).
     - **Interdiction formelle des étiquettes factices / AI Slop** : Ne jamais ajouter de stickers « LIVE BROADCAST », « DIRECT TV » ou faux logos télévisés non demandés.
+22. **Interdiction Formelle de Dessiner un Logo (Obligation de Téléchargement Officiel)** :
+    - **L'IA ne doit JAMAIS dessiner un logo** (aucun bricolage ou imitation SVG de logo codé de toute pièce).
+    - Tout logo doit obligatoirement être **téléchargé** en tant qu'asset officiel réel (SVG ou PNG transparent) via `07_Scripts/brandfetch.cjs <domaine>` ou sourcing certifié dans `01_Assets/Logos/`.
+    - **Si le téléchargement est impossible**, l'IA doit impérativement **s'arrêter et prévenir l'utilisateur** afin que celui-ci fournisse lui-même l'asset logo officiel. Ne jamais improviser un faux logo.
 
 ---
 
