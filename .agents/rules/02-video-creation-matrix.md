@@ -13,12 +13,14 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 3. **Téléchargement externe & B-Roll strictement limité à YouTube** :
    - **Aucun autre B-Roll externe que YouTube** n'est autorisé.
    - Cette étape est entièrement **modulable et non-fixe** : elle n'est déclenchée que si le prompt ou les paramètres requièrent explicitement un extrait YouTube via `07_Scripts/youtube_clip.cjs`.
-4. **Options Audio autorisées** :
+4. **Options Audio autorisées & Règle Anti-Saccade** :
    - Les 4 seules options audio autorisées sont :
-     - `voice_only` : Voix off seulement (narration pure).
+     - `voice_only` : Voix off seulement (narration pure via ElevenLabs ou HeyGen).
      - `music_only` : Musique seulement (bande-son d'ambiance).
      - `full_mix` : **Mix avec tout** (Voix off + Musique de fond + Effets sonores SFX) — *Option par défaut*.
      - `none` : Sans audio (vidéo muette).
+   - **Règle Anti-Saccade Audio** : Dans toute fonction `syncAudioTimeline(time, isPlaying)`, ne **JAMAIS** réassigner `audio.currentTime = expected` à chaque frame. Toujours vérifier la dérive : `if (Math.abs(audio.currentTime - expected) > 0.35) { audio.currentTime = expected; }`. Sinon le navigateur réinitialise le buffer audio 60 fois par seconde et le son devient haché/saccadé.
+   - **Interdiction des Sous-Titres Non Demandés** : **Ne JAMAIS générer ni incruster de boîte ou conteneur de sous-titres** si l'utilisateur ne l'a pas explicitement demandé dans son prompt.
 5. **Gestion et cloisonnement des Assets** :
    - **Assets d'une chaîne** : Dossier dédié portant le nom / ID de la chaîne (ex: `01_Assets/Images/<channelId>/`).
    - **Assets des vidéos autonomes** : Suffixe aléatoire identique à 4 chiffres (ex: `image_homme-2899.png`, `voiture_jaune-2899.mp4`).
@@ -34,10 +36,10 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 9. **Interdiction d'Overlay Parasite (Progress Bar & Timecode dans la vidéo)** :
    - **Ne JAMAIS incruster de barre de progression (`progress bar`), timecode ou compteur de frames dans la composition vidéo.**
    - Le Studio dispose déjà de ses propres contrôles professionnels externes.
-10. **Zéro Copie Visuelle — Créativité 100% Originale (Anti-Plagiat)** :
-    - **NE JAMAIS inspecter ou lire les fichiers HTML existants dans `04_Videos/` ou `03_Chaines/`** lors de la création d'une nouvelle vidéo.
-    - **NE JAMAIS recopier visuellement une vidéo ou un composant préexistant.**
-    - Chaque nouvelle composition doit avoir sa propre direction artistique, ses propres scènes, ses propres visuels vectoriels et sa typographie originale créée de A à Z.
+10. **Zéro Copie Visuelle — Créativité 100% Originale (Anti-Plagiat & Anti-Répétition)** :
+    - **NE JAMAIS inspecter ou recopier paresseusement les fichiers HTML existants dans `04_Videos/` ou `03_Chaines/`** lors de la création d'une nouvelle vidéo.
+    - **NE JAMAIS reproduire les mêmes scènes ou décors d'une vidéo à l'autre** (interdiction de refaire bureau/lampe, décompte blueprint avec cadran ou dominos).
+    - Chaque nouvelle composition doit avoir sa propre direction artistique, ses propres scènes narratives, ses métaphores visuelles originales (labyrinthe, escalier d'énergie en lévitation, engrenages d'horlogerie, tir à l'arc néon, etc.) et sa typographie originale créée de A à Z.
 11. **Interdiction des Titrages Didactiques, Badges "PowerPoint" & Textes aux 4 Coins** :
     - **Bannissement définitif des étiquettes scolaires et diaporama** : `[ Règle 01 ]`, `[ Chapitre 1 ]`, `[ Étape 01 ]`, `[ SCÈNE 1 : ... ]`, `[ SLIDE X ]`, conteneurs `.tag-pill`. L'IA réalise des **films et vidéos cinématographiques**, JAMAIS des présentations PowerPoint.
     - **Bannissement absolu des faux textes HUD aux 4 coins du cadre** (`.hud-telemetry`, `1080p`, `TEMPO 120 BPM`, `VIBE ENGINE`, badges debug). Les 4 coins du cadre doivent impérativement rester propres, aérés et dégagés.
