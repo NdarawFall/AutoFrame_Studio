@@ -200,7 +200,9 @@ async function removeBackground(inputPath, outputPath, options = {}) {
             console.log('[Détourage IA] Exécution du moteur local WASM/ONNX (Gratuit, Zéro crédit consommé)...');
             const startTime = Date.now();
 
-            const blob = await imglyRemoveBg(inputPath);
+            const { pathToFileURL } = require('url');
+            const fileUrl = pathToFileURL(path.resolve(inputPath)).href;
+            const blob = await imglyRemoveBg(fileUrl);
             const arrayBuffer = await blob.arrayBuffer();
             initialPngBuffer = Buffer.from(arrayBuffer);
 

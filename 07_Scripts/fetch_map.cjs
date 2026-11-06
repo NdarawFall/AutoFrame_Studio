@@ -4,8 +4,8 @@
  * 100% gratuit et illimité (OpenStreetMap / CartoDB / Esri Satellite)
  * 
  * Usage CLI :
- *   node 07_Scripts/fetch_map.cjs --query "Paris, France" [--style dark|voyager|satellite|osm] [--zoom 12] [--out 01_Assets/Maps/paris.png]
- *   node 07_Scripts/fetch_map.cjs --lat 48.8566 --lon 2.3522 --zoom 14 --style dark
+ *   node 07_Scripts/fetch_map.cjs --query "Paris, France" [--style satellite|osm] [--zoom 13] [--out 01_Assets/Maps/paris.png]
+ *   node 07_Scripts/fetch_map.cjs --lat 48.8566 --lon 2.3522 --zoom 14 --style satellite
  */
 
 const { spawn, execSync } = require('child_process');
@@ -66,33 +66,21 @@ function geocode(query) {
     });
 }
 
-// Fournisseurs de tuiles cartographiques 100% gratuits, sans filigrane
+// Fournisseurs de cartes : Satellite HD (Esri) et Plan Standard (OpenStreetMap)
 const TILE_STYLES = {
-    dark: {
-        url: 'https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}@2x.png',
-        name: 'CartoDB Dark Matter (Cinématique Sombre)'
-    },
-    voyager: {
-        url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        name: 'CartoDB Voyager (Élégant & Moderne)'
-    },
-    light: {
-        url: 'https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}@2x.png',
-        name: 'CartoDB Positron (Minimaliste Blanc)'
-    },
     satellite: {
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         name: 'Esri World Imagery (Vue Satellite Réelle HD)'
     },
     osm: {
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        name: 'OpenStreetMap Standard'
+        name: 'OpenStreetMap Standard (Plan de Ville)'
     }
 };
 
 // Génération de la page HTML Leaflet isolée sans watermark
-function generateMapHtml({ lat, lon, zoom = 12, style = 'dark', pin = false, pinColor = '#ff3344', width = 1920, height = 1080 }) {
-    const tileConfig = TILE_STYLES[style] || TILE_STYLES.dark;
+function generateMapHtml({ lat, lon, zoom = 13, style = 'satellite', pin = false, pinColor = '#ff3344', width = 1920, height = 1080 }) {
+    const tileConfig = TILE_STYLES[style] || TILE_STYLES.satellite;
 
     return `<!DOCTYPE html>
 <html lang="fr">
@@ -320,8 +308,8 @@ Exemples :
     const query = getArg('--query') || getArg('-q');
     const lat = getArg('--lat') ? parseFloat(getArg('--lat')) : undefined;
     const lon = getArg('--lon') ? parseFloat(getArg('--lon')) : undefined;
-    const style = getArg('--style') || 'dark';
-    const zoom = getArg('--zoom') ? parseInt(getArg('--zoom'), 10) : 12;
+    const style = getArg('--style') || 'satellite';
+    const zoom = getArg('--zoom') ? parseInt(getArg('--zoom'), 10) : 13;
     const pin = args.includes('--pin');
     const format = getArg('--format') || '16:9';
     const isVertical = format === '9:16';

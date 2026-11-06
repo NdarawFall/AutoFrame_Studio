@@ -63,7 +63,7 @@ Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur Git
 │   └── fetch_music.cjs          # Téléchargement de musiques libres de droit par genre/mood (Incompetech)
 ├── 08_Rendus/          # Dossier d'exportation des vidéos finales MP4 (ignoré par Git)
 ├── 09_Pages/           # Interface utilisateur web du studio (Home, Création, Paramètres)
-├── 10_Clients/         # Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)
+├── Clients/            # Rushes & vidéos brutes non montées des clients (éditeur Short / Reel / TikTok)
 └── .gitignore          # Filtres Git stricts pour la confidentialité et le poids
 ```
 

@@ -157,14 +157,17 @@ async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7) {
         throw new Error("Clé API Google Gemini manquante. Veuillez la configurer dans Paramètres (settings.html) ou via la variable d'environnement GOOGLE_API_KEY.");
     }
 
+    const userPreferredModel = (config.gemini_model || '').trim();
     const candidateModels = [
+        ...(userPreferredModel ? [userPreferredModel] : []),
         'gemini-3.5-flash-lite',
-        'gemini-3.1-flash-lite',
         'gemini-3.5-flash',
-        'gemini-3.7-flash',
         'gemini-flash-latest',
+        'gemini-3.7-flash',
+        'gemini-3.8-flash',
+        'gemini-4-argon',
         'gemini-pro-latest'
-    ];
+    ].filter((m, idx, arr) => arr.indexOf(m) === idx);
     let lastError = null;
 
     for (const model of candidateModels) {
@@ -580,7 +583,7 @@ RÈGLES CRÉATIVES ET DIRECTION ARTISTIQUE :
 
 4. DÉTECTION AUTONOME DES OUTILS REQUIS :
    - Si le sujet concerne une marque ou entreprise : brandLogo = true, brandDomain = "domaine.com".
-   - Si le sujet concerne une ville, région ou localisation géographique : map = true, mapQuery = "Ville, Pays".
+   - Si le sujet concerne une ville, région ou localisation géographique : map = true, mapQuery = "Ville, Pays", mapStyle = "dark" (défaut cinématique) | "satellite" (si le sujet évoque vue aérienne, immobilier, urbanisme, environnement) | "voyager" (si le sujet est lifestyle, voyage, tourisme, élégant) | "light" (si fond vidéo blanc/claire, minimalisme) | "osm" (si style technique, data, open source, brut).
    - Si le sujet concerne un pays, une nationalité, un événement international, la géopolitique, une comparaison entre nations : flag = true, country = "Nom du pays (ex: France, Japon, Suisse, etc.)".
 
 Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exacte :
@@ -609,6 +612,7 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exact
     "brandDomain": "",
     "map": false,
     "mapQuery": "",
+    "mapStyle": "dark", // "dark" | "voyager" | "light" | "satellite" | "osm" - choisi selon l'ambiance vidéo
     "flag": false,
     "country": "",
     "coverrBroll": false,
@@ -795,7 +799,10 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             ensureDir(webImgDir);
             const webImgFull = path.join(webImgDir, webImgName);
             const recordScript = path.join(ROOT_DIR, '07_Scripts', 'record_web.cjs');
-            await execAsync(`node "${recordScript}" --url "${detectedUrl}" --mode image --out "${webImgFull}"`, 35000);
+            // Fix Windows paths: convert backslashes to forward slashes for execAsync template literals
+            const safeRecordScript = recordScript.replace(/\\/g, '/');
+            const safeWebImgFull = webImgFull.replace(/\\/g, '/');
+            await execAsync(`node "${safeRecordScript}" --url "${detectedUrl}" --mode image --out "${safeWebImgFull}"`, 35000);
             if (fs.existsSync(webImgFull)) {
                 downloadedWebCapturePath = isChannel ? `${assetPrefix}/Images/${channelId}/${webImgName}` : `${assetPrefix}/Images/${webImgName}`;
                 onProgress('step_web_record', 'Capture HD du site web prête !', 37, `Capture enregistrée : ${downloadedWebCapturePath}`, 'success');
@@ -824,7 +831,9 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         onProgress('step_logo', `Téléchargement du logo officiel pour ${brandDomain}...`, 38, `07_Scripts/brandfetch.cjs : récupération du logo ${brandDomain}...`, 'info');
         try {
             const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs');
-            await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
+            // Fix Windows paths: convert backslashes to forward slashes for execAsync template literals
+            const safeBrandScript = brandScript.replace(/\\/g, '/');
+            await execAsync(`node "${safeBrandScript}" ${brandDomain}`, 15000);
             const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/, '').toLowerCase().replace(/[\s_]/g, '-');
             const cleanDomain = brandDomain.replace(/\./g, '_');
 
@@ -877,17 +886,21 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     // 4.3 CARTES GÉOGRAPHIQUES
     let downloadedMapPath = '';
     let mapQuery = plan.toolsNeeded?.mapQuery;
+    let mapStyle = plan.toolsNeeded?.mapStyle || 'dark';
     if (!mapQuery && /carte|map|satellite|géographie|pays|territoire|capitale|ville/i.test(normPrompt)) {
         mapQuery = flagTarget || prompt.split(/[,:.]/)[0];
     }
 
     if (mapQuery) {
-        onProgress('step_map', 'Génération de la carte géographique haute résolution...', 50, `07_Scripts/fetch_map.cjs : carte pour "${mapQuery}"...`, 'info');
+        onProgress('step_map', 'Génération de la carte géographique haute résolution...', 50, `07_Scripts/fetch_map.cjs : carte pour "${mapQuery}" (style: ${mapStyle})...`, 'info');
         try {
             const mapOut = path.join(ROOT_DIR, '01_Assets', 'Maps', `map_${sanitizeFilename(mapQuery)}${suffix}.png`);
             ensureDir(path.dirname(mapOut));
             const mapScript = path.join(ROOT_DIR, '07_Scripts', 'fetch_map.cjs');
-            await execAsync(`node "${mapScript}" --query "${mapQuery}" --out "${mapOut}"`, 25000);
+            // FIX: Convertir les chemins Windows en forward slashes pour éviter l'échappement dans template literal
+            const safeMapScript = mapScript.replace(/\\/g, '/');
+            const safeMapOut = mapOut.replace(/\\/g, '/');
+            await execAsync(`node "${safeMapScript}" --query "${mapQuery}" --style "${mapStyle}" --out "${safeMapOut}"`, 25000);
             if (fs.existsSync(mapOut)) {
                 downloadedMapPath = `${assetPrefix}/Maps/${path.basename(mapOut)}`;
                 onProgress('step_map', 'Carte satellite prête !', 54, `Carte enregistrée : 01_Assets/Maps/${path.basename(mapOut)}`, 'success');
@@ -1018,47 +1031,68 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         totalVideoDuration = promptDuration || plan.targetDuration || 20.0;
     }
 
-    // 7. ÉTAPE : SOUS-TITRES DYNAMIQUES ULTRA-RÉACTIFS (CADENCE VOCALE CALIBRÉE)
+    // 7. ÉTAPE : SOUS-TITRES DYNAMIQUES HAUTE PRÉCISION (2 STYLES EXCLUSIFS)
     let subtitleCues = [];
     if (showSubtitles) {
-        onProgress('step_subtitles', 'Calage temporel mot-à-mot des sous-titres...', 75, `Synchronisation vocale dynamique (style : ${payload.subtitleType || 'type-wordbyword'})`, 'info');
+        const subChosenStyle = (payload.subtitleType === 'type-standard') ? 'type-standard' : 'type-wordbyword';
+        onProgress('step_subtitles', 'Découpage et synchronisation des sous-titres...', 75, `Synchronisation vocale dynamique (style : ${subChosenStyle})`, 'info');
 
-        const textToSub = plan.narration || `${prompt}. Composition générée par VibeEditor.`;
-        const words = textToSub.split(/\s+/).filter(Boolean);
-        const speechStart = 0.3; // Décalage naturel initial de la voix
-        const speechEnd = Math.max(speechStart + 1.0, voiceDurationSeconds - 0.2);
-        const availableSpeechDuration = speechEnd - speechStart;
+        const rawText = plan.narration || `${prompt}. Composition générée par VibeEditor.`;
+        const speechStart = 0.35;
+        const speechEnd = Math.max(speechStart + 1.2, voiceDurationSeconds - 0.25);
+        const availableDuration = speechEnd - speechStart;
 
-        // Pondération intelligente par longueur de mot (un mot de 10 lettres dure plus qu'un mot de 2 lettres)
-        const wordWeights = words.map(w => Math.max(1, Math.min(4, Math.ceil(w.replace(/[^a-zA-Z0-9]/g, '').length / 2.5))));
-        const totalWeight = wordWeights.reduce((a, b) => a + b, 0);
+        // Découpage intelligent en phrases/segments par ponctuation ou groupes de 3-5 mots
+        const sentences = rawText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [rawText];
+        const allSegments = [];
 
-        // Découpage en groupes percutants de 3 à 4 mots max
-        const wordsPerGroup = 4;
-        let wordIdx = 0;
+        sentences.forEach(sent => {
+            const trimmed = sent.trim();
+            if (!trimmed) return;
+            const words = trimmed.split(/\s+/).filter(Boolean);
+            
+            // Si la phrase fait moins de 5 mots, on la garde entière
+            if (words.length <= 5) {
+                allSegments.push(words);
+            } else {
+                // Découpage en blocs de 3 à 4 mots max
+                let idx = 0;
+                while (idx < words.length) {
+                    const remaining = words.length - idx;
+                    let chunkSize = 4;
+                    if (remaining === 5) chunkSize = 3; // évite d'avoir un mot isolé à la fin
+                    allSegments.push(words.slice(idx, idx + chunkSize));
+                    idx += chunkSize;
+                }
+            }
+        });
+
+        // Calcul des poids temporels par NOMBRE DE CARACTÈRES (les mots courts passent vite, les longs durent plus)
+        const charWeight = (w) => Math.max(w.length, 2); // minimum 2 pour les mots très courts
+        const totalChars = allSegments.reduce((acc, seg) => acc + seg.reduce((a, w) => a + charWeight(w), 0), 0);
         let currentSec = speechStart;
 
-        while (wordIdx < words.length) {
-            const groupWords = words.slice(wordIdx, wordIdx + wordsPerGroup);
-            const groupWeights = wordWeights.slice(wordIdx, wordIdx + wordsPerGroup);
-
+        allSegments.forEach(groupWords => {
+            const groupChars = groupWords.reduce((a, w) => a + charWeight(w), 0);
+            const groupRatio = groupChars / totalChars;
+            const groupDuration = groupRatio * availableDuration;
             const groupStart = Math.round(currentSec * 100) / 100;
+            const groupEnd = Math.round((currentSec + groupDuration) * 100) / 100;
+
             let runningWordTime = groupStart;
 
             const wordsWithTiming = groupWords.map((w, i) => {
-                const wDuration = (groupWeights[i] / totalWeight) * availableSpeechDuration;
+                const wRatio = charWeight(w) / groupChars;
+                const wDur = groupDuration * wRatio;
                 const wStart = Math.round(runningWordTime * 100) / 100;
-                const wEnd = Math.round((runningWordTime + wDuration) * 100) / 100;
-                runningWordTime += wDuration;
+                const wEnd = Math.round((runningWordTime + wDur) * 100) / 100;
+                runningWordTime += wDur;
                 return {
                     word: w,
                     start: wStart,
                     end: wEnd
                 };
             });
-
-            const groupEnd = Math.round(runningWordTime * 100) / 100;
-            currentSec = groupEnd;
 
             subtitleCues.push({
                 start: groupStart,
@@ -1067,8 +1101,8 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                 words: wordsWithTiming
             });
 
-            wordIdx += wordsPerGroup;
-        }
+            currentSec = groupEnd;
+        });
     }
 
     // 8. ÉTAPE : GESTION TEMPLATE vs CRÉATION LIBRE PAR L'IA (GÉNÉRATION DYNAMIQUE UNIFIÉE PAR GEMINI)
@@ -1205,7 +1239,7 @@ DIRECTIVES CRÉATIVES ET TECHNIQUES ABSOLUES :
 
 3. ORIGINALITÉ & DIRECTION ARTISTIQUE SUR-MESURE :
    - Crée des graphismes et animations SVG vectorielles riches, uniques et adaptées au sujet.
-   - RÈGLE CRITIQUE D'ANCRAGE SVG / 2D (AIGUILLES, ROUES, HORLOGES) : Dans GSAP, svgOrigin opère TOUJOURS dans les coordonnées globales du viewBox SVG ! Tu dois impérativement utiliser les coordonnées réelles du centre du cadran : svgOrigin: "${cx} ${cy}" (ex: svgOrigin: "180 180" si le cadran est centré à 180, 180). INTERDICTION FORMELLE ET ABSOLUE d'écrire svgOrigin: "0 0", car cela fait voltiger l'aiguille hors du cadran !
+   - RÈGLE CRITIQUE D'ANCRAGE SVG / 2D (AIGUILLES, ROUES, HORLOGES) : Dans GSAP, svgOrigin opère TOUJOURS dans les coordonnées globales du viewBox SVG ! Tu dois impérativement utiliser les coordonnées réelles du centre du cadran : svgOrigin: "\${cx} \${cy}" (ex: svgOrigin: "180 180" si le cadran est centré à 180, 180). INTERDICTION FORMELLE ET ABSOLUE d'écrire svgOrigin: "0 0", car cela fait voltiger l'aiguille hors du cadran !
    - BANNISSEMENT ABSOLU DES TEXTES ET BADGES AUX 4 COINS DE L'ÉCRAN : INTERDICTION FORMELLE de coller des badges, timecodes, textes techniques ou faux indicateurs HUD dans les 4 coins du cadre (type .hud-telemetry, hud-tl, hud-tr, hud-bl, hud-br, "VIBE ENGINE", "1080p 60fps", "TEMPO 120 BPM", etc.). Cela fait amateur et ressemble à une présentation PowerPoint surchargée. Les 4 coins de l'écran doivent rester 100% vides, épurés et respirer ! Tout cadrage doit être cinématographique et centré sur l'histoire.
    - Zéro titrage scolaire / PowerPoint (aucun [ Étape 01 ], [ Chapitre 1 ], ni de conteneur .tag-pill).
    - Typographie cinétique stable sans reflow : balises <span class="title-line"> avec display:block et white-space:nowrap.
@@ -1703,19 +1737,24 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             console.error("Erreur exécution GSAP IA :", e);
         }
 
-        // 3. Moteur de Sous-titres Ultra-Réactif
+        // 3. Moteur de Sous-titres Ultra-Réactif (2 Styles : Basique ou Mot-à-mot Coloré)
         const cues = VIDEO_CONFIG.subtitles || [];
+        const isWordByWord = ('${subType}' === 'type-wordbyword');
+
         if (subtitleBox && cues.length > 0) {
             cues.forEach(cue => {
+                // Affichage du groupe de mots
                 tl.call(() => {
                     renderSubtitleGroup(cue);
                 }, null, cue.start);
 
+                // Disparition en fin de groupe
                 tl.call(() => {
                     if (subtitleBox) subtitleBox.style.opacity = '0';
                 }, null, cue.end);
 
-                if ('${subType}' === 'type-wordbyword' && cue.words) {
+                // Animation mot-à-mot coloré : passage de la couleur au mot suivant au fil de l'audio
+                if (isWordByWord && cue.words) {
                     cue.words.forEach((w, wIdx) => {
                         tl.call(() => {
                             highlightWord(wIdx);
@@ -1728,72 +1767,98 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
         function renderSubtitleGroup(cue) {
             if (!subtitleBox) return;
             const words = cue.words || [];
-            if ('${subType}' === 'type-wordbyword') {
-                subtitleBox.innerHTML = words.map((w, idx) => \`<span class="sub-word" id="sub_word_\${idx}">\${w.word}</span>\`).join(' ');
-            } else if ('${subType}' === 'type-highlight') {
-                subtitleBox.innerHTML = words.map(w => {
-                    const isImp = w.word.length > 5;
-                    return \`<span class="sub-word \${isImp ? 'highlight-word' : ''}">\${w.word}</span>\`;
-                }).join(' ');
+            if (isWordByWord && words.length > 0) {
+                // Le premier mot est directement coloré dès l'apparition
+                subtitleBox.innerHTML = words.map((w, idx) => '<span class="sub-word ' + (idx === 0 ? 'active-word' : '') + '" id="sub_word_' + idx + '">' + w.word + '</span>').join(' ');
             } else {
-                subtitleBox.innerHTML = \`<span class="sub-word">\${cue.text}</span>\`;
+                // Style basique : texte uni phrase par phrase
+                subtitleBox.innerHTML = '<span class="sub-word">' + cue.text + '</span>';
             }
             subtitleBox.style.opacity = '1';
         }
 
         function highlightWord(idx) {
-            if (!subtitleBox) return;
+            if (!subtitleBox || !isWordByWord) return;
             const all = subtitleBox.querySelectorAll('.sub-word');
             for (let i = 0; i < all.length; i++) {
-                if (i === idx) all[i].classList.add('active-word');
-                else all[i].classList.remove('active-word');
+                if (i === idx) {
+                    all[i].classList.add('active-word');
+                } else {
+                    all[i].classList.remove('active-word');
+                }
             }
         }
 
         // 4. Synchronisation Audio Studio Haute Fidélité (100% Fluide sans saccades)
+        let isVoiceStarting = false;
+        let isMusicStarting = false;
+
         window.syncAudioTimeline = function(time, isPlaying) {
             if (voiceAudio) {
                 if (isPlaying) {
-                    if (voiceAudio.paused && !voiceAudio.ended) {
-                        if (Math.abs(voiceAudio.currentTime - time) > 0.15) {
+                    if (voiceAudio.paused && !voiceAudio.ended && !isVoiceStarting) {
+                        isVoiceStarting = true;
+                        if (Math.abs(voiceAudio.currentTime - time) > 0.3) {
                             voiceAudio.currentTime = time;
                         }
-                        voiceAudio.play().catch(() => {});
-                    } else {
-                        // En cours de lecture, ne JAMAIS faire de micro-seek saccadé (tolérance 1.2s)
-                        if (Math.abs(voiceAudio.currentTime - time) > 1.2) {
+                        voiceAudio.play().then(() => {
+                            isVoiceStarting = false;
+                        }).catch(() => {
+                            isVoiceStarting = false;
+                        });
+                    } else if (!voiceAudio.paused) {
+                        // Tolérance fluide durant la lecture continue : ne JAMAIS micro-seeker si écart < 0.8s
+                        if (Math.abs(voiceAudio.currentTime - time) > 0.8) {
                             voiceAudio.currentTime = time;
                         }
                     }
                 } else {
+                    isVoiceStarting = false;
                     if (!voiceAudio.paused) voiceAudio.pause();
-                    if (Math.abs(voiceAudio.currentTime - time) > 0.05) {
-                        voiceAudio.currentTime = time;
-                    }
+                    voiceAudio.currentTime = time;
                 }
             }
             if (musicAudio) {
                 const targetMusicTime = time % (musicAudio.duration || 30);
                 if (isPlaying) {
-                    if (musicAudio.paused && !musicAudio.ended) {
-                        if (Math.abs(musicAudio.currentTime - targetMusicTime) > 0.2) {
-                            musicAudio.currentTime = targetMusicTime;
-                        }
+                    if (musicAudio.paused && !musicAudio.ended && !isMusicStarting) {
+                        isMusicStarting = true;
+                        musicAudio.currentTime = targetMusicTime;
                         musicAudio.volume = 0.15;
-                        musicAudio.play().catch(() => {});
-                    } else {
+                        musicAudio.play().then(() => {
+                            isMusicStarting = false;
+                        }).catch(() => {
+                            isMusicStarting = false;
+                        });
+                    } else if (!musicAudio.paused) {
                         if (Math.abs(musicAudio.currentTime - targetMusicTime) > 1.5) {
                             musicAudio.currentTime = targetMusicTime;
                         }
                     }
                 } else {
+                    isMusicStarting = false;
                     if (!musicAudio.paused) musicAudio.pause();
                     musicAudio.currentTime = targetMusicTime;
                 }
             }
         };
 
-        // Contrôles universels pour le Studio
+        // Lancement audio fluide en mode standalone au clic utilisateur (politique autoplay navigateur)
+        if (!isIframeMode) {
+            const startStandaloneAudio = () => {
+                if (voiceAudio && voiceAudio.paused) {
+                    voiceAudio.currentTime = tl.time();
+                    voiceAudio.play().catch(() => {});
+                }
+                if (musicAudio && musicAudio.paused) {
+                    musicAudio.volume = 0.15;
+                    musicAudio.play().catch(() => {});
+                }
+            };
+            document.body.addEventListener('click', startStandaloneAudio, { once: true });
+            startStandaloneAudio();
+        }
+
         window.__timeline = {
             duration: () => ${totalVideoDuration.toFixed(1)},
             seek: (t, isUserSeeking = false) => {

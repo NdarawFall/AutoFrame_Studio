@@ -52,7 +52,7 @@ const activeCreationJobs = new Map();
 const USER_DATA_DIR = ROOT_DIR;
 
 if (process.env.VIBE_USER_DATA) {
-    ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus', '10_Clients'].forEach(folder => {
+    ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus', 'Clients'].forEach(folder => {
         const full = path.join(USER_DATA_DIR, folder);
         if (!fs.existsSync(full)) {
             try { fs.mkdirSync(full, { recursive: true }); } catch (e) {}
@@ -78,6 +78,7 @@ const DEFAULT_CONFIG = {
     pref_quality: "high",
     pref_template: "none",
     pref_subtitle_style: "type-wordbyword",
+    gemini_model: "gemini-3.5-flash-lite",
     google_api_key: "",
     elevenlabs_api_key: "",
     elevenlabs_voice_id: "N2lVS1w4EtoT3dr4eOWO",
@@ -85,7 +86,10 @@ const DEFAULT_CONFIG = {
     pixabay_api_key: "",
     brandfetch_api_key: "",
     bg_remove_api_key: "",
-    coverr_api_key: ""
+    sketchfab_api_token: "",
+    coverr_api_key: "",
+    heygen_api_key: "",
+    heygen_voice_id: "b11a7dbb250f483eadad9fb253e7d313"
 };
 
 // Initialisation automatique transparente sans aucune manipulation technique de l'utilisateur
@@ -227,6 +231,40 @@ const server = http.createServer(async (req, res) => {
         } catch (e) {
             console.error('Erreur lecture dossiers :', e);
         }
+
+        // B-bis. Inclure les créations en cours issues d'activeCreationJobs
+        for (const [jId, job] of activeCreationJobs.entries()) {
+            if (job.status === 'processing') {
+                const vidPath = job.videoUrl || (job.channelId ? `03_Chaines/${job.channelId}/${job.fileName}` : `04_Videos/${job.fileName}`);
+                const existingIdx = videos.findIndex(v => v.path === vidPath || (job.fileName && (v.name === job.fileName || v.name === `${job.fileName}.html`)));
+                if (existingIdx !== -1) {
+                    videos[existingIdx].status = 'processing';
+                    videos[existingIdx].jobId = jId;
+                } else {
+                    const cleanName = job.fileName ? (job.fileName.endsWith('.html') ? job.fileName : `${job.fileName}.html`) : 'Vidéo en cours...';
+                    videos.unshift({
+                        name: cleanName,
+                        file: cleanName,
+                        path: vidPath.endsWith('.html') ? vidPath : `${vidPath}.html`,
+                        isStandalone: !job.channelId,
+                        channelId: job.channelId || null,
+                        channelName: job.channelName || null,
+                        status: 'processing',
+                        jobId: jId,
+                        duration: job.duration || 20,
+                        format: job.format || '16:9'
+                    });
+                }
+            }
+        }
+
+        // Dédoublonnage strict par chemin unique
+        const seenPaths = new Set();
+        videos = videos.filter(v => {
+            if (!v.path || seenPaths.has(v.path)) return false;
+            seenPaths.add(v.path);
+            return true;
+        });
 
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
         return res.end(JSON.stringify({ videos, rendus }));
@@ -407,7 +445,14 @@ const server = http.createServer(async (req, res) => {
                     }
                 }
 
-                if (fs.existsSync(filePath) && filePath.endsWith('.html')) {
+                if (!fs.existsSync(filePath)) {
+                    filePath = path.join(ROOT_DIR, '08_Rendus', path.basename(videoTarget));
+                }
+
+                const allowedExts = ['.html', '.mp4', '.webm', '.mov', '.mkv'];
+                const fileExt = path.extname(filePath).toLowerCase();
+
+                if (fs.existsSync(filePath) && allowedExts.includes(fileExt)) {
                     fs.unlinkSync(filePath);
 
                     // Synchroniser channels.json au cas où la vidéo appartenait à une chaîne
@@ -753,6 +798,11 @@ const server = http.createServer(async (req, res) => {
                 const data = JSON.parse(body || '{}');
                 const jobId = `job_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
+                const isChan = Boolean(data.channelId);
+                const rawFn = data.fileName || ('video_' + Date.now().toString().slice(-4));
+                const cleanFn = rawFn.endsWith('.html') ? rawFn : `${rawFn}.html`;
+                const expectedPath = isChan ? `03_Chaines/${data.channelId}/${cleanFn}` : `04_Videos/${cleanFn}`;
+
                 const jobState = {
                     id: jobId,
                     status: 'processing',
@@ -763,8 +813,11 @@ const server = http.createServer(async (req, res) => {
                     logs: [
                         { time: new Date().toTimeString().split(' ')[0], text: '[SYSTEM] Démarrage du pipeline IA...', type: 'info' }
                     ],
-                    videoUrl: '',
-                    fileName: '',
+                    videoUrl: expectedPath,
+                    fileName: cleanFn,
+                    channelId: data.channelId || null,
+                    format: data.format || '16:9',
+                    duration: data.duration || 20,
                     error: null
                 };
                 activeCreationJobs.set(jobId, jobState);
@@ -842,14 +895,34 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (!job) {
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
-            return res.end(JSON.stringify({ 
-                success: true, 
-                status: 'completed', 
-                progress: 100, 
-                phaseLabel: 'Vidéo disponible',
-                logs: []
-            }));
+            // Vérifier si le fichier HTML existe réellement sur le disque
+            let diskExists = false;
+            let resolvedUrl = videoParam || '';
+            if (videoParam) {
+                const fullDisk = path.resolve(ROOT_DIR, videoParam);
+                diskExists = fs.existsSync(fullDisk);
+            }
+
+            if (diskExists) {
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                return res.end(JSON.stringify({ 
+                    success: true, 
+                    status: 'completed', 
+                    progress: 100, 
+                    phaseLabel: 'Vidéo prête',
+                    videoUrl: resolvedUrl,
+                    logs: [{ time: new Date().toTimeString().split(' ')[0], text: '✓ Vidéo prête sur le disque.', type: 'success' }]
+                }));
+            } else {
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                return res.end(JSON.stringify({ 
+                    success: false, 
+                    status: 'not_found', 
+                    progress: 0, 
+                    phaseLabel: 'En attente du démarrage...',
+                    error: 'Fichier vidéo ou tâche introuvable'
+                }));
+            }
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
@@ -1256,7 +1329,46 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    // 5g. API pour générer une voix off via ElevenLabs
+    // 5f-ter. API pour lister les voix HeyGen (v2)
+    if (req.url.startsWith('/api/heygen/voices')) {
+        const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
+        let savedKey = '';
+        try {
+            const configPath = getResolvedConfigPath();
+            if (fs.existsSync(configPath)) {
+                savedKey = JSON.parse(fs.readFileSync(configPath, 'utf8')).heygen_api_key || '';
+            }
+        } catch(e) {}
+        const queryKey = parsedUrl.searchParams.get('key') || savedKey;
+
+        const handleFetchHeyGenVoices = async (keyToUse) => {
+            try {
+                const { fetchHeyGenVoices } = require('./generate_voice.cjs');
+                const result = await fetchHeyGenVoices(keyToUse || savedKey);
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        };
+
+        if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => { body += chunk; });
+            req.on('end', () => {
+                let data = {};
+                try { data = JSON.parse(body || '{}'); } catch (e) {}
+                handleFetchHeyGenVoices(data.apiKey || queryKey);
+            });
+            return;
+        } else {
+            handleFetchHeyGenVoices(queryKey);
+            return;
+        }
+    }
+
+    // 5g. API pour générer une voix off via ElevenLabs ou HeyGen
     if (cleanUrl === '/api/tts/generate' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => { body += chunk; });
@@ -1264,7 +1376,7 @@ const server = http.createServer(async (req, res) => {
             try {
                 const { generateVoice } = require('./generate_voice.cjs');
                 const data = JSON.parse(body || '{}');
-                const { text, apiKey, voiceId, modelId, filename } = data;
+                const { text, apiKey, voiceId, modelId, filename, engine } = data;
 
                 if (!text || !text.trim()) {
                     res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1288,7 +1400,7 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({
                     success: true,
-                    engine: 'elevenlabs',
+                    engine: result.engine || engine || 'elevenlabs',
                     voice: result.voice,
                     model: result.model,
                     filename: safeName,
@@ -1391,6 +1503,170 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // 5j. API de modification IA de la vidéo active (Assistant Chat Studio)
+    if (cleanUrl === '/api/modify-video' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const payloadIn = JSON.parse(body || '{}');
+                const videoPathRel = (payloadIn.videoPath || '').trim();
+                const instruction = (payloadIn.instruction || '').trim();
+
+                if (!videoPathRel) throw new Error("Paramètre 'videoPath' manquant.");
+                if (!instruction) throw new Error("Paramètre 'instruction' manquant.");
+
+                const fullPath = path.resolve(ROOT_DIR, videoPathRel);
+                if (!fullPath.startsWith(ROOT_DIR)) throw new Error("Accès interdit hors du projet.");
+                if (!fs.existsSync(fullPath)) throw new Error("Fichier introuvable : " + videoPathRel);
+
+                const currentCode = fs.readFileSync(fullPath, 'utf8');
+
+                // Chargement de la configuration API
+                const apiCfg = (() => {
+                    const cPath = path.join(ROOT_DIR, '07_Scripts', 'api_config.json');
+                    if (fs.existsSync(cPath)) {
+                        try { return JSON.parse(fs.readFileSync(cPath, 'utf8')); } catch (e) {}
+                    }
+                    return {};
+                })();
+
+                const geminiKey = (apiCfg.google_api_key || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '').trim();
+                if (!geminiKey) throw new Error("Clé Google Gemini non configurée dans api_config.json.");
+
+                console.log("[Studio Chat] Message reçu sur " + videoPathRel + " : « " + instruction + " »");
+
+                // Appel Gemini avec détection d'intention (Question/Discussion vs Modification réelle)
+                const httpsMod = require('https');
+                const systemPrompt = "Tu es l'assistant IA créatif et motion designer de VibeEditor pour le studio de montage vidéo.\n" +
+                    "L'utilisateur s'adresse à toi dans l'interface de discussion dédiée à la vidéo en cours d'édition (" + path.basename(videoPathRel) + ").\n\n" +
+                    "DÉCISION D'INTENTION CRUCIALE :\n" +
+                    "1. TYPE 'reply' (Question, salutation, discussion, conseil ou explication) :\n" +
+                    "   Exemples : « salut », « bonjour », « que fait cette vidéo ? », « c'est quoi GSAP ? », « propose-moi 3 idées d'accroche », « quelle est la durée ? », « comment ça marche ? »...\n" +
+                    "   -> NE MODIFIE SURTOUT AUCUN CODE. Réponds amicalement, professionnellement et directement à sa question ou salutation dans le champ 'reply'.\n\n" +
+                    "2. TYPE 'modify' (Demande concrète de modification, ajout, suppression, style ou animation sur la vidéo) :\n" +
+                    "   Exemples : « change le fond en noir », « ajoute une animation de titre au début », « supprime le sous-titre », « mets le texte en rouge », « accélère l'intro »...\n" +
+                    "   -> Applique les changements sur le code HTML fourni avec précision chirurgicale.\n" +
+                    "   -> Conserve impérativement intacte l'interface window.__timeline (seek, pause, play, duration), les styles et la structure GSAP.\n" +
+                    "   -> Fournis le code HTML complet modifié dans 'html', et explique brièvement ce que tu as fait dans 'reply'.\n\n" +
+                    "RÉPONDS STRICTEMENT AU FORMAT JSON avec cette structure exacte :\n" +
+                    "{\n" +
+                    '  "action": "reply" ou "modify",\n' +
+                    '  "reply": "Ton message explicatif ou ta reponse textuelle",\n' +
+                    '  "html": "Le code HTML complet modifie UNIQUEMENT si action === \\"modify\\" (laisse null si action === \\"reply\\")"\n' +
+                    "}";
+
+                const userPrompt = "Code HTML actuel de la vidéo (" + videoPathRel + ") :\n---\n" +
+                    currentCode + "\n---\n\nMessage de l'utilisateur :\n« " + instruction + " »";
+
+                const payload = JSON.stringify({
+                    contents: [
+                        { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+                    ],
+                    generationConfig: {
+                        temperature: 0.3,
+                        responseMimeType: "application/json"
+                    }
+                });
+
+                const userModel = (apiCfg.gemini_model || '').trim();
+                const candidateModels = [
+                    ...(userModel ? [userModel] : []),
+                    'gemini-3.5-flash-lite',
+                    'gemini-3.5-flash',
+                    'gemini-flash-latest',
+                    'gemini-3.7-flash',
+                    'gemini-3.8-flash',
+                    'gemini-4-argon',
+                    'gemini-pro-latest'
+                ].filter((m, idx, arr) => arr.indexOf(m) === idx);
+
+                let parsedResult = null;
+                let usedModel = null;
+                let lastErr = null;
+
+                for (const m of candidateModels) {
+                    try {
+                        console.log("[Studio Chat] Essai avec le modèle Gemini : " + m);
+                        const rawJson = await new Promise((resolve, reject) => {
+                            const reqApi = httpsMod.request("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + geminiKey, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Content-Length': Buffer.byteLength(payload)
+                                },
+                                timeout: 60000
+                            }, (resApi) => {
+                                let resBody = '';
+                                resApi.on('data', c => { resBody += c; });
+                                resApi.on('end', () => {
+                                    if (resApi.statusCode !== 200) {
+                                        return reject(new Error("Gemini HTTP " + resApi.statusCode + " (" + m + "): " + resBody.slice(0, 180)));
+                                    }
+                                    try {
+                                        const json = JSON.parse(resBody);
+                                        const txt = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text;
+                                        if (!txt) return reject(new Error("Réponse textuelle Gemini vide"));
+                                        resolve(txt);
+                                    } catch (e) { reject(e); }
+                                });
+                            });
+                            reqApi.on('error', reject);
+                            reqApi.on('timeout', () => { reqApi.destroy(); reject(new Error("Timeout Gemini (" + m + ")")); });
+                            reqApi.write(payload);
+                            reqApi.end();
+                        });
+
+                        try {
+                            parsedResult = JSON.parse(rawJson);
+                            usedModel = m;
+                            break;
+                        } catch (e) {
+                            console.warn("[Studio Chat] Erreur parsing JSON renvoyé par " + m + " : " + e.message);
+                        }
+                    } catch (errM) {
+                        lastErr = errM;
+                        console.warn("[Studio Chat] " + m + " indisponible : " + errM.message + ". Essai modèle suivant...");
+                    }
+                }
+
+                if (!parsedResult) throw lastErr || new Error("Impossible d'obtenir une réponse de Gemini.");
+
+                const action = (parsedResult.action || 'reply').toLowerCase();
+                const replyText = parsedResult.reply || "Réponse reçue.";
+                const isModified = action === 'modify' && Boolean(parsedResult.html);
+
+                if (isModified) {
+                    let cleanCode = String(parsedResult.html).trim();
+                    if (cleanCode.startsWith('```html')) cleanCode = cleanCode.replace(/^```html\s*/i, '');
+                    else if (cleanCode.startsWith('```')) cleanCode = cleanCode.replace(/^```\s*/, '');
+                    if (cleanCode.endsWith('```')) cleanCode = cleanCode.replace(/\s*```$/, '');
+
+                    fs.writeFileSync(fullPath, cleanCode, 'utf8');
+                    console.log("[Studio Chat] Fichier " + videoPathRel + " modifié et sauvegardé avec succès ! (" + usedModel + ")");
+                } else {
+                    console.log("[Studio Chat] Réponse conversationnelle (aucune modification du code) : " + replyText.slice(0, 80));
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({
+                    success: true,
+                    action: action,
+                    modified: isModified,
+                    videoPath: videoPathRel,
+                    modelUsed: usedModel,
+                    message: replyText
+                }));
+
+            } catch (err) {
+                console.error('[Studio Modify Error] :', err);
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({ error: err.message }));
             }

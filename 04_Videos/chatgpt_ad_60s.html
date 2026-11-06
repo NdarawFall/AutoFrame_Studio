@@ -1655,10 +1655,35 @@
             duration: () => DURATION,
             seek: (time) => {
                 tl.seek(time, false);
+                const music = document.getElementById('bgMusic');
+                if (music && music.readyState >= 2) {
+                    music.currentTime = Math.min(time, music.duration || 60);
+                }
             },
-            pause: () => tl.pause(),
-            play: () => tl.play()
+            pause: () => {
+                tl.pause();
+                const music = document.getElementById('bgMusic');
+                if (music) music.pause();
+            },
+            play: () => {
+                tl.play();
+                const music = document.getElementById('bgMusic');
+                if (music) music.play().catch(() => {});
+            }
         };
+
+        // Auto-play musique au demarrage de la timeline
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('bgMusic');
+            if (music) {
+                music.volume = 0.18;
+                music.play().catch(() => {});
+            }
+        });
     </script>
+    <!-- MUSIQUE DE FOND (generee par 07_Scripts/generate_music.py - style tech 124BPM) -->
+    <audio id="bgMusic" preload="auto">
+        <source src="../01_Assets/Musiques/chatgpt_ad_60s_music.wav" type="audio/wav">
+    </audio>
 </body>
 </html>

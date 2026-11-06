@@ -16,6 +16,13 @@ Le rendu est frame par frame (Puppeteer). Toute animation DOIT être une fonctio
 - Après construction de la timeline : `await document.fonts.ready` AVANT de découper le texte, puis `tl.seek(tl.duration()).seek(0)` (pré-chauffe) pour que le scrub arrière et le rendu ne dépendent pas de l'ordre de lecture.
 - Texte en français : normaliser `text.normalize('NFC')` avant découpe. Arabe / écritures liées : découper par MOTS uniquement, jamais par caractères.
 
+
+> 🎨 **RÈGLE CRITIQUE COULEURS — MAXIMUM 2 COULEURS PAR TITRE / BLOC TEXTE :**
+> Le titre ou tout texte à l'écran ne doit **JAMAIS comporter plus de 2 couleurs** (interdiction formelle de 3 couleurs ou plus).
+> - **Format standard autorisé :** Texte neutre (blanc `#ffffff` ou gris clair) + **1 seul mot ou groupe de mots dans la couleur d'accent** (ex: rouge `#ef4444`, doré `#f59e0b`, cyan).
+> - **Format dégradé autorisé :** Dégradé bicolore pur (ex: blanc vers rouge).
+> Tout mélange multicolore ou arc-en-ciel est strictement interdit pour préserver l'impact et la lisibilité immédiate.
+
 ## 1. Règles d'or de timing
 | Élément | Valeur |
 |---|---|

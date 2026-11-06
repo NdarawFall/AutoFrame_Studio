@@ -93,3 +93,90 @@ L'IA est autorisée à lancer `render.cjs` **UNIQUEMENT** si l'utilisateur formu
 - *« Convertis en MP4 »*
 
 Dans tous les autres cas : **créer/éditer la composition HTML, tester dans le Studio interactif, et fournir le lien ou chemin du fichier à l'utilisateur.**
+
+
+---
+
+## 3. Contrat d'Intégration Audio, Voix Off & Règle Anti-Saccades
+
+> [!CRITICAL]
+> **RÈGLE D'OR : ZÉRO MICRO-SEEK PENDANT LA LECTURE CONTINUE (Tolérance >= 0.8s)** :
+> Lors de la lecture d'une vidéo avec voix off ou musique, la balise `<audio>` ne doit **JAMAIS** subir d'assignation `audio.currentTime = time` à 60 FPS.
+> Toute réassignation de `currentTime` pendant la lecture force le décodeur audio du navigateur à vider son buffer et recharger le flux, produisant un hachage brutal ("voix saccadée").
+
+### Règles de Gouvernance Audio & Gestion Déterministe de la Boucle (Loop) :
+1. **Bannissement de l'attribut `loop` sur les balises `<audio>`** :
+   - **INTERDICTION FORMELLE** d'écrire `<audio loop>` dans les compositions vidéo HTML.
+   - *Pourquoi ?* L'attribut HTML `loop` boucle le fichier MP3 entier (pouvant durer 3 ou 4 minutes) au lieu de respecter la durée de la vidéo (ex: 10s). La musique continuerait hors de la vidéo.
+   - Le bouclage est **exclusivement piloté par le Studio** (`studio.html`) et la timeline maîtresse.
+
+2. **Coupure Nette à la Fin de la Timeline (`time >= duration`)** :
+   - Dans le callback `syncAudioTimeline(time, isPlaying)`, vérifier impérativement si le temps a atteint la durée totale de la vidéo :
+     ```javascript
+     if (time >= videoDuration) {
+         if (!musicAudio.paused) musicAudio.pause();
+         return;
+     }
+     ```
+   - La musique ou la voix s'arrête exactement à la dernière seconde du timecode.
+
+3. **Rebouclage Déterministe ($t = 0$) & Détection des Sauts Temporels** :
+   - Lorsque la lecture est en boucle (`isLooping === true`), la timeline revient à $t = 0$.
+   - Si l'écart entre la tête de lecture et l'audio dépasse **0.3 seconde** (`Math.abs(audio.currentTime - time) > 0.3`), forcer le recalage immédiat :
+     ```javascript
+     if (Math.abs(audio.currentTime - time) > 0.3) {
+         audio.currentTime = Math.max(0, Math.min(time, videoDuration));
+     }
+     ```
+   - Ceci assure que lorsque la vidéo boucle à $0\text{s}$, l'audio repart instantanément du début au lieu d'attendre la fin de la chanson.
+
+4. **Contrat `window.__timeline` Déterministe pour le Studio** :
+   - Toute vidéo HTML doit exposer la timeline sous ce format exact :
+     ```javascript
+     window.__timeline = {
+         duration: DUREE_TOTALE,
+         seek: (t, isUserSeeking = false) => {
+             tl.seek(t, false);
+             if (isUserSeeking && window.syncAudioTimeline) {
+                 window.syncAudioTimeline(t, false);
+             }
+         },
+         play: () => {
+             tl.play();
+             if (window.syncAudioTimeline) window.syncAudioTimeline(tl.time(), true);
+         },
+         pause: () => {
+             tl.pause();
+             if (window.syncAudioTimeline) window.syncAudioTimeline(tl.time(), false);
+         },
+         getCurrentTime: () => tl.time()
+     };
+     ```
+   - Lors d'une boucle dans le Studio, `studio.html` appelle `handleLoopRestart()` qui réenclenche `seek(0, false)` puis `play()`, relançant l'animation 3D/2D et l'audio sans jamais figer le player ni requérir un clic manuel.
+
+5. **Tolérance Anti-Saccades pendant la lecture continue** :
+   - Ne jamais forcer de `currentTime` si l'écart est inférieur à **0.3s**, pour laisser le décodeur audio jouer sans saccades.
+   - En pause ou lors du scrub manuel (`isPlaying === false`), l'audio est mis en pause immédiatement et calé avec précision.
+
+---
+
+## 4. Contrat de Fidélité Absolue Texte / Voix Off / Sous-Titres
+
+> [!CRITICAL]
+> **ALIGNEMENT STRICT MOT-À-MOT (ZÉRO PARAPHRASE, ZÉRO DIVERGENCE)** :
+> Le texte écrit dans les sous-titres (`subtitleCues`) doit correspondre **STRICTEMENT ET MOT POUR MOT** au texte prononcé par la voix off.
+> Il est formellement interdit d'avoir une variante ou une paraphrase (ex: la voix dit *"d'analyser des centaines de pages"* alors que le sous-titre affiche *"d'analyser des documents"*).
+
+### Règles de Gouvernance Sous-Titrage :
+1. **Source Unique de Vérité (`officialNarration`)** :
+   - Le texte envoyé au synthétiseur vocal TTS (HeyGen ou ElevenLabs) est la référence absolue.
+   - La segmentation en sous-titres découpe ce texte exact, sans réécriture ni substitution de mots.
+2. **Découpage Rythmé (3 à 4 mots max par groupe)** :
+   - Couper systématiquement sur la ponctuation (`.`, `,`, `!`, `?`) ou par groupes fluides de 3 à 4 mots.
+   - Éviter absolument les blocs massifs de 8+ mots qui s'accumulent à l'écran.
+3. **Pondération Temporelle par Nombre de Caractères (`charWeight`)** :
+   - Les mots courts (*« de », « la », « et »*) doivent défiler très vite (proportionnels à leur taille).
+   - Les mots longs (*« artificielle », « interactives »*) reçoivent un temps plus long.
+4. **Animation Mot-à-mot Coloré (`type-wordbyword`)** :
+   - À l'apparition d'un segment, le **premier mot est allumé immédiatement** en couleur d'accent (`.active-word`).
+   - La couleur passe ensuite de mot en mot au rythme vocal et s'éteint dès la fin de la phrase.

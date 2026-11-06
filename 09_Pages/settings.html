@@ -462,6 +462,179 @@
             vertical-align: middle;
             flex-shrink: 0;
         }
+    
+        /* --- COMPOSANT SÉLECTEUR DE VOIX MODERNE AVEC RECHERCHE ET DRAPEAUX --- */
+        .modern-voice-picker {
+            position: relative;
+            width: 100%;
+        }
+        .voice-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-sm);
+            padding: 9px 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            min-height: 44px;
+        }
+        .voice-picker-trigger:hover, .voice-picker-trigger.active {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .voice-trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-flag-img {
+            width: 22px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .voice-trigger-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-trigger-badge {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .voice-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #0d121c;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        .voice-dropdown-menu.open {
+            display: flex;
+            animation: dropdownFade 0.15s ease-out;
+        }
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .voice-search-box {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voice-search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            outline: none;
+        }
+        .voice-search-input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+        }
+        .voice-items-list {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .voice-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .voice-item-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .voice-item-row.selected {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid rgba(0, 240, 255, 0.35);
+        }
+        .voice-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+        .voice-item-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-item-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-inline-preview {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-inline-preview:hover {
+            background: #00f0ff;
+            color: #000000;
+            border-color: #00f0ff;
+            transform: scale(1.08);
+        }
+
     </style>
 </head>
 <body>
@@ -480,7 +653,7 @@
 
         <nav class="nav-links">
             <a href="channels.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
                 <span>Chaînes & Vidéos</span>
             </a>
             <a href="studio.html" class="nav-btn">
@@ -488,7 +661,7 @@
                 <span>Studio</span>
             </a>
             <a href="assets.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                 <span>Assets</span>
             </a>
             <a href="settings.html" class="nav-btn active">
@@ -513,25 +686,18 @@
                     <span>Général & Format</span>
                 </a>
                 <a href="#sec-voice" class="sidebar-link" onclick="activateNav(this)">
-                    <span>Voix Off (ElevenLabs)</span>
+                    <span>Voix Off & Modèle IA</span>
                 </a>
                 <a href="#sec-api" class="sidebar-link" onclick="activateNav(this)">
-                    <span>Clés API Générales</span>
+                    <span>Clés API</span>
                 </a>
                 <a href="#sec-render" class="sidebar-link" onclick="activateNav(this)">
                     <span>Moteur de Rendu</span>
                 </a>
-                <a href="#sec-folders" class="sidebar-link" onclick="activateNav(this)">
-                    <span>Dossiers Locaux</span>
-                </a>
                 <a href="#sec-animations" class="sidebar-link" onclick="activateNav(this)">
                     <span>Animations de Texte</span>
                 </a>
-                <a href="assets.html" class="sidebar-link" style="color: #ff5266; font-weight: 600; margin-top: 6px;">
-                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                    <span>Médiathèque d'Assets ↗</span>
-                </a>
-                <a href="animation_viewer.html" class="sidebar-link" style="color: #2f6fdb; font-weight: 600; margin-top: 4px;">
+                <a href="animation_viewer.html" class="sidebar-link" style="color: #2f6fdb; font-weight: 600; margin-top: 6px;">
                     <svg class="icon" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
                     <span>Visualiseur d'Animations ↗</span>
                 </a>
@@ -543,7 +709,7 @@
             
             <div class="page-header">
                 <h1 class="page-title">Configuration</h1>
-                <p class="page-desc">Gérez vos voix off ultra-réalistes ElevenLabs, vos clés d'intelligence artificielle, vos préférences de rendu et vos dossiers locaux.</p>
+                <p class="page-desc">Gérez vos voix off ElevenLabs & HeyGen, votre modèle IA Gemini préféré, vos préférences de format et vos clés API multimédias.</p>
             </div>
 
             <!-- 1. FORMAT & AFFICHAGE -->
@@ -602,9 +768,8 @@
                             Type de Sous-Titres par Défaut
                         </label>
                         <select class="form-select" id="prefSubtitleStyle">
-                            <option value="type-wordbyword" selected>2. Mot-à-mot Dynamique (Chaque mot s'allume tour à tour au rythme vocal)</option>
-                            <option value="type-standard">1. Standard / Fixe (Bloc sobre et épuré au bas de l'écran)</option>
-                            <option value="type-highlight">3. Mots-clés Mis en Valeur (Mots importants rehaussés avec la couleur de la chaîne)</option>
+                            <option value="type-wordbyword" selected>2. Mot-à-mot Coloré (Chaque mot se colore un par un au rythme vocal)</option>
+                            <option value="type-standard">1. Sous-titre Basique (Phrase par phrase, texte blanc ou noir épuré)</option>
                             <option value="none">Sans sous-titres (Vidéo pure sans texte incrusté)</option>
                         </select>
                         <span class="form-hint">Définit le type de sous-titrage utilisé par défaut lors de la génération de vos vidéos.</span>
@@ -612,34 +777,33 @@
                 </div>
             </section>
 
-            <!-- 2. SYNTHÈSE VOCALE & VOIX OFF IA (ELEVENLABS EXCLUSIF) -->
+            <!-- 2. VOIX OFF (ELEVENLABS & HEYGEN) & MODÈLE IA -->
             <section class="card" id="sec-voice" style="border-color: rgba(255, 51, 68, 0.35); box-shadow: 0 4px 20px rgba(255, 51, 68, 0.08);">
                 <div class="card-header">
                     <div class="card-title" style="color: #ffffff;">
-                        <svg class="icon" style="stroke: #ff3344;" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        <span>Voix Off IA Ultra-Réalistes (ElevenLabs)</span>
+                        <svg class="icon" viewBox="0 0 24 24" style="color: #ff3344;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        <span>Voix Off (ElevenLabs & HeyGen) & Modèle IA</span>
                     </div>
-                    <span class="card-badge" style="background: rgba(255, 51, 68, 0.15); border-color: rgba(255, 51, 68, 0.35); color: #ff7b8a;">API Active</span>
+                    <span class="card-badge" style="background: rgba(255, 51, 68, 0.15); border-color: rgba(255, 51, 68, 0.35); color: #ff7b8a;">Configuration</span>
                 </div>
 
                 <div class="form-grid">
-                    <!-- CLÉ API ELEVENLABS -->
+
+                    <!-- CHOIX DU MOTEUR VOCAL PAR DÉFAUT -->
                     <div class="form-row" style="grid-column: 1 / -1;">
                         <label class="form-label">
-                            <span>Clé API ElevenLabs</span>
-                            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noreferrer">Obtenir une clé ↗ (10 000 car./mois gratuits)</a>
+                            <span style="font-weight: 600; font-size: 13px;">Moteur Vocal par Défaut</span>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">(Choisissez le moteur de synthèse vocale pour vos vidéos)</span>
                         </label>
-                        <div class="input-password-wrapper">
-                            <input class="form-input" type="password" id="apiKeyElevenlabs" placeholder="sk_..." oninput="handleApiKeyChange()">
-                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyElevenlabs', this)" title="Afficher / Masquer">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </button>
-                        </div>
-                        <div id="elevenlabsKeyStatus" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 6px; color: var(--text-muted);">
-                            <span>Saisissez votre clé ElevenLabs pour synchroniser automatiquement vos voix.</span>
-                        </div>
+                        <select class="form-select" id="prefTtsEngine">
+                            <option value="elevenlabs" selected>ElevenLabs — Voix Off Ultra-Réalistes & Expressives (Recommandé)</option>
+                            <option value="heygen">HeyGen — Voice Turbo & Avatars Parlants</option>
+                        </select>
+                        <span class="form-hint">Définit le moteur de synthèse vocale prioritaire utilisé par l'IA et le studio pour générer les narrations.</span>
+                    </div>
 
-                        <!-- JAUGE ET NOMBRE DE CRÉDITS RESTANTS ELEVENLABS -->
+                    <!-- JAUGE ET NOMBRE DE CRÉDITS RESTANTS ELEVENLABS -->
+                    <div class="form-row" style="grid-column: 1 / -1;">
                         <div id="elevenlabsUsageBox" style="display: none; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 10px; flex-direction: column; gap: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                                 <span style="font-size: 12px; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 6px;">
@@ -660,10 +824,13 @@
                         </div>
                     </div>
 
-                    <!-- SÉLECTEUR DE VOIX DYNAMIQUE (MES VOIX CRÉÉES + VOIX PAR DÉFAUT) -->
+                    <!-- SÉLECTEUR DE VOIX DYNAMIQUE ELEVENLABS -->
                     <div class="form-row" style="grid-column: 1 / -1;">
                         <label class="form-label">
-                            <span>Voix par Défaut pour les Scénarios</span>
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs" style="width: 16px; height: 16px; border-radius: 3px;">
+                                <span>Voix par Défaut ElevenLabs</span>
+                            </span>
                             <button type="button" onclick="loadVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
                                 <span>Actualiser les voix</span>
                                 <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
@@ -678,7 +845,7 @@
                                 <span>Écouter</span>
                             </button>
                         </div>
-                        <span class="form-hint" id="voiceHelpHint">Vos voix créées/clonées et les voix officielles par défaut de votre compte sont chargées automatiquement.</span>
+                        <span class="form-hint" id="voiceHelpHint">Vos voix créées/clonées et les voix officielles par défaut de votre compte ElevenLabs.</span>
                     </div>
 
                     <!-- MODÈLE ELEVENLABS -->
@@ -691,24 +858,99 @@
                         <span class="form-hint">Le modèle multilingue v2 offre le meilleur réalisme vocal en français.</span>
                     </div>
 
+                    <!-- SÉLECTEUR DE VOIX HEYGEN -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                        <label class="form-label">
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px;">
+                                <span>Voix par Défaut HeyGen</span>
+                            </span>
+                            <button type="button" onclick="loadHeyGenVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
+                                <span>Actualiser les voix HeyGen</span>
+                                <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            </button>
+                        </label>
+                        <div class="modern-voice-picker" id="settingsPickerContainerHeygen">
+                            <input type="hidden" id="heygenVoiceId" value="">
+                            <div class="voice-picker-trigger" id="settingsTriggerHeygen" onclick="toggleSettingsVoiceDropdown('settingsDropdownHeygen')">
+                                <div class="voice-trigger-left">
+                                    <img class="voice-flag-img" id="settingsFlagHeygenSelected" src="https://flagcdn.com/fr.svg" alt="Flag">
+                                    <span class="voice-trigger-name" id="settingsNameHeygenSelected">Saisissez votre clé HeyGen pour charger les voix...</span>
+                                    <span class="voice-trigger-badge" id="settingsBadgeHeygenSelected">HeyGen</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button type="button" id="btnPreviewHeyGenVoice" onclick="event.stopPropagation(); playHeyGenVoicePreview()" class="btn-secondary" style="padding: 6px 12px; font-size: 11.5px; display: none; align-items: center; gap: 5px;" title="Écouter cette voix">
+                                        <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        <span>Écouter</span>
+                                    </button>
+                                    <svg class="collapse-chevron" style="width:16px; height:16px; stroke:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+
+                            <div class="voice-dropdown-menu" id="settingsDropdownHeygen">
+                                <div class="voice-search-box">
+                                    <svg class="icon" style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" class="voice-search-input" id="settingsSearchHeygenInput" placeholder="Rechercher une voix HeyGen (nom, langue)..." oninput="filterSettingsVoices('heygen')">
+                                </div>
+                                <div class="voice-items-list" id="settingsListHeygenItems"></div>
+                            </div>
+                        </div>
+                        <div id="heygenKeyStatus" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 6px; color: var(--text-muted);">
+                            <span>Synchronisez vos voix HeyGen officielles et personnalisées.</span>
+                        </div>
+                    </div>
+
+                    <!-- MODÈLE GEMINI PRÉFÉRÉ -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                        <label class="form-label">
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <svg class="icon" style="width:15px; height:15px; color:#ff3344;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                <span>Modèle Gemini Préféré (Intelligence Artificielle)</span>
+                            </span>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">(Gratuit par défaut ou Abonnement Payant)</span>
+                        </label>
+                        <select class="form-select" id="prefGeminiModel" onchange="handleGeminiModelChange(this.value)">
+                            <optgroup label="Modèles Gratuits (Sans abonnement - Clé standard Google)">
+                                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite — Gratuit (Par défaut / Historique du studio, Ultra-rapide & Stable)</option>
+                                <option value="gemini-3.5-flash">gemini-3.5-flash — Gratuit (Flash polyvalent)</option>
+                                <option value="gemini-flash-latest">gemini-flash-latest — Gratuit (Alias stable Flash)</option>
+                                <option value="gemini-3.7-flash">gemini-3.7-flash — Gratuit (Raisonnement hybride Flash)</option>
+                                <option value="gemini-3.8-flash">gemini-3.8-flash — Gratuit (Dernière révision Flash)</option>
+                            </optgroup>
+                            <optgroup label="Modèles Surpuissants Pro (Abonnements payants / Quota Pro Google AI)">
+                                <option value="gemini-4-argon">gemini-4-argon — Argon Pro (Le modèle de pointe ultra-puissant nouvelle génération)</option>
+                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview — Pro 3.1 (Raisonnement complexe approfondi)</option>
+                                <option value="gemini-pro-latest">gemini-pro-latest — Pro Latest (Alias Pro haute précision)</option>
+                            </optgroup>
+                            <optgroup label="Autre">
+                                <option value="custom">Autre modèle personnalisé (saisie libre)...</option>
+                            </optgroup>
+                        </select>
+                        <div id="customGeminiModelWrapper" style="display: none; margin-top: 8px;">
+                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-4-argon ou gemini-2.5-pro">
+                        </div>
+                        <span class="form-hint">Par défaut, <strong>gemini-3.5-flash-lite</strong> est configuré pour un usage gratuit immédiat sans dépassement de quota (modèle historique du projet). Si vous disposez d'un compte payant ou abonnement Google AI Studio, sélectionnez <strong>gemini-4-argon</strong> ou <strong>gemini-pro-latest</strong>.</span>
+                    </div>
+
                     <!-- TESTEUR DE VOIX DIRECT -->
-                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 6px; padding: 16px; background: rgba(255, 255, 255, 0.04); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.15);">
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding: 16px; background: rgba(255, 255, 255, 0.04); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.15);">
                         <label class="form-label" style="margin-bottom: 6px;">
                             <span>Tester la Voix en Direct</span>
                             <span id="testVoiceStatus" style="font-size: 11px; font-weight: 500; color: var(--text-secondary);">Prêt pour le test</span>
                         </label>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <input class="form-input" type="text" id="testVoiceText" style="flex: 1; min-width: 250px;" value="Bonjour, voici la voix off ultra réaliste générée avec ElevenLabs pour vos vidéos.">
+                            <input class="form-input" type="text" id="testVoiceText" style="flex: 1; min-width: 250px;" value="Bonjour, voici la voix off ultra réaliste générée pour vos vidéos.">
                             <button type="button" class="btn-primary" id="btnTestVoice" onclick="runVoiceTest()" style="padding: 10px 18px; font-size: 12px; display: inline-flex; align-items: center; gap: 8px;">
                                 <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 <span>Générer un Échantillon</span>
                             </button>
                         </div>
                         <audio id="audioPreview" controls style="width: 100%; margin-top: 12px; display: none; height: 36px;"></audio>
+                    </div>
                 </div>
             </section>
 
-            <!-- 3. CLÉS API GÉNÉRALES (GEMINI, PIXABAY, BRANDFETCH, CLIPDROP) -->
+            <!-- 3. CLÉS API GÉNÉRALES & MÉDIAS -->
             <section class="card" id="sec-api">
                 <div class="card-header">
                     <div class="card-title">
@@ -719,7 +961,8 @@
                 </div>
 
                 <div class="form-grid">
-                    <!-- GOOGLE AI STUDIO -->
+
+                    <!-- GOOGLE AI STUDIO (GEMINI) -->
                     <div class="form-row">
                         <label class="form-label">
                             <span>Google AI Studio (Gemini)</span>
@@ -728,10 +971,42 @@
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyGoogle" placeholder="AIzaSy...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyGoogle', this)" title="Afficher / Masquer">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Utilisé pour la génération de scripts, scénarios et prompts automatisés.</span>
+                        <span class="form-hint">Utilisé pour la génération de scripts, scénarios, prompts et modifications de vidéo par l'IA.</span>
+                    </div>
+
+                    <!-- ELEVENLABS API (VOIX OFF ULTRA-RÉALISTES) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span><img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">Clé API ElevenLabs</span>
+                            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noreferrer">Obtenir une clé ↗ (10 000 car./mois gratuits)</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyElevenlabs" placeholder="sk_..." oninput="handleApiKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyElevenlabs', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <div id="elevenlabsKeyStatus" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 6px; color: var(--text-muted);">
+                            <span>Clé ElevenLabs pour générer les voix off ultra-réalistes et suivre vos quotas.</span>
+                        </div>
+                    </div>
+
+                    <!-- HEYGEN API (VOICE TURBO & TTS) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span><img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">HeyGen API (Voice Turbo & Génération Vocale)</span>
+                            <a href="https://app.heygen.com/settings?nav=API" target="_blank" rel="noreferrer">Obtenir une clé HeyGen ↗ (Voice Turbo API)</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyHeygen" placeholder="Votre clé API HeyGen..." oninput="handleHeyGenKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyHeygen', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <span class="form-hint">Permet de générer des voix off ultra-rapides et expressives avec HeyGen Voice Turbo ou d'intégrer des avatars parlants.</span>
                     </div>
 
                     <!-- PIXABAY (IMAGES, VECTEURS & B-ROLL) -->
@@ -743,7 +1018,7 @@
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyPixabay" placeholder="Ex: 48921820-a612df13...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyPixabay', this)" title="Afficher / Masquer">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                         <span class="form-hint">Permet à l'IA de rechercher, récupérer et insérer automatiquement des photos, vidéos HD et musiques libres de droits.</span>
@@ -761,11 +1036,7 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; flex-wrap: wrap; gap: 8px;">
-                            <span class="form-hint" style="margin-top: 0; flex: 1; min-width: 220px;">Permet d'importer directement des vidéos de stock cinéma HD/4K et des plans B-roll professionnels depuis Coverr.co.</span>
-                            <button type="button" class="btn-small" onclick="testCoverrConnection()" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: var(--transition-smooth);">Tester la connexion</button>
-                        </div>
-                        <div id="coverrKeyStatus" style="font-size: 11.5px; margin-top: 5px; display: none; align-items: center; gap: 6px;"></div>
+                        <span class="form-hint">Permet d'importer directement des vidéos de stock cinéma HD/4K et des plans B-roll professionnels depuis Coverr.co.</span>
                     </div>
 
                     <!-- BRANDFETCH (LOGOS VECTORIELS & COULEURS DE MARQUES) -->
@@ -777,10 +1048,10 @@
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyBrandfetch" placeholder="Ex: idJq_k...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyBrandfetch', this)" title="Afficher / Masquer">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet à l'IA d'extraire automatiquement en haute résolution les logos vectoriels SVG, bannières et palettes de n'importe quelle marque par son domaine.</span>
+                        <span class="form-hint">Permet à l'IA d'extraire automatiquement en haute résolution les logos vectoriels SVG, bannières et palettes de n'importe quelle marque.</span>
                     </div>
 
                     <!-- DÉTOURAGE IA (CLIPDROP / REMOVE.BG) -->
@@ -792,10 +1063,33 @@
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyBgRemove" placeholder="Ex: clipdrop_... ou remove_bg_...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyBgRemove', this)" title="Afficher / Masquer">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                         <span class="form-hint">Permet à l'IA d'isoler automatiquement les personnes et objets avec une netteté studio transparente, ou utilise le script local gratuit (Python rembg).</span>
+                    </div>
+
+                    <!-- SKETCHFAB API TOKEN (MODÈLES 3D RÉALISTES) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Sketchfab API Token (Modèles 3D Réalistes)</span>
+                            <a href="https://sketchfab.com/settings/password" target="_blank" rel="noreferrer">Obtenir un token gratuit ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeySketchfab" placeholder="Votre API Token Sketchfab...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeySketchfab', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <span class="form-hint">Permet à l'IA et au script de télécharger automatiquement des supercars, objets réalistes et assets 3D certifiés au format .glb/.gltf.</span>
+                    </div>
+                
+                    <!-- BOUTON TEST UNIFIÉ DE TOUTES LES CLÉS -->
+                    <div style="grid-column: 1 / -1; margin-top: 15px; padding-top: 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+                        <span style="font-size: 12px; color: var(--text-muted);">Vérifie automatiquement chaque clé API connectée :</span>
+                        <button type="button" class="btn-secondary" id="btnTestAllApis" onclick="testAllApiKeys()" style="background: #1a1a2e; border: 1.5px solid #7c3aed; color: #a78bfa; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; gap: 8px; display: inline-flex; align-items: center; cursor: pointer; transition: var(--transition-smooth);">
+                            <span>🔑</span> Tester toutes les clés API
+                        </button>
                     </div>
                 </div>
             </section>
@@ -855,75 +1149,6 @@
                 </div>
             </section>
 
-            <!-- 5. MÉDIATHÈQUE D'ASSETS -->
-            <section class="card" id="sec-assets" style="border-color: rgba(255, 51, 68, 0.35); background: linear-gradient(180deg, rgba(255, 51, 68, 0.05) 0%, var(--bg-surface) 100%); box-shadow: 0 4px 20px rgba(255, 51, 68, 0.07);">
-                <div class="card-header">
-                    <div class="card-title" style="color: #ffffff;">
-                        <svg class="icon" viewBox="0 0 24 24" style="color: #ff3344;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                        <span>Médiathèque & Assets Locaux (01_Assets)</span>
-                    </div>
-                    <span class="card-badge" style="background: rgba(255, 51, 68, 0.15); color: #ff6b7a; border-color: rgba(255, 51, 68, 0.3);">Médiathèque</span>
-                </div>
-                <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 14px;">
-                    <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6;">
-                        Accédez au gestionnaire complet pour visualiser, filtrer par sous-dossiers, rechercher en temps réel et écouter vos fichiers multimédias locaux : photos de stars, trophées, voix off ElevenLabs, musiques de fond, bruitages SFX et vidéos B-Roll.
-                    </p>
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 4px;">
-                        <div style="display: flex; gap: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted);">
-                            <span>📁 Dossier : <strong style="color: #fff;">./01_Assets</strong></span>
-                            <span>⚡ Support : Images, Vidéos, Audios, SVG</span>
-                        </div>
-                        <a href="assets.html" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-                            <span>Ouvrir la Médiathèque d'Assets</span>
-                            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. EMPLACEMENT DES FICHIERS -->
-            <section class="card" id="sec-folders">
-                <div class="card-header">
-                    <div class="card-title">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                        <span>Structure des Dossiers Locaux</span>
-                    </div>
-                    <span class="card-badge">Stockage</span>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-row">
-                        <label class="form-label">Dossier des Chaînes</label>
-                        <input class="form-input" type="text" value="./03_Chaines" readonly style="font-family:'JetBrains Mono',monospace;">
-                        <span class="form-hint">Dossiers et contenus vidéo dédiés à chaque chaîne.</span>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="form-label">Dossier des Vidéos Sans Chaîne</label>
-                        <input class="form-input" type="text" value="./04_Videos" readonly style="font-family:'JetBrains Mono',monospace;">
-                        <span class="form-hint">Compositions et créations rapides sans chaîne rattachée.</span>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="form-label">Dossier des Exports MP4</label>
-                        <input class="form-input" type="text" value="./08_Rendus" readonly style="font-family:'JetBrains Mono',monospace;">
-                        <span class="form-hint">Dossier où sont enregistrées les vidéos rendues.</span>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="form-label">Dossier des Ressources (Assets)</label>
-                        <input class="form-input" type="text" value="./01_Assets" readonly style="font-family:'JetBrains Mono',monospace;">
-                        <span class="form-hint">Images, Voix Off, Musiques et Vidéos sources.</span>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="form-label">Dossier des Composants</label>
-                        <input class="form-input" type="text" value="./02_Composants" readonly style="font-family:'JetBrains Mono',monospace;">
-                        <span class="form-hint">Sous-titres, Split-Screens et blocs de motion design.</span>
-                    </div>
-                </div>
-            </section>
-
             <!-- ACTIONS -->
             <div class="actions-row">
                 <a href="studio.html" class="btn-secondary">Retour au Studio</a>
@@ -940,12 +1165,38 @@
     </div>
 
     <script>
+        const PREF_KEY_TTS_ENGINE = 'vibeeditor_pref_tts_engine';
         const PREF_KEY_FORMAT = 'vibeeditor_pref_format';
         const PREF_KEY_FPS = 'vibeeditor_pref_fps';
         const PREF_KEY_QUALITY = 'vibeeditor_pref_quality';
         const PREF_KEY_TEMPLATE = 'vibeeditor_pref_template';
         const PREF_KEY_SUBTITLE_STYLE = 'vibeeditor_pref_subtitle_style';
         const API_KEY_GOOGLE = 'vibeeditor_api_google';
+
+        const PREF_KEY_GEMINI_MODEL = 'vibeeditor_pref_gemini_model';
+
+        function handleGeminiModelChange(val) {
+            const wrap = document.getElementById('customGeminiModelWrapper');
+            if (wrap) wrap.style.display = (val === 'custom') ? 'block' : 'none';
+        }
+
+        function setGeminiModelUI(modelName) {
+            const sel = document.getElementById('prefGeminiModel');
+            const wrap = document.getElementById('customGeminiModelWrapper');
+            const customInput = document.getElementById('customGeminiModel');
+            if (!sel) return;
+            const clean = (modelName || 'gemini-3.5-flash-lite').trim();
+            const exists = Array.from(sel.options).some(o => o.value === clean);
+            if (exists) {
+                sel.value = clean;
+                if (wrap) wrap.style.display = 'none';
+            } else {
+                sel.value = 'custom';
+                if (wrap) wrap.style.display = 'block';
+                if (customInput) customInput.value = clean;
+            }
+        }
+
         const API_KEY_ELEVENLABS = 'vibeeditor_api_elevenlabs';
         const ELEVENLABS_VOICE_ID = 'vibeeditor_elevenlabs_voice_id';
         const ELEVENLABS_MODEL_ID = 'vibeeditor_elevenlabs_model_id';
@@ -953,20 +1204,33 @@
         const API_KEY_COVERR = 'vibeeditor_api_coverr';
         const API_KEY_BRANDFETCH = 'vibeeditor_api_brandfetch';
         const API_KEY_BG_REMOVE = 'vibeeditor_api_bg_remove';
+        const API_KEY_SKETCHFAB = 'vibeeditor_api_sketchfab';
+        const API_KEY_HEYGEN = 'vibeeditor_api_heygen';
+        const HEYGEN_VOICE_ID = 'vibeeditor_heygen_voice_id';
 
-        // Cache des voix ElevenLabs en mémoire
+        // Caches et états
         let voicesCache = {};
+        let heygenVoicesCache = {};
+        let settingsHeygenRawList = [];
         let keyChangeTimeout = null;
+        let heygenKeyChangeTimeout = null;
         let previewAudioInstance = null;
 
+        // CHARGEMENT INITIAL (LocalStorage + /api/settings api_config.json)
         window.addEventListener('load', async () => {
-            // 1. Chargement des préférences depuis le LocalStorage
+            // 1. LocalStorage
+            const savedTtsEngine = localStorage.getItem(PREF_KEY_TTS_ENGINE);
+            if (savedTtsEngine && document.getElementById('prefTtsEngine')) document.getElementById('prefTtsEngine').value = savedTtsEngine;
             const savedFormat = localStorage.getItem(PREF_KEY_FORMAT);
             const savedFps = localStorage.getItem(PREF_KEY_FPS);
             const savedQuality = localStorage.getItem(PREF_KEY_QUALITY);
             const savedTemplate = localStorage.getItem(PREF_KEY_TEMPLATE);
             const savedSubtitleStyle = localStorage.getItem(PREF_KEY_SUBTITLE_STYLE);
             const savedGoogle = localStorage.getItem(API_KEY_GOOGLE);
+
+            const savedGeminiModel = localStorage.getItem(PREF_KEY_GEMINI_MODEL);
+            if (savedGeminiModel) setGeminiModelUI(savedGeminiModel);
+
             const savedElevenlabs = localStorage.getItem(API_KEY_ELEVENLABS);
             let savedElevenVoice = localStorage.getItem(ELEVENLABS_VOICE_ID);
             const savedElevenModel = localStorage.getItem(ELEVENLABS_MODEL_ID);
@@ -974,68 +1238,316 @@
             const savedCoverr = localStorage.getItem(API_KEY_COVERR);
             const savedBrandfetch = localStorage.getItem(API_KEY_BRANDFETCH);
             const savedBgRemove = localStorage.getItem(API_KEY_BG_REMOVE);
+            const savedSketchfab = localStorage.getItem(API_KEY_SKETCHFAB);
+            const savedHeygen = localStorage.getItem(API_KEY_HEYGEN);
+            let savedHeygenVoice = localStorage.getItem(HEYGEN_VOICE_ID);
 
-            if (savedFormat) document.getElementById('prefFormat').value = savedFormat;
-            if (savedFps) document.getElementById('prefFps').value = savedFps;
-            if (savedQuality) document.getElementById('prefQuality').value = savedQuality;
-            if (savedTemplate) document.getElementById('prefTemplate').value = savedTemplate;
-            if (savedSubtitleStyle) document.getElementById('prefSubtitleStyle').value = savedSubtitleStyle;
-            if (savedGoogle) document.getElementById('apiKeyGoogle').value = savedGoogle;
-            if (savedElevenlabs) document.getElementById('apiKeyElevenlabs').value = savedElevenlabs;
-            if (savedElevenModel) document.getElementById('elevenlabsModelId').value = savedElevenModel;
-            if (savedPixabay) document.getElementById('apiKeyPixabay').value = savedPixabay;
-            if (savedCoverr) document.getElementById('apiKeyCoverr').value = savedCoverr;
-            if (savedBrandfetch) document.getElementById('apiKeyBrandfetch').value = savedBrandfetch;
-            if (savedBgRemove) document.getElementById('apiKeyBgRemove').value = savedBgRemove;
+            if (savedFormat && document.getElementById('prefFormat')) document.getElementById('prefFormat').value = savedFormat;
+            if (savedFps && document.getElementById('prefFps')) document.getElementById('prefFps').value = savedFps;
+            if (savedQuality && document.getElementById('prefQuality')) document.getElementById('prefQuality').value = savedQuality;
+            if (savedTemplate && document.getElementById('prefTemplate')) document.getElementById('prefTemplate').value = savedTemplate;
+            if (savedSubtitleStyle && document.getElementById('prefSubtitleStyle')) document.getElementById('prefSubtitleStyle').value = savedSubtitleStyle;
+            if (savedGoogle && document.getElementById('apiKeyGoogle')) document.getElementById('apiKeyGoogle').value = savedGoogle;
+            if (savedElevenlabs && document.getElementById('apiKeyElevenlabs')) document.getElementById('apiKeyElevenlabs').value = savedElevenlabs;
+            if (savedElevenModel && document.getElementById('elevenlabsModelId')) document.getElementById('elevenlabsModelId').value = savedElevenModel;
+            if (savedPixabay && document.getElementById('apiKeyPixabay')) document.getElementById('apiKeyPixabay').value = savedPixabay;
+            if (savedCoverr && document.getElementById('apiKeyCoverr')) document.getElementById('apiKeyCoverr').value = savedCoverr;
+            if (savedBrandfetch && document.getElementById('apiKeyBrandfetch')) document.getElementById('apiKeyBrandfetch').value = savedBrandfetch;
+            if (savedBgRemove && document.getElementById('apiKeyBgRemove')) document.getElementById('apiKeyBgRemove').value = savedBgRemove;
+            if (savedSketchfab && document.getElementById('apiKeySketchfab')) document.getElementById('apiKeySketchfab').value = savedSketchfab;
+            if (savedHeygen && document.getElementById('apiKeyHeygen')) document.getElementById('apiKeyHeygen').value = savedHeygen;
 
-            // 2. Synchronisation complète depuis le serveur local (05_Scripts/api_config.json)
-            let activeKey = savedElevenlabs || '';
+            // 2. Synchronisation complète depuis le serveur (/api/settings -> api_config.json)
+            let activeElevenKey = savedElevenlabs || '';
+            let activeHeyGenKey = savedHeygen || '';
+
             try {
                 const res = await fetch('/api/settings');
                 if (res.ok) {
                     const cfg = await res.json();
-                    if (cfg.pref_format && !savedFormat) document.getElementById('prefFormat').value = cfg.pref_format;
-                    if (cfg.pref_fps && !savedFps) document.getElementById('prefFps').value = cfg.pref_fps;
-                    if (cfg.pref_quality && !savedQuality) document.getElementById('prefQuality').value = cfg.pref_quality;
-                    if (cfg.pref_template && !savedTemplate) document.getElementById('prefTemplate').value = cfg.pref_template;
-                    if (cfg.pref_subtitle_style && !savedSubtitleStyle) document.getElementById('prefSubtitleStyle').value = cfg.pref_subtitle_style;
-
-                    if (cfg.google_api_key && (!savedGoogle || document.getElementById('apiKeyGoogle').value === '')) {
-                        document.getElementById('apiKeyGoogle').value = cfg.google_api_key;
+                    if (cfg.tts_engine && document.getElementById('prefTtsEngine')) {
+                        document.getElementById('prefTtsEngine').value = cfg.tts_engine;
+                        localStorage.setItem(PREF_KEY_TTS_ENGINE, cfg.tts_engine);
                     }
-                    if (cfg.elevenlabs_api_key && (!savedElevenlabs || document.getElementById('apiKeyElevenlabs').value === '')) {
+                    if (cfg.pref_format && !savedFormat && document.getElementById('prefFormat')) document.getElementById('prefFormat').value = cfg.pref_format;
+                    if (cfg.pref_fps && !savedFps && document.getElementById('prefFps')) document.getElementById('prefFps').value = cfg.pref_fps;
+                    if (cfg.pref_quality && !savedQuality && document.getElementById('prefQuality')) document.getElementById('prefQuality').value = cfg.pref_quality;
+                    if (cfg.pref_template && !savedTemplate && document.getElementById('prefTemplate')) document.getElementById('prefTemplate').value = cfg.pref_template;
+                    if (cfg.pref_subtitle_style && !savedSubtitleStyle && document.getElementById('prefSubtitleStyle')) document.getElementById('prefSubtitleStyle').value = cfg.pref_subtitle_style;
+
+                    
+                    if (cfg.gemini_model) {
+                        setGeminiModelUI(cfg.gemini_model);
+                        localStorage.setItem(PREF_KEY_GEMINI_MODEL, cfg.gemini_model);
+                    }
+
+                    if (cfg.google_api_key && document.getElementById('apiKeyGoogle')) {
+                        document.getElementById('apiKeyGoogle').value = cfg.google_api_key;
+                        localStorage.setItem(API_KEY_GOOGLE, cfg.google_api_key);
+                    }
+                    if (cfg.elevenlabs_api_key && document.getElementById('apiKeyElevenlabs')) {
                         document.getElementById('apiKeyElevenlabs').value = cfg.elevenlabs_api_key;
-                        activeKey = cfg.elevenlabs_api_key;
+                        activeElevenKey = cfg.elevenlabs_api_key;
+                        localStorage.setItem(API_KEY_ELEVENLABS, cfg.elevenlabs_api_key);
                     }
                     if (cfg.elevenlabs_voice_id && !savedElevenVoice) {
                         savedElevenVoice = cfg.elevenlabs_voice_id;
                     }
-                    if (cfg.elevenlabs_model_id && (!savedElevenModel || document.getElementById('elevenlabsModelId').value === '')) {
+                    if (cfg.elevenlabs_model_id && document.getElementById('elevenlabsModelId')) {
                         document.getElementById('elevenlabsModelId').value = cfg.elevenlabs_model_id;
+                        localStorage.setItem(ELEVENLABS_MODEL_ID, cfg.elevenlabs_model_id);
                     }
-                    if (cfg.pixabay_api_key && (!savedPixabay || document.getElementById('apiKeyPixabay').value === '')) {
+                    if (cfg.pixabay_api_key && document.getElementById('apiKeyPixabay')) {
                         document.getElementById('apiKeyPixabay').value = cfg.pixabay_api_key;
+                        localStorage.setItem(API_KEY_PIXABAY, cfg.pixabay_api_key);
                     }
-                    if (cfg.coverr_api_key && (!savedCoverr || document.getElementById('apiKeyCoverr').value === '')) {
+                    if (cfg.coverr_api_key && document.getElementById('apiKeyCoverr')) {
                         document.getElementById('apiKeyCoverr').value = cfg.coverr_api_key;
+                        localStorage.setItem(API_KEY_COVERR, cfg.coverr_api_key);
                     }
-                    if (cfg.brandfetch_api_key && (!savedBrandfetch || document.getElementById('apiKeyBrandfetch').value === '')) {
+                    if (cfg.brandfetch_api_key && document.getElementById('apiKeyBrandfetch')) {
                         document.getElementById('apiKeyBrandfetch').value = cfg.brandfetch_api_key;
+                        localStorage.setItem(API_KEY_BRANDFETCH, cfg.brandfetch_api_key);
                     }
-                    if (cfg.bg_remove_api_key && (!savedBgRemove || document.getElementById('apiKeyBgRemove').value === '')) {
+                    if (cfg.bg_remove_api_key && document.getElementById('apiKeyBgRemove')) {
                         document.getElementById('apiKeyBgRemove').value = cfg.bg_remove_api_key;
+                        localStorage.setItem(API_KEY_BG_REMOVE, cfg.bg_remove_api_key);
+                    }
+                    if (cfg.sketchfab_api_token && document.getElementById('apiKeySketchfab')) {
+                        document.getElementById('apiKeySketchfab').value = cfg.sketchfab_api_token;
+                        localStorage.setItem(API_KEY_SKETCHFAB, cfg.sketchfab_api_token);
+                    }
+                    if (cfg.heygen_api_key && document.getElementById('apiKeyHeygen')) {
+                        document.getElementById('apiKeyHeygen').value = cfg.heygen_api_key;
+                        activeHeyGenKey = cfg.heygen_api_key;
+                        localStorage.setItem(API_KEY_HEYGEN, cfg.heygen_api_key);
+                    }
+                    if (cfg.heygen_voice_id && !savedHeygenVoice) {
+                        savedHeygenVoice = cfg.heygen_voice_id;
                     }
                 }
             } catch (e) {
                 console.warn('Impossible de charger /api/settings:', e);
             }
 
-            // 3. Chargement et listage dynamique des voix ElevenLabs
-            if (activeKey && activeKey.trim()) {
-                await loadVoices(activeKey.trim(), savedElevenVoice);
-                loadElevenLabsSubscription(activeKey.trim());
+            // 3. Initialisation ElevenLabs
+            if (activeElevenKey && activeElevenKey.trim()) {
+                await loadVoices(activeElevenKey.trim(), savedElevenVoice);
+                loadElevenLabsSubscription(activeElevenKey.trim());
+            }
+
+            // 4. Initialisation HeyGen
+            if (activeHeyGenKey && activeHeyGenKey.trim()) {
+                loadHeyGenVoicesFromUi(savedHeygenVoice);
             }
         });
+
+        // GESTION DU SÉLECTEUR MODERNE HEYGEN
+        function getVoiceFlagUrl(voice) {
+            const lang = ((voice && voice.language) || '').toLowerCase();
+            const name = ((voice && voice.name) || '').toLowerCase();
+            if (lang.includes('french') || lang.includes('français') || lang.includes('fr')) return 'https://flagcdn.com/fr.svg';
+            if (lang.includes('english') || lang.includes('anglais') || lang.includes('en')) {
+                if (name.includes('british') || name.includes('uk') || name.includes('london')) return 'https://flagcdn.com/gb.svg';
+                if (name.includes('australian') || name.includes('au')) return 'https://flagcdn.com/au.svg';
+                if (name.includes('canadian') || name.includes('ca')) return 'https://flagcdn.com/ca.svg';
+                return 'https://flagcdn.com/us.svg';
+            }
+            if (lang.includes('spanish') || lang.includes('espagnol') || lang.includes('es')) return 'https://flagcdn.com/es.svg';
+            if (lang.includes('german') || lang.includes('allemand') || lang.includes('de')) return 'https://flagcdn.com/de.svg';
+            if (lang.includes('italian') || lang.includes('italien') || lang.includes('it')) return 'https://flagcdn.com/it.svg';
+            if (lang.includes('portuguese') || lang.includes('portugais') || lang.includes('pt')) return 'https://flagcdn.com/pt.svg';
+            if (lang.includes('japanese') || lang.includes('japonais') || lang.includes('ja')) return 'https://flagcdn.com/jp.svg';
+            if (lang.includes('chinese') || lang.includes('chinois') || lang.includes('zh')) return 'https://flagcdn.com/cn.svg';
+            if (lang.includes('arabic') || lang.includes('arabe') || lang.includes('ar')) return 'https://flagcdn.com/sa.svg';
+            if (lang.includes('wolof') || name.includes('wolof') || name.includes('senegal')) return 'https://flagcdn.com/sn.svg';
+            if (lang.includes('russian') || lang.includes('russe') || lang.includes('ru')) return 'https://flagcdn.com/ru.svg';
+            if (lang.includes('dutch') || lang.includes('néerlandais') || lang.includes('nl')) return 'https://flagcdn.com/nl.svg';
+            if (lang.includes('polish') || lang.includes('polonais') || lang.includes('pl')) return 'https://flagcdn.com/pl.svg';
+            return 'https://flagcdn.com/us.svg';
+        }
+
+        function toggleSettingsVoiceDropdown(id) {
+            const menu = document.getElementById(id);
+            if (!menu) return;
+            const isOpen = menu.classList.contains('open');
+            document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            if (!isOpen) {
+                menu.classList.add('open');
+                const inp = menu.querySelector('.voice-search-input');
+                if (inp) setTimeout(() => inp.focus(), 60);
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.modern-voice-picker')) {
+                document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        function filterSettingsVoices(engine) {
+            if (engine === 'heygen') {
+                const query = (document.getElementById('settingsSearchHeygenInput').value || '').toLowerCase().trim();
+                const filtered = settingsHeygenRawList.filter(v => 
+                    (v.name || '').toLowerCase().includes(query) || 
+                    (v.language || '').toLowerCase().includes(query)
+                );
+                renderSettingsHeygenRows(filtered);
+            }
+        }
+
+        function renderSettingsHeygenRows(list) {
+            const container = document.getElementById('settingsListHeygenItems');
+            const currentSelected = document.getElementById('heygenVoiceId').value;
+            if (!container) return;
+
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div style="padding:14px; text-align:center; color:var(--text-muted); font-size:12px;">Aucune voix trouvée</div>';
+                return;
+            }
+
+            let html = '';
+            list.forEach(v => {
+                const isSel = v.id === currentSelected ? 'selected' : '';
+                const flagUrl = getVoiceFlagUrl(v);
+                html += `
+                    <div class="voice-item-row ${isSel}" onclick="selectSettingsHeygenVoice('${v.id}')">
+                        <div class="voice-item-left">
+                            <img class="voice-flag-img" src="${flagUrl}" alt="Flag">
+                            <div class="voice-item-info">
+                                <span class="voice-item-title">${v.name}</span>
+                                <span class="voice-item-subtitle">${v.language || 'Français'} ${v.gender ? '• ' + v.gender : ''}</span>
+                            </div>
+                        </div>
+                        <div class="voice-item-actions">
+                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreviewSettings('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function selectSettingsHeygenVoice(voiceId) {
+            const voice = heygenVoicesCache[voiceId];
+            if (!voice) return;
+            document.getElementById('heygenVoiceId').value = voice.id;
+            document.getElementById('settingsNameHeygenSelected').textContent = voice.name;
+            document.getElementById('settingsFlagHeygenSelected').src = getVoiceFlagUrl(voice);
+            document.getElementById('settingsBadgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
+            document.getElementById('settingsDropdownHeygen').classList.remove('open');
+            renderSettingsHeygenRows(settingsHeygenRawList);
+
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            if (previewBtn) {
+                previewBtn.style.display = voice.previewUrl ? 'inline-flex' : 'none';
+                previewBtn.dataset.previewUrl = voice.previewUrl || '';
+            }
+        }
+
+        function playDirectPreviewSettings(url) {
+            if (!url) return;
+            let audio = document.getElementById('audioPreview');
+            if (!audio) {
+                audio = new Audio();
+            }
+            audio.src = url;
+            audio.play().catch(e => console.warn('Erreur preview:', e));
+        }
+
+        function onHeyGenVoiceSelected() {
+            const selectEl = document.getElementById('heygenVoiceId');
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            const voiceId = selectEl ? selectEl.value : '';
+            const voice = heygenVoicesCache[voiceId];
+
+            if (previewBtn) {
+                if (voice && voice.previewUrl) {
+                    previewBtn.style.display = 'inline-flex';
+                    previewBtn.dataset.previewUrl = voice.previewUrl;
+                } else {
+                    previewBtn.style.display = 'none';
+                    previewBtn.dataset.previewUrl = '';
+                }
+            }
+        }
+
+        function playHeyGenVoicePreview() {
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            const url = previewBtn ? previewBtn.dataset.previewUrl : '';
+            if (!url) return;
+
+            let previewAudio = document.getElementById('audioPreview');
+            if (!previewAudio) {
+                previewAudio = new Audio();
+            }
+            previewAudio.src = url;
+            previewAudio.play().catch(e => console.warn('Preview error:', e));
+        }
+
+        function handleHeyGenKeyChange() {
+            clearTimeout(heygenKeyChangeTimeout);
+            heygenKeyChangeTimeout = setTimeout(() => {
+                const key = document.getElementById('apiKeyHeygen').value.trim();
+                if (key) {
+                    loadHeyGenVoicesFromUi();
+                } else {
+                    document.getElementById('heygenKeyStatus').innerHTML = `
+                        <span style="color:var(--text-muted);">Synchronisez vos voix HeyGen officielles et personnalisées.</span>
+                    `;
+                }
+            }, 600);
+        }
+
+        async function loadHeyGenVoicesFromUi(voiceToSelect = null) {
+            const keyInput = document.getElementById('apiKeyHeygen');
+            const key = keyInput ? keyInput.value.trim() : '';
+            const statusEl = document.getElementById('heygenKeyStatus');
+            if (statusEl) statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement des voix HeyGen...</span>`;
+
+            try {
+                const url = key ? `/api/heygen/voices?key=${encodeURIComponent(key)}` : '/api/heygen/voices';
+                const res = await fetch(url);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || 'Erreur lors du chargement des voix HeyGen');
+                }
+                const data = await res.json();
+                heygenVoicesCache = {};
+                settingsHeygenRawList = [];
+
+                if (data.frenchVoices) {
+                    data.frenchVoices.forEach(v => {
+                        heygenVoicesCache[v.id] = v;
+                        settingsHeygenRawList.push(v);
+                    });
+                }
+                if (data.englishVoices) {
+                    data.englishVoices.slice(0, 30).forEach(v => {
+                        heygenVoicesCache[v.id] = v;
+                        settingsHeygenRawList.push(v);
+                    });
+                }
+
+                renderSettingsHeygenRows(settingsHeygenRawList);
+
+                const currentSaved = voiceToSelect || localStorage.getItem(HEYGEN_VOICE_ID);
+                const initialVoice = (currentSaved && heygenVoicesCache[currentSaved])
+                    ? currentSaved
+                    : (settingsHeygenRawList.length > 0 ? settingsHeygenRawList[0].id : '');
+
+                if (initialVoice) {
+                    selectSettingsHeygenVoice(initialVoice);
+                }
+                if (statusEl) {
+                    statusEl.innerHTML = `<span style="color:#10b981;">✅ ${data.total} voix HeyGen disponibles (${data.frenchVoices ? data.frenchVoices.length : 0} françaises).</span>`;
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.innerHTML = `<span style="color:#ff4444;">⚠️ ${err.message}</span>`;
+                }
+            }
+        }
 
         function handleApiKeyChange() {
             clearTimeout(keyChangeTimeout);
@@ -1072,7 +1584,6 @@
             statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement de vos voix ElevenLabs...</span>`;
 
             try {
-                // Requête vers l'API via le serveur local (ou directement via fetch fallback)
                 let data = null;
                 try {
                     const res = await fetch(`/api/elevenlabs/voices?key=${encodeURIComponent(key)}`);
@@ -1080,7 +1591,6 @@
                 } catch (e) {}
 
                 if (!data || !data.success) {
-                    // Fallback direct vers ElevenLabs
                     const directRes = await fetch('https://api.elevenlabs.io/v1/voices', {
                         headers: { 'xi-api-key': key }
                     });
@@ -1088,163 +1598,132 @@
                         const errTxt = await directRes.text();
                         throw new Error(`Erreur ElevenLabs (${directRes.status}) : ${errTxt}`);
                     }
-                    const raw = await directRes.json();
-                    const all = raw.voices || [];
-                    const excludedNames = ['ibrahima', 'khady'];
-                    const customVoices = all
-                        .filter(v => ['cloned', 'generated', 'custom'].includes(v.category))
-                        .filter(v => {
-                            const nameLower = (v.name || '').toLowerCase();
-                            return !excludedNames.some(ex => nameLower.includes(ex));
-                        })
-                        .map(v => ({ id: v.voice_id, name: v.name, category: v.category, previewUrl: v.preview_url }));
-                    const defaultVoices = all
-                        .filter(v => v.category === 'premade')
-                        .map(v => ({ id: v.voice_id, name: v.name, category: v.category, previewUrl: v.preview_url }));
-                    data = { success: true, customVoices, defaultVoices, total: customVoices.length + defaultVoices.length };
+                    const rawVoices = await directRes.json();
+                    data = {
+                        success: true,
+                        total: rawVoices.voices ? rawVoices.voices.length : 0,
+                        customVoices: (rawVoices.voices || []).filter(v => v.category === 'cloned' || v.category === 'generated'),
+                        defaultVoices: (rawVoices.voices || []).filter(v => v.category !== 'cloned' && v.category !== 'generated')
+                    };
                 }
 
-                const { customVoices, defaultVoices, total } = data;
                 voicesCache = {};
                 selectEl.innerHTML = '';
 
-                // 1. Voix Personnalisées & Clonées de l'utilisateur
-                if (customVoices && customVoices.length > 0) {
+                if (data.customVoices && data.customVoices.length > 0) {
                     const groupCustom = document.createElement('optgroup');
-                    groupCustom.label = `✨ Mes Voix Créées & Clonées (${customVoices.length})`;
-                    customVoices.forEach(v => {
-                        voicesCache[v.id] = v;
+                    groupCustom.label = '⭐ Mes Clones & Voix Personnalisées';
+                    data.customVoices.forEach(v => {
+                        voicesCache[v.voice_id] = { id: v.voice_id, name: v.name, previewUrl: v.preview_url };
                         const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name} (Créée)`;
+                        opt.value = v.voice_id;
+                        opt.textContent = `${v.name} (Clonée/Custom)`;
                         groupCustom.appendChild(opt);
                     });
                     selectEl.appendChild(groupCustom);
                 }
 
-                // 2. Voix Officielles par Défaut ElevenLabs
-                if (defaultVoices && defaultVoices.length > 0) {
+                if (data.defaultVoices && data.defaultVoices.length > 0) {
                     const groupDefault = document.createElement('optgroup');
-                    groupDefault.label = `🎙️ Voix Officielles par Défaut (${defaultVoices.length})`;
-                    defaultVoices.forEach(v => {
-                        voicesCache[v.id] = v;
+                    groupDefault.label = '🎙️ Voix Officielles ElevenLabs';
+                    data.defaultVoices.forEach(v => {
+                        voicesCache[v.voice_id] = { id: v.voice_id, name: v.name, previewUrl: v.preview_url };
                         const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = v.name;
+                        opt.value = v.voice_id;
+                        const langInfo = (v.labels && v.labels.accent) ? ` (${v.labels.accent})` : '';
+                        opt.textContent = `${v.name}${langInfo}`;
                         groupDefault.appendChild(opt);
                     });
                     selectEl.appendChild(groupDefault);
                 }
 
-                // Restauration de la voix sauvegardée si présente
                 const currentSaved = voiceToSelect || localStorage.getItem(ELEVENLABS_VOICE_ID);
                 if (currentSaved && voicesCache[currentSaved]) {
                     selectEl.value = currentSaved;
-                } else if (customVoices && customVoices.length > 0) {
-                    // Par défaut, sélectionner la première voix créée par l'utilisateur
-                    selectEl.value = customVoices[0].id;
-                } else if (defaultVoices && defaultVoices.length > 0) {
-                    selectEl.value = defaultVoices[0].id;
+                } else if (selectEl.options.length > 0) {
+                    selectEl.selectedIndex = 0;
                 }
 
                 onVoiceSelected();
 
                 statusEl.innerHTML = `
-                    <span style="color:#22c55e;">
-                        ✅ <strong>Clé Valide</strong> • ${total} voix disponibles (${customVoices.length} créée${customVoices.length > 1 ? 's' : ''}, ${defaultVoices.length} officielles).
-                    </span>
+                    <span style="color:#10b981;">✅ ${data.total} voix disponibles (${data.customVoices ? data.customVoices.length : 0} personnalisées).</span>
                 `;
             } catch (err) {
                 statusEl.innerHTML = `
-                    <span style="color:#ff4444;">
-                        ❌ ${err.message || 'Impossible de joindre l\'API ElevenLabs.'}
-                    </span>
+                    <span style="color:#ff4444;">❌ ${err.message || 'Impossible de joindre l\\\'API ElevenLabs.'}</span>
                 `;
             }
         }
 
         async function loadElevenLabsSubscription(key) {
             const usageBox = document.getElementById('elevenlabsUsageBox');
-            if (!key) {
-                if (usageBox) usageBox.style.display = 'none';
-                return;
-            }
-
-            if (usageBox) usageBox.style.display = 'flex';
+            if (!usageBox) return;
 
             try {
-                let sub = null;
-                try {
-                    const res = await fetch(`/api/elevenlabs/subscription?key=${encodeURIComponent(key)}`);
-                    if (res.ok) sub = await res.json();
-                } catch (e) {}
+                let data = null;
+                (async () => {
+                    try {
+                        const res = await fetch(`/api/elevenlabs/subscription?key=${encodeURIComponent(key)}`);
+                        if (res.ok) data = await res.json();
+                    } catch (e) {}
 
-                if (!sub || !sub.success) {
-                    const directRes = await fetch('https://api.elevenlabs.io/v1/user/subscription', {
-                        headers: { 'xi-api-key': key }
-                    });
-                    if (directRes.ok) {
-                        const raw = await directRes.json();
-                        const count = raw.character_count || 0;
-                        const limit = raw.character_limit || 0;
-                        sub = {
-                            success: true,
-                            tier: raw.tier || 'free',
-                            characterCount: count,
-                            characterLimit: limit,
-                            remainingCharacters: Math.max(0, limit - count),
-                            percentRemaining: limit > 0 ? Math.round((Math.max(0, limit - count) / limit) * 100) : 0,
-                            percentUsed: limit > 0 ? Math.round((count / limit) * 100) : 0,
-                            nextResetUnix: raw.next_character_count_reset_unix || null
-                        };
-                    }
-                }
-
-                if (sub && sub.success) {
-                    const remainingFormatted = sub.remainingCharacters.toLocaleString('fr-FR');
-                    const totalFormatted = sub.characterLimit.toLocaleString('fr-FR');
-                    const usedFormatted = sub.characterCount.toLocaleString('fr-FR');
-                    
-                    let color = '#10b981';
-                    if (sub.percentRemaining < 15) color = '#ef4444';
-                    else if (sub.percentRemaining < 35) color = '#f59e0b';
-
-                    const creditsBadge = document.getElementById('elevenlabsCreditsBadge');
-                    if (creditsBadge) {
-                        creditsBadge.innerHTML = `
-                            <span style="color: ${color}; font-weight: 800;">${remainingFormatted} car. restants</span> 
-                            <span style="color: var(--text-muted); font-size: 11px;">/ ${totalFormatted} (${sub.percentRemaining}%)</span>
-                        `;
+                    if (!data || !data.success) {
+                        try {
+                            const directRes = await fetch('https://api.elevenlabs.io/v1/user/subscription', {
+                                headers: { 'xi-api-key': key }
+                            });
+                            if (directRes.ok) {
+                                const raw = await directRes.json();
+                                const limit = raw.character_limit || 10000;
+                                const used = raw.character_count || 0;
+                                const rem = Math.max(0, limit - used);
+                                const pct = limit > 0 ? Math.min(100, Math.round((rem / limit) * 100)) : 0;
+                                data = {
+                                    success: true,
+                                    tier: raw.tier || 'Gratuit',
+                                    characterLimit: limit,
+                                    characterCount: used,
+                                    remainingCharacters: rem,
+                                    percentRemaining: pct,
+                                    resetDate: raw.next_character_count_reset_unix ? new Date(raw.next_character_count_reset_unix * 1000).toLocaleDateString('fr-FR') : 'Fin du mois'
+                                };
+                            }
+                        } catch (err) {}
                     }
 
-                    const bar = document.getElementById('elevenlabsProgressBar');
-                    if (bar) {
-                        bar.style.width = `${Math.min(100, Math.max(0, sub.percentRemaining))}%`;
-                        bar.style.background = color;
-                    }
+                    if (data && data.success) {
+                        usageBox.style.display = 'flex';
+                        const limit = data.characterLimit || 10000;
+                        const remaining = (data.remainingCharacters !== undefined) ? data.remainingCharacters : Math.max(0, limit - (data.characterCount || 0));
+                        const percent = (data.percentRemaining !== undefined) ? data.percentRemaining : ((data.remainingPercentage !== undefined) ? data.remainingPercentage : (limit > 0 ? Math.round((remaining / limit) * 100) : 0));
+                        const tier = data.tier || 'Gratuit';
+                        const resetDate = data.resetDate || (data.nextResetUnix ? new Date(data.nextResetUnix * 1000).toLocaleDateString('fr-FR') : 'Fin du mois');
 
-                    const tierText = document.getElementById('elevenlabsTierText');
-                    if (tierText) {
-                        const tierName = (sub.tier || 'free').toUpperCase();
-                        tierText.textContent = `Formule : ${tierName} • ${usedFormatted} car. consommés ce mois-ci`;
-                    }
-
-                    const resetText = document.getElementById('elevenlabsResetText');
-                    if (resetText) {
-                        if (sub.nextResetUnix) {
-                            const resetDate = new Date(sub.nextResetUnix * 1000);
-                            const dateStr = resetDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-                            resetText.textContent = `Renouvellement le ${dateStr}`;
-                        } else {
-                            resetText.textContent = 'Renouvellement mensuel automatique';
+                        const creditsBadge = document.getElementById('elevenlabsCreditsBadge');
+                        if (creditsBadge) {
+                            creditsBadge.textContent = `${remaining.toLocaleString('fr-FR')} / ${limit.toLocaleString('fr-FR')} car. (${percent}%)`;
+                            creditsBadge.style.color = percent < 15 ? '#ff4444' : (percent < 40 ? '#ffbb00' : '#10b981');
+                        }
+                        const bar = document.getElementById('elevenlabsProgressBar');
+                        if (bar) {
+                            bar.style.width = `${percent}%`;
+                            bar.style.background = percent < 15 ? '#ff4444' : (percent < 40 ? '#ffbb00' : '#10b981');
+                        }
+                        const tierText = document.getElementById('elevenlabsTierText');
+                        if (tierText) {
+                            tierText.textContent = `Formule : ${tier}`;
+                        }
+                        const resetText = document.getElementById('elevenlabsResetText');
+                        if (resetText) {
+                            resetText.textContent = `Renouvellement : ${resetDate}`;
                         }
                     }
-                }
+                })();
             } catch (err) {
-                console.warn('Erreur chargement crédits ElevenLabs:', err);
+                console.error('Erreur chargement quotas ElevenLabs:', err);
             }
         }
-
         function onVoiceSelected() {
             const selectEl = document.getElementById('elevenlabsVoiceId');
             const btnPreview = document.getElementById('btnPreviewVoice');
@@ -1314,11 +1793,21 @@
         });
 
         async function saveSettings() {
+            const ttsEngine = document.getElementById('prefTtsEngine') ? document.getElementById('prefTtsEngine').value : 'elevenlabs';
+            localStorage.setItem(PREF_KEY_TTS_ENGINE, ttsEngine);
             const format = document.getElementById('prefFormat').value;
             const fps = document.getElementById('prefFps').value;
             const quality = document.getElementById('prefQuality').value;
             const template = document.getElementById('prefTemplate').value;
             const subtitleStyle = document.getElementById('prefSubtitleStyle').value;
+            
+            let geminiModel = document.getElementById('prefGeminiModel') ? document.getElementById('prefGeminiModel').value : 'gemini-3.5-flash-lite';
+            if (geminiModel === 'custom') {
+                const customVal = (document.getElementById('customGeminiModel')?.value || '').trim();
+                if (customVal) geminiModel = customVal;
+            }
+            localStorage.setItem(PREF_KEY_GEMINI_MODEL, geminiModel);
+
             const googleKey = document.getElementById('apiKeyGoogle').value.trim();
             const elevenlabsKey = document.getElementById('apiKeyElevenlabs').value.trim();
             const elevenlabsVoice = document.getElementById('elevenlabsVoiceId').value.trim();
@@ -1327,6 +1816,8 @@
             const coverrKey = document.getElementById('apiKeyCoverr') ? document.getElementById('apiKeyCoverr').value.trim() : '';
             const brandfetchKey = document.getElementById('apiKeyBrandfetch').value.trim();
             const bgRemoveKey = document.getElementById('apiKeyBgRemove').value.trim();
+            const sketchfabToken = document.getElementById('apiKeySketchfab') ? document.getElementById('apiKeySketchfab').value.trim() : '';
+            const heygenKey = document.getElementById('apiKeyHeygen') ? document.getElementById('apiKeyHeygen').value.trim() : '';
 
             // LocalStorage
             localStorage.setItem(PREF_KEY_FORMAT, format);
@@ -1342,6 +1833,10 @@
             localStorage.setItem(API_KEY_COVERR, coverrKey);
             localStorage.setItem(API_KEY_BRANDFETCH, brandfetchKey);
             localStorage.setItem(API_KEY_BG_REMOVE, bgRemoveKey);
+            localStorage.setItem(API_KEY_SKETCHFAB, sketchfabToken);
+            localStorage.setItem(API_KEY_HEYGEN, heygenKey);
+            const heygenVoice = document.getElementById('heygenVoiceId') ? document.getElementById('heygenVoiceId').value : '';
+            localStorage.setItem(HEYGEN_VOICE_ID, heygenVoice);
 
             // Synchronisation avec api_config.json via /api/settings
             try {
@@ -1354,7 +1849,8 @@
                         pref_quality: quality,
                         pref_template: template,
                         pref_subtitle_style: subtitleStyle,
-                        tts_engine: 'elevenlabs',
+                        tts_engine: ttsEngine,
+                                                gemini_model: geminiModel,
                         google_api_key: googleKey,
                         elevenlabs_api_key: elevenlabsKey,
                         elevenlabs_voice_id: elevenlabsVoice,
@@ -1362,7 +1858,10 @@
                         pixabay_api_key: pixabayKey,
                         coverr_api_key: coverrKey,
                         brandfetch_api_key: brandfetchKey,
-                        bg_remove_api_key: bgRemoveKey
+                        bg_remove_api_key: bgRemoveKey,
+                    sketchfab_api_token: sketchfabToken,
+                        heygen_api_key: heygenKey,
+                        heygen_voice_id: heygenVoice
                     })
                 });
             } catch (e) {
@@ -1372,6 +1871,9 @@
             // Si une clé ElevenLabs est renseignée, actualiser les voix
             if (elevenlabsKey) {
                 loadVoices(elevenlabsKey, elevenlabsVoice);
+            }
+            if (heygenKey) {
+                loadHeyGenVoicesFromUi(heygenVoice);
             }
 
             const toast = document.getElementById('toast');
@@ -1401,7 +1903,6 @@
                 let data = null;
                 const serverOrigin = (window.location.protocol === 'file:') ? 'http://localhost:3000' : '';
                 
-                // 1. Essai via le serveur studio local
                 try {
                     const res = await fetch(`${serverOrigin}/api/coverr/test`, {
                         method: 'POST',
@@ -1415,7 +1916,6 @@
                     console.warn('Serveur local injoignable pour le test Coverr, bascule en direct:', e);
                 }
 
-                // 2. Fallback direct vers Coverr si serveur local non joint
                 if (!data) {
                     const directRes = await fetch('https://api.coverr.co/videos?query=nature&page_size=1&urls=true', {
                         headers: {
@@ -1436,7 +1936,6 @@
                 if (data.valid) {
                     statusEl.style.color = '#10b981';
                     statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Connexion réussie ! Clé Coverr.co valide (${data.totalAvailable || 0} vidéos accessibles).</span>`;
-                    // Sauvegarde automatique de la clé validée
                     localStorage.setItem(API_KEY_COVERR, key);
                 } else {
                     statusEl.style.color = '#ef4444';
@@ -1444,11 +1943,11 @@
                 }
             } catch (err) {
                 statusEl.style.color = '#ef4444';
-                statusEl.innerHTML = `<span>Erreur de test : ${err.message}</span>`;
+                statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>Erreur de test : ${err.message}</span>`;
             }
         }
 
-        async function runVoiceTest() {
+        async function testVoiceGeneration() {
             const btn = document.getElementById('btnTestVoice');
             const status = document.getElementById('testVoiceStatus');
             const audioPreview = document.getElementById('audioPreview');
@@ -1497,6 +1996,178 @@
                 btn.disabled = false;
             }
         }
-    </script>
+    // ── Test All API Keys ────────────────────────────────────────────────────
+    async function testAllApiKeys() {
+      const btn = document.getElementById('btnTestAllApis');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span>⏳</span> Test en cours...'; }
+
+      const tests = [
+        {
+          label: 'ElevenLabs',
+          fieldId: 'apiKeyElevenlabs',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.elevenlabs.io/v1/voices', {
+              headers: { 'xi-api-key': key }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'HeyGen',
+          fieldId: 'apiKeyHeygen',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.heygen.com/v2/voices', {
+              headers: { 'X-Api-Key': key }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'Google AI',
+          fieldId: 'apiKeyGoogle',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`
+            );
+            return r.ok;
+          }
+        },
+        {
+          label: 'Pixabay',
+          fieldId: 'apiKeyPixabay',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch(
+              `https://pixabay.com/api/?key=${key}&q=nature&per_page=3`
+            );
+            return r.ok;
+          }
+        },
+        {
+          label: 'Coverr',
+          fieldId: 'apiKeyCoverr',
+          test: async (key) => {
+            if (!key) return null;
+            // 1. Essai prioritaire via proxy local (contourne tout blocage CORS)
+            try {
+              const res = await fetch('/api/coverr/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key })
+              });
+              if (res.ok) {
+                const data = await res.json();
+                if (data.valid === true) return true;
+              }
+            } catch (e) {}
+
+            // 2. Fallback direct avec le bon format Authorization: Bearer
+            try {
+              const direct = await fetch('https://api.coverr.co/videos?query=nature&page_size=1&urls=true', {
+                headers: { 'Authorization': `Bearer ${key}` }
+              });
+              return direct.ok;
+            } catch (e) {
+              return false;
+            }
+          }
+        },
+        {
+          label: 'Brandfetch',
+          fieldId: 'apiKeyBrandfetch',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.brandfetch.io/v2/brands/apple.com', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'BgRemove (Clipdrop)',
+          fieldId: 'apiKeyBgRemove',
+          test: async (key) => {
+            if (!key) return null;
+            try {
+              const fd = new FormData();
+              const r = await fetch('https://clipdrop-api.co/remove-background/v1', {
+                method: 'POST',
+                headers: { 'x-api-key': key },
+                body: fd
+              });
+              return r.status !== 401 && r.status !== 403;
+            } catch { return false; }
+          }
+        },
+        {
+          label: 'Sketchfab',
+          fieldId: 'apiKeySketchfab',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.sketchfab.com/v3/me', {
+              headers: { 'Authorization': `Token ${key}` }
+            });
+            return r.ok;
+          }
+        }
+      ];
+
+      // Nettoyage des anciens badges de test
+      document.querySelectorAll('.api-test-badge').forEach(el => el.remove());
+
+      for (const t of tests) {
+        const field = document.getElementById(t.fieldId);
+        if (!field) continue;
+        const key = field.value.trim();
+
+        // Trouver le conteneur du titre du label pour placer l'icône DIRECTEMENT À CÔTÉ DU NOM
+        const formRow = field.closest('.form-row');
+        const labelTitle = formRow ? (formRow.querySelector('.form-label span') || formRow.querySelector('.form-label')) : field.parentElement;
+
+        const badge = document.createElement('span');
+        badge.className = 'api-test-badge';
+        badge.style.cssText = 'margin-left: 8px; font-size: 15px; vertical-align: middle; transition: opacity 0.5s ease; display: inline-flex; align-items: center;';
+        badge.textContent = '⏳';
+        badge.title = `Test en cours pour ${t.label}...`;
+        
+        if (labelTitle) {
+          labelTitle.appendChild(badge);
+        } else {
+          field.parentElement.appendChild(badge);
+        }
+
+        let result = null;
+        try { result = await t.test(key); } catch { result = false; }
+
+        if (result === null) {
+          badge.textContent = '⬜';
+          badge.title = `${t.label} : clé vide`;
+        } else if (result === true) {
+          badge.textContent = '✅';
+          badge.title = `${t.label} : clé valide et fonctionnelle !`;
+          badge.style.color = '#22c55e';
+          // Disparaît au bout de 4 secondes
+          setTimeout(() => {
+            badge.style.opacity = '0';
+            setTimeout(() => badge.remove(), 500);
+          }, 4000);
+        } else {
+          badge.textContent = '❌';
+          badge.title = `${t.label} : échec du test ou clé invalide`;
+          badge.style.color = '#ef4444';
+        }
+
+        await new Promise(r => setTimeout(r, 250));
+      }
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔑</span> Tester toutes les clés API';
+      }
+    }
+</script>
 </body>
 </html>

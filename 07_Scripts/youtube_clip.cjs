@@ -6,6 +6,7 @@
  * 1. Informations vidéo (--info <url>)
  * 2. Transcription horodatée (--transcript <url> [--lang fr|en])
  * 3. Téléchargement d'un extrait ou de la vidéo complète (--download <url> [--start HH:MM:SS] [--end HH:MM:SS] [--out <chemin>])
+ * 4. Téléchargement de la miniature HD (--thumbnail <url> [--out <chemin>])
  * 
  * Utilise yt-dlp natif et le binaire FFmpeg embarqué de @ffmpeg-installer/ffmpeg
  */
@@ -197,6 +198,92 @@ function getVideoTranscript(url, preferredLang = 'fr') {
     });
 }
 
+// Téléchargement direct de la miniature YouTube en haute résolution
+function downloadThumbnail({ url, outputPath = null }) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const cleanUrl = sanitizeYoutubeUrl(url);
+            if (!cleanUrl) return reject(new Error('URL YouTube invalide'));
+
+            let videoId = '';
+            const matchV = cleanUrl.match(/[?&]v=([a-zA-Z0-9_\-]+)/);
+            if (matchV) videoId = matchV[1];
+            else {
+                const matchShort = cleanUrl.match(/youtu\.be\/([a-zA-Z0-9_\-]+)/);
+                if (matchShort) videoId = matchShort[1];
+            }
+
+            const assetsDir = path.join(__dirname, '..', '01_Assets', 'Images');
+            if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
+
+            let targetOut = outputPath;
+            if (!targetOut) {
+                targetOut = path.join(assetsDir, `youtube_thumb_${videoId || Date.now()}.jpg`);
+            } else if (!path.isAbsolute(targetOut)) {
+                targetOut = path.join(__dirname, '..', targetOut);
+            }
+
+            const targetDir = path.dirname(targetOut);
+            if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+
+            console.log(`[YouTube Thumbnail] Téléchargement de la miniature pour : ${cleanUrl}`);
+
+            const cmd = `yt-dlp --no-warnings --skip-download --write-thumbnail --convert-thumbnails jpg -o "${targetOut.replace(/\.jpg$/i, '')}" "${cleanUrl}"`;
+
+            exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout, stderr) => {
+                if (err) {
+                    if (videoId) {
+                        const https = require('https');
+                        const cdnUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                        const file = fs.createWriteStream(targetOut);
+                        https.get(cdnUrl, (res) => {
+                            if (res.statusCode === 200) {
+                                res.pipe(file);
+                                file.on('finish', () => {
+                                    file.close(() => {
+                                        const rel = path.relative(path.join(__dirname, '..'), targetOut).replace(/\\/g, '/');
+                                        return resolve({ success: true, localPath: targetOut, relativePath: rel, videoId });
+                                    });
+                                });
+                            } else {
+                                const fallbackUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                                const fbFile = fs.createWriteStream(targetOut);
+                                https.get(fallbackUrl, (fbRes) => {
+                                    fbRes.pipe(fbFile);
+                                    fbFile.on('finish', () => {
+                                        fbFile.close(() => {
+                                            const rel = path.relative(path.join(__dirname, '..'), targetOut).replace(/\\/g, '/');
+                                            resolve({ success: true, localPath: targetOut, relativePath: rel, videoId });
+                                        });
+                                    });
+                                }).on('error', reject);
+                            }
+                        }).on('error', reject);
+                        return;
+                    }
+                    return reject(new Error(`Erreur téléchargement miniature : ${err.message}`));
+                }
+
+                if (fs.existsSync(targetOut)) {
+                    const rel = path.relative(path.join(__dirname, '..'), targetOut).replace(/\\/g, '/');
+                    return resolve({ success: true, localPath: targetOut, relativePath: rel, videoId });
+                }
+
+                const baseWithoutExt = targetOut.replace(/\.jpg$/i, '');
+                const found = [baseWithoutExt + '.jpg', baseWithoutExt + '.webp', baseWithoutExt + '.png'].find(p => fs.existsSync(p));
+                if (found) {
+                    const rel = path.relative(path.join(__dirname, '..'), found).replace(/\\/g, '/');
+                    return resolve({ success: true, localPath: found, relativePath: rel, videoId });
+                }
+
+                reject(new Error("La miniature n'a pas pu être trouvée après extraction."));
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
+
 // Téléchargement d'une vidéo complète ou d'un extrait précis
 function downloadClip({ url, start, end, outputPath, format = 'mp4' }) {
     return new Promise((resolve, reject) => {
@@ -287,14 +374,18 @@ if (require.main === module) {
 ===============================================================
 Usage :
   node 07_Scripts/youtube_clip.cjs --info <url>
+  node 07_Scripts/youtube_clip.cjs --thumbnail <url> [--out <fichier.jpg>]
   node 07_Scripts/youtube_clip.cjs --transcript <url> [--lang fr|en]
   node 07_Scripts/youtube_clip.cjs --download <url> [--start HH:MM:SS] [--end HH:MM:SS] [--out <fichier.mp4>]
 
 Exemples :
-  # 1. Lire la transcription pour repérer un moment précis
+  # 1. Télécharger la miniature HD
+  node 07_Scripts/youtube_clip.cjs --thumbnail "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # 2. Lire la transcription pour repérer un moment précis
   node 07_Scripts/youtube_clip.cjs --transcript "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --lang en
 
-  # 2. Télécharger un extrait précis de 15 secondes
+  # 3. Télécharger un extrait précis de 15 secondes
   node 07_Scripts/youtube_clip.cjs --download "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --start 00:00:10 --end 00:00:25 --out 01_Assets/Videos/rickroll_clip.mp4
 ===============================================================
         `);
@@ -325,6 +416,20 @@ Exemples :
             })
             .catch(err => {
                 console.error(err.message);
+                process.exit(1);
+            });
+    } else if (args.includes('--thumbnail') || args.includes('--thumb')) {
+        if (!url) {
+            console.error('Erreur : veuillez fournir une URL YouTube.');
+            process.exit(1);
+        }
+        const out = getArg('--out');
+        downloadThumbnail({ url, outputPath: out })
+            .then(res => {
+                console.log(`\n🎉 Miniature HD enregistrée : ${res.relativePath}`);
+            })
+            .catch(err => {
+                console.error(`\n❌ Échec téléchargement miniature : ${err.message}`);
                 process.exit(1);
             });
     } else if (args.includes('--transcript')) {
@@ -372,5 +477,6 @@ Exemples :
 module.exports = {
     getVideoInfo,
     getVideoTranscript,
-    downloadClip
+    downloadClip,
+    downloadThumbnail
 };

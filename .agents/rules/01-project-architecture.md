@@ -11,6 +11,9 @@
 > 4. **Organisation Stricte des Règles et des Skills** :
 >    - Le dossier `.agents/rules/` est **strictement réservé aux règles de gouvernance de l'IA** (maximum 5 à 6 fichiers thématiques). Ne jamais créer de dossier `skills` dans `.agents/`.
 >    - Tous les skills, guides et documentations techniques du projet résident exclusivement dans `00_Skills/`.
+> 5. **Règle Stricte sur les Scripts Temporaires** :
+>    - **JAMAIS** de script temporaire/jetable dans `07_Scripts/` ni à la racine du projet ! Le dossier `07_Scripts/` est réservé aux scripts permanents du moteur.
+>    - Tout script temporaire/jetable pour des tests, manipulations ou calculs doit impérativement être créé dans le dossier `scratch/`.
 
 ---
 
@@ -36,9 +39,10 @@ heygen-new/
 │   ├── Audio_Mix/              # Bandes sonores finales mixées
 │   ├── Effets_Sonores/         # Bruitages d'impact et transitions (SFX : whoosh, pop, hit, pass)
 │   ├── Flags/                  # Drapeaux nationaux vectoriels SVG / PNG
-│   ├── handwriting/            # Tracés SVG manuscrits générés par le skill Tegaki
+│   ├── Handwriting/            # Tracés SVG manuscrits générés par le skill Tegaki
 │   ├── Icones/                 # Pictogrammes UI et icônes vectorielles
-│   ├── Illustrations/          # Éléments graphiques et visuels d'habillage
+│   ├── Illustrations/          # Éléments graphiques, visuels d'habillage et portraits
+│   │   └── Players/            # Portraits détourés de joueurs de foot (PNG transparents sans fond via fetch_sportsdb.cjs)
 │   ├── Images/                 # Visuels fixes (inclut /channels/ pour les logos de chaînes)
 │   ├── Logos/                  # Logos officiels de marques récupérés via brandfetch.cjs
 │   ├── Maps/                   # Cartes géographiques générées par fetch_map.cjs
@@ -75,10 +79,10 @@ heygen-new/
 │   ├── fetch_map.cjs           # Génération de cartes géographiques et tracés d'itinéraires
 │   ├── fetch_flag.cjs          # Téléchargement de drapeaux mondiaux HD
 │   ├── fetch_football_logo.cjs # Téléchargement autonome de logos de clubs/sélections de foot (football-logos.cc)
-│   ├── cut_silences.cjs        # Découpe automatique des silences (jump-cut) pour rushes 10_Clients/
+│   ├── cut_silences.cjs        # Découpe automatique des silences (jump-cut) pour rushes Clients/
 │   ├── detect_bad_takes.cjs    # Détection automatique des mauvaises prises, hésitations et répétitions
 │   ├── auto_reframe.cjs        # Recadrage automatique 16:9 -> 9:16 vertical (crop, blur background, split)
-│   ├── fetch_sportsdb.cjs      # Téléchargement de portraits joueurs détourés (PNG) & badges (TheSportsDB)
+│   ├── fetch_sportsdb.cjs      # Téléchargement de portraits joueurs détourés (PNG sans fond dans 01_Assets/Illustrations/Players/) & badges (TheSportsDB)
 │   ├── fetch_music.cjs         # Téléchargement de musiques libres de droit par genre/mood (Incompetech)
 │   ├── normalize_audio.cjs     # Normalisation sonore professionnelle EBU R128 (-14 LUFS)
 │   ├── remove_bg.cjs           # Détourage et suppression du fond d'images
@@ -93,7 +97,7 @@ heygen-new/
 │   ├── channel.html            # Vue détaillée d'une chaîne spécifique avec ses vidéos
 │   ├── channel_settings.html   # Paramètres d'une chaîne (Brand Kit, couleurs, typographies)
 │   └── settings.html           # Paramètres généraux de l'application et gestion des clés API
-└── 10_Clients/                 # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
+└── Clients/                    # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
     ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
     └── README.md               # Guide d'organisation des rushes par client
 ```
@@ -144,4 +148,5 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 | **`07_Scripts/`** | Pérenne | Moteurs d'orchestration et scripts utilitaires (`ai_director`, `tts`, `coverr`...). | Exécution et maintenance. |
 | **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre explicite utilisateur**. |
 | **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur du Studio web. | Maintenance et affichage UI. |
-| **`10_Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git. |
+| **`Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git. |
+

@@ -10,7 +10,31 @@ Une scène = **une idée = un point focal = une hiérarchie à 3 niveaux**. Si l
 
 Ordre d'attraction de l'œil (du plus fort au plus faible) : mouvement > visage/regard > contraste de luminosité > couleur saturée > grande taille > position haut-gauche. Ne mettre en mouvement QUE ce qui doit être lu.
 
+### 🚫 RÈGLE ABSOLUE DE NON-CHEVAUCHEMENT (ZERO-COLLISION LAYOUT)
+> **AUCUN ÉLÉMENT VISUEL NE DOIT JAMAIS SE CHEVAUCHER ACCIDENTELLEMENT DANS UNE VIDÉO.**
+>
+> 1. **Zéro collision involontaire** : Un texte, un titre, un sous-titre, un badge, une image, un modèle 3D Three.js, une carte Bento ou un bouton CTA ne doivent **JAMAIS se superposer ni se couper mutuellement**.
+> 2. **Zone de Respiration Obligatoire (Safe Air Gap)** : Entre deux éléments verticaux ou horizontaux (ex: titre et modèle 3D, ou carte bento et sous-titres), un espace libre minimal de **32px à 48px** doit toujours être garanti.
+> 3. **Architecture par Slots Indépendants** :
+>    - Découper la scène en conteneurs Flexbox ou Grid structurels distincts.
+>    - Si des éléments utilisent `position: absolute`, leurs boîtes englobantes (`bounding boxes`) et coordonnées doivent être strictement calibrées pour que leurs surfaces visibles ne se croisent **jamais** aux mêmes timestamps $t$.
+> 4. **Seule Exception Autorisée** : Une superposition stylistique **pleinement assumée, délibérée et maîtrisée** (ex: texte d'arrière-plan géant semi-transparent derrière un sujet détouré en parallax, ou contenu imbriqué à l'intérieur même d'une Bento card dédiée). En dehors de ce cas spécifique, le chevauchement est considéré comme un défaut de conception critique.
+
+
 ## 2. Canvas, unité et zones sûres
+
+### 📐 RÈGLE DU PADDING CADRE STANDARDISÉ (MARGES LATÉRALES & VERTICALES HARMONISÉES)
+Les éléments de contenu ne doivent jamais coller aux bords de l'écran. Un cadre de sécurité permanent (`viewport frame`) verrouille les marges de façon symétrique et prévisible :
+
+| Format | Résolution | Marge Latérale (Gauche / Droite) | Marge Verticale (Haut / Bas) | Padding Cadre Conteneur (`#viewport` ou `.content-frame`) |
+| :--- | :--- | :--- | :--- | :--- |
+| **16:9 Paysage** | 1920 × 1080 px | **80 px** (identique gauche & droite) | **60 px** (haut) / **70 px** (bas) | `padding: 60px 80px 70px 80px;` |
+| **9:16 Vertical** | 1080 × 1920 px | **80 px** (identique gauche & droite) | **140 px** (haut UI) / **180 px** (bas UI) | `padding: 140px 80px 180px 80px;` |
+| **1:1 Carré** | 1080 × 1080 px | **80 px** (identique gauche & droite) | **80 px** (haut & bas symétrique) | `padding: 80px;` |
+
+> 💡 **Principe fondamental :** La marge latérale de **80px** est rigoureusement identique entre le format 16:9 et le format 9:16, assurant une largeur de respiration et un alignement latéral parfaitement homogène sur toutes les productions.
+> En 9:16, les marges supérieure (140px) et inférieure (180px) protègent impérativement le contenu des surimpressions d'interface des applications mobiles (nom du créateur, recherche en haut, description, boutons like/partage et barre de scrub en bas).
+
 Le canvas est fixe en pixels (jamais `vh/vw`, jamais `position:fixed`). On définit une unité `--u` = 1 % du petit côté (1080 px) : les tailles en `u` restent cohérentes entre formats.
 
 ```css
@@ -83,6 +107,14 @@ Un seul système de texte « parlé » à l'écran à la fois : si un titre appa
    - **Fond Dégradé** : gradient radial ou linéaire subtil et profond (ex: `radial-gradient(ellipse at 50% 20%, #1e2029 0%, #08080c 100%)`). Garantir un contraste de 7:1 sur toute la zone de texte.
    - **Fond Couleur unie** : adapter dynamiquement la couleur du texte et des cartes selon la luminance (`isColorLight`). Ne jamais forcer du blanc sur un fond jaune ou du noir sur un fond marine.
 
+5. **🚫 INTERDICTION FORMELLE DE DESSINER DES LOGOS OU ICÔNES (Obligation d'Assets Officiels)** :
+   - **L'IA NE DOIT JAMAIS DESSINER, INVENTER OU APPROXIMER UN LOGO OU UNE ICÔNE EN CODE** (aucun bricolage SVG fait maison, aucune approximation vectorielle, aucun tracé manuel de logo ou icône).
+   - **TOUS LES LOGOS** de marques/entreprises doivent être récupérés sous leur forme officielle via `node 07_Scripts/brandfetch.cjs <domaine>` (SVG vectoriel officiel ou PNG transparent HD) et stockés dans `01_Assets/Logos/`.
+   - **TOUS LES DRAPEAUX** nationaux doivent être récupérés via `node 07_Scripts/fetch_flag.cjs <pays>` et stockés dans `01_Assets/Flags/`.
+   - **TOUTES LES CARTES/LOCALISATIONS** doivent être générées via `node 07_Scripts/fetch_map.cjs` (Leaflet + capture Chrome headless) et stockées dans `01_Assets/Maps/`.
+   - **TOUTES LES ICÔNES SYSTÈME/UI** (flèches, coches, symboles, pictogrammes) doivent provenir de bibliothèques officielles importées localement (Heroicons, Lucide, Phosphor, Material Icons, Feather) — **JAMAIS dessinées à la main en SVG**.
+   - **SI LE TÉLÉCHARGEMENT/GÉNÉRATION EST IMPOSSIBLE** : l'IA doit **S'ARRÊTER IMMÉDIATEMENT** et demander à l'utilisateur de fournir l'asset officiel. Aucune alternative "dessiné par l'IA" n'est tolérée, aucune approximation n'est acceptable.
+
 ## 6. Composition d'une scène : les 5 couches
 1. `bg` — fond (dégradé, vidéo B-roll, carte). Toujours en lent mouvement (`scale 1→1.06–1.10` sur la durée de la scène, ease `none`).
 2. `mid` — sujet / média principal (image détourée, capture web, logo, drapeau).
@@ -143,6 +175,14 @@ tl.fromTo('.panel',{clipPath:'inset(0 100% 0 0 round 24px)'},{clipPath:'inset(0 
 - **Chiffre** : le nombre à 2× la taille de tout le reste, unité plus petite alignée sur la ligne de base, label niveau 3 dessous, fond sobre.
 - **Citation / preuve** : capture de l'article (`record_web.cjs`) à 85 % de la largeur, ombre portée, mot clé surligné avec `highlight`.
 - **Lieu** : carte (`fetch_map.cjs`) avec zoom progressif, drapeau (`fetch_flag.cjs`) dans le coin, nom du lieu en niveau 1.
+  - **Styles de carte disponibles (tous sans watermark, gratuits) :**
+    - `dark` (défaut) : CartoDB Dark Matter — ambiance cinématique sombre, tech, premium
+    - `voyager` : CartoDB Voyager — élégant, moderne, lifestyle, voyage, tourisme
+    - `light` : CartoDB Positron — minimaliste blanc, fond vidéo clair, data viz épurée
+    - `satellite` : Esri World Imagery — vue satellite réelle HD, immobilier, urbanisme, environnement
+    - `osm` : OpenStreetMap Standard — technique, brut, data, open source
+  - **Format** : 16:9 (1920×1080) par défaut, ou 9:16 (1080×1920) avec `--format 9:16`
+  - **Pin animé** : option `--pin` pour ajouter un repère lumineux pulsant au centre
 - **Entreprise** : logo vectoriel (`brandfetch.cjs`) centré sur fond de sa couleur de marque assombrie.
 - **Personne** : image détourée (`remove_bg.cjs`) à gauche/droite, nom + rôle en niveau 2/3 de l'autre côté.
 - **Liste** : 3 items max à l'écran, révélés un par un, l'item courant à 100 % et les autres à 45 %.
@@ -202,3 +242,67 @@ function fitText(el,maxW,maxH,{min=24,max=400}={}){
 - [ ] Gradient text mot par mot : styles `-webkit-background-clip: text` appliqués aussi sur les inners (`.gradient, .gradient .w-inner`) pour éviter le texte transparent.
 - [ ] Pas de slide/fondu répétitif : transitions alternées (3D tilt, masked wipe, blur snap, radial wipe).
 - [ ] Tracés de courbes avec curseur synchronisé sub-pixel via `path.getPointAtLength()` (zéro saut de point).
+
+
+---
+
+## 13. Le Design System Vidéo Universel (Agnostique en Couleurs & Typographies)
+
+Le but d'un Design System vidéo n'est pas d'imposer des couleurs ou des polices figées (chaque vidéo a son identité de marque ou son univers thématique propre), mais de garantir **des règles structurelles, d'espacement, d'échelle et de lisibilité qui assurent une cohérence parfaite et constante d'un bout à l'autre de la vidéo**.
+
+### 13.1 Architecture en 3 Slots Verticaux Étanches (Slot Layout)
+Pour empêcher tout chevauchement, chaque écran de vidéo est articulé autour de 3 zones fonctionnelles étanches :
+
+```
+┌────────────────────────────────────────────────────────┐
+│  SLOT 1 : HEADER / ACCROCHE (20-25% hauteur)          │
+│  [Badge thématique] + [Titre Principal / Hook choc]    │
+├────────────────────────────────────────────────────────┤
+│  SLOT 2 : HERO VISUEL / STAGE CENTRAL (50-55% hauteur) │
+│  Modèle 3D Three.js / Image / Bento Card / Graphique    │
+│  (Espace réservé garanti — aucun texte ne traverse)    │
+├────────────────────────────────────────────────────────┤
+│  SLOT 3 : CALLOUT & CALL TO ACTION (20-25% hauteur)    │
+│  Sous-titre dynamique karaoké / Métrique / Bouton CTA  │
+└────────────────────────────────────────────────────────┘
+```
+
+1. **Le Slot 1 (Haut)** ne descend jamais sous 25% de la hauteur totale.
+2. **Le Slot 2 (Centre)** est centré géométriquement et dimensionné pour ne jamais empiéter sur le Slot 1 ni sur le Slot 3.
+3. **Le Slot 3 (Bas)** est ancré dans la zone sécurisée inférieure.
+
+### 13.2 Échelle d'Espacement Modulaire (Spacing Scale basée sur 8px)
+Ne jamais utiliser de valeurs de marges ou de padding au hasard. Utiliser exclusivement l'échelle d'espacement standardisée :
+
+- `gap-xs` = **8px** : Espace micro (entre icône et texte d'un badge).
+- `gap-sm` = **16px** : Padding interne des badges, espace entre deux petits textes liés.
+- `gap-md` = **24px** : Padding interne des cartes légères, marge entre titre et sous-titre immédiat.
+- `gap-lg` = **32px** : Gouttière entre 2 cartes d'une grille Bento, séparation de blocs fonctionnels.
+- `gap-xl` = **48px à 64px** : Respiration majeure entre le Header (Slot 1) et le Hero Visuel (Slot 2).
+- `frame-margin` = **80px** : Marge extérieure standardisée du cadre de la vidéo (identique en 16:9 et 9:16).
+
+### 13.3 Échelle Typographique Modulaire (Typographic Hierarchy Scale)
+Sans imposer de police spécifique, toute vidéo doit respecter une hiérarchie proportionnelle stricte entre ses 3 niveaux de texte :
+
+- **Niveau 1 — Titre Choc / Hook** : Taille de référence $\times 2.2$ à $\times 2.8$ par rapport au sous-titre (ex: 80px à 110px en 9:16, 64px à 84px en 16:9). Poids gras (800 ou 900). 1 à 6 mots maximum.
+- **Niveau 2 — Sous-titre / Punchline** : Taille intermédiaire $\times 1.4$ à $\times 1.6$ par rapport au texte courant (ex: 42px à 54px en 9:16, 32px à 40px en 16:9). Poids semi-bold (600 ou 700).
+- **Niveau 3 — Badges / Métriques / Légendes** : Taille de base $1\times$ (ex: 24px à 32px en 9:16, 18px à 24px en 16:9). Lisibilité absolue même sur écran réduit de smartphone.
+
+### 13.4 Cohérence des Surfaces, Bordures et Rayons (Surface Consistency)
+Toutes les cartes, conteneurs et encarts d'une même vidéo doivent partager les mêmes règles de finition :
+
+1. **Rayon de Courbure Unique (`--radius-card`)** :
+   - Choisir un rayon au départ de la vidéo et s'y tenir partout : soit arrondi moderne (**24px à 32px**), soit ultra-arrondi (**40px à 48px**). Ne jamais mélanger des cartes à coins pointus (4px) avec des cartes à 40px dans la même vidéo.
+   - Les badges et pilules utilisent systématiquement le rayon plein (`border-radius: 999px`).
+2. **Traitement Neutre des Bordures** :
+   - Fin trait neutre et subtil : `border: 1px solid rgba(255, 255, 255, 0.12)` sur fond sombre, ou `border: 1px solid rgba(0, 0, 0, 0.08)` sur fond clair.
+   - Bannissement des bordures criardes multicolores ou liserés latéraux épais non justifiés.
+3. **Élévation et Découpage de Profondeur** :
+   - Les cartes doivent se détacher nettement de l'arrière-plan grâce à un verre dépoli (`backdrop-filter: blur(20px)`) combiné à une ombre douce d'élévation (`box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15)`).
+
+### 13.5 Cohérence Chromatique Structurelle (Règle 60-30-10 Agnostique)
+Sans fixer de code hexadécimal obligatoire :
+- **60% : Surface Dominante** (Fond studio clair ou fond cinéma sombre).
+- **30% : Surfaces de Structure** (Fonds des cartes Bento, typographie principale blanche/noire, séparateurs).
+- **10% : Accent Unique** (Une seule couleur vibrante pour les mots-chocs, le bouton CTA et les micro-jauges).
+- **Règle Duo-Tone des Titres** : Jamais plus de 2 couleurs sur un même bloc de texte (ex: Couleur Principale + Couleur d'Accentuation).

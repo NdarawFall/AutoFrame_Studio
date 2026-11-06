@@ -476,7 +476,7 @@
 
         <nav class="nav-links">
             <a href="channels.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
                 <span>Chaînes & Vidéos</span>
             </a>
             <a href="studio.html" class="nav-btn">
@@ -643,172 +643,211 @@
         async function runProcess() {
             document.getElementById('initTime').textContent = getTimeString();
 
-            // 1. Charger les paramètres soumis depuis create_video.html
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryJobId = urlParams.get('jobId') || '';
+            const queryVideo = urlParams.get('video') || '';
+            const queryChannel = urlParams.get('channel') || '';
+
             let payload = null;
-            const raw = localStorage.getItem('vibeeditor_pending_creation');
-            if (raw) {
-                try { payload = JSON.parse(raw); } catch(e){}
-            }
+            let jobId = queryJobId;
+            let targetVideoPath = queryVideo;
+            const isMonitoringMode = Boolean(queryJobId || queryVideo);
 
-            if (!payload || !payload.prompt) {
-                payload = {
-                    fileName: 'video_' + Date.now().toString().slice(-6),
-                    prompt: 'Composition motion design automatique',
-                    format: '16:9',
-                    audioSetup: 'full_mix',
-                    subtitles: true,
-                    images: []
-                };
-            }
+            if (!isMonitoringMode) {
+                // Mode nouvelle création : charger les paramètres depuis create_video.html
+                const raw = localStorage.getItem('vibeeditor_pending_creation');
+                if (raw) {
+                    try { 
+                        payload = JSON.parse(raw); 
+                    } catch(e) {}
+                }
 
-            // 2. Mettre à jour les badges d'information
-            document.getElementById('previewPromptText').textContent = `« ${payload.prompt} »`;
-            document.getElementById('badgeFormat').textContent = `Format : ${payload.format || '16:9'}`;
-            
-            const audioLabels = {
-                'voice_only': 'Voix off seulement',
-                'music_only': 'Musique seulement',
-                'full_mix': 'Mix avec tout (Voix + Musique)',
-                'none': 'Sans audio'
-            };
-            document.getElementById('badgeAudio').textContent = `Audio : ${audioLabels[payload.audioSetup] || payload.audioSetup || 'Mix'}`;
-            document.getElementById('badgeSubtitles').textContent = `Sous-titres : ${payload.subtitles !== false ? 'Oui' : 'Non'}`;
+                // Nettoyage immédiat du localStorage pour empêcher toute double création au rechargement
+                localStorage.removeItem('vibeeditor_pending_creation');
 
-            const badgeScript = document.getElementById('badgeScript');
-            if (badgeScript) {
-                if (payload.hasCustomScript || (payload.customScript && payload.customScript.trim().length > 0)) {
-                    badgeScript.style.display = 'inline-flex';
-                } else {
-                    badgeScript.style.display = 'none';
+                if (!payload || !payload.prompt) {
+                    payload = {
+                        fileName: 'video_' + Date.now().toString().slice(-6),
+                        prompt: 'Composition motion design automatique',
+                        format: '16:9',
+                        audioSetup: 'full_mix',
+                        subtitles: true,
+                        images: []
+                    };
                 }
             }
 
-            if (payload.channelId) {
-                document.getElementById('badgeChannel').textContent = `Chaîne : ${payload.channelId}`;
-            } else {
-                document.getElementById('badgeChannel').textContent = `Chaîne : Aucune (Autonome)`;
+            // Mettre à jour les badges d'information dans le DOM
+            if (payload) {
+                document.getElementById('previewPromptText').textContent = `« ${payload.prompt} »`;
+                document.getElementById('badgeFormat').textContent = `Format : ${payload.format || '16:9'}`;
+                
+                const audioLabels = {
+                    'voice_only': 'Voix off seulement',
+                    'music_only': 'Musique seulement',
+                    'full_mix': 'Mix avec tout (Voix + Musique)',
+                    'none': 'Sans audio'
+                };
+                document.getElementById('badgeAudio').textContent = `Audio : ${audioLabels[payload.audioSetup] || payload.audioSetup || 'Mix'}`;
+                document.getElementById('badgeSubtitles').textContent = `Sous-titres : ${payload.subtitles !== false ? 'Oui' : 'Non'}`;
+
+                const badgeScript = document.getElementById('badgeScript');
+                if (badgeScript) {
+                    if (payload.hasCustomScript || (payload.customScript && payload.customScript.trim().length > 0)) {
+                        badgeScript.style.display = 'inline-flex';
+                    } else {
+                        badgeScript.style.display = 'none';
+                    }
+                }
+
+                if (payload.channelId) {
+                    document.getElementById('badgeChannel').textContent = `Chaîne : ${payload.channelId}`;
+                } else {
+                    document.getElementById('badgeChannel').textContent = `Chaîne : Aucune (Autonome)`;
+                }
+            } else if (queryVideo) {
+                const vidName = queryVideo.split('/').pop().replace('.html', '');
+                document.getElementById('previewPromptText').textContent = `Vidéo en cours : ${vidName}`;
+                document.getElementById('badgeFormat').textContent = queryVideo.includes('9-16') || queryVideo.includes('short') ? 'Format : 9:16' : 'Format : 16:9';
+                document.getElementById('badgeChannel').textContent = queryChannel ? `Chaîne : ${queryChannel}` : (queryVideo.startsWith('03_Chaines/') ? 'Chaîne assignée' : 'Chaîne : Aucune (Autonome)');
             }
 
-            // 3. Pré-remplissage initial propre (en attendant la confirmation du backend)
+            // Étapes initiales par défaut
             const initialSteps = [
                 { id: 'step_init', title: 'Initialisation du pipeline IA', desc: 'Configuration de la vidéo et calibrage du canvas.' },
                 { id: 'step_skills', title: 'Lecture & Application des Skills (00_Skills/)', desc: 'Chargement des règles de design 80/20, 60/30/10 et physique 2D.' },
                 { id: 'step_prompt', title: 'Réflexion, Direction Artistique & Découpage Narratif (Gemini)', desc: 'Analyse du brief narratif et scénarisation.' },
                 { id: 'step_gsap_code', title: 'Génération Dynamique du Code (HTML, CSS & GSAP)', desc: 'Conception vectorielle et programmation de l\'animation.' },
-                { id: 'step_disk_save', title: 'Sauvegarde Physique Intégrale', desc: 'Écriture du fichier vidéo unique (sans fichier loose dans 05_Scenes/).' },
+                { id: 'step_disk_save', title: 'Sauvegarde Physique Intégrale', desc: 'Écriture du fichier vidéo unique (sans fichier loose).' },
                 { id: 'step_studio_ready', title: 'Finalisation & Ouverture dans le Studio', desc: 'Liaison directe avec le Studio de montage.' }
             ];
             renderPipelineSteps(initialSteps);
             setStepDomState('step_init', 'active', 'En cours...');
 
-            logToTerminal(`Connexion au serveur et démarrage du pipeline IA...`, 'info');
-
-            // 4. Lancement réel sur le backend
-            let targetVideoPath = '';
-            let jobId = '';
-
-            try {
-                const startRes = await fetch('/api/create-video-start', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const startData = await startRes.json();
-                if (startData && startData.jobId) {
-                    jobId = startData.jobId;
-                    logToTerminal(`Session IA connectée : ${jobId}`, 'info');
-                } else {
-                    throw new Error(startData.error || 'Erreur initialisation backend');
-                }
-            } catch(startErr) {
-                logToTerminal(`Avertissement connexion backend : ${startErr.message}`, 'warning');
-            }
-
-            // 5. Suivi en temps réel véridique via /api/creation-status
-            let lastLogIndex = 0;
-            let isCompleted = false;
-
-            if (jobId) {
-                while (!isCompleted) {
-                    await new Promise(r => setTimeout(r, 500));
-
-                    try {
-                        const statusRes = await fetch(`/api/creation-status?jobId=${encodeURIComponent(jobId)}`);
-                        const statusData = await statusRes.json();
-
-                        // Mise à jour de la liste des vraies étapes dès qu'elle arrive du backend
-                        if (statusData.steps && Array.isArray(statusData.steps) && statusData.steps.length > 0) {
-                            if (currentSteps.length !== statusData.steps.length || currentSteps[0]?.id !== statusData.steps[0]?.id) {
-                                renderPipelineSteps(statusData.steps);
-                            }
-                        }
-
-                        // Afficher les nouveaux logs réels du terminal
-                        if (Array.isArray(statusData.logs)) {
-                            for (let idx = lastLogIndex; idx < statusData.logs.length; idx++) {
-                                const l = statusData.logs[idx];
-                                logToTerminal(l.text, l.type || 'info');
-                            }
-                            lastLogIndex = statusData.logs.length;
-                        }
-
-                        // Mettre à jour l'étape courante dans le DOM
-                        if (statusData.currentStep && currentSteps.length > 0) {
-                            const curIdx = currentSteps.findIndex(s => s.id === statusData.currentStep);
-                            if (curIdx !== -1) {
-                                for (let k = 0; k < curIdx; k++) {
-                                    setStepDomState(currentSteps[k].id, 'completed', 'Terminé');
-                                }
-                                setStepDomState(statusData.currentStep, 'active', 'En cours...');
-                                for (let k = curIdx + 1; k < currentSteps.length; k++) {
-                                    setStepDomState(currentSteps[k].id, 'pending', 'En attente');
-                                }
-                            }
-                        }
-
-                        // Mettre à jour la barre de progression
-                        if (statusData.progress !== undefined) {
-                            updateProgress(statusData.progress, statusData.phaseLabel || 'Traitement en cours...');
-                        }
-
-                        if (statusData.status === 'completed') {
-                            isCompleted = true;
-                            targetVideoPath = statusData.videoUrl || '';
-                            currentSteps.forEach(s => setStepDomState(s.id, 'completed', 'Terminé'));
-                            break;
-                        } else if (statusData.status === 'error') {
-                            logToTerminal(`Erreur lors de la génération : ${statusData.error}`, 'error');
-                            isCompleted = true;
-                            break;
-                        }
-                    } catch(pollErr) {
-                        console.warn("Polling error:", pollErr);
-                    }
-                }
+            if (isMonitoringMode) {
+                logToTerminal(`Reprise du suivi pour la vidéo en cours : ${queryVideo || queryJobId}`, 'info');
             } else {
-                // Fallback direct si l'endpoint start a échoué
+                logToTerminal(`Connexion au serveur et démarrage du pipeline IA...`, 'info');
+
                 try {
-                    const fallbackRes = await fetch('/api/create-video', {
+                    const startRes = await fetch('/api/create-video-start', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    const fallbackData = await fallbackRes.json();
-                    targetVideoPath = fallbackData.videoUrl || '';
-                } catch(e) {}
+                    const startData = await startRes.json();
+                    if (startData && startData.jobId) {
+                        jobId = startData.jobId;
+                        logToTerminal(`Session IA connectée : ${jobId}`, 'info');
+
+                        // Mettre à jour l'URL sans recharger la page pour préserver l'état
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.set('jobId', jobId);
+                        if (payload.channelId) newUrl.searchParams.set('channel', payload.channelId);
+                        window.history.replaceState({}, '', newUrl.toString());
+                    } else {
+                        throw new Error(startData.error || 'Erreur initialisation backend');
+                    }
+                } catch(startErr) {
+                    logToTerminal(`Avertissement connexion backend : ${startErr.message}`, 'warning');
+                }
             }
 
-            // 6. Finalisation & Préparation du Studio
-            if (!targetVideoPath) {
+            // Suivi en temps réel véridique via /api/creation-status
+            let lastLogIndex = 0;
+            let isCompleted = false;
+
+            while (!isCompleted) {
+                await new Promise(r => setTimeout(r, 600));
+
+                try {
+                    const statusUrl = jobId 
+                        ? `/api/creation-status?jobId=${encodeURIComponent(jobId)}&video=${encodeURIComponent(targetVideoPath)}`
+                        : `/api/creation-status?video=${encodeURIComponent(targetVideoPath)}`;
+
+                    const statusRes = await fetch(statusUrl);
+                    const statusData = await statusRes.json();
+
+                    // Mise à jour de la liste des vraies étapes dès qu'elle arrive du backend
+                    if (statusData.steps && Array.isArray(statusData.steps) && statusData.steps.length > 0) {
+                        if (currentSteps.length !== statusData.steps.length || currentSteps[0]?.id !== statusData.steps[0]?.id) {
+                            renderPipelineSteps(statusData.steps);
+                        }
+                    }
+
+                    // Afficher les nouveaux logs réels du terminal
+                    if (Array.isArray(statusData.logs)) {
+                        for (let idx = lastLogIndex; idx < statusData.logs.length; idx++) {
+                            const l = statusData.logs[idx];
+                            logToTerminal(l.text, l.type || 'info');
+                        }
+                        lastLogIndex = statusData.logs.length;
+                    }
+
+                    // Mettre à jour l'étape courante dans le DOM
+                    if (statusData.currentStep && currentSteps.length > 0) {
+                        const curIdx = currentSteps.findIndex(s => s.id === statusData.currentStep);
+                        if (curIdx !== -1) {
+                            for (let k = 0; k < curIdx; k++) {
+                                setStepDomState(currentSteps[k].id, 'completed', 'Terminé');
+                            }
+                            setStepDomState(statusData.currentStep, 'active', 'En cours...');
+                            for (let k = curIdx + 1; k < currentSteps.length; k++) {
+                                setStepDomState(currentSteps[k].id, 'pending', 'En attente');
+                            }
+                        }
+                    }
+
+                    // Mettre à jour la barre de progression
+                    if (statusData.progress !== undefined) {
+                        updateProgress(statusData.progress, statusData.phaseLabel || 'Traitement en cours...');
+                    }
+
+                    if (statusData.status === 'completed') {
+                        isCompleted = true;
+                        targetVideoPath = statusData.videoUrl || targetVideoPath;
+                        currentSteps.forEach(s => setStepDomState(s.id, 'completed', 'Terminé'));
+                        break;
+                    } else if (statusData.status === 'error') {
+                        logToTerminal(`❌ Erreur du pipeline : ${statusData.error}`, 'error');
+                        isCompleted = true;
+                        updateProgress(statusData.progress || 20, 'Génération interrompue');
+                        const curStep = document.getElementById(`step_item_${statusData.currentStep || 'step_prompt'}`);
+                        if (curStep) curStep.classList.add('error');
+                        
+                        // Afficher un panneau d'erreur clair avec bouton de retour
+                        const completionBar = document.getElementById('completionBar');
+                        if (completionBar) {
+                            completionBar.style.background = 'rgba(239, 68, 68, 0.15)';
+                            completionBar.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                            document.getElementById('completionTitle').textContent = 'Échec de la génération';
+                            document.getElementById('completionSubtext').textContent = statusData.error || 'Une erreur est survenue lors du traitement IA.';
+                            const btn = document.getElementById('btnGoStudio');
+                            btn.textContent = 'Créer une autre vidéo';
+                            btn.href = 'create_video.html';
+                            btn.style.background = '#ef4444';
+                            completionBar.classList.add('show');
+                        }
+                        return; // Arrêt strict : aucune simulation de 100% ni de redirection vers le studio
+                    }
+                } catch(pollErr) {
+                    console.warn("Polling error:", pollErr);
+                }
+            }
+
+            // Finalisation & Préparation du Studio
+            if (!targetVideoPath && payload) {
                 targetVideoPath = payload.channelId ? `03_Chaines/${payload.channelId}/${payload.fileName}.html` : `04_Videos/${payload.fileName}.html`;
             }
 
             updateProgress(100, 'Vidéo prête à être montée !');
             logToTerminal(`✓ Processus 100% terminé ! Accès au Studio prêt.`, 'success');
 
-            localStorage.setItem('hyperstudio_cached_active_video', targetVideoPath);
+            if (targetVideoPath) {
+                localStorage.setItem('hyperstudio_cached_active_video', targetVideoPath);
+            }
 
-            const studioUrl = `studio.html?video=${encodeURIComponent(targetVideoPath)}`;
+            const studioUrl = targetVideoPath ? `studio.html?video=${encodeURIComponent(targetVideoPath)}` : 'studio.html';
             document.getElementById('btnGoStudio').href = studioUrl;
             document.getElementById('completionBar').classList.add('show');
 

@@ -1,0 +1,327 @@
+# GUIDE COMPLET : CAMÉRA TRANSITION & CHORÉGRAPHIE DYNAMIQUE (2D / DOM / GSAP)
+
+Ce guide explique à l'IA **quand** et **comment** bouger la caméra à l'intérieur d'une scène, quand déclencher une transition, et quels types de transitions employer selon la narration.
+
+---
+
+## 🎯 1. Règle Fondamentale : La Caméra suit la Psychologie du Spectateur
+
+Une caméra ne bouge jamais au hasard. Elle simule l'œil d'un observateur humain :
+- Elle se rapproche quand quelque chose devient **intime, crucial ou choquant**.
+- Elle recule quand il faut **comprendre l'ensemble ou respirer**.
+- Elle tourne la tête brusquement (whip-pan) quand **l'attention est captée par un nouvel élément**.
+
+---
+
+## 🔍 2. Quand Zoomer, Dézoomer ou Glisser ?
+
+### A. Quand ZOOMER ?
+| Type de Zoom | Quand l'utiliser ? | Paramètres GSAP Recommandés | Effet Psychologique |
+| :--- | :--- | :--- | :--- |
+| **Slow Push-In (Zoom Continu)** | **En permanence sur les plans longs (> 2.5s).** Dès qu'un personnage parle ou qu'un texte est affiché. | `scale: 1.0` $\rightarrow$ `1.06`, durée `3.0s - 6.0s`, `ease: "none"` ou `"sine.out"` | Élimine l'effet "image morte" et maintient l'attention sans distraire. |
+| **Crash Zoom (Snap Zoom)** | **Sur un mot choc, un chiffre décisif ou une révélation.** (Ex: *"arrête de couper des plans"*, *"$4,800/mois"*). | `scale: 1.0` $\rightarrow$ `1.22`, centré sur le mot clé, durée `0.22s - 0.35s`, `ease: "power4.out"` ou `"back.out(1.4)"` | Crée un électrochoc visuel et force l'ancrage mémoriel. |
+| **Macro Focus (Zoom Ciblé)** | **Pour pointer un détail technique précis** (ex: zoom sur la timeline ou sur une métrique). | `x, y` vers le point d'intérêt + `scale: 1.35`, durée `0.6s`, `ease: "power3.out"` | Guide l'œil exactement là où se trouve l'information sans ambiguïté. |
+
+### B. Quand DÉZOOMER ?
+| Type de Dézoom | Quand l'utiliser ? | Paramètres GSAP Recommandés | Effet Psychologique |
+| :--- | :--- | :--- | :--- |
+| **Pull-Back de Révélation** | **Après un zoom choc ou pour dévoiler le contexte.** (Ex: après avoir montré un chiffre, on dézoome pour montrer toute la carte). | `scale: 1.25` $\rightarrow$ `1.0`, durée `0.8s - 1.2s`, `ease: "power2.out"` | Sensation de soulagement et compréhension globale. |
+| **Dézoom de Respiration** | **À la fin d'une démonstration intense, juste avant une conclusion.** | `scale: 1.05` $\rightarrow$ `0.98`, durée `1.5s`, `ease: "sine.inOut"` | Prépare l'esprit du spectateur à accueillir la synthèse ou le CTA. |
+
+### C. Quand GLISSER (Pan & Dolly) ?
+| Mouvement | Quand l'utiliser ? | Paramètres GSAP Recommandés |
+| :--- | :--- | :--- |
+| **Tracking Horizontal (Pan)** | Comparaison de 2 éléments (Avant / Après, Problème / Solution) ou passage d'une étape 1 à une étape 2. | `x: 0` $\rightarrow$ `-400px`, durée `0.8s - 1.4s`, `ease: "power2.inOut"` |
+| **Pedestal Vertical** | Découverte d'un classement ou révélation de bas en haut (prestige / autorité). | `y: 200px` $\rightarrow$ `0px`, durée `1.0s`, `ease: "power3.out"` |
+
+---
+
+## ⚡ 3. Quand déclencher une Transition ?
+
+Une transition ne s'insère **QUE** dans ces 3 cas précis :
+1. **Changement d'idée narrative** : La voix off termine un argument et aborde le point suivant.
+2. **Rupture de rythme** : Passage d'une phase lente d'explication à une phase rapide de résultats.
+3. **Changement de décor / échelle** : Passage d'un gros plan sur un objet à une vue d'ensemble statistique.
+
+> ⚠️ **Interdiction :** Ne jamais faire de transition au milieu d'une phrase de la voix off sans ponctuation forte (`.`, `!`).
+
+---
+
+## 🎬 4. Les 5 Grands Types de Transition (Catalogue Prêt à l'Emploi)
+
+### 1. Whip Pan (Le Coup de Fouet Cinétique)
+> **Usage :** Transition ultra dynamique entre deux scènes d'un tutoriel ou d'un comparatif.
+```javascript
+// Sortie Scène 1 à droite à toute vitesse avec flou
+tl.to("#scene1", { 
+    x: -1920, 
+    filter: "blur(20px)", 
+    duration: 0.35, 
+    ease: "power3.in" 
+}, tOut);
+
+// Entrée Scène 2 depuis la droite
+tl.fromTo("#scene2", 
+    { x: 1920, filter: "blur(20px)" }, 
+    { x: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 
+    tOut + 0.15
+);
+```
+
+### 2. Zoom-Through Portal (Plongée dans l'Écran)
+> **Usage :** La caméra zoome massivement dans un écran ou un bouton jusqu'à le traverser pour révéler la scène suivante.
+```javascript
+tl.to("#scene1", { 
+    scale: 3.5, 
+    opacity: 0, 
+    duration: 0.6, 
+    ease: "expo.in" 
+}, tOut);
+
+tl.fromTo("#scene2", 
+    { scale: 0.4, opacity: 0 }, 
+    { scale: 1.0, opacity: 1, duration: 0.7, ease: "power3.out" }, 
+    tOut + 0.3
+);
+```
+
+### 3. Directional Slide Masqué (Slide Épuré)
+> **Usage :** Scènes corporate, finance, bento cards élégantes.
+```javascript
+// La scène 1 glisse et disparaît physiquement
+tl.to("#scene1", { opacity: 0, y: -40, duration: 0.4, ease: "power2.in" }, tOut);
+tl.set("#scene1", { display: "none", visibility: "hidden" }, tOut + 0.4);
+
+// La scène 2 apparaît sans chevauchement
+tl.set("#scene2", { display: "flex", visibility: "visible" }, tOut + 0.4);
+tl.fromTo("#scene2", 
+    { opacity: 0, y: 50 }, 
+    { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 
+    tOut + 0.4
+);
+```
+
+### 4. Flash Cut d'Impact (Choc Électrique)
+> **Usage :** Révélation d'un chiffre monumental ou début du climax.
+```javascript
+// Flash blanc rapide 0.15s
+tl.fromTo("#flashOverlay", 
+    { opacity: 0 }, 
+    { opacity: 0.9, duration: 0.08, ease: "power4.in" }, 
+    tOut
+);
+tl.set("#scene1", { display: "none" }, tOut + 0.08);
+tl.set("#scene2", { display: "flex" }, tOut + 0.08);
+tl.to("#flashOverlay", { opacity: 0, duration: 0.25, ease: "power2.out" }, tOut + 0.08);
+```
+
+### 5. Cut Franc Invisible (Standard Éditorial)
+> **Usage :** Deux scènes s'enchaînent exactement sur le beat musical ou sur un mot percutant sans aucun effet de fondu mou.
+```javascript
+tl.set("#scene1", { display: "none", visibility: "hidden" }, tCut);
+tl.set("#scene2", { display: "flex", visibility: "visible" }, tCut);
+```
+
+---
+
+## 🎯 5. Règles de Suivi Contextuel : La Caméra Suit le Contenu
+
+Ces règles s'appliquent **automatiquement** dès qu'un certain type de contenu apparaît à l'écran. L'IA doit les respecter sans qu'on le lui demande explicitement.
+
+---
+
+### A. RÈGLE : Suivi de Liste / Cards Séquentielles
+
+> **Contexte :** La scène affiche une liste d'éléments ou des cards qui apparaissent l'une après l'autre (steps, features, bullets...).
+
+**Comportement obligatoire :**
+1. **Zoom centré sur la Card/item #1** dès son apparition (`scale: 1.0 → 1.18`, centré sur l'élément)
+2. **Glissement fluide vers la Card/item #2** en suivant exactement le timing de son animation d'entrée
+3. **Continuer** card par card en tracking
+4. **Dézoom de révélation** après le dernier élément pour montrer l'ensemble (`scale: 1.18 → 1.0`, durée `1.2s`, `ease: "power2.out"`) — ou couper directement à la scène suivante
+
+```javascript
+// Exemple : liste de 3 cards, chaque card entre à t=2s, t=4s, t=6s
+const cards = ["#card1", "#card2", "#card3"];
+const cardPositions = [
+    { x: 0,    y: -180 },   // position de card1 dans le stage
+    { x: 0,    y: 0   },    // position de card2
+    { x: 0,    y: 180 },    // position de card3
+];
+const cardTimes = [2.0, 4.0, 6.0];  // t d'apparition de chaque card
+
+// Zoom sur card1 au moment de son apparition
+tl.to("#stage", {
+    scale: 1.18,
+    y: -cardPositions[0].y * 0.18,  // compenser la translation pour centrer
+    duration: 0.6, ease: "power3.out"
+}, cardTimes[0]);
+
+// Tracking card2 → glissement
+tl.to("#stage", {
+    y: -cardPositions[1].y * 0.18,
+    duration: 0.7, ease: "power2.inOut"
+}, cardTimes[1]);
+
+// Tracking card3
+tl.to("#stage", {
+    y: -cardPositions[2].y * 0.18,
+    duration: 0.7, ease: "power2.inOut"
+}, cardTimes[2]);
+
+// Dézoom final après la dernière card (+1.5s)
+tl.to("#stage", {
+    scale: 1.0, y: 0,
+    duration: 1.2, ease: "power2.out"
+}, cardTimes[2] + 1.5);
+```
+
+> ⚠️ **Règle absolue :** Le glissement de caméra vers une card doit coïncider **exactement** avec le début de l'animation d'entrée de cette card dans la timeline GSAP — jamais avant, jamais trop tard.
+
+---
+
+### B. RÈGLE : Suivi du Typing de Texte (Barre de Saisie / Terminal)
+
+> **Contexte :** La scène affiche une barre de recherche, un champ de saisie, un terminal ou un effet "typewriter" où du texte se tape progressivement.
+
+**Comportement obligatoire :**
+1. **Zoom sur la partie gauche** de la barre dès le début du typing (`scale: 1.0 → 1.25`, `transformOrigin: "left center"` ou décalage `x` vers la gauche)
+2. **Pan horizontal progressif vers la droite** en suivant le curseur de frappe (vitesse calée sur la durée totale du typing)
+3. **Dézoom de révélation** une fois le texte entièrement tapé, pour montrer le résultat complet (`scale: 1.25 → 1.0`, durée `0.8s`, `ease: "power2.out"`)
+
+```javascript
+// Exemple : typing de 3s sur une barre de 600px de large, centré dans la scène
+const typingStart = 5.0;    // t début du typing
+const typingDur   = 3.0;    // durée de l'animation typewriter
+const barWidth    = 600;    // largeur de la barre en px (espace vidéo interne)
+const zoomScale   = 1.25;
+
+// 1. Zoom + ancrage à gauche de la barre
+tl.to("#stage", {
+    scale: zoomScale,
+    x: (barWidth * 0.25),   // décale vers la gauche pour centrer le début de la barre
+    duration: 0.5,
+    ease: "power3.out"
+}, typingStart);
+
+// 2. Pan vers la droite pendant tout le typing
+tl.to("#stage", {
+    x: -(barWidth * 0.25),  // arrive au bout droit de la barre
+    duration: typingDur,
+    ease: "none"            // linéaire pour suivre le curseur en temps réel
+}, typingStart + 0.5);
+
+// 3. Dézoom et recentrage après le dernier caractère
+tl.to("#stage", {
+    scale: 1.0,
+    x: 0,
+    duration: 0.8,
+    ease: "power2.out"
+}, typingStart + typingDur + 0.3);
+```
+
+> 💡 **Note :** Si la barre de saisie occupe toute la largeur de la scène, le pan peut être minimal (`±100px`). Adapter selon la largeur réelle de l'élément.
+
+---
+
+### C. RÈGLE : Split Screen Tutoriel (Webcam + Écran Partagé)
+
+> **Contexte :** Vidéo tuto avec split screen : petite vignette webcam du créateur + grand cadre montrant son écran/ses explications.
+
+**Comportement obligatoire selon le moment narratif :**
+
+| Moment | Comportement Caméra | GSAP |
+| :--- | :--- | :--- |
+| **Créateur aborde un point important** (ton qui change, geste de main, pause) | Zoom rapide centré sur la **webcam** pour humaniser | `scale: 1.0 → 1.3`, centré sur la vignette webcam, `0.3s`, `ease: "power3.out"` |
+| **Créateur passe à la démonstration écran** (il montre, clique, navigue) | Dézoom progressif pour montrer le split screen complet | `scale: 1.3 → 1.0`, `x/y → 0`, `0.8s`, `ease: "power2.out"` |
+| **Point clé à l'écran** (highlight, curseur, encadré important) | Zoom ciblé vers la zone d'intérêt dans le cadre écran | Macro Focus : `scale: 1.0 → 1.35`, décalage `x/y` vers la zone, `0.5s`, `ease: "power3.out"` |
+| **Fin du tutoriel / conclusion** | Pull-back pour montrer le résultat final dans le cadre écran | `scale: 1.35 → 1.0`, `x/y → 0`, `1.2s`, `ease: "power2.inOut"` |
+
+```javascript
+// Exemple : créateur parle à t=8s, montre son écran à t=12s, point clé à t=16s
+const webcamEl = "#webcam-vignette";
+const screenEl = "#screen-frame";
+
+// t=8s — Zoom sur webcam (créateur parle d'un point important)
+tl.to("#stage", {
+    scale: 1.3,
+    x: webcamOffsetX,  // décalage vers la position de la vignette webcam
+    y: webcamOffsetY,
+    duration: 0.3, ease: "power3.out"
+}, 8.0);
+
+// t=12s — Dézoom pour revenir au split screen complet
+tl.to("#stage", {
+    scale: 1.0, x: 0, y: 0,
+    duration: 0.8, ease: "power2.out"
+}, 12.0);
+
+// t=16s — Zoom sur zone d'intérêt dans le cadre écran
+tl.to("#stage", {
+    scale: 1.35,
+    x: keyAreaOffsetX,
+    y: keyAreaOffsetY,
+    duration: 0.5, ease: "power3.out"
+}, 16.0);
+
+// t=20s — Pull-back résultat final
+tl.to("#stage", {
+    scale: 1.0, x: 0, y: 0,
+    duration: 1.2, ease: "power2.inOut"
+}, 20.0);
+```
+
+> ⚠️ **Règle de rythme :** Le zoom sur la webcam doit être **rapide (< 0.4s)** pour simuler une coupe caméra TV. Le dézoom vers l'écran doit être **plus lent (0.8-1.2s)** pour laisser au spectateur le temps de se réorienter.
+
+---
+
+### D. RÈGLE : Élément Titre Fort ou Révélation Centrale
+
+> **Contexte :** Un titre principal, une stat choc ou un mot clé se détache visuellement au centre de la scène.
+
+**Comportement obligatoire :**
+1. La scène arrive à `scale: 1.0` (vue normale)
+2. Dès l'apparition de l'élément titre : **Slow Push-In automatique** vers lui (`scale: 1.0 → 1.07`, durée = durée d'affichage de l'élément, `ease: "none"`)
+3. Si un **mot en particulier est choc** (chiffre, verbe d'action) : **Crash Zoom** instantané sur ce mot (`scale: 1.07 → 1.22`, `0.25s`, `ease: "power4.out"`) puis pull-back (`scale: 1.22 → 1.05`, `0.6s`)
+4. À la sortie de la scène : retour à `scale: 1.0` via la transition choisie
+
+```javascript
+const tAppear = 3.0;     // t d'apparition du titre
+const tStay   = 5.0;     // durée d'affichage
+const tChoc   = 5.5;     // t du mot choc dans le titre
+
+// Slow push-in pendant toute la durée d'affichage
+tl.to("#stage", {
+    scale: 1.07,
+    duration: tStay, ease: "none"
+}, tAppear);
+
+// Crash zoom sur le mot choc
+tl.to("#stage", {
+    scale: 1.22,
+    duration: 0.25, ease: "power4.out"
+}, tChoc);
+
+// Pull-back rapide
+tl.to("#stage", {
+    scale: 1.05,
+    duration: 0.6, ease: "power2.out"
+}, tChoc + 0.25);
+```
+
+---
+
+## 📋 6. Tableau de Décision Rapide
+
+| Contenu à l'écran | Mouvement de caméra |
+| :--- | :--- |
+| Titre / stat seul qui s'affiche | Slow Push-In automatique |
+| Mot choc / chiffre décisif | Crash Zoom → Pull-Back |
+| Liste / cards qui arrivent l'une après l'autre | Zoom card #1 → Tracking → Dézoom final |
+| Barre de saisie / typing effect | Zoom gauche → Pan droit (linéaire) → Dézoom |
+| Split screen : créateur parle | Zoom rapide sur webcam |
+| Split screen : créateur montre l'écran | Dézoom pour split screen complet |
+| Point d'intérêt dans le cadre écran | Macro Focus → Pull-Back |
+| Fin de scène / respiration narrative | Dézoom de respiration (`scale → 0.98`) |
+| Transition vers scène suivante | Choisir dans le catalogue §4 (Whip Pan, Zoom-Through, Slide, Flash, Cut) |
+

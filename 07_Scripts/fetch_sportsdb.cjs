@@ -21,7 +21,7 @@ const path = require('path');
 const https = require('https');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const PLAYERS_DIR = path.join(ROOT_DIR, '01_Assets', 'Images', 'Players');
+const PLAYERS_DIR = path.join(ROOT_DIR, '01_Assets', 'Illustrations', 'Players');
 const TEAMS_DIR = path.join(ROOT_DIR, '01_Assets', 'Logos', 'Sports');
 
 // S'assurer que les dossiers de destination existent

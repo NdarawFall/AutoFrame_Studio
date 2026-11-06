@@ -20,7 +20,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const CLIENTS_DIR = path.join(ROOT_DIR, '10_Clients');
+const CLIENTS_DIR = path.join(ROOT_DIR, 'Clients');
 
 // Détection de FFmpeg
 function getFfmpegPath() {

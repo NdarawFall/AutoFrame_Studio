@@ -24,6 +24,22 @@ Ce skill formalise les **17 principes de design fondamentaux** enseignés par Jo
 
 ---
 
+* 🎨 **Règle Stricte des Couleurs Typographiques (2 Couleurs Max) :**
+  * Ne jamais dépasser **2 couleurs** sur un même titre ou texte (ex: texte blanc avec 1 mot d'accent rouge, ou dégradé blanc vers rouge). Interdiction formelle des titres à 3 couleurs ou plus.
+
+* 🚫 **INTERDICTION FORMELLE DE DESSINER DES LOGOS OU ICÔNES (Obligation d'Assets Officiels) :**
+  * **L'IA NE DOIT JAMAIS DESSINER, INVENTER OU APPROXIMER UN LOGO OU UNE ICÔNE EN CODE** (aucun bricolage SVG fait maison, aucune approximation vectorielle, aucun tracé manuel).
+  * **TOUS LES LOGOS** doivent être récupérés sous leur forme officielle via `node 07_Scripts/brandfetch.cjs <domaine>` (SVG vectoriel officiel ou PNG transparent HD) et stockés dans `01_Assets/Logos/`.
+  * **TOUS LES DRAPEAUX** doivent être récupérés via `node 07_Scripts/fetch_flag.cjs <pays>` et stockés dans `01_Assets/Flags/`.
+  * **TOUTES LES CARTES/LOCALISATIONS** doivent être générées via `node 07_Scripts/fetch_map.cjs` (Leaflet + capture Chrome headless) — **100% gratuit, sans watermark, sans clé API**.
+    - Styles disponibles : `dark` (cinématique, défaut), `voyager` (élégant, voyage), `light` (minimaliste blanc), `satellite` (vue réelle HD), `osm` (technique, data)
+    - Formats : 16:9 (1920×1080) ou 9:16 (1080×1920) avec `--format 9:16`
+    - Pin animé optionnel avec `--pin`
+  * **TOUTES LES ICÔNES SYSTÈME/UI** doivent provenir de bibliothèques officielles (Heroicons, Lucide, Phosphor, Material Icons) importées localement — **jamais dessinées à la main**.
+  * **SI LE TÉLÉCHARGEMENT EST IMPOSSIBLE** : l'IA doit **S'ARRÊTER IMMÉDIATEMENT** et demander à l'utilisateur de fournir l'asset officiel. Aucune alternative "dessiné par l'IA" n'est tolérée.
+
+---
+
 ## 🎯 2. Règle des Tiers & Point Focal Central
 * **Grille 3x3 :** L'écran (16:9 ou 9:16) est découpé par deux lignes horizontales et deux lignes verticales.
 * **Le Point Focal (Carré Central) :** Réservé obligatoirement au sujet principal (visage du présentateur, produit vedette, graphique pivot).

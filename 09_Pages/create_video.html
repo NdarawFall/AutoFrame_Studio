@@ -1760,6 +1760,13 @@
             border: 1px solid var(--border-subtle);
         }
 
+        .choice-icon img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
         .choice-icon svg {
             width: 17px;
             height: 17px;
@@ -2115,6 +2122,179 @@
             vertical-align: middle;
             flex-shrink: 0;
         }
+    
+        /* --- COMPOSANT SÉLECTEUR DE VOIX MODERNE AVEC RECHERCHE ET DRAPEAUX --- */
+        .modern-voice-picker {
+            position: relative;
+            width: 100%;
+        }
+        .voice-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-sm);
+            padding: 9px 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            min-height: 44px;
+        }
+        .voice-picker-trigger:hover, .voice-picker-trigger.active {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .voice-trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-flag-img {
+            width: 22px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .voice-trigger-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-trigger-badge {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .voice-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #0d121c;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        .voice-dropdown-menu.open {
+            display: flex;
+            animation: dropdownFade 0.15s ease-out;
+        }
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .voice-search-box {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voice-search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            outline: none;
+        }
+        .voice-search-input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+        }
+        .voice-items-list {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .voice-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .voice-item-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .voice-item-row.selected {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid rgba(0, 240, 255, 0.35);
+        }
+        .voice-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+        .voice-item-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-item-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-inline-preview {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-inline-preview:hover {
+            background: #00f0ff;
+            color: #000000;
+            border-color: #00f0ff;
+            transform: scale(1.08);
+        }
+
     </style>
 </head>
 <body>
@@ -2133,7 +2313,7 @@
 
         <nav class="nav-links">
             <a href="channels.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
                 <span>Chaînes & Vidéos</span>
             </a>
             <a href="studio.html" class="nav-btn">
@@ -2170,9 +2350,9 @@
                     <button type="button" class="btn-script-trigger" id="btnToggleScriptModal" onclick="openScriptModal()" title="Ajouter ou gérer un script vidéo horodaté">
                         <span class="script-status-dot" id="scriptStatusDot"></span>
                         <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span id="scriptBtnLabel">Script : Inactif</span>
+                        <span id="scriptBtnLabel">Script : Requis *</span>
                     </button>
-                    <span class="folder-badge" style="background: rgba(255, 255, 255, 0.08); color: #fff;">Minimum 20 caractères requis</span>
+                    <span class="folder-badge" id="badgeScriptRequiredNotice" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);">Script obligatoire *</span>
                 </div>
             </div>
             <textarea class="prompt-textarea" id="videoPrompt" placeholder="Décrivez votre sujet, le scénario, le ton ou les instructions créatives de votre vidéo (minimum 20 caractères)..."></textarea>
@@ -2255,7 +2435,7 @@
             <div class="collapsible-header" onclick="toggleCardSection('backgroundCardSection')">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <div class="choice-icon" style="width: 32px; height: 32px; border-radius: 8px;">
-                        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                     </div>
                     <div>
                         <h3 class="card-title" style="font-size: 14px; margin: 0; font-weight: 600;">Fond de Base de la Vidéo</h3>
@@ -2508,6 +2688,159 @@
             </div>
         </div>
 
+        <!-- 4-BIS. MOTEUR & CHOIX DE LA VOIX OFF (PLIABLE) -->
+        <section class="card collapsible-card collapsed" id="voiceConfigSection" style="border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.02); padding: 16px 20px;">
+            <div class="collapsible-header" onclick="toggleCardSection('voiceConfigSection')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="choice-icon" style="width: 32px; height: 32px; border-radius: 8px;">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                    </div>
+                    <h3 class="card-title" style="font-size: 14px; margin: 0; font-weight: 600;">Moteur & Voix Off</h3>
+                </div>
+                <div class="collapse-chevron-btn">
+                    <svg class="collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="card-collapsible-body" style="display: none; padding-top: 18px;">
+                <!-- BANNIÈRE D'AVERTISSEMENT QUAND DÉSACTIVÉ PAR LA CONFIG DU DESSUS -->
+                <div id="voiceDisabledNotice" style="display: none; background: rgba(255, 159, 28, 0.1); border: 1px solid rgba(255, 159, 28, 0.35); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #ffb03a; align-items: center; gap: 10px;">
+                    <svg class="icon" style="width: 18px; height: 18px; stroke: #ff9f1c; flex-shrink: 0;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span><strong>Voix off inactive :</strong> Vous avez sélectionné <strong>« Musique seulement »</strong> ou <strong>« Sans audio »</strong> dans la Configuration de Montage ci-dessus. Ce bloc est donc désactivé.</span>
+                </div>
+
+                <div id="voiceInteractiveContainer" style="display: flex; flex-direction: column; gap: 18px; transition: opacity 0.25s ease;">
+                    <!-- CHOIX DU FOURNISSEUR DE VOIX -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px;">
+                            1. Choix du Moteur de Voix Off
+                        </label>
+                        <div class="audio-options-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                            <!-- OPTION ELEVENLABS -->
+                            <div class="audio-choice-card selected" id="voiceChoiceCardEleven" onclick="selectVoiceSource('elevenlabs')">
+                                <div class="choice-card-header">
+                                    <div class="choice-icon">
+                                        <img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs Logo" style="width: 22px; height: 22px; border-radius: 4px; object-fit: contain;">
+                                    </div>
+                                    <span class="choice-check">✓</span>
+                                </div>
+                                <h4 class="choice-title">ElevenLabs</h4>
+                                <p class="choice-desc">Voix ultra-réalistes et clones personnalisés.</p>
+                            </div>
+
+                            <!-- OPTION HEYGEN -->
+                            <div class="audio-choice-card" id="voiceChoiceCardHeygen" onclick="selectVoiceSource('heygen')">
+                                <div class="choice-card-header">
+                                    <div class="choice-icon">
+                                        <img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen Logo" style="width: 22px; height: 22px; border-radius: 4px; object-fit: contain;">
+                                    </div>
+                                    <span class="choice-check">✓</span>
+                                </div>
+                                <h4 class="choice-title">HeyGen (Voice Turbo)</h4>
+                                <p class="choice-desc">Modèle vocal rapide et naturel (voix françaises et mondiales).</p>
+                            </div>
+
+                            <!-- OPTION MON PROPRE FICHIER -->
+                            <div class="audio-choice-card" id="voiceChoiceCardCustom" onclick="selectVoiceSource('custom')">
+                                <div class="choice-card-header">
+                                    <div class="choice-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                    </div>
+                                    <span class="choice-check">✓</span>
+                                </div>
+                                <h4 class="choice-title">Mon propre fichier</h4>
+                                <p class="choice-desc">Glissez directement votre audio dans le bloc « Attribution des Médias ».</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANNEAU ELEVENLABS (MODERNE AVEC DRAPEAU ET RECHERCHE) -->
+                    <div id="voicePanelEleven" style="display: flex; flex-direction: column; gap: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #ffffff;">
+                                2. Voix ElevenLabs à utiliser
+                            </label>
+                            <button type="button" onclick="loadElevenVoicesForCreateVideo()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline;">Actualiser les voix</button>
+                        </div>
+
+                        <div class="modern-voice-picker" id="pickerContainerEleven">
+                            <input type="hidden" id="createVideoElevenVoiceSelect" value="">
+                            <div class="voice-picker-trigger" id="triggerEleven" onclick="toggleVoiceDropdown('dropdownEleven')">
+                                <div class="voice-trigger-left">
+                                    <img class="voice-flag-img" id="flagElevenSelected" src="https://flagcdn.com/fr.svg" alt="Flag">
+                                    <span class="voice-trigger-name" id="nameElevenSelected">Chargement des voix...</span>
+                                    <span class="voice-trigger-badge" id="badgeElevenSelected">ElevenLabs</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button type="button" id="btnPreviewElevenCreate" onclick="event.stopPropagation(); playVoicePreviewCreate('eleven')" class="btn-secondary" style="padding: 6px 12px; font-size: 11.5px; display: none; align-items: center; gap: 5px;" title="Écouter cette voix">
+                                        <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        <span>Écouter</span>
+                                    </button>
+                                    <svg class="collapse-chevron" style="width:16px; height:16px; stroke:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+
+                            <div class="voice-dropdown-menu" id="dropdownEleven">
+                                <div class="voice-search-box">
+                                    <svg class="icon" style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" class="voice-search-input" id="searchElevenInput" placeholder="Rechercher une voix ElevenLabs (nom, style)..." oninput="filterVoicesList('eleven')">
+                                </div>
+                                <div class="voice-items-list" id="listElevenItems"></div>
+                            </div>
+                        </div>
+
+                        <span id="elevenVoiceSelectHint" style="font-size: 11px; color: var(--text-muted);">Vos voix créées et officielles avec drapeaux et recherche instantanée.</span>
+                    </div>
+
+                    <!-- PANNEAU HEYGEN (MODERNE AVEC DRAPEAU ET RECHERCHE) -->
+                    <div id="voicePanelHeygen" style="display: none; flex-direction: column; gap: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #ffffff;">
+                                2. Voix HeyGen Voice Turbo à utiliser
+                            </label>
+                            <button type="button" onclick="loadHeyGenVoicesForCreateVideo()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline;">Actualiser les voix</button>
+                        </div>
+
+                        <div class="modern-voice-picker" id="pickerContainerHeygen">
+                            <input type="hidden" id="createVideoHeygenVoiceSelect" value="">
+                            <div class="voice-picker-trigger" id="triggerHeygen" onclick="toggleVoiceDropdown('dropdownHeygen')">
+                                <div class="voice-trigger-left">
+                                    <img class="voice-flag-img" id="flagHeygenSelected" src="https://flagcdn.com/fr.svg" alt="Flag">
+                                    <span class="voice-trigger-name" id="nameHeygenSelected">Chargement des voix...</span>
+                                    <span class="voice-trigger-badge" id="badgeHeygenSelected">Turbo</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button type="button" id="btnPreviewHeygenCreate" onclick="event.stopPropagation(); playVoicePreviewCreate('heygen')" class="btn-secondary" style="padding: 6px 12px; font-size: 11.5px; display: none; align-items: center; gap: 5px;" title="Écouter cette voix">
+                                        <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        <span>Écouter</span>
+                                    </button>
+                                    <svg class="collapse-chevron" style="width:16px; height:16px; stroke:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+
+                            <div class="voice-dropdown-menu" id="dropdownHeygen">
+                                <div class="voice-search-box">
+                                    <svg class="icon" style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" class="voice-search-input" id="searchHeygenInput" placeholder="Rechercher une voix HeyGen (ex: Solange, Français, Anglais)..." oninput="filterVoicesList('heygen')">
+                                </div>
+                                <div class="voice-items-list" id="listHeygenItems"></div>
+                            </div>
+                        </div>
+
+                        <span id="heygenVoiceSelectHint" style="font-size: 11px; color: var(--text-muted);">Voix françaises en tête avec drapeaux réels, recherche dynamique et préécoute.</span>
+                    </div>
+
+                    <!-- PANNEAU FICHIER PERSONNEL -->
+                    <div id="voicePanelCustom" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 16px; font-size: 12px; color: var(--text-secondary);">
+                        <p style="margin: 0; line-height: 1.5;">🎙️ <strong>Vous utiliserez votre propre enregistrement :</strong> Déposez simplement votre fichier MP3 ou WAV dans le bloc <strong>« Attribution des Médias »</strong> plus bas. Il sera synchronisé avec votre vidéo sans faire appel à un moteur de synthèse vocale.</p>
+                    </div>
+
+                    <!-- LECTEUR AUDIO INTERNE POUR PRÉÉCOUTE -->
+                    <audio id="createVideoAudioPreview" style="display: none;"></audio>
+                </div>
+            </div>
+        </section>
+
         <!-- 5. STYLE & MODÈLES DE SOUS-TITRES (PLIABLE - PLIÉ PAR DÉFAUT) -->
         <section class="card collapsible-card collapsed" id="subtitlesCard" style="border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.02); padding: 16px 20px;">
             <div class="collapsible-header" onclick="toggleCardSection('subtitlesCard')">
@@ -2561,53 +2894,38 @@
                         <!-- 1. LES 3 TYPES DE SOUS-TITRES -->
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
-                                1. Type de Sous-Titrage (3 Modes) :
+                                1. Type de Sous-Titrage (2 Styles) :
                             </label>
 
-                            <div class="subtitle-type-cards-grid">
-                                <!-- TYPE 1 : STANDARD / FIXE -->
+                            <div class="subtitle-type-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                                <!-- TYPE 1 : SOUS-TITRE BASIQUE (PHRASE PAR PHRASE) -->
                                 <div class="subtitle-type-card" data-subtype="type-standard" onclick="selectSubtitleType('type-standard', this)">
                                     <span class="sub-check-indicator">✓</span>
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span style="font-size: 13px; font-weight: 700; color: #fff;">1. Standard / Fixe</span>
-                                        <span style="font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted);">Classique</span>
+                                        <span style="font-size: 13.5px; font-weight: 700; color: #fff;">1. Sous-titre Basique</span>
+                                        <span style="font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--text-muted);">Phrase par phrase</span>
                                     </div>
                                     <div class="sub-mini-strip">
                                         <div class="subtitle-box type-standard font-inter color-white">
                                             <span class="word">Chaque</span> <span class="word">seconde</span> <span class="word">compte</span>
                                         </div>
                                     </div>
-                                    <span style="font-size: 10.5px; color: var(--text-secondary); line-height: 1.3;">Texte simple et propre au bas de l'écran dans une couleur unie.</span>
+                                    <span style="font-size: 11px; color: var(--text-secondary); line-height: 1.35;">Texte uni blanc ou noir au bas de l'écran qui s'affiche phrase par phrase de façon sobre.</span>
                                 </div>
 
-                                <!-- TYPE 2 : MOT-À-MOT DYNAMIQUE -->
+                                <!-- TYPE 2 : MOT-À-MOT COLORÉ -->
                                 <div class="subtitle-type-card selected" data-subtype="type-wordbyword" onclick="selectSubtitleType('type-wordbyword', this)">
                                     <span class="sub-check-indicator">✓</span>
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span style="font-size: 13px; font-weight: 700; color: #fff;">2. Mot-à-mot Dynamique</span>
-                                        <span style="font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 3px; background: rgba(255, 51, 68, 0.2); color: #ff3344;">Rythmé</span>
+                                        <span style="font-size: 13.5px; font-weight: 700; color: #fff;">2. Mot-à-mot Coloré</span>
+                                        <span style="font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(255, 51, 68, 0.2); color: #ff3344;">Dynamique</span>
                                     </div>
                                     <div class="sub-mini-strip">
                                         <div class="subtitle-box type-wordbyword font-inter color-white" style="--sub-accent-color: #ffe600;">
-                                            <span class="word">Chaque</span> <span class="word active" style="color:#ffe600;">seconde</span> <span class="word">compte</span>
+                                            <span class="word">Chaque</span> <span class="word active" style="color:#ffe600; font-weight:900;">seconde</span> <span class="word">compte</span>
                                         </div>
                                     </div>
-                                    <span style="font-size: 10.5px; color: var(--text-secondary); line-height: 1.3;">Chaque mot s'illumine tour à tour avec la couleur d'accent au rythme de la voix.</span>
-                                </div>
-
-                                <!-- TYPE 3 : MOTS-CLÉS MIS EN VALEUR -->
-                                <div class="subtitle-type-card" data-subtype="type-highlight" onclick="selectSubtitleType('type-highlight', this)">
-                                    <span class="sub-check-indicator">✓</span>
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span style="font-size: 13px; font-weight: 700; color: #fff;">3. Mots-clés Mis en Valeur</span>
-                                        <span style="font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted);">Impact</span>
-                                    </div>
-                                    <div class="sub-mini-strip">
-                                        <div class="subtitle-box type-highlight font-inter color-white" style="--sub-accent-color: #ff3344;">
-                                            <span class="word">Chaque</span> <span class="word key-highlight" style="color:#ff3344; font-weight:900;">seconde</span> <span class="word">compte</span>
-                                        </div>
-                                    </div>
-                                    <span style="font-size: 10.5px; color: var(--text-secondary); line-height: 1.3;">Les mots importants ressortent avec la couleur de votre chaîne ou couleur d'accent.</span>
+                                    <span style="font-size: 11px; color: var(--text-secondary); line-height: 1.35;">À l'apparition, le premier mot est coloré, puis la couleur passe au 2e mot, 3e mot au rythme de la voix.</span>
                                 </div>
                             </div>
                         </div>
@@ -3118,7 +3436,10 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 }
             }
 
-            const isReady = hasPrompt && hasFormat && hasStyle && hasAudio && hasSubtitles;
+            const scriptContent = (customScriptContent || '').trim();
+            const hasScript = Boolean(isCustomScriptEnabled && scriptContent.length >= 10);
+
+            const isReady = hasPrompt && hasScript && hasFormat && hasStyle && hasAudio && hasSubtitles;
 
             if (isReady) {
                 btn.disabled = false;
@@ -3460,6 +3781,8 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
 
             // 2. Montage et piste audio par défaut : Sans audio
             selectAudioOption('none');
+            loadElevenVoicesForCreateVideo();
+            loadHeyGenVoicesForCreateVideo();
 
             // 3. Modèles de sous-titres par défaut : Sans sous-titres
             selectSubtitlesOption(false);
@@ -3531,7 +3854,505 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 }
             });
             updateUploadBoxesVisibility(opt);
+            updateVoiceConfigBlockState(opt);
             updateCreationFormValidation();
+        }
+
+        // --- GESTION DU MOTEUR & SÉLECTEUR DE VOIX OFF DANS CREATE VIDEO (MODERNE AVEC DRAPEAUX & RECHERCHE) ---
+        let currentVoiceSource = 'elevenlabs';
+        let createElevenVoicesCache = {};
+        let createHeyGenVoicesCache = {};
+        let elevenVoicesRawList = [];
+        let heyGenVoicesRawList = [];
+
+        function getVoiceFlagUrl(voice) {
+            const lang = ((voice && voice.language) || '').toLowerCase();
+            const name = ((voice && voice.name) || '').toLowerCase();
+            if (lang.includes('french') || lang.includes('français') || lang.includes('fr')) return 'https://flagcdn.com/fr.svg';
+            if (lang.includes('english') || lang.includes('anglais') || lang.includes('en')) {
+                if (name.includes('british') || name.includes('uk') || name.includes('london')) return 'https://flagcdn.com/gb.svg';
+                if (name.includes('australian') || name.includes('au')) return 'https://flagcdn.com/au.svg';
+                if (name.includes('canadian') || name.includes('ca')) return 'https://flagcdn.com/ca.svg';
+                return 'https://flagcdn.com/us.svg';
+            }
+            if (lang.includes('spanish') || lang.includes('espagnol') || lang.includes('es')) return 'https://flagcdn.com/es.svg';
+            if (lang.includes('german') || lang.includes('allemand') || lang.includes('de')) return 'https://flagcdn.com/de.svg';
+            if (lang.includes('italian') || lang.includes('italien') || lang.includes('it')) return 'https://flagcdn.com/it.svg';
+            if (lang.includes('portuguese') || lang.includes('portugais') || lang.includes('pt')) return 'https://flagcdn.com/pt.svg';
+            if (lang.includes('japanese') || lang.includes('japonais') || lang.includes('ja')) return 'https://flagcdn.com/jp.svg';
+            if (lang.includes('chinese') || lang.includes('chinois') || lang.includes('zh')) return 'https://flagcdn.com/cn.svg';
+            if (lang.includes('arabic') || lang.includes('arabe') || lang.includes('ar')) return 'https://flagcdn.com/sa.svg';
+            if (lang.includes('wolof') || name.includes('wolof') || name.includes('senegal')) return 'https://flagcdn.com/sn.svg';
+            if (lang.includes('russian') || lang.includes('russe') || lang.includes('ru')) return 'https://flagcdn.com/ru.svg';
+            if (lang.includes('dutch') || lang.includes('néerlandais') || lang.includes('nl')) return 'https://flagcdn.com/nl.svg';
+            if (lang.includes('polish') || lang.includes('polonais') || lang.includes('pl')) return 'https://flagcdn.com/pl.svg';
+            return 'https://flagcdn.com/us.svg';
+        }
+
+        function toggleVoiceDropdown(menuId) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            const isOpen = menu.classList.contains('open');
+            // Fermer tous les menus ouverts
+            document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            if (!isOpen) {
+                menu.classList.add('open');
+                // Focus sur l'input de recherche
+                const searchInput = menu.querySelector('.voice-search-input');
+                if (searchInput) {
+                    setTimeout(() => searchInput.focus(), 60);
+                }
+            }
+        }
+
+        // Fermer les dropdowns quand on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.modern-voice-picker')) {
+                document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        function filterVoicesList(engine) {
+            if (engine === 'eleven') {
+                const query = (document.getElementById('searchElevenInput').value || '').toLowerCase().trim();
+                const filtered = elevenVoicesRawList.filter(v => 
+                    (v.name || '').toLowerCase().includes(query) || 
+                    (v.category || '').toLowerCase().includes(query)
+                );
+                renderVoiceRows('eleven', filtered);
+            } else if (engine === 'heygen') {
+                const query = (document.getElementById('searchHeygenInput').value || '').toLowerCase().trim();
+                const filtered = heyGenVoicesRawList.filter(v => 
+                    (v.name || '').toLowerCase().includes(query) || 
+                    (v.language || '').toLowerCase().includes(query) ||
+                    (v.gender || '').toLowerCase().includes(query)
+                );
+                renderVoiceRows('heygen', filtered);
+            }
+        }
+
+        function renderVoiceRows(engine, list) {
+            const listContainer = document.getElementById(engine === 'eleven' ? 'listElevenItems' : 'listHeygenItems');
+            const currentSelectedId = document.getElementById(engine === 'eleven' ? 'createVideoElevenVoiceSelect' : 'createVideoHeygenVoiceSelect').value;
+            if (!listContainer) return;
+
+            if (!list || list.length === 0) {
+                listContainer.innerHTML = '<div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 12px;">Aucune voix trouvée</div>';
+                return;
+            }
+
+            let html = '';
+            list.forEach(v => {
+                const isSel = v.id === currentSelectedId ? 'selected' : '';
+                const flagUrl = getVoiceFlagUrl(v);
+                const sub = v.category ? `${v.category === 'cloned' ? '✨ Voix clonée' : 'Officielle'}` : `${v.language || 'Générale'} ${v.gender ? '• ' + v.gender : ''}`;
+                
+                html += `
+                    <div class="voice-item-row ${isSel}" onclick="selectVoiceItem('${engine}', '${v.id}')">
+                        <div class="voice-item-left">
+                            <img class="voice-flag-img" src="${flagUrl}" alt="Flag">
+                            <div class="voice-item-info">
+                                <span class="voice-item-title">${v.name}</span>
+                                <span class="voice-item-subtitle">${sub}</span>
+                            </div>
+                        </div>
+                        <div class="voice-item-actions">
+                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreview('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function selectVoiceItem(engine, voiceId) {
+            const cache = engine === 'eleven' ? createElevenVoicesCache : createHeyGenVoicesCache;
+            const voice = cache[voiceId];
+            if (!voice) return;
+
+            if (engine === 'eleven') {
+                document.getElementById('createVideoElevenVoiceSelect').value = voice.id;
+                document.getElementById('nameElevenSelected').textContent = voice.name;
+                document.getElementById('flagElevenSelected').src = getVoiceFlagUrl(voice);
+                document.getElementById('badgeElevenSelected').textContent = voice.category || 'ElevenLabs';
+                document.getElementById('dropdownEleven').classList.remove('open');
+                updateElevenVoicePreviewBtn();
+            } else {
+                document.getElementById('createVideoHeygenVoiceSelect').value = voice.id;
+                document.getElementById('nameHeygenSelected').textContent = voice.name;
+                document.getElementById('flagHeygenSelected').src = getVoiceFlagUrl(voice);
+                document.getElementById('badgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
+                document.getElementById('dropdownHeygen').classList.remove('open');
+                updateHeygenVoicePreviewBtn();
+            }
+
+            // Rafraîchir les surbrillances
+            if (engine === 'eleven') renderVoiceRows('eleven', elevenVoicesRawList);
+            else renderVoiceRows('heygen', heyGenVoicesRawList);
+
+            updateVoiceBadgeStatus();
+        }
+
+        function playDirectPreview(url) {
+            if (!url) return;
+            let audio = document.getElementById('createVideoAudioPreview');
+            if (!audio) {
+                audio = new Audio();
+                audio.id = 'createVideoAudioPreview';
+                document.body.appendChild(audio);
+            }
+            audio.src = url;
+            audio.play().catch(e => console.warn('Erreur écoute voix:', e));
+        }
+
+        function selectVoiceSource(source) {
+            currentVoiceSource = source;
+            const cardEleven = document.getElementById('voiceChoiceCardEleven');
+            const cardHeygen = document.getElementById('voiceChoiceCardHeygen');
+            const cardCustom = document.getElementById('voiceChoiceCardCustom');
+            const panelEleven = document.getElementById('voicePanelEleven');
+            const panelHeygen = document.getElementById('voicePanelHeygen');
+            const panelCustom = document.getElementById('voicePanelCustom');
+
+            if (cardEleven) cardEleven.classList.toggle('selected', source === 'elevenlabs');
+            if (cardHeygen) cardHeygen.classList.toggle('selected', source === 'heygen');
+            if (cardCustom) cardCustom.classList.toggle('selected', source === 'custom');
+
+            if (panelEleven) panelEleven.style.display = source === 'elevenlabs' ? 'flex' : 'none';
+            if (panelHeygen) panelHeygen.style.display = source === 'heygen' ? 'flex' : 'none';
+            if (panelCustom) panelCustom.style.display = source === 'custom' ? 'block' : 'none';
+
+            // Mettre en pause tout extrait audio en cours
+            const audioPreview = document.getElementById('createVideoAudioPreview');
+            if (audioPreview) audioPreview.pause();
+
+            updateVoiceBadgeStatus();
+            updateUploadBoxesVisibility(currentAudioOption);
+            updateCreationFormValidation();
+        }
+
+        function updateVoiceConfigBlockState(opt) {
+            const disabledNotice = document.getElementById('voiceDisabledNotice');
+            const container = document.getElementById('voiceInteractiveContainer');
+            const badge = document.getElementById('voiceConfigBadgeStatus');
+            const audioPreview = document.getElementById('createVideoAudioPreview');
+
+            const isDisabled = (opt === 'music_only' || opt === 'none');
+
+            if (disabledNotice) {
+                disabledNotice.style.display = isDisabled ? 'flex' : 'none';
+            }
+
+            if (container) {
+                if (isDisabled) {
+                    container.style.opacity = '0.35';
+                    container.style.pointerEvents = 'none';
+                    if (audioPreview) audioPreview.pause();
+                } else {
+                    container.style.opacity = '1';
+                    container.style.pointerEvents = 'auto';
+                }
+            }
+
+            if (badge) {
+                if (opt === 'music_only') {
+                    badge.textContent = 'Désactivé (Option "Musique seulement" active)';
+                    badge.style.color = '#ff9f1c';
+                } else if (opt === 'none') {
+                    badge.textContent = 'Désactivé (Option "Sans audio" active)';
+                    badge.style.color = 'var(--text-muted)';
+                } else {
+                    badge.style.color = 'var(--text-muted)';
+                    updateVoiceBadgeStatus();
+                }
+            }
+        }
+
+        function updateVoiceBadgeStatus() {
+            const badge = document.getElementById('voiceConfigBadgeStatus');
+            if (!badge) return;
+            if (currentAudioOption === 'music_only' || currentAudioOption === 'none') return;
+
+            if (currentVoiceSource === 'elevenlabs') {
+                const select = document.getElementById('createVideoElevenVoiceSelect');
+                const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'ElevenLabs';
+                badge.textContent = `ElevenLabs : ${selectedText}`;
+            } else if (currentVoiceSource === 'heygen') {
+                const select = document.getElementById('createVideoHeygenVoiceSelect');
+                const selectedText = select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'HeyGen Turbo';
+                badge.textContent = `HeyGen : ${selectedText}`;
+            } else {
+                badge.textContent = 'Mon propre fichier audio (Attribution des Médias)';
+            }
+        }
+
+        async function loadElevenVoicesForCreateVideo() {
+            try {
+                const res = await fetch('/api/elevenlabs/voices');
+                if (!res.ok) throw new Error("Impossible de charger les voix ElevenLabs");
+                const data = await res.json();
+
+                createElevenVoicesCache = {};
+                elevenVoicesRawList = [];
+
+                if (data.customVoices) {
+                    data.customVoices.forEach(v => {
+                        createElevenVoicesCache[v.id] = v;
+                        elevenVoicesRawList.push(v);
+                    });
+                }
+                if (data.defaultVoices) {
+                    data.defaultVoices.forEach(v => {
+                        createElevenVoicesCache[v.id] = v;
+                        elevenVoicesRawList.push(v);
+                    });
+                }
+
+                renderVoiceRows('eleven', elevenVoicesRawList);
+
+                // Sélectionner la 1ère voix par défaut
+                if (elevenVoicesRawList.length > 0) {
+                    const savedVoice = localStorage.getItem('vibeeditor_elevenlabs_voice_id');
+                    const initial = (savedVoice && createElevenVoicesCache[savedVoice]) ? savedVoice : elevenVoicesRawList[0].id;
+                    selectVoiceItem('eleven', initial);
+                }
+            } catch(e) {
+                const list = document.getElementById('listElevenItems');
+                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement ElevenLabs (Vérifiez la clé)</div>';
+            }
+        }
+
+        async function _old_loadElevenVoices() {
+            const select = document.getElementById('createVideoElevenVoiceSelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">Chargement des voix ElevenLabs...</option>';
+
+            try {
+                const res = await fetch('/api/elevenlabs/voices');
+                if (!res.ok) throw new Error("Impossible de charger les voix ElevenLabs");
+                const data = await res.json();
+
+                createElevenVoicesCache = {};
+                select.innerHTML = '';
+
+                // Voix personnalisées
+                if (data.customVoices && data.customVoices.length > 0) {
+                    const grp = document.createElement('optgroup');
+                    grp.label = `Mes Voix Créées (${data.customVoices.length})`;
+                    data.customVoices.forEach(v => {
+                        createElevenVoicesCache[v.id] = v;
+                        const opt = document.createElement('option');
+                        opt.value = v.id;
+                        opt.textContent = `${v.name}`;
+                        grp.appendChild(opt);
+                    });
+                    select.appendChild(grp);
+                }
+
+                // Voix officielles
+                if (data.defaultVoices && data.defaultVoices.length > 0) {
+                    const grp = document.createElement('optgroup');
+                    grp.label = `Voix Officielles ElevenLabs (${data.defaultVoices.length})`;
+                    data.defaultVoices.forEach(v => {
+                        createElevenVoicesCache[v.id] = v;
+                        const opt = document.createElement('option');
+                        opt.value = v.id;
+                        opt.textContent = `${v.name}`;
+                        grp.appendChild(opt);
+                    });
+                    select.appendChild(grp);
+                }
+
+                updateElevenVoicePreviewBtn();
+                updateVoiceBadgeStatus();
+            } catch(e) {
+                select.innerHTML = '<option value="">Erreur chargement ElevenLabs (Vérifiez votre clé dans Paramètres)</option>';
+            }
+        }
+
+        async function loadHeyGenVoicesForCreateVideo() {
+            try {
+                let data = null;
+                try {
+                    const res = await fetch('/api/heygen/voices');
+                    if (res.ok) data = await res.json();
+                } catch (e) {}
+
+                if (!data || !data.success) {
+                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
+                    if (savedKey) {
+                        const directRes = await fetch('https://api.heygen.com/v2/voices', {
+                            headers: { 'X-Api-Key': savedKey }
+                        });
+                        if (directRes.ok) {
+                            const raw = await directRes.json();
+                            const rawVoices = (raw.data && raw.data.voices) || [];
+                            const voices = rawVoices.map(v => ({
+                                id: v.voice_id,
+                                name: v.name,
+                                language: v.language || 'Autre',
+                                gender: v.gender || '',
+                                previewUrl: v.preview_audio || v.preview_audio_url || ''
+                            }));
+                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
+                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
+                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
+                        }
+                    }
+                }
+
+                if (!data || !data.success) {
+                    throw new Error("Impossible de récupérer les voix HeyGen");
+                }
+
+                createHeyGenVoicesCache = {};
+                heyGenVoicesRawList = [];
+
+                // Voix françaises en tête
+                if (data.frenchVoices) {
+                    data.frenchVoices.forEach(v => {
+                        createHeyGenVoicesCache[v.id] = v;
+                        heyGenVoicesRawList.push(v);
+                    });
+                }
+                // Voix anglaises
+                if (data.englishVoices) {
+                    data.englishVoices.slice(0, 30).forEach(v => {
+                        createHeyGenVoicesCache[v.id] = v;
+                        heyGenVoicesRawList.push(v);
+                    });
+                }
+
+                renderVoiceRows('heygen', heyGenVoicesRawList);
+
+                // Sélectionner Solange ou 1ère voix française par défaut
+                if (heyGenVoicesRawList.length > 0) {
+                    const savedHeygen = localStorage.getItem('vibeeditor_heygen_voice_id');
+                    const initial = (savedHeygen && createHeyGenVoicesCache[savedHeygen]) ? savedHeygen : heyGenVoicesRawList[0].id;
+                    selectVoiceItem('heygen', initial);
+                }
+            } catch(e) {
+                const list = document.getElementById('listHeygenItems');
+                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement HeyGen (Vérifiez la clé)</div>';
+            }
+        }
+
+        async function _old_loadHeygenVoices() {
+            const select = document.getElementById('createVideoHeygenVoiceSelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">Chargement des voix HeyGen...</option>';
+
+            try {
+                let data = null;
+                try {
+                    const res = await fetch('/api/heygen/voices');
+                    if (res.ok) data = await res.json();
+                } catch (e) {}
+
+                if (!data || !data.success) {
+                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
+                    if (savedKey) {
+                        const directRes = await fetch('https://api.heygen.com/v2/voices', {
+                            headers: { 'X-Api-Key': savedKey }
+                        });
+                        if (directRes.ok) {
+                            const raw = await directRes.json();
+                            const rawVoices = (raw.data && raw.data.voices) || [];
+                            const voices = rawVoices.map(v => ({
+                                id: v.voice_id,
+                                name: v.name,
+                                language: v.language || 'Autre',
+                                previewUrl: v.preview_audio || v.preview_audio_url || ''
+                            }));
+                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
+                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
+                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
+                        }
+                    }
+                }
+
+                if (!data || !data.success) {
+                    throw new Error("Impossible de récupérer les voix HeyGen");
+                }
+
+                createHeyGenVoicesCache = {};
+                select.innerHTML = '';
+
+                // Voix Françaises
+                if (data.frenchVoices && data.frenchVoices.length > 0) {
+                    const grp = document.createElement('optgroup');
+                    grp.label = `🇫🇷 Voix Françaises (${data.frenchVoices.length})`;
+                    data.frenchVoices.forEach(v => {
+                        createHeyGenVoicesCache[v.id] = v;
+                        const opt = document.createElement('option');
+                        opt.value = v.id;
+                        opt.textContent = `${v.name}`;
+                        grp.appendChild(opt);
+                    });
+                    select.appendChild(grp);
+                }
+
+                // Voix Anglaises (top 20)
+                if (data.englishVoices && data.englishVoices.length > 0) {
+                    const grp = document.createElement('optgroup');
+                    grp.label = `🇬🇧 Voix Anglaises`;
+                    data.englishVoices.slice(0, 20).forEach(v => {
+                        createHeyGenVoicesCache[v.id] = v;
+                        const opt = document.createElement('option');
+                        opt.value = v.id;
+                        opt.textContent = `${v.name}`;
+                        grp.appendChild(opt);
+                    });
+                    select.appendChild(grp);
+                }
+
+                updateHeygenVoicePreviewBtn();
+                updateVoiceBadgeStatus();
+            } catch(e) {
+                select.innerHTML = '<option value="">Erreur chargement HeyGen (Vérifiez votre clé dans Paramètres)</option>';
+            }
+        }
+
+        function updateElevenVoicePreviewBtn() {
+            const select = document.getElementById('createVideoElevenVoiceSelect');
+            const btn = document.getElementById('btnPreviewElevenCreate');
+            const voice = select ? createElevenVoicesCache[select.value] : null;
+            if (btn) {
+                btn.style.display = (voice && voice.previewUrl) ? 'inline-flex' : 'none';
+            }
+            updateVoiceBadgeStatus();
+        }
+
+        function updateHeygenVoicePreviewBtn() {
+            const select = document.getElementById('createVideoHeygenVoiceSelect');
+            const btn = document.getElementById('btnPreviewHeygenCreate');
+            const voice = select ? createHeyGenVoicesCache[select.value] : null;
+            if (btn) {
+                btn.style.display = (voice && voice.previewUrl) ? 'inline-flex' : 'none';
+            }
+            updateVoiceBadgeStatus();
+        }
+
+        function playVoicePreviewCreate(engine) {
+            let voice = null;
+            if (engine === 'eleven') {
+                const select = document.getElementById('createVideoElevenVoiceSelect');
+                voice = select ? createElevenVoicesCache[select.value] : null;
+            } else if (engine === 'heygen') {
+                const select = document.getElementById('createVideoHeygenVoiceSelect');
+                voice = select ? createHeyGenVoicesCache[select.value] : null;
+            }
+
+            if (!voice || !voice.previewUrl) return;
+
+            let audio = document.getElementById('createVideoAudioPreview');
+            if (!audio) {
+                audio = new Audio();
+                audio.id = 'createVideoAudioPreview';
+                document.body.appendChild(audio);
+            }
+            audio.src = voice.previewUrl;
+            audio.play().catch(e => console.warn('Preview error:', e));
         }
 
         let currentSubtitleType = 'type-wordbyword';
@@ -3761,11 +4582,6 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 wordsHtml = subPreviewWords.map((w, idx) => {
                     const isActive = (idx === subActiveWordIdx) ? ' active' : '';
                     return `<span class="word${isActive}">${w}</span>`;
-                }).join(' ');
-            } else if (currentSubtitleType === 'type-highlight') {
-                wordsHtml = subPreviewWords.map((w, idx) => {
-                    const isKey = (idx === 1 || idx === 2) ? ' key-highlight' : '';
-                    return `<span class="word${isKey}">${w}</span>`;
                 }).join(' ');
             }
 

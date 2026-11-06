@@ -1,20 +1,5 @@
 [
   {
-    "id": "ch_1793063435322",
-    "name": "Pr Marcus",
-    "platform": "YouTube",
-    "format": "16:9",
-    "colorPrimary": "#db0f20",
-    "colorSecondary": "#ffffff",
-    "fontPrimary": "Montserrat",
-    "fontSecondary": "Inter",
-    "fontAccent": "Caveat",
-    "description": "",
-    "avatar": "01_Assets/Images/channels/avatar_ch_1793063435322.png",
-    "videos": [],
-    "videoCount": 0
-  },
-  {
     "id": "ch_1793102190223",
     "name": "Galsen Tuto",
     "platform": "Instagram",
@@ -26,6 +11,51 @@
     "fontAccent": "Caveat",
     "description": "",
     "avatar": "01_Assets/Images/channels/avatar_ch_1793102190223.jpg",
+    "videos": [],
+    "videoCount": 0
+  },
+  {
+    "id": "ch_1793911184121",
+    "name": "Greatest Eleven",
+    "platform": "YouTube",
+    "format": "9:16",
+    "colorPrimary": "#c2c2c2",
+    "colorSecondary": "#080075",
+    "fontPrimary": "Montserrat",
+    "fontSecondary": "Inter",
+    "fontAccent": "Caveat",
+    "description": "",
+    "avatar": "01_Assets/Images/channels/avatar_ch_1793911184121.jpg",
+    "videos": [],
+    "videoCount": 0
+  },
+  {
+    "id": "ch_1793911244535",
+    "name": "Dr Klavius",
+    "platform": "YouTube",
+    "format": "16:9",
+    "colorPrimary": "#ffffff",
+    "colorSecondary": "#dc2626",
+    "fontPrimary": "Montserrat",
+    "fontSecondary": "Inter",
+    "fontAccent": "Caveat",
+    "description": "",
+    "avatar": "01_Assets/Images/channels/avatar_ch_1793911244535.png",
+    "videos": [],
+    "videoCount": 0
+  },
+  {
+    "id": "ch_1793911298459",
+    "name": "Le Secret Des Geeks",
+    "platform": "YouTube",
+    "format": "16:9",
+    "colorPrimary": "#ffffff",
+    "colorSecondary": "#0d0d0d",
+    "fontPrimary": "Montserrat",
+    "fontSecondary": "Inter",
+    "fontAccent": "Caveat",
+    "description": "",
+    "avatar": "01_Assets/Images/channels/avatar_ch_1793911298459.png",
     "videos": [],
     "videoCount": 0
   }
