@@ -39,8 +39,8 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
     - **NE JAMAIS recopier visuellement une vidéo ou un composant préexistant.**
     - Chaque nouvelle composition doit avoir sa propre direction artistique, ses propres scènes, ses propres visuels vectoriels et sa typographie originale créée de A à Z.
 11. **Interdiction des Titrages Didactiques, Badges "PowerPoint" & Textes aux 4 Coins** :
-    - **Bannissement définitif des étiquettes scolaires** : `[ Règle 01 ]`, `[ Chapitre 1 ]`, `[ Étape 01 ]`, conteneurs `.tag-pill`. Une vidéo n'est pas une présentation PowerPoint.
-    - **Bannissement absolu des faux textes HUD aux 4 coins du cadre** (`.hud-telemetry`, `1080p`, `TEMPO 120 BPM`, `VIBE ENGINE`). Les 4 coins du cadre doivent impérativement rester vides et dégagés.
+    - **Bannissement définitif des étiquettes scolaires et diaporama** : `[ Règle 01 ]`, `[ Chapitre 1 ]`, `[ Étape 01 ]`, `[ SCÈNE 1 : ... ]`, `[ SLIDE X ]`, conteneurs `.tag-pill`. L'IA réalise des **films et vidéos cinématographiques**, JAMAIS des présentations PowerPoint.
+    - **Bannissement absolu des faux textes HUD aux 4 coins du cadre** (`.hud-telemetry`, `1080p`, `TEMPO 120 BPM`, `VIBE ENGINE`, badges debug). Les 4 coins du cadre doivent impérativement rester propres, aérés et dégagés.
 12. **Interdiction du Fond "Cliché IA" Répétitif (Grille + Halo Sombre)** :
     - **Ne JAMAIS systématiser le même fond stéréotypé** : quadrillage de lignes transparentes (`.grid-backdrop`) avec halo radial flou vert/cyan.
     - Varier impérativement les textures, ambiances, aplats, grains argentiques et éclairages selon l'univers thématique de chaque vidéo.
@@ -104,7 +104,8 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 
 
 25. **Design System Vidéo Universel, Padding Cadre Harmonisé (16:9 & 9:16) & Règle Anti-Chevauchement** :
-    - **Zéro Chevauchement Involontaire (Zero-Collision Layout)** : Un texte, une image, un modèle 3D Three.js, une carte Bento ou un bouton CTA ne doivent **JAMAIS se chevaucher ou se couper accidentellement**. Chaque élément a sa zone réservée avec un espace d'aération libre minimal de **32px à 48px** entre éléments. Seule exception : superposition artistique délibérée (ex: texte d'arrière-plan géant derrière un sujet détouré en parallax).
+    - **Zéro Chevauchement & Zéro Collision (Zero-Collision Layout)** : Un texte, une illustration, un sujet 2D/3D (comme la tête géante Stickman), un cadran, une carte Bento ou un bouton CTA ne doivent **JAMAIS se heurter, se chevaucher ou se couper accidentellement**. Chaque module a sa zone réservée avec un espace de respiration minimal de **48px à 120px** entre éléments distincts. Bannir tout contour rectangulaire massif qui enferme ou traverse les sujets visuels.
+    - **Zéro Débordement de Texte & Largeur Dynamique des Conteneurs** : Tout texte logé dans un conteneur (bouton, card, pillule, badge, que ce soit en HTML ou Canvas 2D) **DOIT impérativement dimensionner sa largeur à son contenu** (`cardWidth = textWidth + padding * 2` avec au minimum 32px à 40px de marge interne de chaque côté). **Le texte ne doit sous aucun prétexte toucher ou déborder des limites de sa card.**
     - **Padding Cadre Harmonisé (80px Standard)** : Les marges de scène sont obligatoires et régulières quel que soit le format :
       - **16:9 Paysage (1920×1080)** : `padding: 60px 80px 70px 80px;` (marge latérale symétrique de 80px).
       - **9:16 Vertical (1080×1920)** : `padding: 140px 80px 180px 80px;` (même marge latérale de 80px + safe-zones UI plateformes).

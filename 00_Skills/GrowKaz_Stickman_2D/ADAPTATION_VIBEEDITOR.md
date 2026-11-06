@@ -82,9 +82,19 @@ Il met à disposition :
 ## 🎨 4. Respect du Design System & Règles Caméra de VibeEditor
 
 Lorsque le moteur génère ou anime des scènes :
-1. **Marges et Cadrage** : Respect strict du padding cadre standardisé (80px latéral en 16:9 et 9:16).
-2. **Zero Collision** : Les éléments textuels, schémas UI et personnages ne doivent jamais se chevaucher de manière non intentionnelle.
-3. **Mouvements de Caméra Contextuels** (issus de notre skill Camera) :
+1. **Interdiction Absolue des Étiquettes Diaporama / Debug** :
+   - **JAMAIS** d'étiquette, de pastille ou de badge affichant `"SCÈNE 1 : ..."`, `"SLIDE 2"`, ou un intitulé de séquence en coin d'écran.
+   - VibeEditor produit des films et vidéos immersifs à haute rétention, **JAMAIS des diaporamas PowerPoint**.
+2. **Zéro Débordement & Largeur Dynamique de Texte** :
+   - Tout texte situé à l'intérieur d'un bouton, d'une card, d'un badge ou d'une pilule CTA **DOIT** calculer dynamiquement la largeur de son conteneur via `ctx.measureText(txt).width`.
+   - **Padding de sécurité obligatoire** : ajouter au minimum 32px à 40px de marge intérieure de chaque côté (`cardW = textW + 72px à 80px`).
+   - Le texte ne doit sous aucun prétexte effleurer ou déborder des bords de sa boîte.
+3. **Zéro Collision & Espacement Aéré (Distance Minimale > 100px)** :
+   - Respect strict de la règle des tiers et des zones de respiration.
+   - Les éléments graphiques (gros plan de visage `bigFace`, cadrans circulaires, graphiques, personnages) doivent maintenir un espace vide libre d'au moins 100px à 150px entre eux.
+   - Bannir les cadres rectangulaires gigantesques qui traversent ou enferment les éléments au risque de créer une sensation d'étouffement visuel.
+4. **Marges et Cadrage** : Respect strict du padding cadre standardisé (80px latéral en 16:9 et 9:16).
+5. **Mouvements de Caméra Contextuels** (issus de notre skill Camera) :
    - Zoom centré sur la première card / élément d'une liste puis glissement continu en tracking.
    - Zoom gauche sur les barres de texte en cours de frappe, suivi vers la droite, puis dézoom final de révélation.
    - Slow push-in sur les moments forts et switch rapide (split-screen / plein écran).
