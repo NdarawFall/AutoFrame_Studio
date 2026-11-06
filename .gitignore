@@ -89,3 +89,10 @@ desktop.ini
 
 __pycache__/
 *.pyc
+
+
+# COMPOSITIONS ET SCENES LOCALES (SEUL .gitkeep EST SUIVI)
+04_Videos/*
+!04_Videos/.gitkeep
+05_Scenes/*
+!05_Scenes/.gitkeep
