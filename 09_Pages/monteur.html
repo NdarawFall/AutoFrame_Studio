@@ -45,32 +45,31 @@
             overflow-x: hidden;
         }
 
-        /* --- TOP NAVIGATION BAR --- */
+        /* --- TOP NAVIGATION BAR (IDENTIQUE À CHANNELS.HTML) --- */
         header.top-nav {
-            height: 54px;
-            min-height: 54px;
-            background: rgba(10, 12, 16, 0.95);
+            height: 58px;
+            background: rgba(10, 10, 10, 0.85);
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 28px;
             position: sticky;
             top: 0;
             z-index: 50;
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(14px);
         }
 
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .brand-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-weight: 900;
             font-size: 16px;
             letter-spacing: -0.4px;
@@ -78,6 +77,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
+            filter: drop-shadow(0 0 14px rgba(255, 51, 68, 0.3));
         }
 
         .badge-monteur {
@@ -86,7 +86,7 @@
             border: 1px solid rgba(239, 68, 68, 0.35);
             font-size: 11px;
             font-weight: 700;
-            padding: 2px 7px;
+            padding: 3px 8px;
             border-radius: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -101,41 +101,60 @@
         .nav-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: var(--bg-elevated);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 500;
-            padding: 6px 12px;
+            padding: 7px 14px;
             border-radius: var(--radius-sm);
             text-decoration: none;
             cursor: pointer;
-            transition: var(--transition);
+            transition: var(--transition-smooth, all 0.25s cubic-bezier(0.16, 1, 0.3, 1));
         }
 
         .nav-btn:hover {
             color: var(--text-primary);
             background: var(--bg-hover);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-1px);
         }
 
-        .nav-btn.primary {
-            background: #2563eb;
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
             color: #ffffff;
-            border-color: #3b82f6;
             font-weight: 600;
         }
 
+        .nav-btn.btn-create-video {
+            background: #dc2626;
+            color: #ffffff !important;
+            border-color: #ef4444;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+        }
+
+        .nav-btn.btn-create-video:hover {
+            background: #b91c1c;
+            border-color: #f87171;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+        }
+
         svg.icon {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             stroke: currentColor;
             stroke-width: 2;
             fill: none;
             stroke-linecap: round;
             stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
         }
 
         /* --- MAIN WRAPPER COMPACT --- */
@@ -785,27 +804,23 @@
 </head>
 <body>
 
-    <!-- TOP NAVIGATION BAR -->
+    <!-- TOP NAVIGATION BAR (DESIGN IDENTIQUE À CHANNELS, SANS BOUTON CHAÎNES) -->
     <header class="top-nav">
         <div class="nav-left">
-            <a href="home.html" class="nav-btn" style="padding: 5px 10px; font-weight: 600;" title="Retour Accueil">
+            <a href="home.html" class="nav-btn" title="Accueil (Home)">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Accueil</span>
             </a>
             <a href="home.html" class="brand-badge">
                 <span>VibeEditor 1.0</span>
             </a>
-            <span class="badge-monteur">Espace Monteur Pro</span>
+            <span class="badge-monteur">Espace Monteur</span>
         </div>
 
         <nav class="nav-links">
-            <a href="channels.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                <span>Chaînes</span>
-            </a>
-            <a href="studio.html" class="nav-btn primary">
+            <a href="studio.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
-                <span>Ouvrir le Studio</span>
+                <span>Studio</span>
             </a>
             <a href="assets.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
@@ -814,6 +829,10 @@
             <a href="settings.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Paramètres</span>
+            </a>
+            <a href="create_video.html" class="nav-btn btn-create-video">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Créer une Vidéo</span>
             </a>
         </nav>
     </header>
