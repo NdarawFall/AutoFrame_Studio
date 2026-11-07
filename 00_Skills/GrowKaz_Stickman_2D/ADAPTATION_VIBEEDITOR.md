@@ -98,6 +98,19 @@ Lorsque le moteur génère ou anime des scènes :
    - Zoom centré sur la première card / élément d'une liste puis glissement continu en tracking.
    - Zoom gauche sur les barres de texte en cours de frappe, suivi vers la droite, puis dézoom final de révélation.
    - Slow push-in sur les moments forts et switch rapide (split-screen / plein écran).
+6. **Ancrage Strict de l'Ombre Portée au Sol (Ground Shadow Pinning)** :
+   - L'ombre portée au sol d'un personnage stickman doit **TOUJOURS rester ancrée sur le sol (`groundY = 820`)**.
+   - **Interdiction formelle** de dessiner l'ombre à l'intérieur du repère local transformé (`ctx.rotate()`) d'un joueur en suspension.
+   - Lors d'un saut, d'une parade de gardien ou d'un ciseau retourné, l'ombre reste au sol à `(x, groundY)`, s'atténue en opacité et diffuse avec l'altitude.
+7. **Biomécanique et Cohérence des Gestes Sportifs (Retourné Acrobatique / Ciseau)** :
+   - **Bascule vers le but** : Si les buts sont à droite (+X), la tête du joueur tombe vers la droite lors de l'envol (rotation horaire du buste).
+   - **Rotation du pied en aiguille de montre** : Le pied de tir part d'en bas/gauche et effectue une rotation horaire de la gauche vers la droite pour fouetter le ballon vers la lucarne.
+   - **Retombée sur le terrain** : Le joueur ne reste jamais figé en l'air : il redescend au sol, amortit sur son dos sur la pelouse (groundY = 820), puis se redresse/célèbre sur le gazon.
+
+8. **Ancrage Physique au Sol & Interdiction du Vol en Course (Grounding Invariant)** :
+   - **Contact Sol Obligatoire** : Un personnage qui court a obligatoirement son pied d'appui ancré sur l'herbe (`groundY = 820px`).
+   - **Interdiction du "Vol en Courant"** : `altitude = 0` pendant toute la course d'élan. Le décollage aérien ne commence qu'à l'impulsion.
+   - **Calcul de Pivot Exact** : Le point de pivot au bassin doit être calibré à `basePivotY = 700px` pour que la semelle des crampons affleure exactement `groundY = 820px`.
 
 ---
 

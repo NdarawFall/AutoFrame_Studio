@@ -7,7 +7,10 @@ description: Mouvements de caméra cinématographiques, transitions de scènes e
 
 Ce skill est divisé en **deux guides spécialisés** :
 
-1. 👉 **Transitions 2D & Mouvements dans la Scène : [`camera_transition.md`](./camera_transition.md)**
+1. 👉 **Transitions 2D, Cadrage & Mouvements dans la Scène : [`camera_transition.md`](./camera_transition.md)**
+   - **Règle d'Or du Cadrage & Zoom Intelligent** : Interdiction du zoom aveugle / centré par défaut. La caméra cible impérativement le sujet d'intérêt (card, visage, métrique, logo) avec marge de sécurité (80-120px) sans jamais couper le sujet.
+   - **Tracking & Accompagnement cinétique** : Suivi fluide des carousels, défilements Top 10 et actions mobiles (saut, course) pour maintenir l'élément au cœur du regard.
+   - **Zooms d'expressions faciales** : Punch-in cinématique ciblé sur les visages lors des réactions (choc, rire, tension) pour décupler l'impact émotionnel.
    - Explique en détail **quand zoomer** (slow push-in, crash zoom, macro focus), **quand dézoomer** (pull-back, respiration), **quand glisser/pan** et **quand déclencher une transition**.
    - Contient le catalogue des **5 grands types de transitions** : Whip Pan cinétique, Zoom-Through Portal, Directional Slide masqué, Flash Cut d'impact et Cut Franc.
 

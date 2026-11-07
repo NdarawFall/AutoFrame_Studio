@@ -1935,36 +1935,40 @@
             try {
                 if (!previewFrame || !previewFrame.contentWindow) return;
                 const win = previewFrame.contentWindow;
+                if (typeof win.renderAt === 'function') {
+                    try { win.renderAt(timeInSeconds); } catch (e) {}
+                }
                 if (typeof win.syncAudioTimeline === 'function') {
                     try { win.syncAudioTimeline(timeInSeconds, true); } catch (e) {}
-                }
-                const doc = previewFrame.contentDocument || win.document;
-                if (doc) {
-                    const audios = doc.querySelectorAll('audio');
-                    audios.forEach(a => {
-                        try {
-                            const aStart = parseFloat(a.dataset.start || '0') || 0;
-                            const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
-                            
-                            // Couper si la video a atteint ou depasse la fin
-                            if (timeInSeconds > aEnd || (duration > 0 && timeInSeconds >= duration)) {
-                                if (!a.paused) a.pause();
-                                return;
-                            }
+                } else {
+                    const doc = previewFrame.contentDocument || win.document;
+                    if (doc) {
+                        const audios = doc.querySelectorAll('audio');
+                        audios.forEach(a => {
+                            try {
+                                const aStart = parseFloat(a.dataset.start || '0') || 0;
+                                const aEnd = parseFloat(a.dataset.end || (duration || 9999).toString()) || 9999;
+                                
+                                // Couper si la video a atteint ou depasse la fin
+                                if (timeInSeconds > aEnd || (duration > 0 && timeInSeconds >= duration)) {
+                                    if (!a.paused) a.pause();
+                                    return;
+                                }
 
-                            if (timeInSeconds >= aStart && timeInSeconds < aEnd) {
-                                const aOffset = Math.max(0, timeInSeconds - aStart);
-                                if (Math.abs(a.currentTime - aOffset) > 0.4) {
-                                    a.currentTime = aOffset;
+                                if (timeInSeconds >= aStart && timeInSeconds < aEnd) {
+                                    const aOffset = Math.max(0, timeInSeconds - aStart);
+                                    if (Math.abs(a.currentTime - aOffset) > 0.4) {
+                                        a.currentTime = aOffset;
+                                    }
+                                    if (a.paused && !a.ended) {
+                                        a.play().catch(() => {});
+                                    }
+                                } else {
+                                    if (!a.paused) a.pause();
                                 }
-                                if (a.paused && !a.ended) {
-                                    a.play().catch(() => {});
-                                }
-                            } else {
-                                if (!a.paused) a.pause();
-                            }
-                        } catch (e) {}
-                    });
+                            } catch (e) {}
+                        });
+                    }
                 }
             } catch (e) {}
         }
@@ -2002,6 +2006,10 @@
                 const win = previewFrame.contentWindow;
                 const doc = previewFrame.contentDocument || win.document;
                 const t = (typeof targetTime === 'number') ? targetTime : (currentFrame / FPS);
+
+                if (typeof win.renderAt === 'function') {
+                    try { win.renderAt(t); } catch (e) {}
+                }
 
                 // 1. Pauser et caler le Ticker GSAP global et les timelines
                 if (win.gsap && win.gsap.globalTimeline) {
@@ -2095,6 +2103,10 @@
                 if (!previewFrame || !previewFrame.contentWindow) return;
                 const win = previewFrame.contentWindow;
                 const doc = previewFrame.contentDocument || win.document;
+
+                if (typeof win.renderAt === 'function') {
+                    try { win.renderAt(timeInSeconds); } catch (e) {}
+                }
 
                 // 1. GSAP Timelines
                 const tl = getIframeTimeline();
@@ -2889,6 +2901,14 @@
                 if (!newDur && win?.tl) {
                     const dur = (typeof win.tl.duration === 'function') ? win.tl.duration() : win.tl.duration;
                     if (dur && dur > 0) newDur = dur;
+                }
+                if (!newDur && win?.DURATION) {
+                    const dur = parseFloat(win.DURATION);
+                    if (!isNaN(dur) && dur > 0) newDur = dur;
+                }
+                if (!newDur && win?.duration) {
+                    const dur = parseFloat(win.duration);
+                    if (!isNaN(dur) && dur > 0) newDur = dur;
                 }
                 if (!newDur && stage && stage.dataset && stage.dataset.duration) {
                     const dur = parseFloat(stage.dataset.duration);

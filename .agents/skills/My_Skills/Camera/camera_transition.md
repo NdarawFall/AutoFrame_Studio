@@ -13,6 +13,55 @@ Une caméra ne bouge jamais au hasard. Elle simule l'œil d'un observateur humai
 
 ---
 
+## 📐 1.bis. RÈGLES D'OR DU CADRAGE INTELLIGENT & TRACKING (ANTI-ZOOM BÊTE)
+
+> ⚠️ **LOI ABSOLUE : INTERDICTION DU ZOOM AVEUGLE / BÊTE**
+> Ne JAMAIS appliquer un zoom générique au milieu de l'écran (`scale: 1.2` centré à `50% 50%`) sans recalculer la position exacte du sujet. Si le sujet (carte, visage, métrique, logo, personnage) est décalé, un zoom aveugle **COUPERA LE SUJET** ou zoomera sur du vide !
+
+### A. Règle du Centrage Optique & Marges de Sécurité (Safe Margins)
+1. **Identifier la Cible Active (`targetX, targetY`)** :
+   - Si la voix off parle d'une carte spécifique dans un comparatif ou un Top 10, le centre de cette carte devient la cible caméra.
+   - Si un personnage réagit (panique, joie, focus), son visage devient la cible caméra.
+2. **Calcul de Recadrage (DOM GSAP ou Canvas 2D)** :
+   ```javascript
+   // Formule universelle de recentrage caméra lors d'un zoom :
+   // Pour amener (targetX, targetY) au centre de l'écran (960, 540) avec un zoom S :
+   const camX = (960 - targetX) * (scale - 1);
+   const camY = (540 - targetY) * (scale - 1);
+   ```
+   - **En GSAP DOM** : utiliser `transformOrigin: "${targetX}px ${targetY}px"` ou animer simultanément `x: targetOffsetX, y: targetOffsetY, scale: targetScale`.
+   - **En Canvas 2D** :
+     ```javascript
+     ctx.save();
+     ctx.translate(960, 540);
+     ctx.scale(cam.zoom, cam.zoom);
+     ctx.translate(-cam.targetX, -cam.targetY);
+     // Rendu des éléments...
+     ctx.restore();
+     ```
+3. **Marge de Respiration Obligatoire (80px – 120px)** :
+   - L'élément zoomé doit **toujours** être contenu dans la safe-zone avec un minimum de **80px** de marge par rapport aux bords de l'écran.
+   - **Interdiction formelle** de rogner le titre d'une carte, les pieds d'un personnage ou la bordure d'un conteneur.
+
+### B. Tracking & Accompagnement Cinétique (Suivi de l'Action)
+1. **Carousels & Top 10 Défilants** :
+   - Lorsque les éléments défilent horizontalement ou verticalement, la caméra **ne doit pas rester statique**.
+   - Elle effectue un travelling fluide (*smooth tracking dolly*) synchronisé avec le défilement pour accompagner l'élément actif, le stabiliser brièvement au centre pendant sa lecture, puis glisser vers le suivant.
+2. **Personnages en Mouvement & Actions Dynamiques** :
+   - Si un personnage court, avance ou bondit en l'air (ex: célébration de but, saut de joie), la caméra accompagne le vecteur d'action :
+     - *Saut vertical* $\rightarrow$ Travelling vertical montant (tilt up) pour garder le personnage et ses bras levés dans le tiers supérieur sans qu'il sorte du haut de l'écran.
+     - *Effondrement comique* $\rightarrow$ Pan doux vers le bas pour capturer l'expression de défaite sur le canapé.
+
+### C. Zooms d'Expressions Faciales (Punch-In Émotionnel)
+1. **Quand l'activer ?**
+   - Dès qu'un personnage subit un électrochoc émotionnel : regard focus en haute tension, yeux écarquillés de panique, éclat de rire, seum après une défaite.
+2. **Comment l'exécuter ?**
+   - **Punch-in rapide** : `scale: 1.0` $\rightarrow$ `1.25 - 1.35`, centré sur la ligne des yeux / buste du personnage, durée `0.25s - 0.4s`, easing dynamique `power3.out`.
+   - **Micro-maintien** : laisser respirer l'émotion 1.5s à 2.5s pendant que l'expression joue.
+   - **Dézoom fluide** : retour doux vers `scale: 1.0` avec `power2.inOut` ou `sine.out`.
+
+---
+
 ## 🔍 2. Quand Zoomer, Dézoomer ou Glisser ?
 
 ### A. Quand ZOOMER ?

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Design — 16% Minimalist Keynote (5s Motion)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #030206;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: #030206;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95);
+        }
+        canvas {
+            width: 1920px;
+            height: 1080px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="5.0">
+        <canvas id="mainCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
+
+<script>
+// ==============================================================================
+// MOTEUR D'ANIMATION CANVAS 2D — REPRODUCTION EXACTE "16%" (5.0s)
+// ==============================================================================
+const canvas = document.getElementById('mainCanvas');
+const g = canvas.getContext('2d');
+const audioBgm = document.getElementById('audioBgm');
+
+const DURATION = 5.0;
+let isPlaying = false;
+let playbackTime = 0;
+let lastTimestamp = 0;
+let rafId = null;
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+const ease = {
+    linear: t => t,
+    out: t => 1 - Math.pow(1 - t, 3),
+    snappy: t => 1 - Math.pow(1 - t, 4),
+    smoothStep: t => t * t * (3 - 2 * t)
+};
+
+function drawScene(t) {
+    g.clearRect(0, 0, 1920, 1080);
+
+    // -------------------------------------------------------------------------
+    // 1. FOND NOIR SOMBRE AVEC LUMIÈRE VIOLETTE / POURPRE AU BAS (KEYNOTE PRO)
+    // -------------------------------------------------------------------------
+    g.fillStyle = '#030206';
+    g.fillRect(0, 0, 1920, 1080);
+
+    // Bande de lueur atmosphérique violette en bas (comme sur l'image de référence)
+    const auroraPulse = Math.sin(t * 2.0) * 0.05 + 0.35;
+    const auroraGrad = g.createLinearGradient(0, 720, 0, 1080);
+    auroraGrad.addColorStop(0, 'rgba(49, 10, 82, 0)');
+    auroraGrad.addColorStop(0.5, `rgba(74, 21, 110, ${auroraPulse * 0.6})`);
+    auroraGrad.addColorStop(1, `rgba(90, 24, 154, ${auroraPulse})`);
+    g.fillStyle = auroraGrad;
+    g.fillRect(0, 700, 1920, 380);
+
+    // Lueur radiale douce centrée en bas
+    const radGlow = g.createRadialGradient(960, 1080, 100, 960, 1080, 850);
+    radGlow.addColorStop(0, 'rgba(126, 34, 206, 0.45)');
+    radGlow.addColorStop(0.6, 'rgba(88, 28, 135, 0.15)');
+    radGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    g.fillStyle = radGlow;
+    g.fillRect(0, 500, 1920, 580);
+
+    // -------------------------------------------------------------------------
+    // 2. LE "16%" GÉANT MONUMENTAL AVEC COMPTEUR NUMÉRIQUE EN DIRECT
+    // -------------------------------------------------------------------------
+    const countP = ease.smoothStep(clamp(t / 1.4, 0, 1));
+    const currentNum = Math.round(lerp(0, 16, countP));
+
+    const riseP = ease.out(clamp(t / 1.2, 0, 1));
+    const textY = lerp(530, 480, riseP) + Math.sin(t * 1.8) * 4; // micro-respiration
+    const textScale = lerp(0.88, 1.0, riseP);
+
+    g.save();
+    g.translate(960, textY);
+    g.scale(textScale, textScale);
+
+    g.font = '800 410px "Inter", -apple-system, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.letterSpacing = '-10px';
+
+    // Dégradé vertical exact : Blanc pur en haut vers lavande violette en bas
+    const textGrad = g.createLinearGradient(0, -210, 0, 210);
+    textGrad.addColorStop(0, '#ffffff');
+    textGrad.addColorStop(0.55, '#f5efff');
+    textGrad.addColorStop(0.85, '#d3b8f5');
+    textGrad.addColorStop(1, '#bba1e8');
+    g.fillStyle = textGrad;
+
+    g.shadowColor = 'rgba(126, 34, 206, 0.3)';
+    g.shadowBlur = 35;
+    g.fillText(`${currentNum}%`, 0, 0);
+    g.shadowBlur = 0;
+    g.restore();
+
+    // -------------------------------------------------------------------------
+    // 3. SOUS-TITRE CINÉMATIQUE IDENTIQUE À LA RÉFÉRENCE
+    // "相比其他 144Hz 功耗降低"
+    // -------------------------------------------------------------------------
+    const subDelay = 0.8;
+    const subP = ease.out(clamp((t - subDelay) / 0.9, 0, 1));
+
+    if (subP > 0) {
+        g.save();
+        g.translate(960, 730 + Math.sin(t * 1.8) * 4);
+        g.globalAlpha = subP;
+
+        g.font = '500 40px "Inter", "Noto Sans SC", sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.letterSpacing = `${lerp(4, 2, subP)}px`;
+        g.fillStyle = '#f8fafc';
+        g.fillText('相比其他 144Hz 功耗降低', 0, 0);
+
+        // Note de bas de page en bas à droite
+        g.font = '400 13px "Inter", "Noto Sans SC", sans-serif';
+        g.textAlign = 'right';
+        g.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        g.fillText('*数据来源：高通实验室', 1920 - 70, 1080 - 45);
+        g.restore();
+    }
+
+    // =========================================================================
+    // RÈGLE 30 : FONDU DE FIN OBLIGATOIRE (4.2s à 5.0s)
+    // =========================================================================
+    if (t >= 4.2) {
+        const fadeP = clamp((t - 4.2) / 0.8, 0, 1);
+        g.save();
+        g.fillStyle = `rgba(0, 0, 0, ${fadeP})`;
+        g.fillRect(0, 0, 1920, 1080);
+        g.restore();
+    }
+}
+
+// ==============================================================================
+// CONTRAT STUDIO VIBEEDITOR
+// ==============================================================================
+window.renderAt = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    drawScene(playbackTime);
+};
+
+window.DURATION = DURATION;
+window.duration = DURATION;
+window.__timeline = {
+    duration: DURATION,
+    currentTime: 0,
+    fps: 60,
+    seek: function(t) {
+        window.renderAt(t);
+    }
+};
+
+window.syncAudioTimeline = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    if (window.__timeline) window.__timeline.currentTime = playbackTime;
+
+    let masterBgmVol = 0.35;
+    if (playbackTime >= 4.2) {
+        masterBgmVol = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+    }
+    audioBgm.volume = masterBgmVol;
+};
+
+function loop(timestamp) {
+    if (!isPlaying) return;
+
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const dt = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    playbackTime += dt;
+    if (window.__timeline) window.__timeline.currentTime = playbackTime;
+
+    let masterBgmVol = 0.35;
+    if (playbackTime >= 4.2) {
+        masterBgmVol = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+    }
+    audioBgm.volume = masterBgmVol;
+
+    drawScene(playbackTime);
+
+    if (playbackTime >= DURATION) {
+        pause();
+        return;
+    }
+
+    rafId = requestAnimationFrame(loop);
+}
+
+function play() {
+    if (isPlaying) return;
+    isPlaying = true;
+    lastTimestamp = 0;
+    audioBgm.volume = 0.35;
+    audioBgm.currentTime = playbackTime % audioBgm.duration;
+    audioBgm.play().catch(() => {});
+    rafId = requestAnimationFrame(loop);
+}
+
+function pause() {
+    isPlaying = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    audioBgm.pause();
+}
+
+window.play = play;
+window.pause = pause;
+window.seek = function(t) { window.renderAt(t); };
+
+window.addEventListener('DOMContentLoaded', () => {
+    window.renderAt(0);
+});
+
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying ? pause() : play();
+    }
+});
+</script>
+</body>
+</html>
+

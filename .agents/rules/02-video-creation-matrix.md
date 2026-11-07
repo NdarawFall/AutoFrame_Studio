@@ -118,6 +118,35 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
       - *Rayon de courbure unique (`--radius-card`)* partagé par toutes les cartes de la vidéo (24px–32px ou 40px–48px). Badges à 999px.
       - *Règle 60-30-10 structurelle* : 60% surface neutre de fond, 30% cartes et structure, 10% accentuation unique. Maximum 2 couleurs par bloc de texte.
 
+26. **Synchronisation Audio Stable & Anti-Saccades (Format MP3 & Zéro Seek en Pleine Lecture)** :
+    - **Format Audio Obligatoire** : Toujours utiliser des fichiers audio compressés `.mp3` (192 kbps) mis en cache RAM intégrale par le navigateur. Bannir formellement les fichiers lourds `.wav` non compressés qui créent des stalls de streaming et des micro-coupures.
+    - **Règle d'or de Lecture Continue (`playing === true`)** : **NE JAMAIS réassigner `audio.currentTime`** pour de simples micro-fluctuations d'horloge (< 1.2s). Réassigner `currentTime` pendant la lecture force Chromium à purger son buffer audio matériel, générant un micro-silence/saccade audible ! Ne réaligner en cours de lecture que si le drift dépasse **1.5 seconde** ou lors d'un saut explicite (`seek`).
+    - **Pause & Scrubbing** : Lorsque l'utilisateur met en pause ou déplace manuellement le curseur de timeline, mettre à jour `audio.currentTime` immédiatement.
+
+27. **Ancrage Physique Strict des Ombres Portées au Sol (Ground-Pinning & Zéro Ombre Flottante)** :
+    - **L'Ombre reste au Sol** : Une ombre portée au sol doit **TOUJOURS rester ancrée sur le sol (`groundY = 820`)**.
+    - **Zéro Rotation d'Ombre** : **INTERDICTION ABSOLUE** d'intégrer l'ombre à l'intérieur de la matrice de transformation (`ctx.rotate()`) d'un personnage qui saute ou pivote en l'air. L'ombre ne doit JAMAIS tourner avec le corps ni flotter dans les airs à l'envers sous les pieds d'un joueur en suspension ou lors d'un ciseau !
+    - **Atténuation avec l'Altitude** : Lorsque le personnage s'élève en altitude, son ombre reste au sol à `(x, groundY)`, s'estompe en opacité (`alpha` décroît avec l'altitude) et diffuse en taille.
+
+28. **Biomécanique & Cohérence Vectorielle du Geste Sportif (Retourné Acrobatique / Ciseau)** :
+    - Pour toute figure acrobatique (ciseau retourné, bicyclette), la cinématique doit respecter l'orientation exacte du terrain et du but :
+      - **Bascule de la Tête vers le But** : Si le but est à droite (+X), le joueur a le dos au but. Lors de l'impulsion, sa tête tombe **vers la droite** (rotation horaire du corps vers +X), et non vers la gauche à contresens.
+      - **Trajectoire Horaire du Pied de Frappe ("Aiguille d'une Montre")** : Le pied de tir part d'en bas/gauche et effectue une rotation horaire de la gauche vers la droite pour fouetter le ballon et le catapulter vers la lucarne adverse.
+      - **Retombée Complète & Atterrissage au Sol** : Un joueur en suspension ne doit JAMAIS rester figé en l'air après son tir ! Il retombe sur le terrain (altitude -> 0), atterrit sur le dos sur la pelouse (groundY = 820), amortit avec les bras puis célèbre au sol sur le gazon (buste redressé, poings levés au ciel) bien cadré sans chevauchement avec les bannières d'habillage.
+
+29. **Ancrage Physique du Contact au Sol (Grounding Invariant & Zéro Vol en Course)** :
+    - **Loi Inviolable du Contact au Sol** : Pour tout personnage debout, marchant ou courant sur la pelouse, **le pied d'appui (Stance Foot) DOIT obligatoirement être en contact direct avec la ligne de sol (`groundY = 820px`)**.
+    - **Interdiction Formelle du "Vol en Courant"** :
+      - Lors d'une course, l'altitude de vol est STRICTEMENT NULLE (`altitude = 0`). Le personnage court sur le gazon, et non dans les airs !
+      - Calcul mathématique de l'origine : Avec un pivot de rotation au bassin (`translate(0, -65)`) et des jambes de hauteur 185px, la base au sol doit être `basePivotY = groundY - 120 = 700px` pour que les crampons touchent exactement la pelouse à `820px`.
+    - **Cinématique d'Impulsion** : Le personnage ne peut décoller en altitude (> 0) qu'APRÈS sa phase d'appel au sol (flexion des genoux / impulsion musculaire).
+    - **Cinématique d'Atterrissage** : Après tout saut ou figure aérienne, le personnage retombe au sol jusqu'à ce que son altitude revienne strictement à 0 sur la pelouse.
+
+  * **Règle 30 : Fondu de Fin Obligatoire (Vidéo & Musique / Outro Fade Out)** :
+    - **OBLIGATION SYSTÉMATIQUE SUR TOUTES LES VIDÉOS** : Chaque composition vidéo générée doit impérativement comporter un fondu de sortie (*Fade Out*) sur les 2.5 à 4 dernières secondes.
+    - **Fondu Vidéo** : Fondu progressif vers le noir (`rgba(0, 0, 0, alpha)`) ou vers le blanc studio (`rgba(255, 255, 255, alpha)`) selon le mode, où `alpha = clamp((t - (duration - fadeTime)) / fadeTime, 0, 1)`.
+    - **Fondu Audio Musical** : La piste musicale de fond (`audioBgm`) doit obligatoirement baisser son volume progressivement jusqu'à 0 (`audioBgm.volume = baseVol * clamp((duration - t) / fadeTime, 0, 1)`). Aucune vidéo ne doit se terminer par une coupure nette ou brutale du son ou de l'image.
+
 ---
 
 ## 2. Boîte à Outils de l'IA (`07_Scripts/`)
