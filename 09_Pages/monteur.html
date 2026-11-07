@@ -74,16 +74,16 @@
             font-weight: 900;
             font-size: 16px;
             letter-spacing: -0.4px;
-            background: linear-gradient(135deg, #ffffff 15%, #60a5fa 55%, #3b82f6 100%);
+            background: linear-gradient(135deg, #ffffff 15%, #ff7b8a 52%, #ff2e43 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
         }
 
         .badge-monteur {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(220, 38, 38, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.35);
             font-size: 11px;
             font-weight: 700;
             padding: 2px 7px;
@@ -181,8 +181,8 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #2563eb;
-            border: 1px solid #3b82f6;
+            background: #dc2626;
+            border: 1px solid #ef4444;
             color: #ffffff;
             font-weight: 700;
             font-size: 13px;
@@ -190,13 +190,14 @@
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
         }
 
         .btn-create-client:hover {
             transform: translateY(-1px);
-            background: #1d4ed8;
-            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+            background: #b91c1c;
+            border-color: #f87171;
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.5);
         }
 
         /* --- BARRE CLIENTS COMPACTE --- */
@@ -249,9 +250,9 @@
         }
 
         .client-card.active {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(30, 41, 59, 0.4));
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 1px #3b82f6, 0 6px 18px rgba(37, 99, 235, 0.2);
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(30, 20, 24, 0.4));
+            border-color: #ef4444;
+            box-shadow: 0 0 0 1px #ef4444, 0 6px 18px rgba(220, 38, 38, 0.22);
         }
 
         .client-card-name {
@@ -275,8 +276,8 @@
         }
 
         .client-card.active .client-asset-count {
-            background: rgba(59, 130, 246, 0.25);
-            color: #93c5fd;
+            background: rgba(220, 38, 38, 0.25);
+            color: #fca5a5;
         }
 
         /* --- SELECTED CLIENT WORKSPACE --- */
@@ -308,13 +309,14 @@
             width: 38px;
             height: 38px;
             border-radius: 8px;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background: linear-gradient(135deg, #991b1b, #ef4444);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             font-size: 15px;
             color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .client-name-large {
@@ -494,8 +496,8 @@
         }
 
         .dropzone:hover, .dropzone.dragover {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.08);
+            border-color: #ef4444;
+            background: rgba(220, 38, 38, 0.08);
         }
 
         .dropzone-icon {
@@ -506,7 +508,7 @@
         }
 
         .dropzone:hover .dropzone-icon {
-            color: #60a5fa;
+            color: #f87171;
         }
 
         .dropzone-text {
@@ -715,8 +717,8 @@
         }
 
         .form-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
         }
 
         .modal-subfolders-preview {
@@ -1076,7 +1078,7 @@
         <div class="modal-card">
             <div class="modal-title-group">
                 <h2>Nouveau Dossier Client</h2>
-                <p>Création automatique dans <code style="color:#60a5fa;">Clients/&lt;nom_client&gt;/</code></p>
+                <p>Création automatique dans <code style="color:#f87171;">Clients/&lt;nom_client&gt;/</code></p>
             </div>
 
             <div class="form-group">
