@@ -508,12 +508,12 @@ function renderScene1(t) {
 
 // =============================================================================
 // SCENE 2 : SIENNA BROOKS MEMBER CARD [10.0s - 20.0s]
-// Dark frosted card, live connecting spinner -> Connected badge, tap add member
+// Dark frosted card, generated studio portrait, zero dead space, perfect Apple UI
 // =============================================================================
 function renderScene2(tRel) {
-    // Fond sombre épuré avec lueur d'ambiance violette/indigo
-    const bgGrad = g.createRadialGradient(960, 540, 50, 960, 540, 800);
-    bgGrad.addColorStop(0, '#0c0d18');
+    // Fond sombre épuré avec lueur d'ambiance subtile
+    const bgGrad = g.createRadialGradient(960, 540, 50, 960, 540, 850);
+    bgGrad.addColorStop(0, '#0c0e18');
     bgGrad.addColorStop(0.5, '#07080e');
     bgGrad.addColorStop(1, '#000000');
     g.fillStyle = bgGrad;
@@ -523,7 +523,7 @@ function renderScene2(tRel) {
     for (let i = 0; i < 20; i++) {
         const px = (i * 97 + tRel * 15) % 1920;
         const py = (i * 61 + Math.sin(tRel * 0.8 + i) * 30) % 1080;
-        const pAlpha = 0.15 + 0.15 * Math.sin(tRel * 2 + i);
+        const pAlpha = 0.12 + 0.12 * Math.sin(tRel * 2 + i);
         g.fillStyle = \`rgba(147, 197, 253, \${pAlpha})\`;
         g.beginPath();
         g.arc(px, py, 1.5, 0, Math.PI * 2);
@@ -533,12 +533,13 @@ function renderScene2(tRel) {
     // Animation d'entrée de la carte (3D tilt & spring scale)
     const cardEntrance = ease.spring(clamp(tRel / 1.4, 0, 1));
     const cardScale = lerp(0.85, 1.0, cardEntrance) + Math.sin(tRel * 1.2) * 0.008;
-    const cardY = lerp(620, 540, cardEntrance) + Math.sin(tRel * 1.4) * 5;
-    const cardRotation = (1 - cardEntrance) * -0.06 + Math.sin(tRel * 0.9) * 0.012;
+    const cardY = lerp(620, 540, cardEntrance) + Math.sin(tRel * 1.4) * 4;
+    const cardRotation = (1 - cardEntrance) * -0.05 + Math.sin(tRel * 0.9) * 0.01;
 
-    const cardW = 520;
+    // Dimensions équilibrées : zéro espace mort sous l'image
+    const cardW = 540;
     const cardH = 680;
-    const cardR = 48;
+    const cardR = 52;
 
     g.save();
     g.translate(960, cardY);
@@ -548,9 +549,9 @@ function renderScene2(tRel) {
     // Ombre portée profonde et lumineuse
     g.save();
     roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
-    g.shadowColor = 'rgba(30, 41, 59, 0.6)';
-    g.shadowBlur = 60;
-    g.shadowOffsetY = 28;
+    g.shadowColor = 'rgba(0, 0, 0, 0.85)';
+    g.shadowBlur = 75;
+    g.shadowOffsetY = 35;
     g.fillStyle = '#11131c';
     g.fill();
     g.restore();
@@ -558,31 +559,31 @@ function renderScene2(tRel) {
     // Fond de la carte en verre dépoli noir profond
     roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
     const cardGrad = g.createLinearGradient(-cardW / 2, -cardH / 2, cardW / 2, cardH / 2);
-    cardGrad.addColorStop(0, '#1c1e29');
-    cardGrad.addColorStop(0.5, '#12141c');
-    cardGrad.addColorStop(1, '#0e0f16');
+    cardGrad.addColorStop(0, '#1c1f2e');
+    cardGrad.addColorStop(0.5, '#131520');
+    cardGrad.addColorStop(1, '#0c0d14');
     g.fillStyle = cardGrad;
     g.fill();
 
     // Bordure spéculaire fine
     const borderGrad = g.createLinearGradient(-cardW / 2, -cardH / 2, cardW / 2, cardH / 2);
-    borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
-    borderGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.06)');
-    borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.16)');
+    borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.32)');
+    borderGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.08)');
+    borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
     g.lineWidth = 1.6;
     g.strokeStyle = borderGrad;
     g.stroke();
 
     // Titre "Sienna Brooks"
-    g.font = '700 32px "Inter", sans-serif';
+    g.font = '700 36px "Inter", sans-serif';
     g.fillStyle = '#ffffff';
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText('Sienna Brooks', 0, -cardH / 2 + 65);
+    g.fillText('Sienna Brooks', 0, -cardH / 2 + 58);
 
     // Statut : "Connecting" avec spinner animé puis "Connected" à tRel >= 3.8s
     const isConnected = tRel >= 3.8;
-    const statusY = -cardH / 2 + 104;
+    const statusY = -cardH / 2 + 98;
 
     if (!isConnected) {
         // Spinner Apple à 8 rayons
@@ -620,12 +621,12 @@ function renderScene2(tRel) {
         g.restore();
     }
 
-    // Photo centrale de Sienna Brooks
-    const photoW = cardW - 60;
-    const photoH = 340;
+    // Photo centrale de Sienna Brooks (Agrandie et ajustée pour occuper tout l'espace disponible)
+    const photoW = cardW - 48; // 492px de large
+    const photoH = 430;        // 430px de haut (remplit élégamment jusqu'au pied)
     const photoX = -photoW / 2;
-    const photoY = -cardH / 2 + 140;
-    const photoR = 32;
+    const photoY = -cardH / 2 + 130;
+    const photoR = 36;
 
     g.save();
     roundRect(g, photoX, photoY, photoW, photoH, photoR);
@@ -636,7 +637,7 @@ function renderScene2(tRel) {
     g.fillRect(photoX, photoY, photoW, photoH);
 
     if (siennaFaceImg.complete && siennaFaceImg.naturalWidth > 0) {
-        const photoZoom = 1.0 + Math.sin(tRel * 0.8) * 0.02;
+        const photoZoom = 1.0 + Math.sin(tRel * 0.8) * 0.015;
         g.save();
         g.translate(0, photoY + photoH / 2);
         g.scale(photoZoom, photoZoom);
@@ -645,25 +646,25 @@ function renderScene2(tRel) {
     }
 
     // Vignette douce sur les bords de la photo
-    const photoVignette = g.createRadialGradient(0, photoY + photoH / 2, photoW * 0.25, 0, photoY + photoH / 2, photoW * 0.65);
+    const photoVignette = g.createRadialGradient(0, photoY + photoH / 2, photoW * 0.35, 0, photoY + photoH / 2, photoW * 0.7);
     photoVignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    photoVignette.addColorStop(1, 'rgba(10, 12, 20, 0.35)');
+    photoVignette.addColorStop(1, 'rgba(8, 10, 18, 0.4)');
     g.fillStyle = photoVignette;
     g.fillRect(photoX, photoY, photoW, photoH);
     g.restore();
 
     // Bordure fine de la photo
     roundRect(g, photoX, photoY, photoW, photoH, photoR);
-    g.lineWidth = 1;
-    g.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    g.lineWidth = 1.2;
+    g.strokeStyle = 'rgba(255, 255, 255, 0.14)';
     g.stroke();
 
-    // Bas de carte : Avatar + @sienna32 + Bouton "+ Add member"
-    const footerY = cardH / 2 - 58;
+    // Bas de carte : Avatar profil agrandi + @sienna32 + Bouton "+ Add member"
+    const footerY = photoY + photoH + 46;
 
-    // Avatar miniature rond
-    const avX = -cardW / 2 + 56;
-    const avR = 20;
+    // Avatar miniature rond agrandi (diamètre 50px)
+    const avX = -cardW / 2 + 52;
+    const avR = 25;
     g.save();
     g.beginPath();
     g.arc(avX, footerY, avR, 0, Math.PI * 2);
@@ -677,50 +678,50 @@ function renderScene2(tRel) {
     g.restore();
     g.beginPath();
     g.arc(avX, footerY, avR, 0, Math.PI * 2);
-    g.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    g.lineWidth = 1.5;
+    g.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+    g.lineWidth = 2.0;
     g.stroke();
 
     // Point de présence vert
     g.beginPath();
-    g.arc(avX + 13, footerY + 12, 4.5, 0, Math.PI * 2);
+    g.arc(avX + 17, footerY + 16, 5.5, 0, Math.PI * 2);
     g.fillStyle = '#22c55e';
     g.fill();
     g.strokeStyle = '#12141c';
-    g.lineWidth = 1.5;
+    g.lineWidth = 2.0;
     g.stroke();
 
-    // Textes @sienna32 & "12m ago"
-    g.font = '600 15px "Inter", sans-serif';
+    // Textes @sienna32 & "12m ago" (agrandis et bien lisibles)
+    g.font = '700 17px "Inter", sans-serif';
     g.fillStyle = '#ffffff';
     g.textAlign = 'left';
-    g.fillText('@sienna32', avX + 28, footerY - 7);
+    g.fillText('@sienna32', avX + 34, footerY - 9);
 
-    g.font = '400 12px "Inter", sans-serif';
-    g.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    g.fillText('12m ago', avX + 28, footerY + 11);
+    g.font = '500 13px "Inter", sans-serif';
+    g.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    g.fillText('12m ago', avX + 34, footerY + 12);
 
     // Bouton "+ Add member" avec haptique à tRel >= 6.5s
     const isBtnTapped = tRel >= 6.5 && tRel <= 7.2;
     const isAdded = tRel > 7.0;
     const btnScale = isBtnTapped ? 0.94 : 1.0;
-    const btnW = 168;
-    const btnH = 46;
-    const btnX = cardW / 2 - 32 - btnW;
+    const btnW = 180;
+    const btnH = 50;
+    const btnX = cardW / 2 - 24 - btnW;
 
     g.save();
     g.translate(btnX + btnW / 2, footerY);
     g.scale(btnScale, btnScale);
 
-    roundRect(g, -btnW / 2, -btnH / 2, btnW, btnH, 14);
+    roundRect(g, -btnW / 2, -btnH / 2, btnW, btnH, 16);
     if (!isAdded) {
         g.fillStyle = isBtnTapped ? '#33374b' : '#232635';
         g.fill();
-        g.strokeStyle = isBtnTapped ? '#60a5fa' : 'rgba(255, 255, 255, 0.15)';
-        g.lineWidth = 1.2;
+        g.strokeStyle = isBtnTapped ? '#60a5fa' : 'rgba(255, 255, 255, 0.18)';
+        g.lineWidth = 1.4;
         g.stroke();
 
-        g.font = '600 14px "Inter", sans-serif';
+        g.font = '600 15px "Inter", sans-serif';
         g.fillStyle = '#ffffff';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
@@ -730,10 +731,10 @@ function renderScene2(tRel) {
         g.fillStyle = '#15803d';
         g.fill();
         g.strokeStyle = '#4ade80';
-        g.lineWidth = 1.2;
+        g.lineWidth = 1.4;
         g.stroke();
 
-        g.font = '600 14px "Inter", sans-serif';
+        g.font = '600 15px "Inter", sans-serif';
         g.fillStyle = '#ffffff';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
@@ -744,14 +745,14 @@ function renderScene2(tRel) {
     // Effet d'impulsion tactile au tap
     if (isBtnTapped) {
         const tapProgress = (tRel - 6.5) / 0.7;
-        const tapR = 30 * tapProgress;
+        const tapR = 34 * tapProgress;
         const tapAlpha = (1 - tapProgress) * 0.7;
         g.save();
         g.translate(btnX + btnW / 2, footerY);
         g.beginPath();
         g.arc(0, 0, tapR, 0, Math.PI * 2);
         g.strokeStyle = \`rgba(96, 165, 250, \${tapAlpha})\`;
-        g.lineWidth = 2;
+        g.lineWidth = 2.2;
         g.stroke();
         g.restore();
     }
