@@ -111,6 +111,9 @@ siennaFaceImg.src = 'data:image/jpeg;base64,${siennaFaceB64}';
 const siennaAvatarImg = new Image();
 siennaAvatarImg.src = 'data:image/jpeg;base64,${siennaAvatarB64}';
 
+// Véritable logo officiel Apple vectoriel (Path2D officiel viewBox 0 0 256 315)
+const appleOfficialPath = new Path2D("M213.803 167.03c.442 47.58 41.74 63.413 42.197 63.615c-.35 1.116-6.599 22.563-21.757 44.716c-13.104 19.153-26.705 38.235-48.13 38.63c-21.05.388-27.82-12.483-51.888-12.483c-24.061 0-31.582 12.088-51.51 12.871c-20.68.783-36.428-20.71-49.64-39.793c-27-39.033-47.633-110.3-19.928-158.406c13.763-23.89 38.36-39.017 65.056-39.405c20.307-.387 39.475 13.662 51.889 13.662c12.406 0 35.699-16.895 60.186-14.414c10.25.427 39.026 4.14 57.503 31.186c-1.49.923-34.335 20.044-33.978 59.822M174.24 50.199c10.98-13.29 18.369-31.79 16.353-50.199c-15.826.636-34.962 10.546-46.314 23.828c-10.173 11.763-19.082 30.589-16.678 48.633c17.64 1.365 35.66-8.964 46.64-22.262");
+
 // =============================================================================
 // SCENE 1 : SMARTPHONE AI VOICE ASSISTANT [0.0s - 10.0s]
 // =============================================================================
@@ -508,50 +511,51 @@ function renderScene1(t) {
 
 // =============================================================================
 // SCENE 2 : SIENNA BROOKS MEMBER CARD [10.0s - 20.0s]
-// Dark frosted card, generated studio portrait, zero dead space, perfect Apple UI
+// Dark frosted card, aspect ratio 1:1 parfait sans déformation, espace aéré,
+// avatar agrandi (64px) et textes généreux
 // =============================================================================
 function renderScene2(tRel) {
-    // Fond sombre épuré avec lueur d'ambiance subtile
+    // Fond sombre épuré professionnel sans bruit ni étoiles
     const bgGrad = g.createRadialGradient(960, 540, 50, 960, 540, 850);
-    bgGrad.addColorStop(0, '#0c0e18');
-    bgGrad.addColorStop(0.5, '#07080e');
+    bgGrad.addColorStop(0, '#0d0f1a');
+    bgGrad.addColorStop(0.6, '#06070c');
     bgGrad.addColorStop(1, '#000000');
     g.fillStyle = bgGrad;
     g.fillRect(0, 0, 1920, 1080);
 
-    // Particules ambiantes douces
-    for (let i = 0; i < 20; i++) {
-        const px = (i * 97 + tRel * 15) % 1920;
-        const py = (i * 61 + Math.sin(tRel * 0.8 + i) * 30) % 1080;
-        const pAlpha = 0.12 + 0.12 * Math.sin(tRel * 2 + i);
+    // Particules ambiantes subtiles
+    for (let i = 0; i < 15; i++) {
+        const px = (i * 131 + tRel * 12) % 1920;
+        const py = (i * 73 + Math.sin(tRel * 0.7 + i) * 20) % 1080;
+        const pAlpha = 0.08 + 0.08 * Math.sin(tRel * 1.8 + i);
         g.fillStyle = \`rgba(147, 197, 253, \${pAlpha})\`;
         g.beginPath();
-        g.arc(px, py, 1.5, 0, Math.PI * 2);
+        g.arc(px, py, 1.2, 0, Math.PI * 2);
         g.fill();
     }
 
     // Animation d'entrée de la carte (3D tilt & spring scale)
-    const cardEntrance = ease.spring(clamp(tRel / 1.4, 0, 1));
-    const cardScale = lerp(0.85, 1.0, cardEntrance) + Math.sin(tRel * 1.2) * 0.008;
-    const cardY = lerp(620, 540, cardEntrance) + Math.sin(tRel * 1.4) * 4;
-    const cardRotation = (1 - cardEntrance) * -0.05 + Math.sin(tRel * 0.9) * 0.01;
+    const cardEntrance = ease.spring(clamp(tRel / 1.3, 0, 1));
+    const cardScale = lerp(0.88, 1.0, cardEntrance) + Math.sin(tRel * 1.2) * 0.006;
+    const cardY = lerp(600, 540, cardEntrance) + Math.sin(tRel * 1.4) * 4;
+    const cardRotation = (1 - cardEntrance) * -0.04 + Math.sin(tRel * 0.9) * 0.008;
 
-    // Dimensions équilibrées : zéro espace mort sous l'image
-    const cardW = 540;
-    const cardH = 680;
-    const cardR = 52;
+    // Dimensions géométriques optimales (hauteur ajustée pour un espace aéré parfait)
+    const cardW = 560;
+    const cardH = 710;
+    const cardR = 54;
 
     g.save();
     g.translate(960, cardY);
     g.rotate(cardRotation);
     g.scale(cardScale, cardScale);
 
-    // Ombre portée profonde et lumineuse
+    // Ombre portée profonde et douce
     g.save();
     roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
-    g.shadowColor = 'rgba(0, 0, 0, 0.85)';
-    g.shadowBlur = 75;
-    g.shadowOffsetY = 35;
+    g.shadowColor = 'rgba(0, 0, 0, 0.9)';
+    g.shadowBlur = 80;
+    g.shadowOffsetY = 38;
     g.fillStyle = '#11131c';
     g.fill();
     g.restore();
@@ -579,15 +583,15 @@ function renderScene2(tRel) {
     g.fillStyle = '#ffffff';
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText('Sienna Brooks', 0, -cardH / 2 + 58);
+    g.fillText('Sienna Brooks', 0, -cardH / 2 + 56);
 
-    // Statut : "Connecting" avec spinner animé puis "Connected" à tRel >= 3.8s
-    const isConnected = tRel >= 3.8;
-    const statusY = -cardH / 2 + 98;
+    // Statut : "Connecting" avec spinner animé puis "Connected" à tRel >= 3.6s
+    const isConnected = tRel >= 3.6;
+    const statusY = -cardH / 2 + 96;
 
     if (!isConnected) {
         // Spinner Apple à 8 rayons
-        const spinnerX = -46;
+        const spinnerX = -48;
         const spinAngle = tRel * 9.0;
         g.save();
         g.translate(spinnerX, statusY);
@@ -596,7 +600,7 @@ function renderScene2(tRel) {
             const rayAngle = (i / 8) * Math.PI * 2;
             const rayAlpha = 0.2 + 0.8 * (i / 8);
             g.strokeStyle = \`rgba(255, 255, 255, \${rayAlpha})\`;
-            g.lineWidth = 2;
+            g.lineWidth = 2.2;
             g.lineCap = 'round';
             g.beginPath();
             g.moveTo(Math.cos(rayAngle) * 5, Math.sin(rayAngle) * 5);
@@ -611,7 +615,7 @@ function renderScene2(tRel) {
         g.fillText('Connecting', -30, statusY);
     } else {
         // Badge vert "Connected"
-        const badgeP = ease.spring(clamp((tRel - 3.8) / 0.8, 0, 1));
+        const badgeP = ease.spring(clamp((tRel - 3.6) / 0.8, 0, 1));
         g.save();
         g.scale(badgeP, badgeP);
         g.font = '600 15px "Inter", sans-serif';
@@ -621,50 +625,50 @@ function renderScene2(tRel) {
         g.restore();
     }
 
-    // Photo centrale de Sienna Brooks (Agrandie et ajustée pour occuper tout l'espace disponible)
-    const photoW = cardW - 48; // 492px de large
-    const photoH = 430;        // 430px de haut (remplit élégamment jusqu'au pied)
-    const photoX = -photoW / 2;
-    const photoY = -cardH / 2 + 130;
+    // Photo centrale de Sienna Brooks :
+    // Format carré 1:1 STRICT (480px x 480px) pour préserver les proportions naturelles sans étirement
+    const photoSize = 480;
+    const photoX = -photoSize / 2;
+    const photoY = -cardH / 2 + 124;
     const photoR = 36;
 
     g.save();
-    roundRect(g, photoX, photoY, photoW, photoH, photoR);
+    roundRect(g, photoX, photoY, photoSize, photoSize, photoR);
     g.clip();
 
-    // Fond photo
     g.fillStyle = '#1e2130';
-    g.fillRect(photoX, photoY, photoW, photoH);
+    g.fillRect(photoX, photoY, photoSize, photoSize);
 
     if (siennaFaceImg.complete && siennaFaceImg.naturalWidth > 0) {
-        const photoZoom = 1.0 + Math.sin(tRel * 0.8) * 0.015;
+        const photoZoom = 1.0 + Math.sin(tRel * 0.8) * 0.012;
         g.save();
-        g.translate(0, photoY + photoH / 2);
+        g.translate(0, photoY + photoSize / 2);
         g.scale(photoZoom, photoZoom);
-        g.drawImage(siennaFaceImg, -photoW / 2, -photoH / 2, photoW, photoH);
+        // Dessin carré 1:1 strict : AUCUNE DÉFORMATION
+        g.drawImage(siennaFaceImg, -photoSize / 2, -photoSize / 2, photoSize, photoSize);
         g.restore();
     }
 
     // Vignette douce sur les bords de la photo
-    const photoVignette = g.createRadialGradient(0, photoY + photoH / 2, photoW * 0.35, 0, photoY + photoH / 2, photoW * 0.7);
+    const photoVignette = g.createRadialGradient(0, photoY + photoSize / 2, photoSize * 0.4, 0, photoY + photoSize / 2, photoSize * 0.72);
     photoVignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    photoVignette.addColorStop(1, 'rgba(8, 10, 18, 0.4)');
+    photoVignette.addColorStop(1, 'rgba(8, 10, 18, 0.35)');
     g.fillStyle = photoVignette;
-    g.fillRect(photoX, photoY, photoW, photoH);
+    g.fillRect(photoX, photoY, photoSize, photoSize);
     g.restore();
 
     // Bordure fine de la photo
-    roundRect(g, photoX, photoY, photoW, photoH, photoR);
+    roundRect(g, photoX, photoY, photoSize, photoSize, photoR);
     g.lineWidth = 1.2;
-    g.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+    g.strokeStyle = 'rgba(255, 255, 255, 0.15)';
     g.stroke();
 
-    // Bas de carte : Avatar profil agrandi + @sienna32 + Bouton "+ Add member"
-    const footerY = photoY + photoH + 46;
+    // Bas de carte : ESPACE AÉRÉ ÉQUILIBRÉ sous l'image (24px d'espace), avatar profil grand & généreux
+    const footerY = photoY + photoSize + 46;
 
-    // Avatar miniature rond agrandi (diamètre 50px)
-    const avX = -cardW / 2 + 52;
-    const avR = 25;
+    // Avatar miniature rond agrandi (diamètre 60px, rayon 30px)
+    const avX = -cardW / 2 + 62;
+    const avR = 30;
     g.save();
     g.beginPath();
     g.arc(avX, footerY, avR, 0, Math.PI * 2);
@@ -678,50 +682,51 @@ function renderScene2(tRel) {
     g.restore();
     g.beginPath();
     g.arc(avX, footerY, avR, 0, Math.PI * 2);
-    g.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+    g.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     g.lineWidth = 2.0;
     g.stroke();
 
     // Point de présence vert
     g.beginPath();
-    g.arc(avX + 17, footerY + 16, 5.5, 0, Math.PI * 2);
+    g.arc(avX + 20, footerY + 20, 6.5, 0, Math.PI * 2);
     g.fillStyle = '#22c55e';
     g.fill();
     g.strokeStyle = '#12141c';
-    g.lineWidth = 2.0;
+    g.lineWidth = 2.2;
     g.stroke();
 
-    // Textes @sienna32 & "12m ago" (agrandis et bien lisibles)
-    g.font = '700 17px "Inter", sans-serif';
+    // Textes @sienna32 & "12m ago" (très nets, grands et bien visibles)
+    g.font = '700 20px "Inter", sans-serif';
     g.fillStyle = '#ffffff';
     g.textAlign = 'left';
-    g.fillText('@sienna32', avX + 34, footerY - 9);
+    g.textBaseline = 'middle';
+    g.fillText('@sienna32', avX + 42, footerY - 11);
 
-    g.font = '500 13px "Inter", sans-serif';
-    g.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    g.fillText('12m ago', avX + 34, footerY + 12);
+    g.font = '500 14px "Inter", sans-serif';
+    g.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    g.fillText('12m ago', avX + 42, footerY + 14);
 
-    // Bouton "+ Add member" avec haptique à tRel >= 6.5s
-    const isBtnTapped = tRel >= 6.5 && tRel <= 7.2;
-    const isAdded = tRel > 7.0;
+    // Bouton "+ Add member" avec haptique à tRel >= 6.0s
+    const isBtnTapped = tRel >= 6.0 && tRel <= 6.7;
+    const isAdded = tRel > 6.6;
     const btnScale = isBtnTapped ? 0.94 : 1.0;
-    const btnW = 180;
-    const btnH = 50;
-    const btnX = cardW / 2 - 24 - btnW;
+    const btnW = 186;
+    const btnH = 54;
+    const btnX = cardW / 2 - 28 - btnW;
 
     g.save();
     g.translate(btnX + btnW / 2, footerY);
     g.scale(btnScale, btnScale);
 
-    roundRect(g, -btnW / 2, -btnH / 2, btnW, btnH, 16);
+    roundRect(g, -btnW / 2, -btnH / 2, btnW, btnH, 18);
     if (!isAdded) {
-        g.fillStyle = isBtnTapped ? '#33374b' : '#232635';
+        g.fillStyle = isBtnTapped ? '#33374b' : '#222533';
         g.fill();
-        g.strokeStyle = isBtnTapped ? '#60a5fa' : 'rgba(255, 255, 255, 0.18)';
+        g.strokeStyle = isBtnTapped ? '#60a5fa' : 'rgba(255, 255, 255, 0.2)';
         g.lineWidth = 1.4;
         g.stroke();
 
-        g.font = '600 15px "Inter", sans-serif';
+        g.font = '600 16px "Inter", sans-serif';
         g.fillStyle = '#ffffff';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
@@ -734,7 +739,7 @@ function renderScene2(tRel) {
         g.lineWidth = 1.4;
         g.stroke();
 
-        g.font = '600 15px "Inter", sans-serif';
+        g.font = '600 16px "Inter", sans-serif';
         g.fillStyle = '#ffffff';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
@@ -744,15 +749,15 @@ function renderScene2(tRel) {
 
     // Effet d'impulsion tactile au tap
     if (isBtnTapped) {
-        const tapProgress = (tRel - 6.5) / 0.7;
-        const tapR = 34 * tapProgress;
-        const tapAlpha = (1 - tapProgress) * 0.7;
+        const tapProgress = (tRel - 6.0) / 0.7;
+        const tapR = 36 * tapProgress;
+        const tapAlpha = (1 - tapProgress) * 0.75;
         g.save();
         g.translate(btnX + btnW / 2, footerY);
         g.beginPath();
         g.arc(0, 0, tapR, 0, Math.PI * 2);
         g.strokeStyle = \`rgba(96, 165, 250, \${tapAlpha})\`;
-        g.lineWidth = 2.2;
+        g.lineWidth = 2.4;
         g.stroke();
         g.restore();
     }
@@ -763,7 +768,8 @@ function renderScene2(tRel) {
 // =============================================================================
 // SCENE 3 : APPLE CARD TYPOGRAPHY AURORA [20.0s - 30.0s]
 // Dark Background + Dynamic Fluid Aurora Gradient (Pink, Orange, Yellow, Green)
-// Kinetic Typography reveal: Apple Logo + "Card is here." with chromatic shimmer
+// Kinetic Typography reveal: VRAI LOGO APPLE OFFICIEL (Path2D) + "Card is here."
+// Rythme dynamique et percutant, sous-titre parfaitement centré & aligné
 // =============================================================================
 function renderScene3(tRel) {
     // 1. Fond noir pur
@@ -771,13 +777,13 @@ function renderScene3(tRel) {
     g.fillRect(0, 0, 1920, 1080);
 
     // 2. Dégradés nébuleux fluides animés (couleurs Apple Card sur fond noir)
-    const auroraAlpha = clamp(tRel / 1.0, 0, 1) * clamp((10.0 - tRel) / 1.0, 0, 1);
+    const auroraAlpha = clamp(tRel / 0.7, 0, 1) * clamp((10.0 - tRel) / 0.8, 0, 1);
     g.save();
-    g.globalAlpha = 0.55 * auroraAlpha;
+    g.globalAlpha = 0.58 * auroraAlpha;
 
     // Orbe Rose / Violette (Haut gauche)
-    const pX = 450 + Math.sin(tRel * 0.7) * 90;
-    const pY = 320 + Math.cos(tRel * 0.9) * 70;
+    const pX = 450 + Math.sin(tRel * 1.0) * 90;
+    const pY = 320 + Math.cos(tRel * 1.2) * 70;
     const pGrad = g.createRadialGradient(pX, pY, 50, pX, pY, 580);
     pGrad.addColorStop(0, 'rgba(217, 70, 239, 0.75)');
     pGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.35)');
@@ -786,8 +792,8 @@ function renderScene3(tRel) {
     g.fillRect(0, 0, 1920, 1080);
 
     // Orbe Orange / Pêche (Haut centre)
-    const oX = 980 + Math.cos(tRel * 0.8) * 110;
-    const oY = 280 + Math.sin(tRel * 0.6) * 60;
+    const oX = 980 + Math.cos(tRel * 1.1) * 110;
+    const oY = 280 + Math.sin(tRel * 0.9) * 60;
     const oGrad = g.createRadialGradient(oX, oY, 50, oX, oY, 620);
     oGrad.addColorStop(0, 'rgba(251, 146, 60, 0.75)');
     oGrad.addColorStop(0.5, 'rgba(249, 115, 22, 0.3)');
@@ -796,8 +802,8 @@ function renderScene3(tRel) {
     g.fillRect(0, 0, 1920, 1080);
 
     // Orbe Jaune solaire (Haut centre-droit)
-    const yX = 1350 + Math.sin(tRel * 0.9) * 80;
-    const yY = 340 + Math.cos(tRel * 0.7) * 80;
+    const yX = 1350 + Math.sin(tRel * 1.2) * 80;
+    const yY = 340 + Math.cos(tRel * 1.0) * 80;
     const yGrad = g.createRadialGradient(yX, yY, 40, yX, yY, 560);
     yGrad.addColorStop(0, 'rgba(250, 204, 21, 0.7)');
     yGrad.addColorStop(0.5, 'rgba(234, 179, 8, 0.25)');
@@ -806,8 +812,8 @@ function renderScene3(tRel) {
     g.fillRect(0, 0, 1920, 1080);
 
     // Orbe Verte néon (Haut droite)
-    const gX = 1680 + Math.cos(tRel * 0.85) * 70;
-    const gY = 360 + Math.sin(tRel * 1.0) * 90;
+    const gX = 1680 + Math.cos(tRel * 1.15) * 70;
+    const gY = 360 + Math.sin(tRel * 1.3) * 90;
     const gGrad = g.createRadialGradient(gX, gY, 50, gX, gY, 600);
     gGrad.addColorStop(0, 'rgba(74, 222, 128, 0.7)');
     gGrad.addColorStop(0.5, 'rgba(34, 197, 94, 0.25)');
@@ -816,110 +822,106 @@ function renderScene3(tRel) {
     g.fillRect(0, 0, 1920, 1080);
     g.restore();
 
-    // 3. Typographie Cinétique Iconique : Apple Logo + "Card is here."
-    // Découpage cinétique en 3 temps :
-    // - tRel = 0.5s..1.8s : Apple Logo apparaît avec scale spring & halo
-    // - tRel = 1.6s..2.8s : "Card is" glisse avec fluidité
-    // - tRel = 2.4s..3.6s : "here." atterrit avec impact net
-    const textBaseY = 545;
-    const totalScale = 1.0 + Math.sin(tRel * 0.6) * 0.015;
+    // -------------------------------------------------------------------------
+    // 3. Typographie Cinétique Iconique : VRAI Logo Apple officiel + "Card is here."
+    // Cadencement rapide et dynamique (animé en moins de 1.8s au lieu de 3.6s)
+    // -------------------------------------------------------------------------
+    const textCenterY = 510;
+    const totalBreath = 1.0 + Math.sin(tRel * 0.8) * 0.012;
 
     g.save();
-    g.translate(960, textBaseY);
-    g.scale(totalScale, totalScale);
+    g.translate(960, textCenterY);
+    g.scale(totalBreath, totalBreath);
 
-    // Dessin du logo Apple vectoriel pur
-    const appleP = clamp(tRel / 1.2, 0, 1);
-    const appleScale = ease.spring(appleP);
-    const appleAlpha = clamp(tRel / 0.8, 0, 1);
-
-    const logoOffsetX = -390;
-    const logoOffsetY = -4;
-
-    g.save();
-    g.translate(logoOffsetX, logoOffsetY);
-    g.scale(appleScale * 1.65, appleScale * 1.65);
-    g.globalAlpha = appleAlpha;
-
-    // Ombre diffuse lumineuse du logo Apple
-    g.shadowColor = 'rgba(255, 255, 255, 0.35)';
-    g.shadowBlur = 24;
-
-    // Tracé fidèle du logo Apple
-    g.fillStyle = '#ffffff';
-    g.beginPath();
-    // Corps de la pomme
-    g.moveTo(0, -18);
-    g.bezierCurveTo(7, -18, 14, -26, 14, -36);
-    g.bezierCurveTo(3, -35, -4, -28, -6, -20);
-    g.bezierCurveTo(-15, -20, -28, -8, -28, 12);
-    g.bezierCurveTo(-28, 28, -14, 48, 0, 48);
-    g.bezierCurveTo(10, 48, 17, 42, 27, 42);
-    g.bezierCurveTo(37, 42, 44, 48, 54, 48);
-    g.bezierCurveTo(68, 48, 82, 28, 82, 12);
-    g.bezierCurveTo(70, 8, 64, -6, 64, -20);
-    g.bezierCurveTo(64, -34, 76, -42, 82, -46);
-    g.bezierCurveTo(72, -58, 56, -60, 50, -60);
-    g.bezierCurveTo(38, -60, 31, -54, 21, -54);
-    g.bezierCurveTo(11, -54, 5, -60, -6, -60);
-    g.bezierCurveTo(-20, -60, -36, -48, -44, -32);
-    // Feuille
-    g.closePath();
-    g.fill();
-
-    // Feuille supérieure
-    g.beginPath();
-    g.moveTo(22, -64);
-    g.bezierCurveTo(28, -78, 42, -88, 56, -88);
-    g.bezierCurveTo(58, -74, 52, -60, 44, -52);
-    g.bezierCurveTo(38, -44, 24, -38, 22, -64);
-    g.closePath();
-    g.fill();
-    g.restore();
-
-    // Rendu du texte "Card is here." en très grand format
-    g.font = '800 134px "Inter", -apple-system, sans-serif';
+    // Configuration typographique
+    const fontSize = 138;
+    g.font = \`800 \${fontSize}px "Inter", -apple-system, BlinkMacSystemFont, sans-serif\`;
     g.letterSpacing = '-3.5px';
-    g.textAlign = 'left';
     g.textBaseline = 'middle';
 
-    // Mot 1 : "Card"
-    const cardWordP = clamp((tRel - 1.2) / 0.8, 0, 1);
-    if (cardWordP > 0) {
-        const slideX = (1 - ease.out(cardWordP)) * 40;
+    // Mesures précises pour centrage géométrique absolu de l'ensemble [Logo + "Card is here."]
+    const appleLogoDisplayH = 118; // Hauteur équilibrée avec la majuscule 'C'
+    const appleLogoDisplayW = (appleLogoDisplayH * 256) / 315; // ~96px
+    const gapLogoText = 28;
+    const cardTextWidth = g.measureText('Card').width;
+    const spaceWidth = 24;
+    const isTextWidth = g.measureText('is').width;
+    const hereTextWidth = g.measureText('here.').width;
+
+    const totalBlockWidth = appleLogoDisplayW + gapLogoText + cardTextWidth + spaceWidth + isTextWidth + spaceWidth + hereTextWidth;
+    const startX = -totalBlockWidth / 2;
+
+    // A. Dessin du VRAI Logo Apple Officiel (Path2D officiel SVG)
+    const logoAnimP = clamp(tRel / 0.65, 0, 1);
+    const logoScale = ease.spring(logoAnimP);
+    const logoAlpha = clamp(tRel / 0.4, 0, 1);
+
+    if (logoAlpha > 0) {
         g.save();
-        g.globalAlpha = cardWordP;
-        g.translate(slideX, 0);
+        g.globalAlpha = logoAlpha;
+        const logoX = startX;
+        const logoY = -appleLogoDisplayH / 2;
+
+        g.translate(logoX + appleLogoDisplayW / 2, 0);
+        g.scale(logoScale, logoScale);
+        g.translate(-appleLogoDisplayW / 2, logoY);
+
+        // Mise à l'échelle du viewBox 256x315 vers display
+        const s = appleLogoDisplayH / 315;
+        g.scale(s, s);
+
+        // Ombre portée blanche lumineuse Apple
+        g.shadowColor = 'rgba(255, 255, 255, 0.45)';
+        g.shadowBlur = 28;
         g.fillStyle = '#ffffff';
-        g.shadowColor = 'rgba(255, 255, 255, 0.4)';
-        g.shadowBlur = 30;
-        g.fillText('Card', -220, 0);
+        g.fill(appleOfficialPath);
         g.restore();
     }
 
-    // Mot 2 : "is"
-    const isWordP = clamp((tRel - 1.8) / 0.8, 0, 1);
-    if (isWordP > 0) {
-        const slideX = (1 - ease.out(isWordP)) * 40;
+    // Positions X des mots
+    const cardX = startX + appleLogoDisplayW + gapLogoText;
+    const isX = cardX + cardTextWidth + spaceWidth;
+    const hereX = isX + isTextWidth + spaceWidth;
+
+    // B. Mot 1 : "Card" (apparition dynamique à tRel >= 0.3s)
+    const cardP = clamp((tRel - 0.3) / 0.55, 0, 1);
+    if (cardP > 0) {
+        const slideY = (1 - ease.out(cardP)) * 32;
         g.save();
-        g.globalAlpha = isWordP;
-        g.translate(slideX, 0);
+        g.globalAlpha = cardP;
+        g.translate(0, slideY);
         g.fillStyle = '#ffffff';
-        g.fillText('is', 110, 0);
+        g.shadowColor = 'rgba(255, 255, 255, 0.35)';
+        g.shadowBlur = 24;
+        g.fillText('Card', cardX, 0);
         g.restore();
     }
 
-    // Mot 3 : "here."
-    const hereWordP = clamp((tRel - 2.4) / 0.8, 0, 1);
-    if (hereWordP > 0) {
-        const slideX = (1 - ease.out(hereWordP)) * 40;
+    // C. Mot 2 : "is" (apparition dynamique à tRel >= 0.6s)
+    const isP = clamp((tRel - 0.6) / 0.55, 0, 1);
+    if (isP > 0) {
+        const slideY = (1 - ease.out(isP)) * 32;
         g.save();
-        g.globalAlpha = hereWordP;
-        g.translate(slideX, 0);
+        g.globalAlpha = isP;
+        g.translate(0, slideY);
+        g.fillStyle = '#ffffff';
+        g.shadowColor = 'rgba(255, 255, 255, 0.35)';
+        g.shadowBlur = 24;
+        g.fillText('is', isX, 0);
+        g.restore();
+    }
 
-        // Reflet chromatique irisé sur "here."
-        const shimmerGrad = g.createLinearGradient(250, -50, 680, 50);
-        const shimmerOffset = (tRel * 0.4) % 1;
+    // D. Mot 3 : "here." (apparition percutante à tRel >= 0.9s)
+    const hereP = clamp((tRel - 0.9) / 0.55, 0, 1);
+    if (hereP > 0) {
+        const slideY = (1 - ease.out(hereP)) * 32;
+        g.save();
+        g.globalAlpha = hereP;
+        g.translate(0, slideY);
+
+        // Reflet chromatique irisé subtil Apple Card
+        const shimmerGrad = g.createLinearGradient(hereX, -40, hereX + hereTextWidth, 40);
+        const shimmerOffset = (tRel * 0.5) % 1;
         shimmerGrad.addColorStop(0, '#ffffff');
         shimmerGrad.addColorStop(clamp(shimmerOffset, 0, 1), '#fbcfe8');
         shimmerGrad.addColorStop(clamp(shimmerOffset + 0.15, 0, 1), '#fed7aa');
@@ -927,22 +929,24 @@ function renderScene3(tRel) {
         shimmerGrad.addColorStop(1, '#ffffff');
 
         g.fillStyle = shimmerGrad;
-        g.shadowColor = 'rgba(244, 114, 182, 0.5)';
-        g.shadowBlur = 32;
-        g.fillText('here.', 250, 0);
+        g.shadowColor = 'rgba(244, 114, 182, 0.45)';
+        g.shadowBlur = 28;
+        g.fillText('here.', hereX, 0);
         g.restore();
     }
 
-    // Sous-titre élégant Apple Pay à tRel >= 4.5s
-    if (tRel >= 4.5) {
-        const subP = clamp((tRel - 4.5) / 1.0, 0, 1);
+    // E. Sous-titre officiel élégant, centré avec précision (tRel >= 1.6s)
+    if (tRel >= 1.6) {
+        const subP = clamp((tRel - 1.6) / 0.65, 0, 1);
+        const subSlide = (1 - ease.out(subP)) * 18;
         g.save();
         g.globalAlpha = subP;
-        g.font = '500 24px "Inter", sans-serif';
-        g.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        g.translate(0, subSlide);
+        g.font = '500 23px "Inter", sans-serif';
+        g.letterSpacing = '0.4px';
+        g.fillStyle = 'rgba(255, 255, 255, 0.72)';
         g.textAlign = 'center';
-        g.letterSpacing = '0.5px';
-        g.fillText('Created by Apple. Designed for iPhone.', 0, 140);
+        g.fillText('Created by Apple. Designed for iPhone.', 0, 126);
         g.restore();
     }
 
@@ -951,70 +955,51 @@ function renderScene3(tRel) {
 
 // =============================================================================
 // SCENE 4 : 3-STEP STRATEGY GLOWING FLOWCHART [30.0s - 40.0s]
-// Dark space nebula, glowing electric blue tree diagram, 3 stepped glowing cards
-// Step 01: Magnifying glass / Research | Step 02: Document / Plan | Step 03: Gear / Execute
+// Fond noir pur professionnel (zéro étoiles / zéro bruit),
+// Titre typographique net sans halo flou parasite,
+// Arbre laser électrique animé et cartes lumineuses interactives
 // =============================================================================
 function renderScene4(tRel) {
-    // 1. Fond sombre nébuleuse spatiale
+    // 1. Fond sombre épuré professionnel (noir pur sans étoiles)
     const spaceGrad = g.createRadialGradient(960, 540, 100, 960, 540, 950);
-    spaceGrad.addColorStop(0, '#090d18');
-    spaceGrad.addColorStop(0.5, '#04070e');
+    spaceGrad.addColorStop(0, '#0a0d18');
+    spaceGrad.addColorStop(0.6, '#04060c');
     spaceGrad.addColorStop(1, '#000000');
     g.fillStyle = spaceGrad;
     g.fillRect(0, 0, 1920, 1080);
 
-    // Étoiles scintillantes
-    for (let i = 0; i < 45; i++) {
-        const sx = (i * 137) % 1920;
-        const sy = (i * 89) % 1080;
-        const sTwinkle = 0.2 + 0.6 * Math.sin(tRel * 3 + i);
-        g.fillStyle = \`rgba(255, 255, 255, \${sTwinkle})\`;
-        g.beginPath();
-        g.arc(sx, sy, (i % 3 === 0) ? 1.8 : 1.0, 0, Math.PI * 2);
-        g.fill();
-    }
-
-    // 2. Titre Principal Lumineux : "3-STEP STRATEGY"
-    const titleEntrance = clamp(tRel / 1.0, 0, 1);
-    const titleY = lerp(160, 200, ease.out(titleEntrance));
+    // 2. Titre Principal : "3-STEP STRATEGY" (Typographie nette, zéro fond flou parasite)
+    const titleEntrance = clamp(tRel / 0.8, 0, 1);
+    const titleY = lerp(160, 195, ease.out(titleEntrance));
 
     g.save();
     g.globalAlpha = titleEntrance;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
 
-    // Halo lumineux blanc intense sous le titre
-    const titleGlow = g.createRadialGradient(960, titleY, 20, 960, titleY, 320);
-    titleGlow.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-    titleGlow.addColorStop(0.4, 'rgba(96, 165, 250, 0.2)');
-    titleGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    g.fillStyle = titleGlow;
-    g.fillRect(500, titleY - 120, 920, 240);
-
-    g.font = '900 68px "Inter", sans-serif';
+    g.font = '900 66px "Inter", sans-serif';
     g.letterSpacing = '-1px';
     g.fillStyle = '#ffffff';
-    g.shadowColor = 'rgba(255, 255, 255, 0.85)';
-    g.shadowBlur = 38;
-    g.fillText('3-STEP', 960, titleY - 42);
+    g.shadowColor = 'rgba(96, 165, 250, 0.4)';
+    g.shadowBlur = 18;
+    g.fillText('3-STEP', 960, titleY - 40);
     g.fillText('STRATEGY', 960, titleY + 36);
     g.restore();
 
     // 3. Arbre de connexion laser électrique bleu (Flowchart tree)
-    // Ligne verticale descendante depuis le titre
-    const treeYStart = titleY + 95;
-    const treeYSplit = 420;
+    const treeYStart = titleY + 92;
+    const treeYSplit = 415;
     const colXs = [460, 960, 1460];
-    const cardTopY = 560;
+    const cardTopY = 540;
 
-    const lineProgress = clamp((tRel - 1.2) / 1.2, 0, 1);
+    const lineProgress = clamp((tRel - 0.8) / 1.0, 0, 1);
     if (lineProgress > 0) {
         g.save();
         g.strokeStyle = '#3b82f6';
         g.lineWidth = 3.0;
         g.lineCap = 'round';
         g.shadowColor = '#60a5fa';
-        g.shadowBlur = 22;
+        g.shadowBlur = 20;
 
         // Tracé tronc vertical
         const currStemY = lerp(treeYStart, treeYSplit, clamp(lineProgress * 2, 0, 1));
@@ -1038,7 +1023,7 @@ function renderScene4(tRel) {
 
             // Descente vers chaque carte
             if (branchP >= 0.95) {
-                const dropP = clamp((tRel - 2.4) / 0.8, 0, 1);
+                const dropP = clamp((tRel - 1.8) / 0.7, 0, 1);
                 for (let i = 0; i < 3; i++) {
                     const cx = colXs[i];
                     const dropY = lerp(treeYSplit, cardTopY, dropP);
@@ -1047,8 +1032,8 @@ function renderScene4(tRel) {
                     g.lineTo(cx, dropY);
                     g.stroke();
 
-                    // Impulsion de lumière qui voyage le long de la branche
-                    const laserCycle = (tRel * 2.2 + i * 0.4) % 1;
+                    // Impulsion de lumière électrique qui voyage
+                    const laserCycle = (tRel * 2.5 + i * 0.4) % 1;
                     const pulseY = lerp(treeYSplit, cardTopY, laserCycle);
                     g.fillStyle = '#93c5fd';
                     g.shadowColor = '#ffffff';
@@ -1063,34 +1048,33 @@ function renderScene4(tRel) {
     }
 
     // 4. Les 3 Cartes Stratégiques Lumineuses
-    // Step 01: Research (Loupe) | Step 02: Plan (Feuille) | Step 03: Execute (Engrenage)
     const cardData = [
-        { step: 'Step 01:', label: 'RESEARCH & AUDIT', icon: 'lens', delay: 2.5 },
-        { step: 'Step 02:', label: 'ROADMAP CREATION', icon: 'doc', delay: 3.3 },
-        { step: 'Step 03:', label: 'SYSTEM EXECUTION', icon: 'gear', delay: 4.1 }
+        { step: 'Step 01:', label: 'RESEARCH & AUDIT', icon: 'lens', delay: 1.8 },
+        { step: 'Step 02:', label: 'ROADMAP CREATION', icon: 'doc', delay: 2.4 },
+        { step: 'Step 03:', label: 'SYSTEM EXECUTION', icon: 'gear', delay: 3.0 }
     ];
 
-    const cW = 360;
-    const cH = 320;
-    const cR = 36;
+    const cW = 370;
+    const cH = 340;
+    const cR = 38;
 
     for (let i = 0; i < 3; i++) {
         const item = cardData[i];
         if (tRel < item.delay) continue;
 
-        const cardP = ease.spring(clamp((tRel - item.delay) / 0.9, 0, 1));
+        const cardP = ease.spring(clamp((tRel - item.delay) / 0.8, 0, 1));
         const cx = colXs[i];
         const cy = cardTopY + cH / 2 + (1 - cardP) * 45;
 
         g.save();
         g.translate(cx, cy);
         g.scale(cardP, cardP);
-        g.globalAlpha = clamp((tRel - item.delay) / 0.4, 0, 1);
+        g.globalAlpha = clamp((tRel - item.delay) / 0.35, 0, 1);
 
         // Halo lumineux électrique extérieur bleu autour de la carte
         roundRect(g, -cW / 2, -cH / 2, cW, cH, cR);
-        g.shadowColor = 'rgba(59, 130, 246, 0.75)';
-        g.shadowBlur = 38;
+        g.shadowColor = 'rgba(59, 130, 246, 0.7)';
+        g.shadowBlur = 40;
         g.fillStyle = 'rgba(10, 20, 45, 0.85)';
         g.fill();
 
@@ -1107,7 +1091,7 @@ function renderScene4(tRel) {
         g.stroke();
 
         // Texte "Step 01:" / "Step 02:" / "Step 03:"
-        g.font = '700 24px "Inter", sans-serif';
+        g.font = '700 25px "Inter", sans-serif';
         g.fillStyle = '#ffffff';
         g.textAlign = 'left';
         g.textBaseline = 'top';
@@ -1117,12 +1101,12 @@ function renderScene4(tRel) {
         g.font = '600 13px "Inter", sans-serif';
         g.letterSpacing = '0.8px';
         g.fillStyle = '#60a5fa';
-        g.fillText(item.label, -cW / 2 + 36, -cH / 2 + 66);
+        g.fillText(item.label, -cW / 2 + 36, -cH / 2 + 68);
 
         // ---------------------------------------------------------------------
         // Icône centrale haute fidélité animée
         // ---------------------------------------------------------------------
-        const iconCenterY = 35;
+        const iconCenterY = 40;
         g.save();
         g.translate(0, iconCenterY);
 
@@ -1170,8 +1154,8 @@ function renderScene4(tRel) {
             g.shadowColor = 'rgba(255, 255, 255, 0.6)';
             g.shadowBlur = 24;
 
-            const dW = 76;
-            const dH = 104;
+            const dW = 78;
+            const dH = 106;
             // Corps feuille blanche
             roundRect(g, -dW / 2, -dH / 2, dW, dH, 8);
             g.fillStyle = '#ffffff';
@@ -1198,19 +1182,19 @@ function renderScene4(tRel) {
             g.fill();
         } else if (item.icon === 'gear') {
             // Engrenage métallique tournant en continu
-            const gearAngle = tRel * 1.6;
+            const gearAngle = tRel * 1.8;
             g.rotate(gearAngle);
             g.shadowColor = 'rgba(255, 255, 255, 0.6)';
             g.shadowBlur = 24;
 
-            const gearR = 48;
+            const gearR = 50;
             const teeth = 8;
             g.fillStyle = '#e2e8f0';
             g.beginPath();
             for (let tooth = 0; tooth < teeth; tooth++) {
                 const a = (tooth / teeth) * Math.PI * 2;
                 const nextA = ((tooth + 1) / teeth) * Math.PI * 2;
-                const rOut = gearR + 14;
+                const rOut = gearR + 15;
                 const rIn = gearR;
                 g.lineTo(Math.cos(a - 0.15) * rIn, Math.sin(a - 0.15) * rIn);
                 g.lineTo(Math.cos(a - 0.1) * rOut, Math.sin(a - 0.1) * rOut);
@@ -1222,7 +1206,7 @@ function renderScene4(tRel) {
 
             // Trou central de l'engrenage
             g.beginPath();
-            g.arc(0, 0, 20, 0, Math.PI * 2);
+            g.arc(0, 0, 21, 0, Math.PI * 2);
             g.fillStyle = '#0f172a';
             g.fill();
             g.lineWidth = 3;
