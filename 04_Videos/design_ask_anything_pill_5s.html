@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 1 — Glassmorphic Ask Anything Pill (5s)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #05140b;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: #05140b;
+            overflow: hidden;
+        }
+        canvas {
+            width: 1920px;
+            height: 1080px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="5.0">
+        <canvas id="mainCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
+
+<script>
+// ==============================================================================
+// VIBEEDITOR 1.0 — ANIMATED DESIGN 1 : GLASSMORPHIC "ASK ANYTHING" AI PILL (5s)
+// Rendu Canvas 2D Déterministe 60 FPS — Exact Color & Geometry Match
+// ==============================================================================
+const canvas = document.getElementById('mainCanvas');
+const g = canvas.getContext('2d');
+const audioBgm = document.getElementById('audioBgm');
+
+const DURATION = 5.0;
+let isPlaying = false;
+let playbackTime = 0;
+let lastTimestamp = 0;
+let rafId = null;
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+const ease = {
+    linear: t => t,
+    out: t => 1 - Math.pow(1 - t, 3),
+    snappy: t => 1 - Math.pow(1 - t, 4),
+    inOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+    spring: t => {
+        const c4 = (2 * Math.PI) / 3;
+        return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    },
+    smoothStep: t => t * t * (3 - 2 * t)
+};
+
+function roundRect(ctx, x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+// -----------------------------------------------------------------------------
+// DESSIN DU FOND ORGANIQUE VERT ÉMERAUDE DÉGRADÉ & BOKEH FLUIDE
+// -----------------------------------------------------------------------------
+function drawBackground(t) {
+    // Fond radial de base
+    const bgGrad = g.createLinearGradient(0, 0, 1920, 1080);
+    bgGrad.addColorStop(0, '#04170c');
+    bgGrad.addColorStop(0.35, '#0b351c');
+    bgGrad.addColorStop(0.7, '#15562d');
+    bgGrad.addColorStop(1, '#072011');
+    g.fillStyle = bgGrad;
+    g.fillRect(0, 0, 1920, 1080);
+
+    // Orbes de lumière bokeh vivantes
+    const orbs = [
+        { x: 420 + Math.sin(t * 1.2) * 50, y: 320 + Math.cos(t * 0.9) * 40, r: 420, c: 'rgba(34, 197, 94, 0.22)' },
+        { x: 1500 + Math.cos(t * 1.1) * 60, y: 780 + Math.sin(t * 1.3) * 50, r: 520, c: 'rgba(21, 128, 61, 0.28)' },
+        { x: 960 + Math.sin(t * 0.8) * 80, y: 540 + Math.sin(t * 1.5) * 30, r: 380, c: 'rgba(74, 222, 128, 0.15)' },
+        { x: 200 + Math.cos(t * 1.4) * 40, y: 880 + Math.cos(t * 0.7) * 40, r: 480, c: 'rgba(16, 185, 129, 0.18)' }
+    ];
+
+    orbs.forEach(orb => {
+        const rad = g.createRadialGradient(orb.x, orb.y, 10, orb.x, orb.y, orb.r);
+        rad.addColorStop(0, orb.c);
+        rad.addColorStop(1, 'rgba(4, 23, 12, 0)');
+        g.fillStyle = rad;
+        g.beginPath();
+        g.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+        g.fill();
+    });
+}
+
+// -----------------------------------------------------------------------------
+// DESSIN DU PILL WIDGET GLASSMORPHIC "ASK ANYTHING"
+// -----------------------------------------------------------------------------
+function drawAskAnythingPill(t) {
+    const cx = 960;
+    const cy = 540;
+
+    // Animation d'entrée élastique fluide (0s - 1.2s)
+    const enterP = ease.spring(clamp(t / 1.1, 0, 1));
+    const floatY = Math.sin(t * 2.2) * 5; // Léger flottement organique en lévitation
+    const currentY = cy + (1 - enterP) * 70 + floatY;
+    const currentScale = lerp(0.9, 1.0, enterP);
+    const alpha = clamp(t / 0.4, 0, 1);
+
+    g.save();
+    g.translate(cx, currentY);
+    g.scale(currentScale, currentScale);
+    g.globalAlpha = alpha;
+
+    const pillW = 940;
+    const pillH = 138;
+    const pillR = pillH / 2;
+
+    // 1. Ombre portée diffuse profonde (lueur sombre douce)
+    g.save();
+    roundRect(g, -pillW / 2, -pillH / 2, pillW, pillH, pillR);
+    g.shadowColor = 'rgba(2, 20, 9, 0.65)';
+    g.shadowBlur = 60;
+    g.shadowOffsetY = 24;
+    g.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    g.fill();
+    g.restore();
+
+    // 2. Fond en verre givré translucide (Glassmorphism de haute fidélité)
+    const glassGrad = g.createLinearGradient(0, -pillH / 2, 0, pillH / 2);
+    glassGrad.addColorStop(0, 'rgba(255, 255, 255, 0.16)');
+    glassGrad.addColorStop(0.4, 'rgba(255, 255, 255, 0.08)');
+    glassGrad.addColorStop(1, 'rgba(255, 255, 255, 0.03)');
+
+    g.save();
+    roundRect(g, -pillW / 2, -pillH / 2, pillW, pillH, pillR);
+    g.fillStyle = glassGrad;
+    g.fill();
+
+    // Bordure spéculaire en verre biseauté
+    const borderGrad = g.createLinearGradient(-pillW / 2, -pillH / 2, pillW / 2, pillH / 2);
+    borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+    borderGrad.addColorStop(0.3, 'rgba(255, 255, 255, 0.18)');
+    borderGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.08)');
+    borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.25)');
+    g.lineWidth = 1.8;
+    g.strokeStyle = borderGrad;
+    g.stroke();
+    g.restore();
+
+    // Reflet de lumière spéculaire qui balaye le bord supérieur (sweep à 1.5s - 3s)
+    const sweepProgress = clamp((t - 1.2) / 1.8, 0, 1);
+    if (sweepProgress > 0 && sweepProgress < 1) {
+        g.save();
+        roundRect(g, -pillW / 2, -pillH / 2, pillW, pillH, pillR);
+        g.clip();
+
+        const sweepX = lerp(-pillW, pillW, sweepProgress);
+        const sweepGrad = g.createLinearGradient(sweepX - 120, -pillH / 2, sweepX + 120, pillH / 2);
+        sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        sweepGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.18)');
+        sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        g.fillStyle = sweepGrad;
+        g.fillRect(-pillW / 2, -pillH / 2, pillW, pillH);
+        g.restore();
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. BOUTON GAUCHE : CERCLE VERT AVEC PLUS [+]
+    // -------------------------------------------------------------------------
+    const plusBtnX = -pillW / 2 + 76;
+    const plusBtnY = 0;
+    const plusBtnR = 40;
+
+    // Pop élastique d'apparition
+    const plusScale = ease.spring(clamp((t - 0.2) / 0.8, 0, 1));
+    const plusPulse = 1.0 + Math.sin(t * 3.5) * 0.03;
+
+    g.save();
+    g.translate(plusBtnX, plusBtnY);
+    g.scale(plusScale * plusPulse, plusScale * plusPulse);
+
+    // Halo vert doux pulsant
+    const glowRad = g.createRadialGradient(0, 0, 15, 0, 0, plusBtnR * 1.8);
+    glowRad.addColorStop(0, 'rgba(34, 197, 94, 0.45)');
+    glowRad.addColorStop(1, 'rgba(34, 197, 94, 0)');
+    g.fillStyle = glowRad;
+    g.beginPath();
+    g.arc(0, 0, plusBtnR * 1.8, 0, Math.PI * 2);
+    g.fill();
+
+    // Cercle vert principal (#00c853 / #10b981)
+    const plusGrad = g.createLinearGradient(-plusBtnR, -plusBtnR, plusBtnR, plusBtnR);
+    plusGrad.addColorStop(0, '#10b981');
+    plusGrad.addColorStop(1, '#059669');
+    g.fillStyle = plusGrad;
+    g.beginPath();
+    g.arc(0, 0, plusBtnR, 0, Math.PI * 2);
+    g.fill();
+
+    // Bordure fine
+    g.lineWidth = 1.5;
+    g.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    g.stroke();
+
+    // Signe Plus [+] blanc pur
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = 4.5;
+    g.lineCap = 'round';
+    const crossHalf = 14;
+
+    g.beginPath();
+    g.moveTo(-crossHalf, 0);
+    g.lineTo(crossHalf, 0);
+    g.stroke();
+
+    g.beginPath();
+    g.moveTo(0, -crossHalf);
+    g.lineTo(0, crossHalf);
+    g.stroke();
+    g.restore();
+
+    // -------------------------------------------------------------------------
+    // 4. TEXTE CENTRAL : "Ask anything" + Curseur & Effet d'écriture
+    // -------------------------------------------------------------------------
+    const textStartX = -pillW / 2 + 144;
+    g.font = '500 37px "Inter", -apple-system, sans-serif';
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+
+    const fullPrompt = "Ask anything";
+    const textAlpha = clamp((t - 0.3) / 0.5, 0, 1);
+    g.fillStyle = `rgba(240, 253, 244, ${0.92 * textAlpha})`;
+    g.fillText(fullPrompt, textStartX, 2);
+
+    // Curseur blanc élégant qui clignote
+    const textMetrics = g.measureText(fullPrompt);
+    const cursorX = textStartX + textMetrics.width + 10;
+    const cursorBlink = Math.sin(t * 8) > 0 ? 1 : 0;
+    if (cursorBlink && t > 0.8) {
+        g.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        g.fillRect(cursorX, -18, 3, 36);
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. CAPSULE DROITE : BOUTON VOCAL AVEC BARS WAVEFORM VIBRANTES
+    // -------------------------------------------------------------------------
+    const capW = 180;
+    const capH = 104;
+    const capR = capH / 2;
+    const capX = pillW / 2 - 20 - capW;
+    const capY = -capH / 2;
+
+    // Fond de la capsule audio (ton sombre translucide)
+    g.save();
+    roundRect(g, capX, capY, capW, capH, capR);
+    const capGrad = g.createLinearGradient(0, capY, 0, capY + capH);
+    capGrad.addColorStop(0, 'rgba(0, 0, 0, 0.28)');
+    capGrad.addColorStop(1, 'rgba(0, 0, 0, 0.42)');
+    g.fillStyle = capGrad;
+    g.fill();
+
+    g.lineWidth = 1;
+    g.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    g.stroke();
+    g.restore();
+
+    // Dessin des 5 barres verticales de l'onde sonore (Waveform dynamique)
+    const waveCenterX = capX + capW / 2;
+    const waveCenterY = 0;
+    const barWidth = 7;
+    const barSpacing = 16;
+    const baseHeights = [16, 32, 50, 32, 16];
+
+    g.fillStyle = '#ffffff';
+
+    for (let i = -2; i <= 2; i++) {
+        const barIndex = i + 2;
+        const bx = waveCenterX + i * barSpacing;
+
+        // Oscillation dynamique audio-réactive (plus intense entre 1.5s et 4.5s)
+        const waveFreq = t * 6.5 + barIndex * 1.2;
+        const pulseAmp = 0.5 + 0.5 * Math.sin(t * 4);
+        const dynamicH = baseHeights[barIndex] * (0.6 + 0.6 * Math.abs(Math.sin(waveFreq))) * pulseAmp;
+
+        g.save();
+        roundRect(g, bx - barWidth / 2, waveCenterY - dynamicH / 2, barWidth, dynamicH, barWidth / 2);
+        g.shadowColor = 'rgba(255, 255, 255, 0.4)';
+        g.shadowBlur = 10;
+        g.fill();
+        g.restore();
+    }
+
+    g.restore(); // Fin du stage pill
+}
+
+// -----------------------------------------------------------------------------
+// BOUCLE PRINCIPALE DE RENDU CANVAS
+// -----------------------------------------------------------------------------
+function drawScene(t) {
+    g.clearRect(0, 0, 1920, 1080);
+    drawBackground(t);
+    drawAskAnythingPill(t);
+}
+
+// Rendu déterministe pour studio et export
+window.renderAt = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    drawScene(playbackTime);
+};
+
+window.timelineSeek = function(timeInSeconds) {
+    window.renderAt(timeInSeconds);
+};
+
+window.syncAudioTimeline = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    audioBgm.volume = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+};
+
+function loop(timestamp) {
+    if (!isPlaying) return;
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const dt = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    playbackTime += dt;
+    drawScene(playbackTime);
+
+    if (playbackTime >= DURATION) {
+        playbackTime = 0; // Boucle fluide 5s
+    }
+
+    rafId = requestAnimationFrame(loop);
+}
+
+function play() {
+    if (isPlaying) return;
+    isPlaying = true;
+    lastTimestamp = 0;
+    audioBgm.volume = 0.35;
+    audioBgm.play().catch(() => {});
+    rafId = requestAnimationFrame(loop);
+}
+
+function pause() {
+    isPlaying = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    audioBgm.pause();
+}
+
+window.play = play;
+window.pause = pause;
+window.seek = function(t) { window.renderAt(t); };
+
+window.addEventListener('DOMContentLoaded', () => {
+    window.renderAt(0);
+});
+
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying ? pause() : play();
+    }
+});
+</script>
+</body>
+</html>

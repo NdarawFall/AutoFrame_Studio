@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 3 — Travel Cards Carousel (5s)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #eef1f6;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: #eef1f6;
+            overflow: hidden;
+        }
+        canvas {
+            width: 1920px;
+            height: 1080px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="5.0">
+        <canvas id="mainCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
+
+<script>
+// ==============================================================================
+// VIBEEDITOR 1.0 — ANIMATED DESIGN 3 : TRAVEL CARDS CAROUSEL (5s)
+// Rendu Canvas 2D Déterministe 60 FPS — Parallaxe, Élévation Dubai & Micro-interactions
+// ==============================================================================
+const canvas = document.getElementById('mainCanvas');
+const g = canvas.getContext('2d');
+const audioBgm = document.getElementById('audioBgm');
+
+const DURATION = 5.0;
+let isPlaying = false;
+let playbackTime = 0;
+let lastTimestamp = 0;
+let rafId = null;
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+const ease = {
+    linear: t => t,
+    out: t => 1 - Math.pow(1 - t, 3),
+    snappy: t => 1 - Math.pow(1 - t, 4),
+    inOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+    spring: t => {
+        const c4 = (2 * Math.PI) / 3;
+        return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    },
+    smoothStep: t => t * t * (3 - 2 * t)
+};
+
+function roundRect(ctx, x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+// Chargement des 4 images de destination pures
+const imgTurkey = new Image();
+imgTurkey.src = '../01_Assets/Images/travel_photo_turkey.jpg';
+
+const imgIndonesia = new Image();
+imgIndonesia.src = '../01_Assets/Images/travel_photo_indonesia.jpg';
+
+const imgDubai = new Image();
+imgDubai.src = '../01_Assets/Images/travel_photo_dubai.jpg';
+
+const imgVietnam = new Image();
+imgVietnam.src = '../01_Assets/Images/travel_photo_vietnam.jpg';
+
+// Données des cartes
+const CARDS = [
+    {
+        id: 'turkey',
+        title: 'Turkey',
+        flag: '🇹🇷',
+        subtitle: '1,991 Hotels • 42 Packages',
+        img: imgTurkey,
+        accentColor: '#f97316',
+        isHero: false
+    },
+    {
+        id: 'indonesia',
+        title: 'Indonesia',
+        flag: '🇮🇩',
+        subtitle: '1,345 Hotels • 24 Packages',
+        img: imgIndonesia,
+        accentColor: '#10b981',
+        isHero: false
+    },
+    {
+        id: 'dubai',
+        title: 'Dubai',
+        flag: '🇦🇪',
+        subtitle: '2,345 Hotels • 54 Packages',
+        img: imgDubai,
+        accentColor: '#a855f7',
+        isHero: true // Carte active surélevée au centre !
+    },
+    {
+        id: 'vietnam',
+        title: 'Vietnam',
+        flag: '🇻🇳',
+        subtitle: '2,178 Hotels • 32 Packages',
+        img: imgVietnam,
+        accentColor: '#14b8a6',
+        isHero: false
+    }
+];
+
+// -----------------------------------------------------------------------------
+// DESSIN DU FOND CLAIR RECHERCHÉ & REFLETS AU SOL
+// -----------------------------------------------------------------------------
+function drawBackground(t) {
+    const bgGrad = g.createRadialGradient(960, 540, 100, 960, 540, 1200);
+    bgGrad.addColorStop(0, '#f8fafc');
+    bgGrad.addColorStop(0.55, '#eef2f7');
+    bgGrad.addColorStop(1, '#e2e8f0');
+    g.fillStyle = bgGrad;
+    g.fillRect(0, 0, 1920, 1080);
+
+    // Halo d'ambiance violet doux derrière la carte Dubai
+    const dubaiGlow = g.createRadialGradient(1070, 520, 30, 1070, 520, 480);
+    dubaiGlow.addColorStop(0, 'rgba(168, 85, 247, 0.22)');
+    dubaiGlow.addColorStop(0.6, 'rgba(168, 85, 247, 0.08)');
+    dubaiGlow.addColorStop(1, 'rgba(238, 242, 247, 0)');
+    g.fillStyle = dubaiGlow;
+    g.beginPath();
+    g.arc(1070, 520, 480, 0, Math.PI * 2);
+    g.fill();
+}
+
+function drawVectorFlag(ctx, x, y, countryId) {
+    const fw = 22;
+    const fh = 14;
+    ctx.save();
+    roundRect(ctx, x, y - fh / 2, fw, fh, 3);
+    ctx.clip();
+
+    if (countryId === 'turkey') {
+        ctx.fillStyle = '#e11d48';
+        ctx.fillRect(x, y - fh / 2, fw, fh);
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x + 9, y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#e11d48';
+        ctx.beginPath();
+        ctx.arc(x + 10.5, y, 3.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x + 15, y, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (countryId === 'indonesia') {
+        ctx.fillStyle = '#dc2626';
+        ctx.fillRect(x, y - fh / 2, fw, fh / 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, fw, fh / 2);
+    } else if (countryId === 'dubai') {
+        ctx.fillStyle = '#16a34a';
+        ctx.fillRect(x, y - fh / 2, fw, fh / 3);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y - fh / 6, fw, fh / 3);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x, y + fh / 6, fw, fh / 3);
+        ctx.fillStyle = '#dc2626';
+        ctx.fillRect(x, y - fh / 2, fw * 0.28, fh);
+    } else if (countryId === 'vietnam') {
+        ctx.fillStyle = '#dc2626';
+        ctx.fillRect(x, y - fh / 2, fw, fh);
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath();
+        ctx.arc(x + fw / 2, y, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.restore();
+
+    ctx.save();
+    roundRect(ctx, x, y - fh / 2, fw, fh, 3);
+    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.stroke();
+    ctx.restore();
+}
+
+// -----------------------------------------------------------------------------
+// DESSIN D'UNE CARTE INDIVIDUELLE AVEC OVERLAY ET CONTENU
+// -----------------------------------------------------------------------------
+function drawCard(card, x, y, w, h, t, index) {
+    g.save();
+    g.translate(x, y);
+
+    const r = 32;
+
+    // 1. Ombre portée distincte (plus puissante pour Dubai)
+    g.save();
+    roundRect(g, -w / 2, -h / 2, w, h, r);
+    if (card.isHero) {
+        g.shadowColor = 'rgba(107, 33, 168, 0.38)';
+        g.shadowBlur = 55;
+        g.shadowOffsetY = 28;
+    } else {
+        g.shadowColor = 'rgba(15, 23, 42, 0.22)';
+        g.shadowBlur = 40;
+        g.shadowOffsetY = 20;
+    }
+    g.fillStyle = '#0f172a';
+    g.fill();
+    g.restore();
+
+    // 2. Clipping intérieur de la carte
+    g.save();
+    roundRect(g, -w / 2, -h / 2, w, h, r);
+    g.clip();
+
+    // Fond de base sombre de la carte
+    g.fillStyle = card.isHero ? '#1d0f2b' : '#0e1626';
+    g.fillRect(-w / 2, -h / 2, w, h);
+
+    // Dessin de la photo pure sur le haut de la carte
+    if (card.img.complete && card.img.naturalWidth > 0) {
+        const photoH = h * 0.68;
+        const scale = 1.0 + (t / DURATION) * 0.03;
+        g.save();
+        g.scale(scale, scale);
+        g.drawImage(card.img, -w / 2 - 10, -h / 2 - 10, w + 20, photoH + 20);
+        g.restore();
+    }
+
+    // Dégradé sombre bas très doux qui fond la photo avec le bas de la carte
+    const overlayGrad = g.createLinearGradient(0, -h * 0.1, 0, h / 2);
+    if (card.isHero) {
+        overlayGrad.addColorStop(0, 'rgba(29, 15, 43, 0)');
+        overlayGrad.addColorStop(0.45, 'rgba(29, 15, 43, 0.85)');
+        overlayGrad.addColorStop(1, 'rgba(23, 10, 36, 0.98)');
+    } else {
+        overlayGrad.addColorStop(0, 'rgba(14, 22, 38, 0)');
+        overlayGrad.addColorStop(0.45, 'rgba(14, 22, 38, 0.85)');
+        overlayGrad.addColorStop(1, 'rgba(10, 15, 28, 0.98)');
+    }
+    g.fillStyle = overlayGrad;
+    g.fillRect(-w / 2, -h * 0.1, w, h / 2 + h * 0.1);
+
+    // -------------------------------------------------------------------------
+    // TEXTES DE LA CARTE : TITRE + DRAPEAU + STATS
+    // -------------------------------------------------------------------------
+    const textStartX = -w / 2 + 24;
+    const titleY = h / 2 - 108;
+
+    // Titre de destination
+    g.font = '800 23px "Inter", sans-serif';
+    g.fillStyle = '#ffffff';
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.fillText(card.title, textStartX, titleY);
+
+    // Drapeau vectoriel pur
+    const titleWidth = g.measureText(card.title).width;
+    drawVectorFlag(g, textStartX + titleWidth + 10, titleY, card.id);
+
+    // Sous-titre hôtels & packages
+    g.font = '500 12px "Inter", sans-serif';
+    g.fillStyle = 'rgba(255, 255, 255, 0.72)';
+    g.fillText(card.subtitle, textStartX, titleY + 24);
+
+    // -------------------------------------------------------------------------
+    // BOUTON "EXPLORE NOW ›"
+    // -------------------------------------------------------------------------
+    const btnW = w - 48;
+    const btnH = 46;
+    const btnX = -w / 2 + 24;
+    const btnY = h / 2 - 58;
+    const btnR = 14;
+
+    g.save();
+    roundRect(g, btnX, btnY, btnW, btnH, btnR);
+
+    // Fond du bouton
+    if (card.isHero) {
+        g.fillStyle = 'rgba(255, 255, 255, 0.16)';
+        g.fill();
+        g.lineWidth = 1.2;
+        g.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        g.stroke();
+    } else {
+        g.fillStyle = 'rgba(255, 255, 255, 0.10)';
+        g.fill();
+        g.lineWidth = 1;
+        g.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+        g.stroke();
+    }
+
+    // Texte "Explore Now"
+    g.font = '600 13px "Inter", sans-serif';
+    g.fillStyle = '#ffffff';
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.fillText('Explore Now', btnX + 18, btnY + btnH / 2);
+
+    // Flèche › animée
+    const arrowSlide = card.isHero ? Math.sin(t * 4) * 3 : 0;
+    const arrowX = btnX + btnW - 20 + arrowSlide;
+    const arrowY = btnY + btnH / 2;
+
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = 2;
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    g.beginPath();
+    g.moveTo(arrowX - 4, arrowY - 5);
+    g.lineTo(arrowX + 2, arrowY);
+    g.lineTo(arrowX - 4, arrowY + 5);
+    g.stroke();
+    g.restore();
+
+    g.restore(); // Fin de clipping intérieur
+
+    // Bordure extérieure de la carte
+    g.save();
+    roundRect(g, -w / 2, -h / 2, w, h, r);
+    g.lineWidth = card.isHero ? 2.0 : 1.2;
+    g.strokeStyle = card.isHero ? 'rgba(216, 180, 254, 0.45)' : 'rgba(255, 255, 255, 0.2)';
+    g.stroke();
+    g.restore();
+
+    g.restore(); // Fin stage carte
+}
+
+// -----------------------------------------------------------------------------
+// DESSIN DU CARROUSEL DES 4 CARTES
+// -----------------------------------------------------------------------------
+function drawCarousel(t) {
+    const stageCX = 960;
+    const stageCY = 540;
+
+    const cardW = 320;
+    const normalH = 500;
+    const heroH = 530;
+    const gap = 38;
+
+    const totalWidth = 4 * cardW + 3 * gap;
+    const startX = stageCX - totalWidth / 2 + cardW / 2;
+
+    CARDS.forEach((card, i) => {
+        const delay = i * 0.1;
+        const enterP = ease.spring(clamp((t - delay) / 1.0, 0, 1));
+
+        const basePosX = startX + i * (cardW + gap);
+        const animX = basePosX + (1 - enterP) * 120;
+
+        const heroElevate = card.isHero ? -28 + Math.sin(t * 2.2) * 5 : Math.sin(t * 1.8 + i) * 3;
+        const currentY = stageCY + heroElevate + (1 - enterP) * 40;
+        const currentH = card.isHero ? heroH : normalH;
+
+        drawCard(card, animX, currentY, cardW, currentH, t, i);
+    });
+}
+
+// -----------------------------------------------------------------------------
+// BOUCLE PRINCIPALE DE RENDU CANVAS
+// -----------------------------------------------------------------------------
+function drawScene(t) {
+    g.clearRect(0, 0, 1920, 1080);
+    drawBackground(t);
+    drawCarousel(t);
+}
+
+// Rendu déterministe pour studio et export
+window.renderAt = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    drawScene(playbackTime);
+};
+
+window.timelineSeek = function(timeInSeconds) {
+    window.renderAt(timeInSeconds);
+};
+
+window.syncAudioTimeline = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    audioBgm.volume = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+};
+
+function loop(timestamp) {
+    if (!isPlaying) return;
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const dt = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    playbackTime += dt;
+    drawScene(playbackTime);
+
+    if (playbackTime >= DURATION) {
+        playbackTime = 0; // Boucle fluide 5s
+    }
+
+    rafId = requestAnimationFrame(loop);
+}
+
+function play() {
+    if (isPlaying) return;
+    isPlaying = true;
+    lastTimestamp = 0;
+    audioBgm.volume = 0.35;
+    audioBgm.play().catch(() => {});
+    rafId = requestAnimationFrame(loop);
+}
+
+function pause() {
+    isPlaying = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    audioBgm.pause();
+}
+
+window.play = play;
+window.pause = pause;
+window.seek = function(t) { window.renderAt(t); };
+
+// Rafraîchir dès que les images se chargent
+[imgTurkey, imgIndonesia, imgDubai, imgVietnam].forEach(img => {
+    img.onload = () => window.renderAt(0);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    window.renderAt(0);
+});
+
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying ? pause() : play();
+    }
+});
+</script>
+</body>
+</html>

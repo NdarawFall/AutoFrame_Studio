@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 2 — Squircle Music Player Terence Howard (5s)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #0d0a0d;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: #0d0a0d;
+            overflow: hidden;
+        }
+        canvas {
+            width: 1920px;
+            height: 1080px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="stage" data-duration="5.0">
+        <canvas id="mainCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
+
+<script>
+// ==============================================================================
+// VIBEEDITOR 1.0 — ANIMATED DESIGN 2 : SQUIRCLE MUSIC PLAYER (5s)
+// Rendu Canvas 2D Déterministe 60 FPS — Synchronisé avec timecodes réels & audio
+// ==============================================================================
+const canvas = document.getElementById('mainCanvas');
+const g = canvas.getContext('2d');
+const audioBgm = document.getElementById('audioBgm');
+
+const DURATION = 5.0;
+let isPlaying = false;
+let playbackTime = 0;
+let lastTimestamp = 0;
+let rafId = null;
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+const ease = {
+    linear: t => t,
+    out: t => 1 - Math.pow(1 - t, 3),
+    snappy: t => 1 - Math.pow(1 - t, 4),
+    inOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+    spring: t => {
+        const c4 = (2 * Math.PI) / 3;
+        return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    },
+    smoothStep: t => t * t * (3 - 2 * t)
+};
+
+function roundRect(ctx, x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+// Image HD du card 580x580
+const cardImg = new Image();
+cardImg.src = '../01_Assets/Images/terence_card_perfect_580.jpg';
+
+// -----------------------------------------------------------------------------
+// DESSIN DU FOND AMBIANT BOKEH CHAUD
+// -----------------------------------------------------------------------------
+function drawBackground(t) {
+    const bgGrad = g.createRadialGradient(960, 540, 50, 960, 540, 1100);
+    bgGrad.addColorStop(0, '#1c161d');
+    bgGrad.addColorStop(0.5, '#120d13');
+    bgGrad.addColorStop(1, '#070508');
+    g.fillStyle = bgGrad;
+    g.fillRect(0, 0, 1920, 1080);
+
+    const bokehs = [
+        { x: 340 + Math.sin(t * 0.9) * 40, y: 280 + Math.cos(t * 1.1) * 30, r: 350, c: 'rgba(217, 119, 6, 0.16)' },
+        { x: 1620 + Math.cos(t * 0.8) * 50, y: 760 + Math.sin(t * 1.0) * 40, r: 420, c: 'rgba(234, 88, 12, 0.18)' },
+        { x: 260 + Math.sin(t * 1.3) * 30, y: 820 + Math.cos(t * 0.7) * 35, r: 380, c: 'rgba(180, 83, 9, 0.14)' },
+        { x: 1540 + Math.sin(t * 1.2) * 40, y: 260 + Math.cos(t * 1.4) * 40, r: 360, c: 'rgba(194, 65, 12, 0.13)' }
+    ];
+
+    bokehs.forEach(b => {
+        const rad = g.createRadialGradient(b.x, b.y, 10, b.x, b.y, b.r);
+        rad.addColorStop(0, b.c);
+        rad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        g.fillStyle = rad;
+        g.beginPath();
+        g.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        g.fill();
+    });
+}
+
+// -----------------------------------------------------------------------------
+// DESSIN DU CARD MUSIQUE SQUIRCLE TERENCE HOWARD
+// -----------------------------------------------------------------------------
+function drawMusicCard(t) {
+    const cx = 960;
+    const cy = 540;
+
+    const enterP = ease.spring(clamp(t / 1.0, 0, 1));
+    const floatY = Math.sin(t * 1.8) * 6;
+    const currentY = cy + (1 - enterP) * 80 + floatY;
+    const currentScale = lerp(0.88, 1.0, enterP);
+
+    g.save();
+    g.translate(cx, currentY);
+    g.scale(currentScale, currentScale);
+
+    const cardW = 580;
+    const cardH = 580;
+    const cardR = 76;
+
+    // 1. Ombre portée douce
+    g.save();
+    roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
+    g.shadowColor = 'rgba(0, 0, 0, 0.90)';
+    g.shadowBlur = 85;
+    g.shadowOffsetY = 32;
+    g.fillStyle = '#1c1c22';
+    g.fill();
+    g.restore();
+
+    // Bordure extérieure subtile
+    g.save();
+    roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
+    g.lineWidth = 1.5;
+    g.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    g.stroke();
+    g.restore();
+
+    // 2. Clipping intérieur
+    g.save();
+    roundRect(g, -cardW / 2, -cardH / 2, cardW, cardH, cardR);
+    g.clip();
+
+    // Dessin de l'artwork entier de base
+    if (cardImg.complete && cardImg.naturalWidth > 0) {
+        const zoom = 1.0 + (t / DURATION) * 0.03;
+        g.save();
+        g.scale(zoom, zoom);
+        g.drawImage(cardImg, -cardW / 2, -cardH / 2, cardW, cardH);
+        g.restore();
+    } else {
+        g.fillStyle = '#222';
+        g.fillRect(-cardW / 2, -cardH / 2, cardW, cardH);
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. ANIMATION DU CŒUR (LIKE À t >= 2s)
+    // -------------------------------------------------------------------------
+    const btnHeartX = 192;
+    const btnHeartY = -198;
+
+    if (t >= 2.0) {
+        const heartPulse = 1.0 + Math.sin((t - 2.0) * 8) * Math.max(0, 0.25 - (t - 2.0) * 0.08);
+        g.save();
+        g.translate(btnHeartX, btnHeartY);
+        g.scale(heartPulse, heartPulse);
+
+        // Halo rouge
+        g.beginPath();
+        g.arc(0, 0, 24, 0, Math.PI * 2);
+        g.fillStyle = 'rgba(239, 68, 68, 0.28)';
+        g.fill();
+        g.lineWidth = 1.5;
+        g.strokeStyle = '#ef4444';
+        g.stroke();
+
+        // Cœur rempli
+        g.fillStyle = '#ef4444';
+        g.beginPath();
+        g.moveTo(0, 5);
+        g.bezierCurveTo(-8, -4, -11, -10, 0, -12);
+        g.bezierCurveTo(11, -10, 8, -4, 0, 5);
+        g.fill();
+        g.restore();
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. TIMELINE & TIMECODES DYNAMIQUES
+    // -------------------------------------------------------------------------
+    const timelineY = 138;
+    const barW = 440;
+    const barStartX = -barW / 2;
+
+    const startSec = 52;
+    const currentSec = startSec + Math.floor(t);
+    const timeDisplayLeft = `0:${currentSec < 10 ? '0' + currentSec : currentSec}`;
+    const remainSec = 81 - Math.floor(t);
+    const remMin = Math.floor(remainSec / 60);
+    const remSec = remainSec % 60;
+    const timeDisplayRight = `-${remMin}:${remSec < 10 ? '0' + remSec : remSec}`;
+
+    // Fond masque très discret sous les chiffres pour cacher les chiffres statiques
+    g.fillStyle = 'rgba(28, 25, 30, 0.98)';
+    g.fillRect(barStartX - 4, 104, 52, 22);
+    g.fillRect(barStartX + barW - 48, 104, 52, 22);
+
+    // Affichage des horodatages synchronisés
+    g.font = '600 13px "Inter", "JetBrains Mono", monospace';
+    g.fillStyle = '#ffffff';
+    g.textAlign = 'left';
+    g.fillText(timeDisplayLeft, barStartX, 118);
+
+    g.textAlign = 'right';
+    g.fillText(timeDisplayRight, barStartX + barW, 118);
+
+    // Barre de progression animée
+    const progressP = lerp(0.39, 0.46, t / DURATION);
+    const activeW = barW * progressP;
+
+    // Track blanc actif qui avance avec fluidité
+    g.save();
+    roundRect(g, barStartX, timelineY, activeW, 3.5, 1.75);
+    g.fillStyle = '#ffffff';
+    g.shadowColor = 'rgba(255, 255, 255, 0.6)';
+    g.shadowBlur = 6;
+    g.fill();
+    g.restore();
+
+    // -------------------------------------------------------------------------
+    // 5. ANIMATION DU BOUTON PLAY
+    // -------------------------------------------------------------------------
+    const controlsY = 160;
+    const playX = 0;
+    const playBeat = 1.0 + Math.sin(t * 6.0) * 0.05;
+
+    g.save();
+    g.translate(playX, controlsY);
+    g.scale(playBeat, playBeat);
+
+    g.beginPath();
+    g.arc(0, 0, 26, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(255, 255, 255, 0.09)';
+    g.fill();
+    g.restore();
+
+    g.restore(); // Fin de clipping intérieur
+    g.restore(); // Fin du stage card
+}
+
+// -----------------------------------------------------------------------------
+// BOUCLE PRINCIPALE DE RENDU CANVAS
+// -----------------------------------------------------------------------------
+function drawScene(t) {
+    g.clearRect(0, 0, 1920, 1080);
+    drawBackground(t);
+    drawMusicCard(t);
+}
+
+// Rendu déterministe pour studio et export
+window.renderAt = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    drawScene(playbackTime);
+};
+
+window.timelineSeek = function(timeInSeconds) {
+    window.renderAt(timeInSeconds);
+};
+
+window.syncAudioTimeline = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    audioBgm.volume = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+};
+
+function loop(timestamp) {
+    if (!isPlaying) return;
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const dt = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    playbackTime += dt;
+    drawScene(playbackTime);
+
+    if (playbackTime >= DURATION) {
+        playbackTime = 0;
+    }
+
+    rafId = requestAnimationFrame(loop);
+}
+
+function play() {
+    if (isPlaying) return;
+    isPlaying = true;
+    lastTimestamp = 0;
+    audioBgm.volume = 0.35;
+    audioBgm.play().catch(() => {});
+    rafId = requestAnimationFrame(loop);
+}
+
+function pause() {
+    isPlaying = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    audioBgm.pause();
+}
+
+window.play = play;
+window.pause = pause;
+window.seek = function(t) { window.renderAt(t); };
+
+cardImg.onload = () => {
+    window.renderAt(0);
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    window.renderAt(0);
+});
+
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        isPlaying ? pause() : play();
+    }
+});
+</script>
+</body>
+</html>
