@@ -14,94 +14,42 @@ const html = `<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #stage {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            background: #000000;
             overflow: hidden;
         }
 
-        #stage-container {
-            position: relative;
+        canvas {
             width: 1920px;
             height: 1080px;
-            max-width: 100vw;
-            max-height: 100vh;
-            aspect-ratio: 16 / 9;
-            background: #000000;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
             display: block;
-        }
-
-        #controls-bar {
-            position: absolute;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 8px 20px;
-            border-radius: 9999px;
-            z-index: 100;
-            opacity: 0.15;
-            transition: opacity 0.25s ease;
-        }
-        #stage-container:hover #controls-bar {
-            opacity: 1;
-        }
-
-        button {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: background 0.15s;
-        }
-        button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        #time-display {
-            font-size: 13px;
-            font-variant-numeric: tabular-nums;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        #scrubber {
-            width: 280px;
-            accent-color: #38bdf8;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="stage-container">
+    <div id="stage" data-duration="10.0">
         <canvas id="mainCanvas" width="1920" height="1080"></canvas>
-        <div id="controls-bar">
-            <button id="playBtn">▶ Play</button>
-            <input type="range" id="scrubber" min="0" max="10" step="0.01" value="0">
-            <span id="time-display">00:00 / 00:10</span>
-        </div>
     </div>
 
     <audio id="audioBgm" src="../01_Assets/Musiques/Wallpaper.mp3" preload="auto" loop></audio>
@@ -109,7 +57,7 @@ const html = `<!DOCTYPE html>
 <script>
 // ==============================================================================
 // VIBEEDITOR 1.0 — ANIMATED AI SMARTPHONE VOICE ASSISTANT (10s)
-// Rendu Canvas 2D Déterministe 60 FPS — Caméra Dynamique, Zoom Haptique & UI Chat
+// Rendu Canvas 2D Déterministe 60 FPS — Studio Timeline Standard Interface
 // ==============================================================================
 const canvas = document.getElementById('mainCanvas');
 const g = canvas.getContext('2d');
@@ -206,22 +154,36 @@ function drawPhoneScreen(ctx, sw, sh, sr, t) {
     roundRect(ctx, -sw / 2, -sh / 2, sw, sh, sr);
     ctx.clip();
 
-    // 1. Fond d'écran sombre pur
+    // 1. Fond d'écran noir absolu OLED
     ctx.fillStyle = '#000000';
     ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
 
-    // 2. Halo d'ambiance bleu royal / cyan rayonnant en bas de l'écran
-    const auraPulse = 1.0 + Math.sin(t * 2.2) * 0.05;
-    const auraY = sh / 2 - 30;
-    const auraGrad = ctx.createRadialGradient(0, auraY, 40, 0, auraY - 140, 420 * auraPulse);
-    auraGrad.addColorStop(0, 'rgba(59, 130, 246, 0.55)');
-    auraGrad.addColorStop(0.35, 'rgba(37, 99, 235, 0.35)');
-    auraGrad.addColorStop(0.7, 'rgba(14, 165, 233, 0.14)');
-    auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    // 2. Halo d'ambiance bleu royal ultra-fondu (sans aucune bordure ni coupure)
+    // Rendu pleine largeur/hauteur avec dégradé radial étendu et multi-stops logarithmiques
+    const auraPulse = 1.0 + Math.sin(t * 2.2) * 0.03;
+    const auraCenterY = sh / 2 + 60; // Émission depuis la base inférieure
+    const auraRadius = 680 * auraPulse;
+
+    const auraGrad = ctx.createRadialGradient(0, auraCenterY, 30, 0, auraCenterY - 120, auraRadius);
+    auraGrad.addColorStop(0.0, 'rgba(45, 110, 235, 0.52)');
+    auraGrad.addColorStop(0.18, 'rgba(30, 85, 210, 0.38)');
+    auraGrad.addColorStop(0.38, 'rgba(18, 55, 150, 0.22)');
+    auraGrad.addColorStop(0.58, 'rgba(10, 32, 95, 0.11)');
+    auraGrad.addColorStop(0.78, 'rgba(4, 14, 45, 0.04)');
+    auraGrad.addColorStop(0.92, 'rgba(1, 5, 18, 0.01)');
+    auraGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.0)');
+
     ctx.fillStyle = auraGrad;
-    ctx.beginPath();
-    ctx.arc(0, auraY, 450 * auraPulse, 0, Math.PI * 2);
-    ctx.fill();
+    // Remplissage complet du rectangle de l'écran (évite tout arc de cercle géométrique visible)
+    ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
+
+    // Lueur d'appoint ultra-douce diffuse
+    const softGlow = ctx.createRadialGradient(0, sh / 2 - 80, 10, 0, sh / 2 - 140, 420);
+    softGlow.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
+    softGlow.addColorStop(0.4, 'rgba(37, 99, 235, 0.08)');
+    softGlow.addColorStop(1, 'rgba(0, 0, 0, 0.0)');
+    ctx.fillStyle = softGlow;
+    ctx.fillRect(-sw / 2, -sh / 2, sw, sh);
 
     // -------------------------------------------------------------------------
     // 3. ORBE D'ÉNERGIE HOLOGRAPHIQUE (EN HAUT DE L'ÉCRAN)
@@ -279,7 +241,7 @@ function drawPhoneScreen(ctx, sw, sh, sr, t) {
 
     // -------------------------------------------------------------------------
     // 4. TEXTES D'ACCUEIL : "Hello Robin" + "How can I help you today?"
-    // Disparaissent à t >= 5.5s
+    // Disparaissent à t >= 5.3s
     // -------------------------------------------------------------------------
     const welcomeAlpha = clamp(1.0 - (t - 5.3) / 0.6, 0, 1);
 
@@ -673,7 +635,9 @@ function drawScene(t) {
     g.restore(); // Fin caméra
 }
 
-// Rendu déterministe pour studio et export
+// =============================================================================
+// CONTRAT DE LECTURE VIBEEDITOR STUDIO (TIMELINE EXTERNE)
+// =============================================================================
 window.renderAt = function(timeInSeconds) {
     playbackTime = clamp(timeInSeconds, 0, DURATION);
     drawScene(playbackTime);
@@ -683,70 +647,63 @@ window.timelineSeek = function(timeInSeconds) {
     window.renderAt(timeInSeconds);
 };
 
-function tick(timestamp) {
+window.syncAudioTimeline = function(timeInSeconds) {
+    playbackTime = clamp(timeInSeconds, 0, DURATION);
+    audioBgm.volume = 0.35 * clamp((DURATION - playbackTime) / 0.8, 0, 1);
+};
+
+function loop(timestamp) {
+    if (!isPlaying) return;
     if (!lastTimestamp) lastTimestamp = timestamp;
     const dt = (timestamp - lastTimestamp) / 1000;
     lastTimestamp = timestamp;
 
-    if (isPlaying) {
-        playbackTime += dt;
-        if (playbackTime >= DURATION) {
-            playbackTime = 0; // Boucle fluide
-        }
-        drawScene(playbackTime);
-        updateUI();
-    }
-    rafId = requestAnimationFrame(tick);
-}
-
-function updateUI() {
-    const scrubber = document.getElementById('scrubber');
-    const timeDisplay = document.getElementById('time-display');
-    scrubber.value = playbackTime.toFixed(2);
-    const m = Math.floor(playbackTime / 60);
-    const s = Math.floor(playbackTime % 60);
-    const ms = Math.floor((playbackTime % 1) * 10);
-    timeDisplay.textContent = \`\${m < 10 ? '0' : ''}\${m}:\${s < 10 ? '0' : ''}\${s}.\${ms} / 00:10.0\`;
-}
-
-// Contrôles UI
-const playBtn = document.getElementById('playBtn');
-const scrubber = document.getElementById('scrubber');
-
-function togglePlay() {
-    isPlaying = !isPlaying;
-    playBtn.textContent = isPlaying ? '❚❚ Pause' : '▶ Play';
-    if (isPlaying) {
-        audioBgm.play().catch(() => {});
-        lastTimestamp = performance.now();
-    } else {
-        audioBgm.pause();
-    }
-}
-
-playBtn.addEventListener('click', togglePlay);
-
-scrubber.addEventListener('input', (e) => {
-    playbackTime = parseFloat(e.target.value);
+    playbackTime += dt;
     drawScene(playbackTime);
-    updateUI();
+
+    if (playbackTime >= DURATION) {
+        playbackTime = 0; // Boucle fluide 10s
+    }
+
+    rafId = requestAnimationFrame(loop);
+}
+
+function play() {
+    if (isPlaying) return;
+    isPlaying = true;
+    lastTimestamp = 0;
+    audioBgm.volume = 0.35;
+    audioBgm.play().catch(() => {});
+    rafId = requestAnimationFrame(loop);
+}
+
+function pause() {
+    isPlaying = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    audioBgm.pause();
+}
+
+window.play = play;
+window.pause = pause;
+window.seek = function(t) { window.renderAt(t); };
+
+window.addEventListener('DOMContentLoaded', () => {
+    window.renderAt(0);
 });
 
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
         e.preventDefault();
-        togglePlay();
+        isPlaying ? pause() : play();
     }
 });
 
 // Initialisation au chargement de l'orbe
 orbImg.onload = function() {
-    drawScene(0);
-    rafId = requestAnimationFrame(tick);
+    window.renderAt(0);
 };
 if (orbImg.complete) {
-    drawScene(0);
-    rafId = requestAnimationFrame(tick);
+    window.renderAt(0);
 }
 </script>
 </body>
@@ -755,4 +712,4 @@ if (orbImg.complete) {
 
 fs.writeFileSync(path.join(__dirname, 'build_phone_video.cjs'), fs.readFileSync(__filename));
 fs.writeFileSync(path.join(__dirname, '../04_Videos/design_ai_phone_voice_10s.html'), html, 'utf-8');
-console.log('✅ 04_Videos/design_ai_phone_voice_10s.html updated with refined phone descent, thin audio icon, and pure typography result!');
+console.log('✅ 04_Videos/design_ai_phone_voice_10s.html updated: 0 UI buttons inside video, pure seamless gradient background!');
