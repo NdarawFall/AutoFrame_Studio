@@ -129,7 +129,9 @@ const server = http.createServer(async (req, res) => {
         'videos_references',
         'clips_video',
         'voix_off',
-        'musiques'
+        'musiques',
+        'effets_sonores',
+        'images_illustrations'
     ];
     const clientsBasePath = path.join(ROOT_DIR, 'Clients');
     if (!fs.existsSync(clientsBasePath)) {

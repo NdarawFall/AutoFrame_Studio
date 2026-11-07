@@ -13,20 +13,18 @@
             --bg-surface: #0e1015;
             --bg-elevated: #151821;
             --bg-hover: #1e222e;
-            --border-subtle: rgba(255, 255, 255, 0.10);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-active: rgba(255, 255, 255, 0.35);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --accent-blue: #3b82f6;
-            --accent-blue-glow: rgba(59, 130, 246, 0.35);
-            --accent-cyan: #06b6d4;
-            --accent-emerald: #10b981;
             --accent-purple: #8b5cf6;
-            --accent-red: #ef4444;
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 18px;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
             --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -49,14 +47,14 @@
 
         /* --- TOP NAVIGATION BAR --- */
         header.top-nav {
-            height: 60px;
-            min-height: 60px;
+            height: 54px;
+            min-height: 54px;
             background: rgba(10, 12, 16, 0.95);
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 32px;
+            padding: 0 24px;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -66,15 +64,15 @@
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .brand-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-weight: 900;
-            font-size: 17px;
+            font-size: 16px;
             letter-spacing: -0.4px;
             background: linear-gradient(135deg, #ffffff 15%, #60a5fa 55%, #3b82f6 100%);
             -webkit-background-clip: text;
@@ -88,8 +86,8 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
             font-size: 11px;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 2px 7px;
+            border-radius: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -103,13 +101,13 @@
         .nav-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--bg-elevated);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: var(--radius-sm);
             text-decoration: none;
             cursor: pointer;
@@ -128,17 +126,11 @@
             color: #ffffff;
             border-color: #3b82f6;
             font-weight: 600;
-            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
-        }
-
-        .nav-btn.primary:hover {
-            background: #1d4ed8;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
         }
 
         svg.icon {
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             stroke: currentColor;
             stroke-width: 2;
             fill: none;
@@ -146,79 +138,79 @@
             stroke-linejoin: round;
         }
 
-        /* --- MAIN WRAPPER --- */
+        /* --- MAIN WRAPPER COMPACT --- */
         .main-container {
             flex: 1;
-            max-width: 1440px;
+            max-width: 1400px;
             width: 100%;
             margin: 0 auto;
-            padding: 32px 32px 64px;
+            padding: 20px 24px 48px;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 18px;
         }
 
-        /* --- HEADER BANNER --- */
+        /* --- HEADER COMPACT --- */
         .page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 20px;
-            padding-bottom: 24px;
+            gap: 14px;
+            padding-bottom: 14px;
             border-bottom: 1px solid var(--border-subtle);
         }
 
         .page-title-group h1 {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: -0.6px;
+            letter-spacing: -0.4px;
             color: #ffffff;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .page-title-group p {
             color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 6px;
+            font-size: 13px;
+            margin-top: 3px;
         }
 
         .btn-create-client {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            gap: 8px;
+            background: #2563eb;
             border: 1px solid #3b82f6;
             color: #ffffff;
             font-weight: 700;
-            font-size: 14px;
-            padding: 12px 22px;
+            font-size: 13px;
+            padding: 9px 18px;
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
         }
 
         .btn-create-client:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(37, 99, 235, 0.6);
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transform: translateY(-1px);
+            background: #1d4ed8;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
         }
 
-        /* --- CLIENT SELECTION BAR --- */
+        /* --- BARRE CLIENTS COMPACTE --- */
         .clients-bar {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
         }
 
         .clients-bar-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -228,42 +220,42 @@
         .clients-list {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
         }
 
         .client-card {
             flex-shrink: 0;
-            min-width: 220px;
+            min-width: 180px;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 14px 18px;
+            padding: 10px 14px;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
         .client-card:hover {
             background: var(--bg-elevated);
             border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         .client-card.active {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(30, 41, 59, 0.4));
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(30, 41, 59, 0.4));
             border-color: #3b82f6;
-            box-shadow: 0 0 0 1px #3b82f6, 0 8px 24px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 0 0 1px #3b82f6, 0 6px 18px rgba(37, 99, 235, 0.2);
         }
 
-        .client-card-title {
-            font-size: 16px;
+        .client-card-name {
+            font-size: 14px;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
@@ -271,22 +263,15 @@
             text-overflow: ellipsis;
         }
 
-        .client-card-meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
         .client-asset-count {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-secondary);
-            padding: 2px 8px;
-            border-radius: 12px;
+            padding: 2px 7px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 11px;
             font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
         }
 
         .client-card.active .client-asset-count {
@@ -294,11 +279,11 @@
             color: #93c5fd;
         }
 
-        /* --- ACTIVE CLIENT WORKSPACE --- */
+        /* --- SELECTED CLIENT WORKSPACE --- */
         .workspace {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 18px;
         }
 
         .workspace-header {
@@ -306,62 +291,61 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 12px;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 18px 24px;
+            padding: 12px 18px;
         }
 
         .workspace-client-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .client-avatar-large {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 18px;
+            font-size: 15px;
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .client-name-large {
-            font-size: 20px;
+            font-size: 17px;
             font-weight: 800;
             color: #ffffff;
         }
 
         .client-folder-path {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
-            margin-top: 3px;
+            margin-top: 1px;
         }
 
         .workspace-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn-secondary {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
@@ -370,13 +354,12 @@
         .btn-secondary:hover {
             color: #ffffff;
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .btn-danger {
             color: #f87171;
             background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.2);
         }
 
         .btn-danger:hover {
@@ -385,34 +368,69 @@
             border-color: #ef4444;
         }
 
-        /* --- 5 ASSET CATEGORIES GRID --- */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 22px;
+        /* --- SECTION HEADERS --- */
+        .section-separator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 4px;
         }
 
-        @media (max-width: 900px) {
-            .categories-grid {
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* --- GRILLES DE CARDS COMPACTES --- */
+        .grid-references {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-materials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .grid-references, .grid-materials {
                 grid-template-columns: 1fr;
             }
         }
 
+        /* --- CARD DE CATÉGORIE ÉPURÉE & DIMINUÉE --- */
         .category-panel {
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 20px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 10px;
             transition: var(--transition);
         }
 
         .category-panel:hover {
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.18);
         }
 
+        /* Header de la card */
         .category-panel-header {
             display: flex;
             align-items: center;
@@ -422,52 +440,54 @@
         .category-title-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .category-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
         }
 
-        .icon-images { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-        .icon-videos { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .icon-ref-img { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .icon-ref-vid { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
         .icon-clips { background: rgba(239, 68, 68, 0.15); color: #f87171; }
         .icon-voice { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
         .icon-music { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .icon-sfx { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+        .icon-illus { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
 
         .category-name {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffffff;
         }
 
         .category-badge-count {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-secondary);
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* --- DROPZONE D'UPLOAD --- */
+        /* --- DROPZONE COMPACTE & FINE --- */
         .dropzone {
-            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border: 1px dashed rgba(255, 255, 255, 0.14);
             border-radius: var(--radius-sm);
-            padding: 20px 16px;
+            padding: 9px 12px;
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
             background: rgba(255, 255, 255, 0.015);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -475,41 +495,36 @@
 
         .dropzone:hover, .dropzone.dragover {
             border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.06);
-            transform: translateY(-1px);
+            background: rgba(59, 130, 246, 0.08);
         }
 
         .dropzone-icon {
             color: var(--text-muted);
-            transition: var(--transition);
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
         }
 
         .dropzone:hover .dropzone-icon {
             color: #60a5fa;
-            transform: translateY(-2px);
         }
 
         .dropzone-text {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--text-secondary);
         }
 
-        .dropzone-subtext {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* --- LISTE DES FICHIERS DE LA CATÉGORIE --- */
+        /* --- LISTE DES FICHIERS COMPACTE --- */
         .files-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 280px;
+            gap: 5px;
+            max-height: 160px;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 2px;
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
         }
 
         .file-item {
@@ -519,53 +534,48 @@
             background: var(--bg-elevated);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 8px 12px;
-            gap: 12px;
+            padding: 5px 8px;
+            gap: 8px;
             transition: var(--transition);
         }
 
         .file-item:hover {
             background: var(--bg-hover);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.18);
         }
 
         .file-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 7px;
             min-width: 0;
             flex: 1;
         }
 
         .file-thumb {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
             background: #000;
             object-fit: cover;
             flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .file-thumb-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
             background: rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            font-size: 12px;
             color: var(--text-secondary);
         }
 
-        .file-texts {
-            min-width: 0;
-            flex: 1;
-        }
-
         .file-name {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #ffffff;
             white-space: nowrap;
@@ -574,30 +584,37 @@
         }
 
         .file-meta {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
-            margin-top: 2px;
             font-family: 'JetBrains Mono', monospace;
+            margin-left: 6px;
+            flex-shrink: 0;
         }
 
         .file-actions {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .btn-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             cursor: pointer;
             transition: var(--transition);
+        }
+
+        .btn-icon svg {
+            width: 12px;
+            height: 12px;
         }
 
         .btn-icon:hover {
@@ -612,9 +629,9 @@
         }
 
         .empty-category-msg {
-            padding: 24px 12px;
+            padding: 12px 6px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             font-style: italic;
         }
@@ -645,13 +662,13 @@
             border: 1px solid var(--border-active);
             border-radius: var(--radius-lg);
             width: 100%;
-            max-width: 480px;
-            padding: 28px;
+            max-width: 440px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
-            transform: scale(0.95);
+            transform: scale(0.96);
             transition: all 0.25s ease;
         }
 
@@ -660,25 +677,25 @@
         }
 
         .modal-title-group h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #ffffff;
         }
 
         .modal-title-group p {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .form-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -689,8 +706,8 @@
             background: var(--bg-elevated);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            font-size: 14px;
+            padding: 10px 12px;
+            font-size: 13px;
             color: #ffffff;
             font-family: inherit;
             outline: none;
@@ -706,10 +723,10 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 12px 16px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .modal-subfolders-preview span {
@@ -725,18 +742,18 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 4px;
         }
 
         /* --- TOAST NOTIFICATIONS --- */
         #toastContainer {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 20px;
+            right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             z-index: 9999;
         }
 
@@ -744,14 +761,14 @@
             background: #1e293b;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -759,7 +776,7 @@
         .toast.error { border-color: #ef4444; }
 
         @keyframes toastIn {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -769,7 +786,7 @@
     <!-- TOP NAVIGATION BAR -->
     <header class="top-nav">
         <div class="nav-left">
-            <a href="home.html" class="nav-btn" style="padding: 6px 12px; font-weight: 600;" title="Retour Accueil">
+            <a href="home.html" class="nav-btn" style="padding: 5px 10px; font-weight: 600;" title="Retour Accueil">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>Accueil</span>
             </a>
@@ -790,7 +807,7 @@
             </a>
             <a href="assets.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                <span>Assets Globaux</span>
+                <span>Assets</span>
             </a>
             <a href="settings.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -805,31 +822,31 @@
         <div class="page-header">
             <div class="page-title-group">
                 <h1>
-                    <span>📁 Gestionnaire Clients & Rushes Monteur</span>
+                    <span>📁 Espace Monteur & Dossiers Clients</span>
                 </h1>
-                <p>Créez vos clients, structurez vos projets et centralisez les 5 types d'assets essentiels pour chaque montage.</p>
+                <p>Structurez vos projets par client et centralisez références, rushes et éléments sonores.</p>
             </div>
             <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
                 <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Créer un Client</span>
+                <span>Nouveau Client</span>
             </button>
         </div>
 
         <!-- CLIENTS SELECTOR BAR -->
         <div class="clients-bar">
             <div class="clients-bar-header">
-                <span>Clients Actifs (<span id="clientsCount">0</span>)</span>
-                <span style="font-size: 11px; color: var(--text-muted);">Stockage local : /Clients/</span>
+                <span>Mes Clients (<span id="clientsCount">0</span>)</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Stockage : /Clients/</span>
             </div>
             <div class="clients-list" id="clientsListContainer">
-                <!-- Rempli dynamiquement -->
-                <div style="color: var(--text-muted); font-size: 13px; padding: 12px 0;">Chargement des clients...</div>
+                <div style="color: var(--text-muted); font-size: 12px; padding: 6px 0;">Chargement...</div>
             </div>
         </div>
 
         <!-- SELECTED CLIENT WORKSPACE -->
         <div class="workspace" id="workspaceContainer" style="display: none;">
             
+            <!-- CLIENT INFO BAR -->
             <div class="workspace-header">
                 <div class="workspace-client-info">
                     <div class="client-avatar-large" id="currentClientAvatar">C</div>
@@ -839,28 +856,36 @@
                     </div>
                 </div>
                 <div class="workspace-actions">
-                    <a id="btnOpenInStudio" href="studio.html" class="btn-secondary" title="Ouvrir les assets de ce client dans le Studio">
+                    <a id="btnOpenInStudio" href="studio.html" class="btn-secondary" title="Ouvrir dans le Studio">
                         <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                         <span>Monter dans le Studio</span>
                     </a>
-                    <button type="button" class="btn-secondary btn-danger" onclick="deleteCurrentClient()" title="Supprimer ce client et tous ses fichiers">
+                    <button type="button" class="btn-secondary btn-danger" onclick="deleteCurrentClient()" title="Supprimer ce client">
                         <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        <span>Supprimer le Client</span>
+                        <span>Supprimer</span>
                     </button>
                 </div>
             </div>
 
-            <!-- THE 5 CATEGORIES GRID -->
-            <div class="categories-grid">
+            <!-- ============================================================= -->
+            <!-- SECTION 1 : RÉFÉRENCES & DIRECTION ARTISTIQUE (2 CARDS)        -->
+            <!-- ============================================================= -->
+            <div class="section-separator">
+                <div class="section-title">
+                    <span>📌 1. Références & Direction Artistique</span>
+                </div>
+                <span class="section-desc">Images de moodboard et vidéos de référence pour guider le montage</span>
+            </div>
+
+            <div class="grid-references">
 
                 <!-- 1. IMAGES DE RÉFÉRENCE -->
                 <div class="category-panel" data-category="images_references">
                     <div class="category-panel-header">
                         <div class="category-title-group">
-                            <div class="category-icon icon-images">🖼️</div>
+                            <div class="category-icon icon-ref-img">🖼️</div>
                             <div>
                                 <div class="category-name">Images de Référence</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Moodboard, chartes, captures</div>
                             </div>
                         </div>
                         <span class="category-badge-count" id="count-images_references">0</span>
@@ -868,13 +893,12 @@
 
                     <div class="dropzone" id="drop-images_references" onclick="triggerFileInput('images_references')">
                         <input type="file" id="file-images_references" multiple accept="image/*" style="display: none;" onchange="handleFileSelect('images_references', event)">
-                        <svg class="icon dropzone-icon" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                        <div class="dropzone-text">Déposez vos images de référence</div>
-                        <div class="dropzone-subtext">PNG, JPG, WEBP, SVG • Glisser ou cliquer</div>
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <span class="dropzone-text">Déposer les images de référence (PNG, JPG)</span>
                     </div>
 
                     <div class="files-list" id="list-images_references">
-                        <div class="empty-category-msg">Aucune image de référence pour le moment.</div>
+                        <div class="empty-category-msg">Aucune image de référence.</div>
                     </div>
                 </div>
 
@@ -882,10 +906,9 @@
                 <div class="category-panel" data-category="videos_references">
                     <div class="category-panel-header">
                         <div class="category-title-group">
-                            <div class="category-icon icon-videos">🎬</div>
+                            <div class="category-icon icon-ref-vid">🎬</div>
                             <div>
                                 <div class="category-name">Vidéos Références</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Exemples de montages cibles & rythme</div>
                             </div>
                         </div>
                         <span class="category-badge-count" id="count-videos_references">0</span>
@@ -893,15 +916,28 @@
 
                     <div class="dropzone" id="drop-videos_references" onclick="triggerFileInput('videos_references')">
                         <input type="file" id="file-videos_references" multiple accept="video/*" style="display: none;" onchange="handleFileSelect('videos_references', event)">
-                        <svg class="icon dropzone-icon" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                        <div class="dropzone-text">Déposez vos vidéos de référence</div>
-                        <div class="dropzone-subtext">MP4, MOV, WEBM • Glisser ou cliquer</div>
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        <span class="dropzone-text">Déposer les vidéos cibles (MP4, MOV)</span>
                     </div>
 
                     <div class="files-list" id="list-videos_references">
-                        <div class="empty-category-msg">Aucune vidéo de référence pour le moment.</div>
+                        <div class="empty-category-msg">Aucune vidéo de référence.</div>
                     </div>
                 </div>
+
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- SECTION 2 : ASSETS DU MONTAGE CLIENT (5 CARDS DÉDIÉES)         -->
+            <!-- ============================================================= -->
+            <div class="section-separator" style="margin-top: 10px;">
+                <div class="section-title">
+                    <span>🎬 2. Rushes & Éléments du Montage Client</span>
+                </div>
+                <span class="section-desc">Clips bruts, voix, musiques, effets sonores et illustrations</span>
+            </div>
+
+            <div class="grid-materials">
 
                 <!-- 3. CLIPS VIDÉO (RUSHES BRUTS) -->
                 <div class="category-panel" data-category="clips_video">
@@ -909,8 +945,7 @@
                         <div class="category-title-group">
                             <div class="category-icon icon-clips">📹</div>
                             <div>
-                                <div class="category-name">Clips Vidéo (Rushes bruts)</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Facecam, podcasts, démos d'écran</div>
+                                <div class="category-name">Clips Vidéo / Rushes</div>
                             </div>
                         </div>
                         <span class="category-badge-count" id="count-clips_video">0</span>
@@ -918,13 +953,12 @@
 
                     <div class="dropzone" id="drop-clips_video" onclick="triggerFileInput('clips_video')">
                         <input type="file" id="file-clips_video" multiple accept="video/*" style="display: none;" onchange="handleFileSelect('clips_video', event)">
-                        <svg class="icon dropzone-icon" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                        <div class="dropzone-text">Déposez les rushes vidéo du client</div>
-                        <div class="dropzone-subtext">MP4, MOV, MKV • Glisser ou cliquer</div>
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        <span class="dropzone-text">Déposer les rushes vidéo bruts</span>
                     </div>
 
                     <div class="files-list" id="list-clips_video">
-                        <div class="empty-category-msg">Aucun clip vidéo client pour le moment.</div>
+                        <div class="empty-category-msg">Aucun clip vidéo.</div>
                     </div>
                 </div>
 
@@ -935,7 +969,6 @@
                             <div class="category-icon icon-voice">🎙️</div>
                             <div>
                                 <div class="category-name">Voix Off</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Enregistrements vocaux, narration IA</div>
                             </div>
                         </div>
                         <span class="category-badge-count" id="count-voix_off">0</span>
@@ -943,24 +976,22 @@
 
                     <div class="dropzone" id="drop-voix_off" onclick="triggerFileInput('voix_off')">
                         <input type="file" id="file-voix_off" multiple accept="audio/*" style="display: none;" onchange="handleFileSelect('voix_off', event)">
-                        <svg class="icon dropzone-icon" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        <div class="dropzone-text">Déposez les voix off client</div>
-                        <div class="dropzone-subtext">MP3, WAV, M4A • Glisser ou cliquer</div>
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        <span class="dropzone-text">Déposer les voix off (MP3, WAV)</span>
                     </div>
 
                     <div class="files-list" id="list-voix_off">
-                        <div class="empty-category-msg">Aucune voix off pour le moment.</div>
+                        <div class="empty-category-msg">Aucune voix off.</div>
                     </div>
                 </div>
 
                 <!-- 5. MUSIQUES -->
-                <div class="category-panel" data-category="musiques" style="grid-column: 1 / -1;">
+                <div class="category-panel" data-category="musiques">
                     <div class="category-panel-header">
                         <div class="category-title-group">
                             <div class="category-icon icon-music">🎵</div>
                             <div>
-                                <div class="category-name">Musiques de Fond & Sound Design</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Bandes sonores, bruitages et ambiances pour le montage</div>
+                                <div class="category-name">Musiques de Fond</div>
                             </div>
                         </div>
                         <span class="category-badge-count" id="count-musiques">0</span>
@@ -968,13 +999,58 @@
 
                     <div class="dropzone" id="drop-musiques" onclick="triggerFileInput('musiques')">
                         <input type="file" id="file-musiques" multiple accept="audio/*" style="display: none;" onchange="handleFileSelect('musiques', event)">
-                        <svg class="icon dropzone-icon" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                        <div class="dropzone-text">Déposez les musiques et bandes-son</div>
-                        <div class="dropzone-subtext">MP3, WAV, OGG, AAC • Glisser ou cliquer</div>
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        <span class="dropzone-text">Déposer les musiques (BGM)</span>
                     </div>
 
                     <div class="files-list" id="list-musiques">
-                        <div class="empty-category-msg">Aucune musique client pour le moment.</div>
+                        <div class="empty-category-msg">Aucune musique.</div>
+                    </div>
+                </div>
+
+                <!-- 6. EFFETS SONORES (SFX) -->
+                <div class="category-panel" data-category="effets_sonores">
+                    <div class="category-panel-header">
+                        <div class="category-title-group">
+                            <div class="category-icon icon-sfx">🔊</div>
+                            <div>
+                                <div class="category-name">Effets Sonores (SFX)</div>
+                            </div>
+                        </div>
+                        <span class="category-badge-count" id="count-effets_sonores">0</span>
+                    </div>
+
+                    <div class="dropzone" id="drop-effets_sonores" onclick="triggerFileInput('effets_sonores')">
+                        <input type="file" id="file-effets_sonores" multiple accept="audio/*" style="display: none;" onchange="handleFileSelect('effets_sonores', event)">
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        <span class="dropzone-text">Whooshes, impacts, clicks, pops</span>
+                    </div>
+
+                    <div class="files-list" id="list-effets_sonores">
+                        <div class="empty-category-msg">Aucun effet sonore.</div>
+                    </div>
+                </div>
+
+                <!-- 7. IMAGES D'ILLUSTRATION -->
+                <div class="category-panel" data-category="images_illustrations">
+                    <div class="category-panel-header">
+                        <div class="category-title-group">
+                            <div class="category-icon icon-illus">🎨</div>
+                            <div>
+                                <div class="category-name">Images Illustrations</div>
+                            </div>
+                        </div>
+                        <span class="category-badge-count" id="count-images_illustrations">0</span>
+                    </div>
+
+                    <div class="dropzone" id="drop-images_illustrations" onclick="triggerFileInput('images_illustrations')">
+                        <input type="file" id="file-images_illustrations" multiple accept="image/*" style="display: none;" onchange="handleFileSelect('images_illustrations', event)">
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        <span class="dropzone-text">Logos, icônes, stickers, overlays</span>
+                    </div>
+
+                    <div class="files-list" id="list-images_illustrations">
+                        <div class="empty-category-msg">Aucune illustration.</div>
                     </div>
                 </div>
 
@@ -983,10 +1059,10 @@
         </div>
 
         <!-- EMPTY STATE LORSQU'AUCUN CLIENT N'EXISTE -->
-        <div id="noClientWorkspace" style="display: none; text-align: center; padding: 64px 20px; background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg);">
-            <div style="font-size: 48px; margin-bottom: 16px;">👥</div>
-            <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">Aucun client sélectionné</h3>
-            <p style="color: var(--text-secondary); font-size: 14px; max-width: 480px; margin: 0 auto 24px;">Créez votre premier client pour générer automatiquement son arborescence de dossiers et commencer à uploader ses rushes et assets de montage.</p>
+        <div id="noClientWorkspace" style="display: none; text-align: center; padding: 48px 20px; background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg);">
+            <div style="font-size: 38px; margin-bottom: 12px;">👥</div>
+            <h3 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Aucun client configuré</h3>
+            <p style="color: var(--text-secondary); font-size: 13px; max-width: 440px; margin: 0 auto 18px;">Créez votre premier dossier client pour générer automatiquement l'arborescence et déposer vos références et rushes.</p>
             <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
                 <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 <span>Créer mon Premier Client</span>
@@ -999,22 +1075,24 @@
     <div class="modal-overlay" id="createClientModal" onclick="handleModalOverlayClick(event)">
         <div class="modal-card">
             <div class="modal-title-group">
-                <h2>Créer un Nouveau Client</h2>
-                <p>Un dossier dédié sera créé automatiquement dans <code style="color:#60a5fa;">Clients/&lt;nom_client&gt;/</code> avec ses sous-dossiers de travail.</p>
+                <h2>Nouveau Dossier Client</h2>
+                <p>Création automatique dans <code style="color:#60a5fa;">Clients/&lt;nom_client&gt;/</code></p>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="inputClientName">Nom du Client ou Marque</label>
-                <input type="text" id="inputClientName" class="form-input" placeholder="Ex: Alexandre_Fit, SaaS_Flow, Dr_Sophie..." autofocus>
+                <label class="form-label" for="inputClientName">Nom du Client</label>
+                <input type="text" id="inputClientName" class="form-input" placeholder="Ex: Alexandre_Fit, SaaS_Flow, Brand_X..." autofocus>
             </div>
 
             <div class="modal-subfolders-preview">
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">Sous-dossiers créés automatiquement :</div>
-                <span>📁 images_references/ (Moodboards, chartes)</span>
-                <span>📁 videos_references/ (Vidéos cibles de référence)</span>
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 2px;">7 sous-dossiers créés automatiquement :</div>
+                <span>📁 images_references/ (Moodboard & chartes)</span>
+                <span>📁 videos_references/ (Vidéos cibles)</span>
                 <span>📁 clips_video/ (Rushes bruts du client)</span>
-                <span>📁 voix_off/ (Narration et voix)</span>
-                <span>📁 musiques/ (Bandes-son et musiques de fond)</span>
+                <span>📁 voix_off/ (Narration vocale)</span>
+                <span>📁 musiques/ (Bandes-son BGM)</span>
+                <span>📁 effets_sonores/ (SFX, whooshes, impacts)</span>
+                <span>📁 images_illustrations/ (Logos, stickers, overlays)</span>
             </div>
 
             <div class="modal-actions">
@@ -1031,12 +1109,14 @@
         let allClients = [];
         let currentClient = null;
 
-        const CATEGORIES = [
+        const ALL_CATEGORIES = [
             'images_references',
             'videos_references',
             'clips_video',
             'voix_off',
-            'musiques'
+            'musiques',
+            'effets_sonores',
+            'images_illustrations'
         ];
 
         function showToast(msg, type = 'success') {
@@ -1047,16 +1127,16 @@
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px)';
+                toast.style.transform = 'translateY(6px)';
                 toast.style.transition = 'all 0.3s ease';
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 2600);
         }
 
         function formatBytes(bytes) {
-            if (!bytes || bytes === 0) return '0 Octet';
+            if (!bytes || bytes === 0) return '0 O';
             const k = 1024;
-            const sizes = ['Octets', 'Ko', 'Mo', 'Go'];
+            const sizes = ['O', 'Ko', 'Mo', 'Go'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
@@ -1090,7 +1170,7 @@
             countEl.textContent = allClients.length;
 
             if (allClients.length === 0) {
-                listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 13px; padding: 10px 0;">Aucun client pour l\'instant. Cliquez sur "Créer un Client".</div>';
+                listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 6px 0;">Aucun client enregistré.</div>';
                 return;
             }
 
@@ -1101,11 +1181,8 @@
                 card.onclick = () => selectClient(c);
 
                 card.innerHTML = `
-                    <div class="client-card-title">${c.name}</div>
-                    <div class="client-card-meta">
-                        <span>Actif</span>
-                        <span class="client-asset-count">${c.totalAssets || 0} assets</span>
-                    </div>
+                    <div class="client-card-name" title="${c.name}">${c.name}</div>
+                    <span class="client-asset-count">${c.totalAssets || 0}</span>
                 `;
                 listEl.appendChild(card);
             });
@@ -1123,8 +1200,8 @@
 
             renderClientsList();
 
-            // Remplir les 5 catégories
-            CATEGORIES.forEach(cat => {
+            // Remplir les 7 catégories
+            ALL_CATEGORIES.forEach(cat => {
                 const files = (client.folders && client.folders[cat]) || [];
                 const countBadge = document.getElementById(`count-${cat}`);
                 if (countBadge) countBadge.textContent = files.length;
@@ -1133,7 +1210,7 @@
                 if (!listContainer) return;
 
                 if (files.length === 0) {
-                    listContainer.innerHTML = '<div class="empty-category-msg">Aucun fichier dans cette catégorie.</div>';
+                    listContainer.innerHTML = '<div class="empty-category-msg">Aucun fichier.</div>';
                 } else {
                     listContainer.innerHTML = '';
                     files.forEach(f => {
@@ -1143,7 +1220,7 @@
                         let thumbHtml = '';
                         if (['.png', '.jpg', '.jpeg', '.webp', '.svg'].includes(f.ext)) {
                             thumbHtml = `<img src="/${f.relativeUrl}" class="file-thumb" alt="${f.name}">`;
-                        } else if (['.mp4', '.mov', '.webm'].includes(f.ext)) {
+                        } else if (['.mp4', '.mov', '.webm', '.mkv'].includes(f.ext)) {
                             thumbHtml = `<div class="file-thumb-icon">🎬</div>`;
                         } else if (['.mp3', '.wav', '.m4a', '.ogg'].includes(f.ext)) {
                             thumbHtml = `<div class="file-thumb-icon">🎵</div>`;
@@ -1154,13 +1231,11 @@
                         fileItem.innerHTML = `
                             <div class="file-info">
                                 ${thumbHtml}
-                                <div class="file-texts">
-                                    <div class="file-name" title="${f.name}">${f.name}</div>
-                                    <div class="file-meta">${formatBytes(f.size)} • ${f.ext}</div>
-                                </div>
+                                <div class="file-name" title="${f.name}">${f.name}</div>
+                                <div class="file-meta">${formatBytes(f.size)}</div>
                             </div>
                             <div class="file-actions">
-                                <a href="/${f.relativeUrl}" target="_blank" class="btn-icon" title="Ouvrir / Télécharger">
+                                <a href="/${f.relativeUrl}" target="_blank" class="btn-icon" title="Ouvrir">
                                     <svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                 </a>
                                 <button type="button" class="btn-icon delete" onclick="deleteAsset('${client.name}', '${cat}', '${f.name}')" title="Supprimer">
@@ -1184,13 +1259,12 @@
             const files = event.target.files;
             if (!files || files.length === 0) return;
             if (!currentClient) {
-                showToast('Veuillez d\'abord sélectionner ou créer un client.', 'error');
+                showToast('Sélectionnez d\'abord un client.', 'error');
                 return;
             }
 
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                await uploadSingleFile(currentClient.name, category, file);
+                await uploadSingleFile(currentClient.name, category, files[i]);
             }
 
             event.target.value = '';
@@ -1215,7 +1289,7 @@
                         });
                         const data = await res.json();
                         if (data.success) {
-                            showToast(`Asset uploadé : ${file.name}`);
+                            showToast(`Uploadé : ${file.name}`);
                         } else {
                             showToast(data.error || 'Erreur upload', 'error');
                         }
@@ -1230,7 +1304,7 @@
         }
 
         // Drag and Drop configuration sur chaque zone
-        CATEGORIES.forEach(cat => {
+        ALL_CATEGORIES.forEach(cat => {
             const dropzone = document.getElementById(`drop-${cat}`);
             if (!dropzone) return;
 
@@ -1262,7 +1336,7 @@
 
         // --- SUPPRESSION D'ASSET ---
         async function deleteAsset(clientName, category, filename) {
-            if (!confirm(`Supprimer définitivement "${filename}" de ce client ?`)) return;
+            if (!confirm(`Supprimer "${filename}" ?`)) return;
             try {
                 const res = await fetch('/api/clients/delete-asset', {
                     method: 'POST',
@@ -1274,7 +1348,7 @@
                     showToast(`Supprimé : ${filename}`);
                     await fetchClients();
                 } else {
-                    showToast(data.error || 'Erreur lors de la suppression', 'error');
+                    showToast(data.error || 'Erreur', 'error');
                 }
             } catch (err) {
                 console.error(err);
@@ -1285,11 +1359,8 @@
         // --- SUPPRESSION DE CLIENT ---
         async function deleteCurrentClient() {
             if (!currentClient) return;
-            const confirmName = prompt(`⚠️ ATTENTION : Cela va supprimer définitivement le dossier Clients/${currentClient.name}/ et tous ses assets.\n\nPour confirmer, tapez le nom exact du client : "${currentClient.name}"`);
-            if (confirmName !== currentClient.name) {
-                if (confirmName !== null) showToast('Nom incorrect, suppression annulée.', 'error');
-                return;
-            }
+            const confirmName = prompt(`⚠️ Confirmer la suppression de "${currentClient.name}" ? Tapez son nom :`);
+            if (confirmName !== currentClient.name) return;
 
             try {
                 const res = await fetch('/api/clients/delete-client', {
@@ -1302,8 +1373,6 @@
                     showToast(`Client "${currentClient.name}" supprimé.`);
                     currentClient = null;
                     await fetchClients();
-                } else {
-                    showToast(data.error || 'Erreur suppression client', 'error');
                 }
             } catch (err) {
                 console.error(err);
@@ -1332,7 +1401,7 @@
             const input = document.getElementById('inputClientName');
             const name = input.value.trim();
             if (!name) {
-                showToast('Veuillez saisir un nom pour le client', 'error');
+                showToast('Veuillez saisir un nom', 'error');
                 input.focus();
                 return;
             }
@@ -1345,7 +1414,7 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`Client "${data.client.name}" créé avec succès !`);
+                    showToast(`Client "${data.client.name}" créé !`);
                     closeCreateClientModal();
                     await fetchClients();
                     const newClient = allClients.find(c => c.name === data.client.name);
@@ -1354,8 +1423,8 @@
                     showToast(data.error || 'Impossible de créer le client', 'error');
                 }
             } catch (err) {
-                console.error('Erreur submitCreateClient:', err);
-                showToast('Erreur serveur lors de la création', 'error');
+                console.error(err);
+                showToast('Erreur serveur', 'error');
             }
         }
 

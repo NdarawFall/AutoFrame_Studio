@@ -94,3 +94,4 @@ const fs = require('fs');
   await browser.close();
   console.log('All verifications completed successfully!');
 })();
+
