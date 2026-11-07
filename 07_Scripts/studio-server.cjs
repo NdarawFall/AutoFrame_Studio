@@ -111,6 +111,234 @@ const server = http.createServer(async (req, res) => {
         return res.end();
     }
 
+    // Raccourcis de navigation directe
+    if (cleanUrl === '/monteur' || cleanUrl === '/monteur.html') {
+        res.writeHead(302, { 'Location': '/09_Pages/monteur.html' });
+        return res.end();
+    }
+    if (cleanUrl === '/channels' || cleanUrl === '/channels.html') {
+        res.writeHead(302, { 'Location': '/09_Pages/channels.html' });
+        return res.end();
+    }
+
+    // -------------------------------------------------------------------------
+    // API ESPACE MONTEUR & GESTIONNAIRE DE CLIENTS
+    // -------------------------------------------------------------------------
+    const CLIENT_SUBFOLDERS = [
+        'images_references',
+        'videos_references',
+        'clips_video',
+        'voix_off',
+        'musiques'
+    ];
+    const clientsBasePath = path.join(ROOT_DIR, 'Clients');
+    if (!fs.existsSync(clientsBasePath)) {
+        try { fs.mkdirSync(clientsBasePath, { recursive: true }); } catch (e) {}
+    }
+
+    // API : Lister tous les clients et leurs sous-dossiers
+    if (cleanUrl === '/api/clients' && req.method === 'GET') {
+        try {
+            const entries = fs.readdirSync(clientsBasePath, { withFileTypes: true });
+            const clientsList = [];
+
+            for (const entry of entries) {
+                if (!entry.isDirectory()) continue;
+                if (entry.name.startsWith('.') || entry.name.toLowerCase() === 'readme.md') continue;
+
+                const clientDirName = entry.name;
+                const clientDirPath = path.join(clientsBasePath, clientDirName);
+                const stat = fs.statSync(clientDirPath);
+
+                const foldersData = {};
+                let totalAssets = 0;
+
+                for (const sub of CLIENT_SUBFOLDERS) {
+                    const subDirPath = path.join(clientDirPath, sub);
+                    if (!fs.existsSync(subDirPath)) {
+                        try { fs.mkdirSync(subDirPath, { recursive: true }); } catch (e) {}
+                    }
+                    const files = fs.readdirSync(subDirPath, { withFileTypes: true })
+                        .filter(f => f.isFile() && !f.name.startsWith('.'))
+                        .map(f => {
+                            const fStat = fs.statSync(path.join(subDirPath, f.name));
+                            return {
+                                name: f.name,
+                                size: fStat.size,
+                                mtime: fStat.mtime,
+                                ext: path.extname(f.name).toLowerCase(),
+                                relativeUrl: `Clients/${clientDirName}/${sub}/${f.name}`
+                            };
+                        });
+                    foldersData[sub] = files;
+                    totalAssets += files.length;
+                }
+
+                clientsList.push({
+                    name: clientDirName,
+                    createdAt: stat.birthtime || stat.mtime,
+                    totalAssets,
+                    folders: foldersData
+                });
+            }
+
+            clientsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ success: true, clients: clientsList }));
+        } catch (err) {
+            console.error('Erreur GET /api/clients :', err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
+    // API : Créer un nouveau client avec ses 5 sous-dossiers
+    if (cleanUrl === '/api/clients/create' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const rawName = (payload.name || '').trim();
+                const safeName = rawName.replace(/[^a-zA-Z0-9_\-\s]/g, '').trim().replace(/\s+/g, '_');
+
+                if (!safeName) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Le nom du client est invalide.' }));
+                }
+
+                const targetClientDir = path.join(clientsBasePath, safeName);
+                if (fs.existsSync(targetClientDir)) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: `Le client "${safeName}" existe déjà.` }));
+                }
+
+                fs.mkdirSync(targetClientDir, { recursive: true });
+
+                for (const sub of CLIENT_SUBFOLDERS) {
+                    fs.mkdirSync(path.join(targetClientDir, sub), { recursive: true });
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({
+                    success: true,
+                    client: {
+                        name: safeName,
+                        folders: CLIENT_SUBFOLDERS
+                    }
+                }));
+            } catch (err) {
+                console.error('Erreur /api/clients/create :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // API : Uploader un asset dans un des 5 sous-dossiers du client
+    if (cleanUrl === '/api/clients/upload' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const clientName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+                const category = (payload.category || '').trim();
+                const rawFilename = (payload.filename || `asset_${Date.now()}`).trim();
+                const safeFilename = path.basename(rawFilename).replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+                const base64Data = payload.data;
+
+                if (!clientName || !category || !base64Data) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Paramètres client, category ou data manquants.' }));
+                }
+
+                if (!CLIENT_SUBFOLDERS.includes(category)) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: `Catégorie "${category}" invalide.` }));
+                }
+
+                const targetDir = path.join(clientsBasePath, clientName, category);
+                if (!fs.existsSync(targetDir)) {
+                    fs.mkdirSync(targetDir, { recursive: true });
+                }
+
+                const targetFilePath = path.join(targetDir, safeFilename);
+                const buffer = Buffer.from(base64Data, 'base64');
+                fs.writeFileSync(targetFilePath, buffer);
+
+                const relativeUrl = `Clients/${clientName}/${category}/${safeFilename}`;
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({
+                    success: true,
+                    filename: safeFilename,
+                    category,
+                    client: clientName,
+                    relativeUrl
+                }));
+            } catch (err) {
+                console.error('Erreur /api/clients/upload :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // API : Supprimer un asset d'un client
+    if (cleanUrl === '/api/clients/delete-asset' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const clientName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+                const category = (payload.category || '').trim();
+                const filename = path.basename(payload.filename || '');
+
+                const targetFilePath = path.join(clientsBasePath, clientName, category, filename);
+                if (fs.existsSync(targetFilePath)) {
+                    fs.unlinkSync(targetFilePath);
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, filename }));
+            } catch (err) {
+                console.error('Erreur /api/clients/delete-asset :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // API : Supprimer un client
+    if (cleanUrl === '/api/clients/delete-client' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const clientName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+                const targetClientDir = path.join(clientsBasePath, clientName);
+
+                if (fs.existsSync(targetClientDir)) {
+                    fs.rmSync(targetClientDir, { recursive: true, force: true });
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, client: clientName }));
+            } catch (err) {
+                console.error('Erreur /api/clients/delete-client :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
     // 1. API pour lister les fichiers des dossiers
     if (cleanUrl === '/api/files' && req.method === 'GET') {
         const chainesDir = path.join(ROOT_DIR, '03_Chaines');
