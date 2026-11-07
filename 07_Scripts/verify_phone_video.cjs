@@ -43,3 +43,4 @@ const path = require('path');
   await browser.close();
   console.log('All verification snapshots captured successfully!');
 })();
+
