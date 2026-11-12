@@ -169,31 +169,32 @@
             gap: 18px;
         }
 
-        /* --- HEADER COMPACT --- */
+        /* --- HEADER COMPACT AVEC BOUTON A GAUCHE --- */
         .page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 16px;
             padding-bottom: 14px;
             border-bottom: 1px solid var(--border-subtle);
         }
 
-        .page-title-group h1 {
-            font-size: 22px;
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header-right-title h1 {
+            font-size: 19px;
             font-weight: 800;
             letter-spacing: -0.4px;
             color: #ffffff;
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .page-title-group p {
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-top: 3px;
         }
 
         .btn-create-client {
@@ -217,6 +218,51 @@
             background: #b91c1c;
             border-color: #f87171;
             box-shadow: 0 6px 18px rgba(220, 38, 38, 0.5);
+        }
+
+        .btn-skills-global {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-skills-global:hover {
+            background: var(--bg-elevated);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .client-thumb-mini {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+            background: #111;
+        }
+
+        .client-thumb-mini-fallback {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7f1d1d, #dc2626);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
         }
 
         /* --- BARRE CLIENTS COMPACTE --- */
@@ -321,27 +367,107 @@
         .workspace-client-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .client-avatar-large {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+        .client-avatar-circle-wrapper {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2.5px solid #ef4444;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #111;
+        }
+
+        .client-avatar-circle-wrapper:hover {
+            transform: scale(1.05);
+            border-color: #f87171;
+            box-shadow: 0 6px 22px rgba(239, 68, 68, 0.55);
+        }
+
+        .client-avatar-circle-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .client-avatar-circle-fallback {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             background: linear-gradient(135deg, #991b1b, #ef4444);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 15px;
+            font-weight: 900;
+            font-size: 22px;
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            user-select: none;
+        }
+
+        .client-avatar-hover-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.68);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            gap: 2px;
+        }
+
+        .client-avatar-circle-wrapper:hover .client-avatar-hover-overlay {
+            opacity: 1;
+        }
+
+        .client-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .client-name-large {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 800;
             color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-edit-client-name {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 3px 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .btn-edit-client-name:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-edit-client-name svg {
+            width: 12px;
+            height: 12px;
         }
 
         .client-folder-path {
@@ -482,6 +608,7 @@
         .icon-music { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
         .icon-sfx { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
         .icon-illus { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+        .icon-skills { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
 
         .category-name {
             font-size: 13px;
@@ -767,6 +894,200 @@
             margin-top: 4px;
         }
 
+        /* --- STYLES MODAL SKILLS GLOBAUX DU MONTEUR --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .skill-item-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .skill-item-card:hover {
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .skill-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .skill-file-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .skill-file-icon.md { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .skill-file-icon.pdf { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+        .skill-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .skill-size {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .skill-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        /* --- MEDIA PREVIEW MODAL / LIGHTBOX --- */
+        .media-preview-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(16px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .media-preview-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .media-preview-card {
+            background: #0d0f14;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95);
+            transform: scale(0.96);
+            transition: all 0.25s ease;
+        }
+
+        .media-preview-overlay.open .media-preview-card {
+            transform: scale(1);
+        }
+
+        .media-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .media-preview-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .media-preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .media-preview-body {
+            flex: 1;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050608;
+            overflow: auto;
+            padding: 16px;
+        }
+
+        .media-preview-body video {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .media-preview-body img {
+            max-width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .media-preview-audio-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .media-preview-text-container {
+            width: 100%;
+            height: 65vh;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            overflow-y: auto;
+            color: #e2e8f0;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: 'Inter', system-ui, sans-serif;
+            text-align: left;
+        }
+
         /* --- TOAST NOTIFICATIONS --- */
         #toastContainer {
             position: fixed;
@@ -839,18 +1160,24 @@
 
     <div class="main-container">
 
-        <!-- HEADER BANNER -->
+        <!-- HEADER COMPACT AVEC BOUTON DE CRÉATION À GAUCHE -->
         <div class="page-header">
-            <div class="page-title-group">
+            <div class="header-left-group">
+                <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Nouveau Client</span>
+                </button>
+                <button type="button" class="btn-skills-global" onclick="openGlobalSkillsModal()" title="Consulter et gérer les directives de montage globales (.md / .pdf)">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Skills Monteur</span>
+                    <span class="category-badge-count" id="headerSkillsCount">0</span>
+                </button>
+            </div>
+            <div class="header-right-title">
                 <h1>
                     <span>📁 Espace Monteur & Dossiers Clients</span>
                 </h1>
-                <p>Structurez vos projets par client et centralisez références, rushes et éléments sonores.</p>
             </div>
-            <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
-                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Nouveau Client</span>
-            </button>
         </div>
 
         <!-- CLIENTS SELECTOR BAR -->
@@ -867,12 +1194,25 @@
         <!-- SELECTED CLIENT WORKSPACE -->
         <div class="workspace" id="workspaceContainer" style="display: none;">
             
-            <!-- CLIENT INFO BAR -->
+            <!-- CLIENT INFO BAR AVEC PROFIL CIRCULAIRE ÉDITABLE -->
             <div class="workspace-header">
                 <div class="workspace-client-info">
-                    <div class="client-avatar-large" id="currentClientAvatar">C</div>
+                    <div class="client-avatar-circle-wrapper" onclick="triggerClientAvatarInput()" title="Cliquer pour ajouter ou modifier la photo du client (le cadre est rond)">
+                        <img id="currentClientAvatarImg" class="client-avatar-circle-img" src="" alt="Avatar Client" style="display: none;">
+                        <div id="currentClientAvatarFallback" class="client-avatar-circle-fallback">C</div>
+                        <div class="client-avatar-hover-overlay">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <span>Photo</span>
+                        </div>
+                        <input type="file" id="inputClientAvatar" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleClientAvatarUpload(event)">
+                    </div>
                     <div>
-                        <div class="client-name-large" id="currentClientName">Nom du Client</div>
+                        <div class="client-name-row">
+                            <div class="client-name-large" id="currentClientName">Nom du Client</div>
+                            <button type="button" class="btn-edit-client-name" onclick="openRenameClientModal()" title="Renommer ce client">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                        </div>
                         <div class="client-folder-path" id="currentClientPath">Clients/Nom_Client/</div>
                     </div>
                 </div>
@@ -881,7 +1221,7 @@
                         <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                         <span>Monter dans le Studio</span>
                     </a>
-                    <button type="button" class="btn-secondary btn-danger" onclick="deleteCurrentClient()" title="Supprimer ce client">
+                    <button type="button" class="btn-secondary btn-danger" onclick="openDeleteClientModal()" title="Supprimer ce client">
                         <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         <span>Supprimer</span>
                     </button>
@@ -1075,6 +1415,29 @@
                     </div>
                 </div>
 
+                <!-- 8. SKILLS & DIRECTIVES DU CLIENT -->
+                <div class="category-panel" data-category="skills">
+                    <div class="category-panel-header">
+                        <div class="category-title-group">
+                            <div class="category-icon icon-skills">📘</div>
+                            <div>
+                                <div class="category-name">Skills & Directives Client</div>
+                            </div>
+                        </div>
+                        <span class="category-badge-count" id="count-skills">0</span>
+                    </div>
+
+                    <div class="dropzone" id="drop-skills" onclick="triggerFileInput('skills')">
+                        <input type="file" id="file-skills" multiple accept=".md,.pdf,text/markdown,application/pdf" style="display: none;" onchange="handleFileSelect('skills', event)">
+                        <svg class="icon dropzone-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span class="dropzone-text">Directives & Skills client (.md, .pdf)</span>
+                    </div>
+
+                    <div class="files-list" id="list-skills">
+                        <div class="empty-category-msg">Aucune directive client.</div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -1106,7 +1469,7 @@
             </div>
 
             <div class="modal-subfolders-preview">
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 2px;">7 sous-dossiers créés automatiquement :</div>
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 2px;">8 sous-dossiers créés automatiquement :</div>
                 <span>📁 images_references/ (Moodboard & chartes)</span>
                 <span>📁 videos_references/ (Vidéos cibles)</span>
                 <span>📁 clips_video/ (Rushes bruts du client)</span>
@@ -1114,11 +1477,131 @@
                 <span>📁 musiques/ (Bandes-son BGM)</span>
                 <span>📁 effets_sonores/ (SFX, whooshes, impacts)</span>
                 <span>📁 images_illustrations/ (Logos, stickers, overlays)</span>
+                <span>📁 skills/ (Directives & compétences spécifiques client)</span>
             </div>
 
             <div class="modal-actions">
                 <button type="button" class="btn-secondary" onclick="closeCreateClientModal()">Annuler</button>
                 <button type="button" class="btn-create-client" onclick="submitCreateClient()">Créer le Client</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RENOMMER CLIENT (MODERNE, SANS PROMPT) -->
+    <div class="modal-overlay" id="renameClientModal" onclick="handleModalOverlayClick(event)">
+        <div class="modal-card">
+            <div class="modal-title-group">
+                <h2>Renommer le Client</h2>
+                <p>Renomme le dossier du client dans <code style="color:#f87171;">Clients/</code></p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="inputRenameClient">Nouveau Nom</label>
+                <input type="text" id="inputRenameClient" class="form-input" placeholder="Ex: Alexandre_Fit_V2...">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeRenameClientModal()">Annuler</button>
+                <button type="button" class="btn-create-client" onclick="submitRenameClient()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMATION SUPPRESSION CLIENT (MODERNE, SANS PROMPT/ALERT) -->
+    <div class="modal-overlay" id="confirmDeleteClientModal" onclick="handleModalOverlayClick(event)">
+        <div class="modal-card" style="max-width: 440px; border-color: rgba(239, 68, 68, 0.45);">
+            <div class="modal-title-group">
+                <h2 style="color: #f87171; display: flex; align-items: center; gap: 8px;">
+                    <span>⚠️</span>
+                    <span>Supprimer ce Client ?</span>
+                </h2>
+                <p id="deleteClientPromptText" style="margin-top: 8px; font-size: 13px; line-height: 1.5; color: #cbd5e1;">
+                    Voulez-vous vraiment supprimer définitivement ce dossier client et tous ses fichiers ?
+                </p>
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11.5px; color: #fca5a5; line-height: 1.4;">
+                Cette action supprimera tous les rushes, voix, musiques, effets et directives associés à ce client sur le disque.
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeDeleteClientModal()">Annuler</button>
+                <button type="button" class="btn-secondary btn-danger" onclick="submitDeleteClient()" style="background: #dc2626; color: #ffffff; font-weight: 700; border-color: #ef4444;">Supprimer Définitivement</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMATION SUPPRESSION FICHIER (SANS POPUP JS) -->
+    <div class="modal-overlay" id="confirmDeleteAssetModal" onclick="handleModalOverlayClick(event)">
+        <div class="modal-card" style="max-width: 410px; border-color: rgba(239, 68, 68, 0.45);">
+            <div class="modal-title-group">
+                <h2 style="color: #f87171; display: flex; align-items: center; gap: 8px;">
+                    <span>🗑️</span>
+                    <span>Supprimer ce Fichier ?</span>
+                </h2>
+                <p id="deleteAssetPromptText" style="margin-top: 8px; font-size: 13px; line-height: 1.5; color: #cbd5e1;">
+                    Voulez-vous vraiment supprimer ce fichier ?
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeDeleteAssetModal()">Annuler</button>
+                <button type="button" class="btn-secondary btn-danger" onclick="submitDeleteAsset()" style="background: #dc2626; color: #ffffff; font-weight: 700; border-color: #ef4444;">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SKILLS GLOBAUX DU MONTEUR (POPUP MODERNE SANS ENCOMBRER LA PAGE) -->
+    <div class="modal-overlay" id="globalSkillsModal" onclick="handleModalOverlayClick(event)">
+        <div class="modal-card" style="max-width: 680px;">
+            <div class="modal-title-group" style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h2>🧠 Skills & Directives de Montage</h2>
+                    <p>Fichiers transversaux (.md, .pdf) stockés dans <code style="color:#f87171;">00_Skills/Monteur/</code></p>
+                </div>
+                <button type="button" class="btn-icon" onclick="closeGlobalSkillsModal()" title="Fermer">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <div class="dropzone" id="drop-global-skills" onclick="document.getElementById('inputGlobalSkill').click()" style="padding: 14px;">
+                <input type="file" id="inputGlobalSkill" accept=".md,.pdf,text/markdown,application/pdf" style="display: none;" onchange="handleSkillUpload(event)">
+                <svg class="icon dropzone-icon" viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span class="dropzone-text" style="font-size: 12.5px;">Cliquer ou glisser un fichier pour ajouter un guide (.md / .pdf)</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Réutilisable dans tous vos montages indépendamment des clients</span>
+                </div>
+            </div>
+
+            <div class="files-list" id="globalSkillsList" style="max-height: 260px; overflow-y: auto;">
+                <div style="color: var(--text-muted); font-size: 12px; padding: 12px; text-align: center;">Chargement des skills...</div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeGlobalSkillsModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LECTEUR MEDIA & LIGHTBOX INTEGRE -->
+    <div class="media-preview-overlay" id="mediaPreviewModal" onclick="handleMediaModalClick(event)">
+        <div class="media-preview-card">
+            <div class="media-preview-header">
+                <div class="media-preview-title" id="mediaPreviewTitle">
+                    <span id="mediaPreviewIcon">🎬</span>
+                    <span id="mediaPreviewName">apercu_media</span>
+                </div>
+                <div class="media-preview-actions">
+                    <a id="mediaDownloadBtn" href="#" download class="btn-secondary" title="Télécharger le fichier">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span>Télécharger</span>
+                    </a>
+                    <button type="button" class="btn-icon" onclick="closeMediaPreview()" title="Fermer (Échap)">
+                        <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="media-preview-body" id="mediaPreviewBody">
+                <!-- Rendu interactif : lecteur vidéo, lecteur audio, lightbox image ou visualiseur texte -->
             </div>
         </div>
     </div>
@@ -1129,6 +1612,7 @@
     <script>
         let allClients = [];
         let currentClient = null;
+        let globalSkills = [];
 
         const ALL_CATEGORIES = [
             'images_references',
@@ -1137,7 +1621,8 @@
             'voix_off',
             'musiques',
             'effets_sonores',
-            'images_illustrations'
+            'images_illustrations',
+            'skills'
         ];
 
         function showToast(msg, type = 'success') {
@@ -1162,6 +1647,398 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
+        // =========================================================================
+        // 1. PROFIL CLIENT (AVATAR ROND, UPLOAD IMAGE & SUPPRESSION ANCIENNE)
+        // =========================================================================
+        function triggerClientAvatarInput() {
+            if (!currentClient) return;
+            const input = document.getElementById('inputClientAvatar');
+            if (input) input.click();
+        }
+
+        async function handleClientAvatarUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file || !currentClient) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Data = e.target.result.split(',')[1];
+                try {
+                    const res = await fetch('/api/clients/avatar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            client: currentClient.name,
+                            filename: file.name,
+                            data: base64Data
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        currentClient.avatarUrl = data.avatarUrl;
+                        const avatarImg = document.getElementById('currentClientAvatarImg');
+                        const avatarFallback = document.getElementById('currentClientAvatarFallback');
+                        avatarImg.src = `/${data.avatarUrl}?t=${Date.now()}`;
+                        avatarImg.style.display = 'block';
+                        avatarFallback.style.display = 'none';
+                        showToast(`Photo de profil du client "${currentClient.name}" mise à jour !`);
+                        renderClientsList();
+                    } else {
+                        showToast(data.error || 'Erreur enregistrement photo client', 'error');
+                    }
+                } catch (err) {
+                    console.error('Erreur client avatar:', err);
+                    showToast('Échec mise à jour photo client', 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        // =========================================================================
+        // 2. RENOMMER LE CLIENT (MODAL MODERNE SANS PROMPT JS)
+        // =========================================================================
+        function openRenameClientModal() {
+            if (!currentClient) return;
+            const modal = document.getElementById('renameClientModal');
+            const input = document.getElementById('inputRenameClient');
+            input.value = currentClient.name;
+            modal.classList.add('open');
+            setTimeout(() => input.focus(), 80);
+        }
+
+        function closeRenameClientModal() {
+            document.getElementById('renameClientModal').classList.remove('open');
+        }
+
+        async function submitRenameClient() {
+            if (!currentClient) return;
+            const input = document.getElementById('inputRenameClient');
+            const newName = input.value.trim();
+            if (!newName) {
+                showToast('Veuillez entrer un nom valide', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/clients/rename', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ client: currentClient.name, newName })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Client renommé en "${data.newName}" !`);
+                    closeRenameClientModal();
+                    await fetchClients();
+                    const updated = allClients.find(c => c.name === data.newName);
+                    if (updated) selectClient(updated);
+                } else {
+                    showToast(data.error || 'Erreur lors du renommage', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur serveur', 'error');
+            }
+        }
+
+        document.getElementById('inputRenameClient').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitRenameClient();
+            if (e.key === 'Escape') closeRenameClientModal();
+        });
+
+        // =========================================================================
+        // 3. SUPPRESSION CLIENT (MODAL MODERNE SANS PROMPT/ALERT JS)
+        // =========================================================================
+        function openDeleteClientModal() {
+            if (!currentClient) return;
+            const modal = document.getElementById('confirmDeleteClientModal');
+            const textEl = document.getElementById('deleteClientPromptText');
+            textEl.innerHTML = `Voulez-vous vraiment supprimer définitivement le client <strong style="color:#ffffff;">"${currentClient.name}"</strong> et tous ses fichiers ?`;
+            modal.classList.add('open');
+        }
+
+        function closeDeleteClientModal() {
+            document.getElementById('confirmDeleteClientModal').classList.remove('open');
+        }
+
+        async function submitDeleteClient() {
+            if (!currentClient) return;
+            const clientNameToDelete = currentClient.name;
+            try {
+                const res = await fetch('/api/clients/delete-client', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ client: clientNameToDelete })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Client "${clientNameToDelete}" supprimé.`);
+                    closeDeleteClientModal();
+                    currentClient = null;
+                    await fetchClients();
+                } else {
+                    showToast(data.error || 'Erreur lors de la suppression', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur serveur', 'error');
+            }
+        }
+
+        // =========================================================================
+        // 4. SKILLS GLOBAUX DU MONTEUR (MODAL MODERNE 00_Skills/Monteur/)
+        // =========================================================================
+        function openGlobalSkillsModal() {
+            const modal = document.getElementById('globalSkillsModal');
+            modal.classList.add('open');
+            fetchGlobalSkills();
+        }
+
+        function closeGlobalSkillsModal() {
+            document.getElementById('globalSkillsModal').classList.remove('open');
+        }
+
+        async function fetchGlobalSkills() {
+            const listEl = document.getElementById('globalSkillsList');
+            const headerBadge = document.getElementById('headerSkillsCount');
+            try {
+                const res = await fetch('/api/skills/monteur');
+                const data = await res.json();
+                if (data.success) {
+                    globalSkills = data.files || [];
+                    if (headerBadge) headerBadge.textContent = globalSkills.length;
+
+                    if (globalSkills.length === 0) {
+                        listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; font-style: italic; padding: 16px; text-align: center;">Aucun skill global enregistré. Déposez vos fiches techniques et guides (.md, .pdf) ci-dessus.</div>';
+                        return;
+                    }
+
+                    listEl.innerHTML = '';
+                    globalSkills.forEach(file => {
+                        const isPdf = file.ext === '.pdf';
+                        const item = document.createElement('div');
+                        item.className = 'file-item';
+                        item.style.padding = '8px 12px';
+
+                        item.innerHTML = `
+                            <div class="file-info" style="cursor: pointer;" onclick="openMediaPreview('/${file.relativeUrl}', '${file.ext}', '${file.name}')" title="Cliquer pour consulter">
+                                <div class="file-thumb-icon" style="color: ${isPdf ? '#f87171' : '#60a5fa'}; font-size: 14px;">${isPdf ? '📕' : '📘'}</div>
+                                <div style="min-width: 0;">
+                                    <div class="file-name" title="${file.name}">${file.name}</div>
+                                    <div class="file-meta">${formatBytes(file.size)} • ${isPdf ? 'PDF' : 'Markdown'}</div>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <button type="button" class="btn-icon" onclick="openMediaPreview('/${file.relativeUrl}', '${file.ext}', '${file.name}')" title="Consulter">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                </button>
+                                <a href="/${file.relativeUrl}" download class="btn-icon" title="Télécharger">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                </a>
+                                <button type="button" class="btn-icon delete" onclick="deleteGlobalSkill('${file.name}')" title="Supprimer">
+                                    <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        `;
+                        listEl.appendChild(item);
+                    });
+                }
+            } catch (err) {
+                console.error('Erreur fetchGlobalSkills:', err);
+            }
+        }
+
+        async function handleSkillUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const base64Data = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                    reader.readAsDataURL(file);
+                });
+
+                try {
+                    const res = await fetch('/api/skills/monteur/upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            data: base64Data
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast(`Skill ajouté : ${file.name}`);
+                    } else {
+                        showToast(data.error || 'Erreur ajout skill', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast(`Échec upload ${file.name}`, 'error');
+                }
+            }
+
+            event.target.value = '';
+            await fetchGlobalSkills();
+        }
+
+        async function deleteGlobalSkill(filename) {
+            try {
+                const res = await fetch('/api/skills/monteur/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Skill "${filename}" supprimé.`);
+                    await fetchGlobalSkills();
+                } else {
+                    showToast(data.error || 'Erreur suppression skill', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur serveur', 'error');
+            }
+        }
+
+        // Configuration Drag and Drop pour la dropzone des skills globaux
+        const dropSkills = document.getElementById('drop-global-skills');
+        if (dropSkills) {
+            dropSkills.addEventListener('dragover', (e) => { e.preventDefault(); dropSkills.classList.add('dragover'); });
+            dropSkills.addEventListener('dragleave', () => { dropSkills.classList.remove('dragover'); });
+            dropSkills.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                dropSkills.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (!files || files.length === 0) return;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const base64Data = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
+                        reader.readAsDataURL(file);
+                    });
+                    await fetch('/api/skills/monteur/upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ filename: file.name, data: base64Data })
+                    });
+                }
+                showToast('Fichiers skills ajoutés !');
+                await fetchGlobalSkills();
+            });
+        }
+
+        // =========================================================================
+        // 3. LECTEUR MEDIA INTEGRE & LIGHTBOX (PREVIEW EN GRAND / PLAYER DEDIE)
+        // =========================================================================
+        async function openMediaPreview(url, ext, name) {
+            const modal = document.getElementById('mediaPreviewModal');
+            const titleEl = document.getElementById('mediaPreviewName');
+            const iconEl = document.getElementById('mediaPreviewIcon');
+            const bodyEl = document.getElementById('mediaPreviewBody');
+            const downloadBtn = document.getElementById('mediaDownloadBtn');
+
+            titleEl.textContent = name;
+            downloadBtn.href = url;
+            downloadBtn.download = name;
+
+            const lowerExt = (ext || '').toLowerCase();
+            bodyEl.innerHTML = '';
+
+            // 1. Vidéos
+            if (['.mp4', '.mov', '.webm', '.mkv', '.m4v'].includes(lowerExt)) {
+                iconEl.textContent = '🎬';
+                bodyEl.innerHTML = `
+                    <video src="${url}" controls autoplay playsinline style="max-width: 100%; max-height: 75vh; border-radius: 8px; outline: none; background: #000; box-shadow: 0 10px 40px rgba(0,0,0,0.9);">
+                        Votre navigateur ne supporte pas la lecture de cette vidéo.
+                    </video>
+                `;
+            }
+            // 2. Images (Lightbox haute résolution)
+            else if (['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.bmp'].includes(lowerExt)) {
+                iconEl.textContent = '🖼️';
+                bodyEl.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                        <img src="${url}" alt="${name}" style="max-width: 100%; max-height: 78vh; object-fit: contain; border-radius: 8px; box-shadow: 0 15px 50px rgba(0,0,0,0.95); cursor: zoom-out;" onclick="closeMediaPreview()">
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px;">Aperçu en taille réelle • Cliquez sur l'image pour fermer</div>
+                    </div>
+                `;
+            }
+            // 3. Audio (Player immersif avec commandes)
+            else if (['.mp3', '.wav', '.m4a', '.ogg', '.aac', '.flac'].includes(lowerExt)) {
+                iconEl.textContent = '🎵';
+                bodyEl.innerHTML = `
+                    <div class="media-preview-audio-container">
+                        <div style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.2)); border: 1px solid rgba(239, 68, 68, 0.4); display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);">
+                            🎧
+                        </div>
+                        <div>
+                            <div style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${name}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">Piste audio client / SFX</div>
+                        </div>
+                        <audio src="${url}" controls autoplay style="width: 100%; border-radius: 6px; outline: none;"></audio>
+                    </div>
+                `;
+            }
+            // 4. PDF (Viewer plein écran)
+            else if (lowerExt === '.pdf') {
+                iconEl.textContent = '📕';
+                bodyEl.innerHTML = `
+                    <iframe src="${url}#toolbar=1" style="width: 100%; height: 75vh; border: none; border-radius: 8px; background: #fff;"></iframe>
+                `;
+            }
+            // 5. Markdown & Texte
+            else if (['.md', '.txt', '.json', '.js', '.cjs'].includes(lowerExt)) {
+                iconEl.textContent = '📘';
+                bodyEl.innerHTML = `<div style="color: var(--text-muted); font-size: 13px;">Chargement du document...</div>`;
+                try {
+                    const res = await fetch(url);
+                    const text = await res.text();
+                    bodyEl.innerHTML = `<div class="media-preview-text-container">${escapeHtml(text)}</div>`;
+                } catch (err) {
+                    bodyEl.innerHTML = `<div style="color: #f87171;">Impossible de charger le contenu du fichier texte.</div>`;
+                }
+            } else {
+                iconEl.textContent = '📁';
+                bodyEl.innerHTML = `
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">📄</div>
+                        <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 6px;">${name}</div>
+                        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Ce format ne supporte pas la prévisualisation directe.</p>
+                        <a href="${url}" download class="btn-create-client" style="text-decoration: none;">Télécharger le fichier</a>
+                    </div>
+                `;
+            }
+
+            modal.classList.add('open');
+        }
+
+        function closeMediaPreview() {
+            const modal = document.getElementById('mediaPreviewModal');
+            modal.classList.remove('open');
+            // Stopper la lecture audio/vidéo
+            document.getElementById('mediaPreviewBody').innerHTML = '';
+        }
+
+        function handleMediaModalClick(e) {
+            if (e.target.id === 'mediaPreviewModal') closeMediaPreview();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // =========================================================================
+        // 4. GESTION DES CLIENTS & EXPLORATEUR D'ASSETS
+        // =========================================================================
         async function fetchClients() {
             try {
                 const res = await fetch('/api/clients');
@@ -1201,8 +2078,15 @@
                 card.className = `client-card ${currentClient && currentClient.name === c.name ? 'active' : ''}`;
                 card.onclick = () => selectClient(c);
 
+                const avatarThumb = c.avatarUrl 
+                    ? `<img src="/${c.avatarUrl}" class="client-thumb-mini" alt="${c.name}">`
+                    : `<div class="client-thumb-mini-fallback">${c.name.charAt(0).toUpperCase()}</div>`;
+
                 card.innerHTML = `
-                    <div class="client-card-name" title="${c.name}">${c.name}</div>
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                        ${avatarThumb}
+                        <div class="client-card-name" title="${c.name}">${c.name}</div>
+                    </div>
                     <span class="client-asset-count">${c.totalAssets || 0}</span>
                 `;
                 listEl.appendChild(card);
@@ -1215,13 +2099,26 @@
             document.getElementById('workspaceContainer').style.display = 'flex';
 
             document.getElementById('currentClientName').textContent = client.name;
-            document.getElementById('currentClientAvatar').textContent = client.name.charAt(0).toUpperCase();
             document.getElementById('currentClientPath').textContent = `Clients/${client.name}/`;
             document.getElementById('btnOpenInStudio').href = `studio.html?client=${encodeURIComponent(client.name)}`;
 
+            // Mettre à jour l'avatar circulaire du client (avec fallback initial)
+            const avatarImg = document.getElementById('currentClientAvatarImg');
+            const avatarFallback = document.getElementById('currentClientAvatarFallback');
+
+            if (client.avatarUrl) {
+                avatarImg.src = `/${client.avatarUrl}?t=${Date.now()}`;
+                avatarImg.style.display = 'block';
+                avatarFallback.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarFallback.style.display = 'flex';
+                avatarFallback.textContent = client.name.charAt(0).toUpperCase();
+            }
+
             renderClientsList();
 
-            // Remplir les 7 catégories
+            // Remplir les 8 catégories (incluant 'skills')
             ALL_CATEGORIES.forEach(cat => {
                 const files = (client.folders && client.folders[cat]) || [];
                 const countBadge = document.getElementById(`count-${cat}`);
@@ -1245,19 +2142,26 @@
                             thumbHtml = `<div class="file-thumb-icon">🎬</div>`;
                         } else if (['.mp3', '.wav', '.m4a', '.ogg'].includes(f.ext)) {
                             thumbHtml = `<div class="file-thumb-icon">🎵</div>`;
+                        } else if (['.pdf'].includes(f.ext)) {
+                            thumbHtml = `<div class="file-thumb-icon" style="color: #f87171;">📕</div>`;
+                        } else if (['.md'].includes(f.ext)) {
+                            thumbHtml = `<div class="file-thumb-icon" style="color: #60a5fa;">📘</div>`;
                         } else {
                             thumbHtml = `<div class="file-thumb-icon">📁</div>`;
                         }
 
                         fileItem.innerHTML = `
-                            <div class="file-info">
+                            <div class="file-info" style="cursor: pointer;" onclick="openMediaPreview('/${f.relativeUrl}', '${f.ext}', '${f.name}')" title="Cliquer pour afficher / lire directement dans le lecteur">
                                 ${thumbHtml}
                                 <div class="file-name" title="${f.name}">${f.name}</div>
                                 <div class="file-meta">${formatBytes(f.size)}</div>
                             </div>
                             <div class="file-actions">
-                                <a href="/${f.relativeUrl}" target="_blank" class="btn-icon" title="Ouvrir">
-                                    <svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                <button type="button" class="btn-icon" onclick="openMediaPreview('/${f.relativeUrl}', '${f.ext}', '${f.name}')" title="Lire / Aperçu">
+                                    <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                </button>
+                                <a href="/${f.relativeUrl}" download class="btn-icon" title="Télécharger">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                 </a>
                                 <button type="button" class="btn-icon delete" onclick="deleteAsset('${client.name}', '${cat}', '${f.name}')" title="Supprimer">
                                     <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -1324,7 +2228,7 @@
             });
         }
 
-        // Drag and Drop configuration sur chaque zone
+        // Drag and Drop configuration sur chaque zone (les 8 catégories)
         ALL_CATEGORIES.forEach(cat => {
             const dropzone = document.getElementById(`drop-${cat}`);
             if (!dropzone) return;
@@ -1355,9 +2259,23 @@
             });
         });
 
-        // --- SUPPRESSION D'ASSET ---
-        async function deleteAsset(clientName, category, filename) {
-            if (!confirm(`Supprimer "${filename}" ?`)) return;
+        // --- SUPPRESSION D'ASSET CLIENT (MODAL MODERNE SANS CONFIRM JS) ---
+        let pendingAssetDelete = null;
+        function deleteAsset(clientName, category, filename) {
+            pendingAssetDelete = { clientName, category, filename };
+            const modal = document.getElementById('confirmDeleteAssetModal');
+            document.getElementById('deleteAssetPromptText').innerHTML = `Supprimer définitivement le fichier <strong style="color:#ffffff;">"${filename}"</strong> de la catégorie <em>${category}</em> ?`;
+            modal.classList.add('open');
+        }
+
+        function closeDeleteAssetModal() {
+            document.getElementById('confirmDeleteAssetModal').classList.remove('open');
+            pendingAssetDelete = null;
+        }
+
+        async function submitDeleteAsset() {
+            if (!pendingAssetDelete) return;
+            const { clientName, category, filename } = pendingAssetDelete;
             try {
                 const res = await fetch('/api/clients/delete-asset', {
                     method: 'POST',
@@ -1367,6 +2285,7 @@
                 const data = await res.json();
                 if (data.success) {
                     showToast(`Supprimé : ${filename}`);
+                    closeDeleteAssetModal();
                     await fetchClients();
                 } else {
                     showToast(data.error || 'Erreur', 'error');
@@ -1377,28 +2296,13 @@
             }
         }
 
-        // --- SUPPRESSION DE CLIENT ---
-        async function deleteCurrentClient() {
-            if (!currentClient) return;
-            const confirmName = prompt(`⚠️ Confirmer la suppression de "${currentClient.name}" ? Tapez son nom :`);
-            if (confirmName !== currentClient.name) return;
-
-            try {
-                const res = await fetch('/api/clients/delete-client', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ client: currentClient.name })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast(`Client "${currentClient.name}" supprimé.`);
-                    currentClient = null;
-                    await fetchClients();
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('Erreur serveur', 'error');
-            }
+        // --- GESTION DES CLICS SUR OVERLAY DES MODALES ---
+        function handleModalOverlayClick(e) {
+            if (e.target.id === 'createClientModal') closeCreateClientModal();
+            if (e.target.id === 'renameClientModal') closeRenameClientModal();
+            if (e.target.id === 'confirmDeleteClientModal') closeDeleteClientModal();
+            if (e.target.id === 'confirmDeleteAssetModal') closeDeleteAssetModal();
+            if (e.target.id === 'globalSkillsModal') closeGlobalSkillsModal();
         }
 
         // --- MODAL NOUVEAU CLIENT ---
@@ -1412,10 +2316,6 @@
 
         function closeCreateClientModal() {
             document.getElementById('createClientModal').classList.remove('open');
-        }
-
-        function handleModalOverlayClick(e) {
-            if (e.target.id === 'createClientModal') closeCreateClientModal();
         }
 
         async function submitCreateClient() {
@@ -1435,7 +2335,7 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`Client "${data.client.name}" créé !`);
+                    showToast(`Client "${data.client.name}" créé avec ses 8 sous-dossiers !`);
                     closeCreateClientModal();
                     await fetchClients();
                     const newClient = allClients.find(c => c.name === data.client.name);
@@ -1454,7 +2354,20 @@
             if (e.key === 'Escape') closeCreateClientModal();
         });
 
-        // Initialisation
+        // Touche Échap pour fermer toutes les modales
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMediaPreview();
+                closeCreateClientModal();
+                closeRenameClientModal();
+                closeDeleteClientModal();
+                closeDeleteAssetModal();
+                closeGlobalSkillsModal();
+            }
+        });
+
+        // Initialisation globale au chargement
+        fetchGlobalSkills();
         fetchClients();
     </script>
 </body>

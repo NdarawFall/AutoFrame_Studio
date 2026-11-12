@@ -184,3 +184,4 @@ monteurContent = monteurContent.replace(
 
 fs.writeFileSync(monteurPath, monteurContent, 'utf8');
 console.log('Saved monteur.html in 100% red theme successfully');
+

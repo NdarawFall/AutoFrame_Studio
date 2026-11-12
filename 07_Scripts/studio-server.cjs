@@ -131,7 +131,8 @@ const server = http.createServer(async (req, res) => {
         'voix_off',
         'musiques',
         'effets_sonores',
-        'images_illustrations'
+        'images_illustrations',
+        'skills'
     ];
     const clientsBasePath = path.join(ROOT_DIR, 'Clients');
     if (!fs.existsSync(clientsBasePath)) {
@@ -176,9 +177,23 @@ const server = http.createServer(async (req, res) => {
                     totalAssets += files.length;
                 }
 
+                // Détecter l'avatar du client (avatar_* ou avatar.png/jpg/webp à la racine du client)
+                let clientAvatarUrl = '';
+                const rootClientFiles = fs.readdirSync(clientDirPath, { withFileTypes: true });
+                for (const rf of rootClientFiles) {
+                    if (rf.isFile()) {
+                        const lowName = rf.name.toLowerCase();
+                        if (lowName.startsWith('avatar_') || lowName === 'avatar.png' || lowName === 'avatar.jpg' || lowName === 'avatar.jpeg' || lowName === 'avatar.webp') {
+                            clientAvatarUrl = `Clients/${clientDirName}/${rf.name}`;
+                            break;
+                        }
+                    }
+                }
+
                 clientsList.push({
                     name: clientDirName,
                     createdAt: stat.birthtime || stat.mtime,
+                    avatarUrl: clientAvatarUrl,
                     totalAssets,
                     folders: foldersData
                 });
@@ -339,6 +354,317 @@ const server = http.createServer(async (req, res) => {
             }
         });
         return;
+    }
+
+    // API : Définir ou modifier la photo de profil du client (avatar rond avec suppression de l'ancien)
+    if (cleanUrl === '/api/clients/avatar' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const clientName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+                const base64Data = payload.data;
+                const rawFilename = payload.filename || 'avatar.jpg';
+                const ext = path.extname(rawFilename).toLowerCase() || '.jpg';
+
+                if (!clientName || !base64Data) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Client ou données image manquantes.' }));
+                }
+
+                const clientDir = path.join(clientsBasePath, clientName);
+                if (!fs.existsSync(clientDir)) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: `Client "${clientName}" non trouvé.` }));
+                }
+
+                // Supprimer STRICTEMENT toute ancienne image d'avatar de ce client
+                const existingFiles = fs.readdirSync(clientDir);
+                for (const f of existingFiles) {
+                    const low = f.toLowerCase();
+                    if (low.startsWith('avatar_') || low === 'avatar.jpg' || low === 'avatar.png' || low === 'avatar.webp' || low === 'avatar.jpeg') {
+                        try {
+                            fs.unlinkSync(path.join(clientDir, f));
+                            console.log(`[Client ${clientName}] Ancien avatar supprimé : ${f}`);
+                        } catch (e) {}
+                    }
+                }
+
+                // Enregistrer le nouvel avatar circulaire
+                const newFilename = `avatar_${Date.now()}${ext}`;
+                const newFilePath = path.join(clientDir, newFilename);
+                fs.writeFileSync(newFilePath, Buffer.from(base64Data, 'base64'));
+
+                const relativeUrl = `Clients/${clientName}/${newFilename}`;
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({
+                    success: true,
+                    client: clientName,
+                    avatarUrl: relativeUrl
+                }));
+            } catch (err) {
+                console.error('Erreur /api/clients/avatar :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // API : Renommer un client
+    if (cleanUrl === '/api/clients/rename' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const oldName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
+                const rawNewName = (payload.newName || '').trim();
+                const newName = rawNewName.replace(/[^a-zA-Z0-9_\-\s]/g, '').trim().replace(/\s+/g, '_');
+
+                if (!oldName || !newName) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Noms invalides.' }));
+                }
+
+                const oldDir = path.join(clientsBasePath, oldName);
+                const newDir = path.join(clientsBasePath, newName);
+
+                if (!fs.existsSync(oldDir)) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: `Client "${oldName}" introuvable.` }));
+                }
+
+                if (oldName !== newName && fs.existsSync(newDir)) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: `Le nom "${newName}" existe déjà.` }));
+                }
+
+                if (oldName !== newName) {
+                    fs.renameSync(oldDir, newDir);
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, oldName, newName }));
+            } catch (err) {
+                console.error('Erreur /api/clients/rename :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // -------------------------------------------------------------------------
+    // API PROFIL MONTEUR (AVATAR CIRCULAIRE & SUPPRESSION ANCIENNE IMAGE)
+    // -------------------------------------------------------------------------
+    const profileDir = path.join(ROOT_DIR, '01_Assets', 'Profiles');
+    const profileJsonPath = path.join(profileDir, 'profile.json');
+
+    if (cleanUrl === '/api/monteur/profile' && req.method === 'GET') {
+        try {
+            if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
+            let profileData = {
+                name: 'Ndaraw',
+                role: 'Monteur Pro & Directeur Artistique',
+                avatarUrl: ''
+            };
+            if (fs.existsSync(profileJsonPath)) {
+                try {
+                    profileData = Object.assign(profileData, JSON.parse(fs.readFileSync(profileJsonPath, 'utf8')));
+                } catch (e) {}
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ success: true, profile: profileData }));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
+    if (cleanUrl === '/api/monteur/profile/avatar' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const base64Data = payload.data;
+                const rawFilename = payload.filename || 'avatar.jpg';
+                const ext = path.extname(rawFilename).toLowerCase() || '.jpg';
+
+                if (!base64Data) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Données image manquantes' }));
+                }
+
+                if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
+
+                // Supprimer STRICTEMENT toutes les anciennes images d'avatar
+                const existingFiles = fs.readdirSync(profileDir);
+                for (const file of existingFiles) {
+                    if (file.startsWith('avatar_') || file === 'avatar.jpg' || file === 'avatar.png' || file === 'avatar.webp') {
+                        try {
+                            fs.unlinkSync(path.join(profileDir, file));
+                            console.log(`[Profil Monteur] Ancienne image supprimée : ${file}`);
+                        } catch (e) {}
+                    }
+                }
+
+                // Enregistrer la nouvelle image d'avatar
+                const newFilename = `avatar_${Date.now()}${ext}`;
+                const newFilePath = path.join(profileDir, newFilename);
+                fs.writeFileSync(newFilePath, Buffer.from(base64Data, 'base64'));
+
+                const relativeUrl = `01_Assets/Profiles/${newFilename}`;
+
+                // Mettre à jour le fichier profile.json
+                let currentProfile = { name: 'Ndaraw', role: 'Monteur Pro & Directeur Artistique' };
+                if (fs.existsSync(profileJsonPath)) {
+                    try { currentProfile = JSON.parse(fs.readFileSync(profileJsonPath, 'utf8')); } catch (e) {}
+                }
+                currentProfile.avatarUrl = relativeUrl;
+                currentProfile.updatedAt = new Date().toISOString();
+                fs.writeFileSync(profileJsonPath, JSON.stringify(currentProfile, null, 2), 'utf8');
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, avatarUrl: relativeUrl, profile: currentProfile }));
+            } catch (err) {
+                console.error('Erreur /api/monteur/profile/avatar :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/monteur/profile/update' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
+                let currentProfile = { name: 'Ndaraw', role: 'Monteur Pro & Directeur Artistique', avatarUrl: '' };
+                if (fs.existsSync(profileJsonPath)) {
+                    try { currentProfile = JSON.parse(fs.readFileSync(profileJsonPath, 'utf8')); } catch (e) {}
+                }
+                if (payload.name) currentProfile.name = payload.name.trim();
+                if (payload.role) currentProfile.role = payload.role.trim();
+                currentProfile.updatedAt = new Date().toISOString();
+                fs.writeFileSync(profileJsonPath, JSON.stringify(currentProfile, null, 2), 'utf8');
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, profile: currentProfile }));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // -------------------------------------------------------------------------
+    // API SKILLS GLOBAUX DU MONTEUR (PDF & MARKDOWN .MD DANS 00_Skills/Monteur/)
+    // -------------------------------------------------------------------------
+    const monteurSkillsDir = path.join(ROOT_DIR, '00_Skills', 'Monteur');
+    if (!fs.existsSync(monteurSkillsDir)) {
+        try { fs.mkdirSync(monteurSkillsDir, { recursive: true }); } catch (e) {}
+    }
+
+    if (cleanUrl === '/api/skills/monteur' && req.method === 'GET') {
+        try {
+            if (!fs.existsSync(monteurSkillsDir)) fs.mkdirSync(monteurSkillsDir, { recursive: true });
+            const files = fs.readdirSync(monteurSkillsDir, { withFileTypes: true })
+                .filter(f => f.isFile() && !f.name.startsWith('.'))
+                .map(f => {
+                    const fStat = fs.statSync(path.join(monteurSkillsDir, f.name));
+                    return {
+                        name: f.name,
+                        size: fStat.size,
+                        mtime: fStat.mtime,
+                        ext: path.extname(f.name).toLowerCase(),
+                        relativeUrl: `00_Skills/Monteur/${f.name}`
+                    };
+                });
+            files.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ success: true, files }));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
+    if (cleanUrl === '/api/skills/monteur/upload' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const rawFilename = (payload.filename || `skill_${Date.now()}.md`).trim();
+                const safeFilename = path.basename(rawFilename).replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+                const base64Data = payload.data;
+
+                if (!base64Data) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: 'Données de fichier manquantes' }));
+                }
+
+                if (!fs.existsSync(monteurSkillsDir)) fs.mkdirSync(monteurSkillsDir, { recursive: true });
+                const targetFilePath = path.join(monteurSkillsDir, safeFilename);
+                fs.writeFileSync(targetFilePath, Buffer.from(base64Data, 'base64'));
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({
+                    success: true,
+                    filename: safeFilename,
+                    relativeUrl: `00_Skills/Monteur/${safeFilename}`
+                }));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/skills/monteur/delete' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const filename = path.basename(payload.filename || '');
+                const targetFilePath = path.join(monteurSkillsDir, filename);
+                if (fs.existsSync(targetFilePath)) {
+                    fs.unlinkSync(targetFilePath);
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, filename }));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/skills/monteur/content' && req.method === 'GET') {
+        try {
+            const fileName = path.basename(parsedUrl.query.file || '');
+            const targetFilePath = path.join(monteurSkillsDir, fileName);
+            if (!fs.existsSync(targetFilePath)) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: 'Fichier non trouvé' }));
+            }
+            const content = fs.readFileSync(targetFilePath, 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ success: true, filename: fileName, content }));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
     }
 
     // 1. API pour lister les fichiers des dossiers
@@ -1694,6 +2020,48 @@ const server = http.createServer(async (req, res) => {
                     url: data.url,
                     start: data.start,
                     end: data.end,
+                    outputPath: data.out
+                });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/youtube/thumbnail' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const { downloadThumbnail } = require('./youtube_clip.cjs');
+                const data = JSON.parse(body || '{}');
+                const result = await downloadThumbnail({
+                    url: data.url,
+                    outputPath: data.out
+                });
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/youtube/data' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const { getVideoData } = require('./youtube_clip.cjs');
+                const data = JSON.parse(body || '{}');
+                const result = await getVideoData({
+                    url: data.url,
                     outputPath: data.out
                 });
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });

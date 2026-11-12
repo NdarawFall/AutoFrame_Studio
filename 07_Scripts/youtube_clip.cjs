@@ -89,6 +89,63 @@ function formatSeconds(sec) {
     return hrs > 0 ? `${pad(hrs)}:${pad(mins)}:${pad(secs)}` : `${pad(mins)}:${pad(secs)}`;
 }
 
+// Récupération complète et export des données de la vidéo (titre, tags, stats, description, etc.)
+function getVideoData({ url, outputPath = null }) {
+    return new Promise((resolve, reject) => {
+        const cleanUrl = sanitizeYoutubeUrl(url);
+        if (!cleanUrl) return reject(new Error('URL YouTube invalide ou manquante'));
+
+        const cmd = `yt-dlp --dump-json --no-warnings --no-playlist "${cleanUrl}"`;
+        exec(cmd, { maxBuffer: 15 * 1024 * 1024 }, (err, stdout, stderr) => {
+            if (err) {
+                return reject(new Error(`Erreur récupération données : ${err.message}`));
+            }
+            try {
+                const raw = JSON.parse(stdout);
+                const data = {
+                    id: raw.id,
+                    title: raw.title,
+                    description: raw.description || '',
+                    uploader: raw.uploader || raw.channel || '',
+                    uploaderId: raw.uploader_id || '',
+                    channelUrl: raw.channel_url || '',
+                    duration: raw.duration,
+                    durationFormatted: formatSeconds(raw.duration || 0),
+                    viewCount: raw.view_count || 0,
+                    likeCount: raw.like_count || 0,
+                    uploadDate: raw.upload_date || '',
+                    tags: Array.isArray(raw.tags) ? raw.tags : [],
+                    categories: Array.isArray(raw.categories) ? raw.categories : [],
+                    thumbnail: raw.thumbnail || '',
+                    webpageUrl: raw.webpage_url || cleanUrl,
+                    fps: raw.fps || 30,
+                    resolution: raw.resolution || (raw.width && raw.height ? `${raw.width}x${raw.height}` : '1080p')
+                };
+
+                let savedPath = null;
+                let relPath = null;
+                if (outputPath) {
+                    const rootDir = path.resolve(__dirname, '..');
+                    savedPath = path.isAbsolute(outputPath) ? outputPath : path.resolve(rootDir, outputPath);
+                    const targetDir = path.dirname(savedPath);
+                    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+                    fs.writeFileSync(savedPath, JSON.stringify(data, null, 2), 'utf8');
+                    relPath = path.relative(rootDir, savedPath).replace(/\\/g, '/');
+                }
+
+                resolve({
+                    success: true,
+                    data,
+                    savedPath,
+                    relativePath: relPath
+                });
+            } catch (parseErr) {
+                reject(new Error('Impossible d\'analyser les données de yt-dlp'));
+            }
+        });
+    });
+}
+
 // Parseur basique pour format VTT
 function parseVttSubtitles(vttContent) {
     const lines = vttContent.replace(/\r\n/g, '\n').split('\n');
@@ -375,6 +432,7 @@ if (require.main === module) {
 Usage :
   node 07_Scripts/youtube_clip.cjs --info <url>
   node 07_Scripts/youtube_clip.cjs --thumbnail <url> [--out <fichier.jpg>]
+  node 07_Scripts/youtube_clip.cjs --data <url> [--out <fichier.json>]
   node 07_Scripts/youtube_clip.cjs --transcript <url> [--lang fr|en]
   node 07_Scripts/youtube_clip.cjs --download <url> [--start HH:MM:SS] [--end HH:MM:SS] [--out <fichier.mp4>]
 
@@ -382,10 +440,13 @@ Exemples :
   # 1. Télécharger la miniature HD
   node 07_Scripts/youtube_clip.cjs --thumbnail "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 
-  # 2. Lire la transcription pour repérer un moment précis
+  # 2. Exporter toutes les métadonnées (titre, tags, stats, description)
+  node 07_Scripts/youtube_clip.cjs --data "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --out 01_Assets/Images/rickroll_data.json
+
+  # 3. Lire la transcription pour repérer un moment précis
   node 07_Scripts/youtube_clip.cjs --transcript "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --lang en
 
-  # 3. Télécharger un extrait précis de 15 secondes
+  # 4. Télécharger un extrait précis de 15 secondes
   node 07_Scripts/youtube_clip.cjs --download "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --start 00:00:10 --end 00:00:25 --out 01_Assets/Videos/rickroll_clip.mp4
 ===============================================================
         `);
@@ -432,6 +493,25 @@ Exemples :
                 console.error(`\n❌ Échec téléchargement miniature : ${err.message}`);
                 process.exit(1);
             });
+    } else if (args.includes('--data') || args.includes('--metadata') || args.includes('--json')) {
+        if (!url) {
+            console.error('Erreur : veuillez fournir une URL YouTube.');
+            process.exit(1);
+        }
+        const out = getArg('--out');
+        getVideoData({ url, outputPath: out })
+            .then(res => {
+                if (res.relativePath) {
+                    console.log(`\n🎉 Données de la vidéo enregistrées dans : ${res.relativePath}`);
+                } else {
+                    console.log('\n--- Données Complètes de la Vidéo ---');
+                    console.log(JSON.stringify(res.data, null, 2));
+                }
+            })
+            .catch(err => {
+                console.error(`\n❌ Échec extraction des données : ${err.message}`);
+                process.exit(1);
+            });
     } else if (args.includes('--transcript')) {
         if (!url) {
             console.error('Erreur : veuillez fournir une URL YouTube.');
@@ -476,6 +556,7 @@ Exemples :
 
 module.exports = {
     getVideoInfo,
+    getVideoData,
     getVideoTranscript,
     downloadClip,
     downloadThumbnail

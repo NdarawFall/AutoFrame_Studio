@@ -45,18 +45,17 @@
     "videoCount": 0
   },
   {
-    "id": "ch_1793911298459",
-    "name": "Le Secret Des Geeks",
+    "id": "ch_1794092386560",
+    "name": "Le Secrets Des Geeks",
     "platform": "YouTube",
     "format": "16:9",
-    "colorPrimary": "#ffffff",
-    "colorSecondary": "#0d0d0d",
+    "colorPrimary": "#ff3344",
+    "colorSecondary": "#dc2626",
     "fontPrimary": "Montserrat",
     "fontSecondary": "Inter",
     "fontAccent": "Caveat",
     "description": "",
-    "avatar": "01_Assets/Images/channels/avatar_ch_1793911298459.png",
-    "videos": [],
-    "videoCount": 0
+    "avatar": "01_Assets/Images/channels/avatar_ch_1794092386560.png",
+    "videos": []
   }
 ]

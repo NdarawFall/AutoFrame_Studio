@@ -55,3 +55,4 @@ const path = require('path');
   await browser.close();
   console.log('Verification successfully completed!');
 })();
+

@@ -238,3 +238,4 @@ monteurHtml = monteurHtml.replace(oldHeaderRegex, channelsHeaderForMonteur);
 
 fs.writeFileSync(monteurPath, monteurHtml, 'utf8');
 console.log('✅ monteur.html updated with matching channels navbar without chaines button!');
+

@@ -1087,7 +1087,7 @@
 
         .bg-types-row-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 10px;
         }
 
@@ -1136,6 +1136,16 @@
             border-radius: 6px;
             flex-shrink: 0;
             display: inline-block;
+        }
+
+        .swatch-ai {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #3b82f6);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
         }
 
         .swatch-white {
@@ -2049,6 +2059,51 @@
             width: fit-content;
         }
 
+        /* MEDIA CARDS STANDARDIZED ALIGNMENT */
+        .media-card-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .media-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 6px;
+            min-height: 46px;
+        }
+
+        .media-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .media-header .folder-badge {
+            align-self: flex-start;
+        }
+
+        #assetsCard .form-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 900px) {
+            #assetsCard .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 540px) {
+            #assetsCard .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* --- ACTION BAR --- */
         .action-bar {
             display: flex;
@@ -2336,7 +2391,7 @@
         
         <div class="page-header">
             <h1 class="page-title">Créer une vidéo</h1>
-            <p class="page-desc">Définissez votre prompt d'idée, choisissez votre style de montage, uploadez vos assets et générez la composition.</p>
+            <p class="page-desc">Générez votre vidéo à partir d'un prompt, d'un script horodaté et de vos médias.</p>
         </div>
 
         <!-- 1. CHAMP DE PROMPT EN HAUT (TOUJOURS OUVERT) -->
@@ -2344,35 +2399,50 @@
             <div class="prompt-header">
                 <span class="prompt-title">
                     <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                    <span>Prompt / Sujet de la Vidéo</span>
+                    <span>1. Prompt Général</span>
                 </span>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn-script-trigger" id="btnToggleScriptModal" onclick="openScriptModal()" title="Ajouter ou gérer un script vidéo horodaté">
-                        <span class="script-status-dot" id="scriptStatusDot"></span>
-                        <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span id="scriptBtnLabel">Script : Requis *</span>
-                    </button>
-                    <span class="folder-badge" id="badgeScriptRequiredNotice" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);">Script obligatoire *</span>
-                </div>
+                <span class="folder-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">Étape 1 / 2</span>
             </div>
-            <textarea class="prompt-textarea" id="videoPrompt" placeholder="Décrivez votre sujet, le scénario, le ton ou les instructions créatives de votre vidéo (minimum 20 caractères)..."></textarea>
-            
-            <!-- BANDEAU SCRIPT ACTIF -->
-            <div id="scriptActiveBanner" class="script-active-banner" style="display: none;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="script-badge-live">✓ Script Horodaté Actif</span>
-                    <span id="scriptBannerSummary" style="font-size: 11.5px; color: var(--text-secondary);">(0 timing(s) détecté(s))</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn-banner-link" onclick="openScriptModal()">Modifier le script</button>
-                    <button type="button" class="btn-banner-remove" onclick="disableScript()">Désactiver</button>
-                </div>
-            </div>
+            <textarea class="prompt-textarea" id="videoPrompt" placeholder="Décrivez votre sujet, l'angle éditorial, le ton ou les directives générales (minimum 20 caractères)..."></textarea>
 
             <div class="prompt-hint" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                <span>Le prompt sera analysé par l'IA pour générer le fil conducteur, caler le rythme et découper les scènes.</span>
+                <span>Contexte et direction éditoriale globale.</span>
                 <span id="promptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #f59e0b;">
                     0 / 20 caractères (encore 20 requis)
+                </span>
+            </div>
+        </section>
+
+        <!-- 1.BIS SCRIPT HORODATÉ OBLIGATOIRE (DIRECTEMENT VISIBLE) -->
+        <section class="prompt-card" id="scriptDirectCard" style="margin-top: 14px; border-left: 3px solid #dc2626;">
+            <div class="prompt-header">
+                <span class="prompt-title" style="color: #f87171;">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    <span>2. Script Horodaté</span>
+                </span>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" id="btnPasteScriptTemplate" class="btn-script-trigger" onclick="fillDirectSampleScript()" style="font-size: 11.5px; padding: 5px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);">
+                        📋 Coller Modèle
+                    </button>
+                    <button type="button" id="btnShowPromptGuide" class="btn-script-trigger" onclick="openDocModal()" style="font-size: 11.5px; padding: 5px 12px; background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35);">
+                        💡 Guide Prompt IA
+                    </button>
+                    <span class="folder-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);">Obligatoire *</span>
+                </div>
+            </div>
+            
+            <textarea class="prompt-textarea" id="videoCustomScript" style="min-height: 160px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12.5px; line-height: 1.55;" placeholder="[00:00 - 00:05] Scène 1 : Intro Hook
+Voix : &quot;Voici le classement officiel du Ballon d'Or 2024.&quot;
+Visuel : Titre 3D avec slow push-in de caméra.
+
+[00:05 - 00:10] Scène 2 : #10 Harry Kane
+Voix : &quot;À la 10e place, Harry Kane avec 52 buts.&quot;
+Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure basse."></textarea>
+
+            <div class="prompt-hint" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <span id="scriptTimingsCount" style="color: #60a5fa; font-weight: 600;">⏳ 0 timing(s) détecté(s) (format attendu : [00:00 - 00:03])</span>
+                <span id="scriptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #ef4444;">
+                    0 / 30 caractères (encore 30 requis)
                 </span>
             </div>
         </section>
@@ -2453,8 +2523,17 @@
                     <div class="bg-controls-panel">
                         <!-- Types de fond en ligne horizontale -->
                         <div class="bg-types-row-grid">
+                            <!-- Décision IA -->
+                            <button type="button" class="bg-type-row-btn selected" id="bgRow_auto" onclick="selectBackgroundType('auto')">
+                                <div class="bg-type-row-left">
+                                    <span class="bg-type-swatch swatch-ai">✨</span>
+                                    <span class="bg-type-title">Décision IA</span>
+                                </div>
+                                <span class="bg-type-indicator">✓</span>
+                            </button>
+
                             <!-- Blanc -->
-                            <button type="button" class="bg-type-row-btn selected" id="bgRow_white" onclick="selectBackgroundType('white')">
+                            <button type="button" class="bg-type-row-btn" id="bgRow_white" onclick="selectBackgroundType('white')">
                                 <div class="bg-type-row-left">
                                     <span class="bg-type-swatch swatch-white"></span>
                                     <span class="bg-type-title">Blanc</span>
@@ -2492,6 +2571,13 @@
 
                         <!-- Sous-paramètres dynamiques (Couleur unie ou Dégradé) -->
                         <div class="bg-sub-settings-box">
+                            <!-- DÉCISION IA (PAR DÉFAUT) -->
+                            <div id="panelAuto" class="bg-sub-panel" style="padding: 10px 14px; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.22); border-radius: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c4b5fd;">
+                                    <span>✨</span>
+                                    <span><strong>Scénographie libre :</strong> L'IA choisit l'ambiance et les fonds optimaux pour chaque scène selon le sujet.</span>
+                                </div>
+                            </div>
                             <!-- COULEUR UNIE (PRÉSENT DÈS LE DÉBUT, DÉSACTIVÉ JUSQU'À SÉLECTION DE COULEUR UNIE) -->
                             <div id="panelSolid" class="bg-sub-panel disabled-panel" style="margin-bottom: 10px;">
                                 <div style="display: flex; align-items: center; justify-content: flex-start; gap: 14px;">
@@ -3088,17 +3174,17 @@
             <div class="card-collapsible-body" style="display: none; padding-top: 18px;">
                 <div class="form-grid">
                     <!-- BOX 1 : IMAGES D'ILLUSTRATION -->
-                    <div class="form-row">
-                        <label class="form-label">
-                            <span>Images d'illustrations</span>
+                    <div class="form-row media-card-item">
+                        <div class="media-header">
+                            <span class="media-title">Images d'illustration</span>
                             <span class="folder-badge" id="pathBadgeImages">01_Assets/Images/</span>
-                        </label>
+                        </div>
                         
                         <div class="upload-dropzone" onclick="document.getElementById('inputImages').click()">
                             <input type="file" id="inputImages" multiple accept="image/*" style="display:none;" onchange="handleFileUpload(this.files, 'Images')">
                             <svg class="upload-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                            <span class="upload-text-main">Déposer vos images ici</span>
-                            <span class="upload-text-sub">ou cliquer pour parcourir (JPG, PNG, WEBP)</span>
+                            <span class="upload-text-main">Déposer vos images</span>
+                            <span class="upload-text-sub">JPG, PNG, WEBP</span>
                         </div>
 
                         <div class="uploaded-files-list" id="listImages">
@@ -3107,28 +3193,28 @@
                     </div>
 
                     <!-- BOX 2 : VOIX OFF -->
-                    <div class="form-row" id="uploadBoxVoice">
-                        <label class="form-label">
-                            <span>Piste Voix Off</span>
+                    <div class="form-row media-card-item" id="uploadBoxVoice">
+                        <div class="media-header">
+                            <span class="media-title">Piste Voix Off</span>
                             <span class="folder-badge" id="pathBadgeVoice">01_Assets/Voix_Off/</span>
-                        </label>
+                        </div>
 
                         <div class="upload-dropzone" onclick="document.getElementById('inputVoice').click()">
                             <input type="file" id="inputVoice" accept="audio/*" style="display:none;" onchange="handleFileUpload(this.files, 'Voix_Off')">
                             <svg class="upload-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                             <span class="upload-text-main">Déposer la Voix Off</span>
-                            <span class="upload-text-sub">Fichier audio MP3 ou WAV</span>
+                            <span class="upload-text-sub">Fichier MP3 ou WAV</span>
                         </div>
 
                         <div class="uploaded-files-list" id="listVoice"></div>
                     </div>
 
                     <!-- BOX 3 : MUSIQUE DE FOND -->
-                    <div class="form-row" id="uploadBoxMusic">
-                        <label class="form-label">
-                            <span>Musique de Fond</span>
+                    <div class="form-row media-card-item" id="uploadBoxMusic">
+                        <div class="media-header">
+                            <span class="media-title">Musique de Fond</span>
                             <span class="folder-badge" id="pathBadgeMusic">01_Assets/Musiques/</span>
-                        </label>
+                        </div>
 
                         <div class="upload-dropzone" onclick="document.getElementById('inputMusic').click()">
                             <input type="file" id="inputMusic" accept="audio/*" style="display:none;" onchange="handleFileUpload(this.files, 'Musiques')">
@@ -3141,28 +3227,28 @@
                     </div>
 
                     <!-- BOX 4 : CLIPS VIDÉO B-ROLL -->
-                    <div class="form-row">
-                        <label class="form-label">
-                            <span>Vidéos / B-Roll</span>
+                    <div class="form-row media-card-item">
+                        <div class="media-header">
+                            <span class="media-title">Vidéos / B-Roll</span>
                             <span class="folder-badge" id="pathBadgeVideos">01_Assets/Videos/</span>
-                        </label>
+                        </div>
 
                         <div class="upload-dropzone" onclick="document.getElementById('inputVideos').click()">
                             <input type="file" id="inputVideos" multiple accept="video/*" style="display:none;" onchange="handleFileUpload(this.files, 'Videos')">
                             <svg class="upload-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
                             <span class="upload-text-main">Déposer vos clips vidéo</span>
-                            <span class="upload-text-sub">Fichiers vidéo MP4 ou WEBM</span>
+                            <span class="upload-text-sub">Fichiers MP4 ou WEBM</span>
                         </div>
 
                         <div class="uploaded-files-list" id="listVideos"></div>
                     </div>
                 </div>
 
-                <!-- NB : RECOMMANDATION NOMMAGE DES FICHIERS -->
-                <div style="margin-top: 16px; padding: 12px 16px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.16); border-radius: 8px; display: flex; align-items: center; gap: 12px;">
-                    <svg style="width: 20px; height: 20px; stroke: #eab308; stroke-width: 2; fill: none; flex-shrink: 0;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <span style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
-                        <strong style="color: #ffffff;">NB :</strong> Veuillez bien nommer vos fichiers (ex: <code style="color:#ffffff; background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">01_intro.jpg</code>, <code style="color:#ffffff; background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">02_scene.jpg</code>, <code style="color:#ffffff; background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">voix_narrative.mp3</code>, <code style="color:#ffffff; background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">fond_musical.mp3</code>...) afin de garantir un ordonnancement et une synchronisation optimale dans le studio.
+                <!-- RECOMMANDATION NOMMAGE COMPACTE -->
+                <div style="margin-top: 14px; padding: 10px 14px; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.12); border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 14px;">💡</span>
+                    <span style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
+                        <strong style="color: #ffffff;">Nommage recommandé :</strong> Nommez vos fichiers séquentiellement (ex: <code>01_intro.jpg</code>, <code>02_action.mp4</code>) pour une synchronisation automatique fluide.
                     </span>
                 </div>
             </div>
@@ -3173,7 +3259,7 @@
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div id="validationDot" style="width: 8px; height: 8px; border-radius: 50%; background: #eab308; transition: background 0.25s; flex-shrink: 0;"></div>
                 <span id="creationValidationHint" style="font-size: 12.5px; color: var(--text-secondary); font-weight: 500;">
-                    Saisissez votre prompt d'idée pour activer la création
+                    Saisissez votre prompt et votre script horodaté pour activer la création
                 </span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -3187,63 +3273,39 @@
 
     </main>
 
-    <!-- GRAND MODAL SCRIPT HORODATÉ -->
-    <div class="script-modal-overlay" id="scriptModalOverlay" onclick="handleScriptOverlayClick(event)">
-        <div class="script-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="scriptModalTitle">
-            <!-- HEADER DU MODAL -->
-            <div class="script-modal-header">
-                <div>
-                    <h2 class="script-modal-title" id="scriptModalTitle">
-                        <svg class="icon" style="color: #ff3344; width: 16px; height: 16px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span>Script Personnalisé de la Vidéo</span>
-                    </h2>
-                    <div class="script-modal-subtitle">Rédigez votre script scène par scène avec les répliques voix off et le concept visuel.</div>
-                </div>
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <!-- TOGGLE SWITCH DANS LE HEADER DU MODAL -->
-                    <div class="script-switch-wrap" title="Activer ou désactiver la prise en compte du script par l'IA">
-                        <input type="checkbox" id="modalScriptToggle" class="script-switch-checkbox" onchange="onScriptSwitchChange()">
-                        <label for="modalScriptToggle" id="modalScriptToggleLabel" style="font-size: 12px; font-weight: 700; color: var(--text-secondary); cursor: pointer;">Désactivé</label>
+    <!-- MODAL GUIDE DE PROMPT IA (CLAUDE / GROK / GEMINI) -->
+    <div class="script-modal-overlay" id="docModalOverlay" onclick="handleDocOverlayClick(event)">
+        <div class="script-modal-dialog" style="max-width: 780px;">
+            <div class="script-modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="script-modal-icon" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+                        💡
                     </div>
-                    <button type="button" class="script-modal-close" onclick="closeScriptModal()" title="Fermer la fenêtre">✕</button>
+                    <div>
+                        <h2 class="script-modal-title">Guide IA Externe (Claude / Grok / Gemini)</h2>
+                        <p class="script-modal-subtitle">Générez votre script horodaté parfait à l'extérieur de l'app avant de le coller ici.</p>
+                    </div>
                 </div>
+                <button type="button" class="script-modal-close" onclick="closeDocModal()">✕</button>
             </div>
-
-            <!-- MESSAGE IMPORTANT D'AVERTISSEMENT : LE SCRIPT DOIT ÊTRE HORODATÉ -->
-            <div class="script-notice-box">
-                <div class="script-notice-content">
-                    <strong><span style="color: #ff3344;">⏱️</span> Important : Votre script doit obligatoirement être horodaté</strong>
-                    <p>Pour garantir une synchronisation parfaite entre la voix, les animations 3D et le rythme du montage, indiquez chaque bloc avec un timing précis.<br>
-                    Exemple de format : <code>[00:00 - 00:05] Voix : ... | Visuel : Plan 3D de ...</code></p>
-                </div>
-                <button type="button" class="btn-insert-sample" onclick="insertScriptSample()">
-                    <span>+ Insérer un modèle type</span>
-                </button>
-            </div>
-
-            <!-- ÉDITEUR DE SCRIPT -->
-            <div class="script-editor-body">
-                <textarea 
-                    class="script-modal-textarea" 
-                    id="customScriptInput" 
-                    placeholder="[00:00 - 00:05]&#10;Voix : Dans un monde où la vitesse fait toute la différence...&#10;Visuel : Caméra rasante au ras du bitume, un pickup rouge surgit à vive allure.&#10;&#10;[00:05 - 00:10]&#10;Voix : Chaque seconde compte.&#10;Visuel : Travelling caméra fluide, switch moto en pleine course, virage serré..."
-                    oninput="updateScriptStats()"
-                ></textarea>
-            </div>
-
-            <!-- FOOTER DU MODAL -->
-            <div class="script-modal-footer">
-                <div class="script-footer-stats">
-                    <span id="scriptLinesCount">0 ligne(s)</span> • <span id="scriptCharsCount">0 caractère(s)</span> • <span id="scriptTimestampsDetected" style="color: var(--text-secondary); font-weight: 700;">0 timing(s) détecté(s)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button type="button" class="btn-script-modal btn-secondary" onclick="clearScriptText()">Effacer</button>
-                    <button type="button" class="btn-script-modal btn-secondary" onclick="closeScriptModal()">Annuler</button>
-                    <button type="button" class="btn-script-modal btn-primary" onclick="saveAndApplyScript()">
-                        <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <span>Valider et Activer le Script</span>
+            <div style="padding: 20px 24px; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+                <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                    VibeEditor dispose de tous les outils nécessaires : <strong style="color: #ffffff;">HeyGen & ElevenLabs</strong> (voix off), <strong style="color: #ffffff;">Brandfetch</strong> (logos officiels), <strong style="color: #ffffff;">FFmpeg & yt-dlp</strong> (B-Roll fluide 60 FPS), <strong style="color: #ffffff;">fetch_map & fetch_flag</strong> (cartes et drapeaux vectoriels).<br>
+                    Copiez le prompt ci-dessous dans votre IA préférée (Claude 3.7, Grok 3, ChatGPT ou Gemini) pour obtenir directement un script horodaté conforme aux règles du studio :
+                </p>
+                <div style="position: relative;">
+                    <textarea id="promptDocTemplate" readonly style="width: 100%; height: 260px; background: #090b10; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #94a3b8; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; padding: 14px; line-height: 1.5; resize: none;"></textarea>
+                    <button type="button" id="btnCopyPromptDoc" onclick="copyDocPrompt()" style="position: absolute; top: 12px; right: 12px; background: #dc2626; color: #ffffff; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <span>📋 Copier le Prompt</span>
                     </button>
                 </div>
+                <div style="font-size: 12px; color: var(--text-muted); background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px;">
+                    ℹ️ La documentation complète et vivante du projet est disponible dans le fichier racine <strong style="color: #ffffff;">DOCUMENTATION_CREATION_VIDEO.md</strong>.
+                </div>
+            </div>
+            <div class="script-modal-footer">
+                <div></div>
+                <button type="button" class="btn-script-modal btn-primary" onclick="closeDocModal()">Compris</button>
             </div>
         </div>
     </div>
@@ -3296,6 +3358,66 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             if (e.target.id === 'scriptModalOverlay') {
                 closeScriptModal();
             }
+        }
+
+        // --- GESTION DU MODAL GUIDE IA EXTERNE ---
+        const PROMPT_DOC_TEXT = `Tu es le Scénariste et Directeur Artistique de VibeEditor, un moteur de motion design vidéo 60 FPS basé sur Canvas 2D et GSAP.
+Je souhaite créer une vidéo sur le sujet suivant :
+« [INSÉRER LE SUJET DE LA VIDÉO ICI] »
+
+Contraintes techniques de VibeEditor :
+1. Format : [16:9 horizontal OU 9:16 vertical].
+2. Durée totale : [ex: 15 secondes / 20 secondes / 30 secondes].
+3. Style : [ex: Sport Broadcast, Minimaliste Tech, Growkaw Motivation, SaaS Explainer].
+4. Règle anti-PowerPoint : Pas de barre de progression en haut, pas de badges d'écolier [Étape 1], design cinématographique épuré avec caméra dynamique.
+5. Timing organique : Pas de découpage rigide (un hook de 2-3s, un cœur rythmé, une conclusion percutante).
+6. Assets prévus : Mentionne les images, logos officiels, drapeaux ou cartes nécessaires.
+
+Rédige-moi :
+1. Le Prompt Général (synthèse en 2-3 phrases de l'angle éditorial et de la direction artistique).
+2. Le Script Horodaté Détaillé respectant le format :
+   [MM:SS - MM:SS] Scène X : [Nom de la Scène]
+   Voix off : "[Texte exact mot pour mot]"
+   Visuel : [Description précise des mouvements, animations de caméra, cartes, typographie cinétique]
+   Assets : [Noms des images, logos ou illustrations à utiliser]`;
+
+        function openDocModal() {
+            const overlay = document.getElementById('docModalOverlay');
+            const textarea = document.getElementById('promptDocTemplate');
+            if (textarea) textarea.value = PROMPT_DOC_TEXT;
+            if (overlay) overlay.classList.add('open');
+        }
+
+        function closeDocModal() {
+            const overlay = document.getElementById('docModalOverlay');
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        function handleDocOverlayClick(e) {
+            if (e.target.id === 'docModalOverlay') {
+                closeDocModal();
+            }
+        }
+
+        function copyDocPrompt() {
+            const btn = document.getElementById('btnCopyPromptDoc');
+            navigator.clipboard.writeText(PROMPT_DOC_TEXT).then(() => {
+                if (btn) {
+                    btn.innerHTML = '<span>✓ Copié !</span>';
+                    btn.style.background = '#10b981';
+                    setTimeout(() => {
+                        btn.innerHTML = '<span>📋 Copier le Prompt</span>';
+                        btn.style.background = '#dc2626';
+                    }, 2500);
+                }
+            }).catch(() => {
+                const textarea = document.getElementById('promptDocTemplate');
+                if (textarea) {
+                    textarea.select();
+                    document.execCommand('copy');
+                    alert('Prompt copié dans le presse-papier !');
+                }
+            });
         }
 
         function onScriptSwitchChange() {
@@ -3398,6 +3520,27 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 banner.style.display = 'none';
             }
         }
+        // Helper pour coller un exemple de script horodaté directement dans la page
+        function fillDirectSampleScript() {
+            const scriptEl = document.getElementById('videoCustomScript');
+            if (!scriptEl) return;
+            scriptEl.value = `[00:00 - 00:03] Scène 1 : Le Hook / L'Élément Déclencheur
+Voix off : "Voici l'annonce officielle qui va tout changer en 2026."
+Visuel : Apparition cinétique du titre géant en blanc pur avec reflet néon cyan, slow push-in de caméra, halo volumétrique sombre.
+Assets : logo_officiel.svg
+
+[00:03 - 00:07] Scène 2 : Démonstration Chiffrée & Performance
+Voix off : "Grâce à cette nouvelle architecture, les performances sont multipliées par dix."
+Visuel : Entrée élastique d'une carte interface en verre dépoli (ratio 1:1), compteur dynamique qui grimpe de 0 à +142%, tracé laser électrique.
+Assets : capture_dashboard.png
+
+[00:07 - 00:10] Scène 3 : Conclusion & Appel à l'Action
+Voix off : "Et toi, quel est ton avis ? Dis-le en commentaire !"
+Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d'action haptique animé, fondu cinématographique au noir.`;
+            updateCreationFormValidation();
+            scriptEl.focus();
+        }
+
         // State des assets uploadés
         const assetsState = {
             Images: [],
@@ -3409,42 +3552,72 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         // Validation dynamique du formulaire pour activation du bouton Créer
         function updateCreationFormValidation() {
             const promptEl = document.getElementById('videoPrompt');
+            const scriptEl = document.getElementById('videoCustomScript');
             const btn = document.getElementById('btnSubmitGenerate');
             const hint = document.getElementById('creationValidationHint');
             const dot = document.getElementById('validationDot');
-            const charCounter = document.getElementById('promptCharCount');
+            const promptCounter = document.getElementById('promptCharCount');
+            const scriptCounter = document.getElementById('scriptCharCount');
+            const timingsCounter = document.getElementById('scriptTimingsCount');
             if (!btn) return;
 
             const promptText = promptEl ? promptEl.value.trim() : '';
-            const charLen = promptText.length;
-            const minRequired = 20;
-            const hasPrompt = charLen >= minRequired;
+            const promptLen = promptText.length;
+            const hasPrompt = promptLen >= 20;
+
+            const scriptText = scriptEl ? scriptEl.value.trim() : '';
+            const scriptLen = scriptText.length;
+            const detectedTimings = countTimestamps(scriptText);
+            const hasScript = (scriptLen >= 30 && detectedTimings >= 1);
+
+            customScriptContent = scriptText;
+            isCustomScriptEnabled = hasScript;
+
+            // Compteur Prompt
+            if (promptCounter) {
+                if (hasPrompt) {
+                    promptCounter.textContent = `${promptLen} caractères (Valide ✓)`;
+                    promptCounter.style.color = '#10b981';
+                } else {
+                    const remaining = 20 - promptLen;
+                    promptCounter.textContent = `${promptLen} / 20 caractères (${remaining} requis)`;
+                    promptCounter.style.color = '#f59e0b';
+                }
+            }
+
+            // Compteur Script Horodaté
+            if (scriptCounter) {
+                if (hasScript) {
+                    scriptCounter.textContent = `${scriptLen} caractères (Valide ✓)`;
+                    scriptCounter.style.color = '#10b981';
+                } else {
+                    const remaining = Math.max(0, 30 - scriptLen);
+                    scriptCounter.textContent = `${scriptLen} / 30 caractères (${remaining > 0 ? remaining + ' requis' : 'timings requis'})`;
+                    scriptCounter.style.color = '#ef4444';
+                }
+            }
+
+            if (timingsCounter) {
+                if (detectedTimings > 0) {
+                    timingsCounter.textContent = `✓ ${detectedTimings} scène(s) horodatée(s) détectée(s)`;
+                    timingsCounter.style.color = '#10b981';
+                } else {
+                    timingsCounter.textContent = `⏳ 0 timing détecté (Exemple requis : [00:00 - 00:03])`;
+                    timingsCounter.style.color = '#ef4444';
+                }
+            }
+
             const hasFormat = Boolean(currentSelectedFormat);
             const hasStyle = Boolean(currentSelectedStyle);
             const hasAudio = Boolean(currentAudioOption);
             const hasSubtitles = (currentSubtitlesOption !== null && currentSubtitlesOption !== undefined);
-
-            // Compteur de caractères interactif
-            if (charCounter) {
-                if (hasPrompt) {
-                    charCounter.textContent = `${charLen} caractères (Valide ✓)`;
-                    charCounter.style.color = '#10b981';
-                } else {
-                    const remaining = minRequired - charLen;
-                    charCounter.textContent = `${charLen} / 20 caractères (${remaining} caractère${remaining > 1 ? 's' : ''} requis)`;
-                    charCounter.style.color = '#f59e0b';
-                }
-            }
-
-            const scriptContent = (customScriptContent || '').trim();
-            const hasScript = Boolean(isCustomScriptEnabled && scriptContent.length >= 10);
 
             const isReady = hasPrompt && hasScript && hasFormat && hasStyle && hasAudio && hasSubtitles;
 
             if (isReady) {
                 btn.disabled = false;
                 if (hint) {
-                    hint.textContent = 'Tous les choix sont validés (≥ 20 car.). Prêt pour la génération !';
+                    hint.textContent = 'Prompt et Script horodaté validés ! Prêt pour la génération IA.';
                     hint.style.color = '#10b981';
                 }
                 if (dot) dot.style.background = '#10b981';
@@ -3452,9 +3625,12 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 btn.disabled = true;
                 if (hint) {
                     if (!hasPrompt) {
-                        const remaining = minRequired - charLen;
+                        const remaining = 20 - promptLen;
                         hint.textContent = `Le prompt doit comporter au moins 20 caractères (${remaining} restant${remaining > 1 ? 's' : ''})`;
                         hint.style.color = '#f59e0b';
+                    } else if (!hasScript) {
+                        hint.textContent = 'Le script horodaté est obligatoire (min. 30 car. avec au moins 1 timecode ex: [00:00 - 00:03])';
+                        hint.style.color = '#ef4444';
                     } else if (!hasFormat) {
                         hint.textContent = 'Veuillez choisir un format vidéo (16:9, 9:16 ou 1:1)';
                         hint.style.color = 'var(--text-secondary)';
@@ -3469,7 +3645,7 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                         hint.style.color = 'var(--text-secondary)';
                     }
                 }
-                if (dot) dot.style.background = '#eab308';
+                if (dot) dot.style.background = '#ef4444';
             }
         }
 
@@ -3492,9 +3668,19 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
 
         // Compteur de caractères du prompt et validation en temps réel
         const promptArea = document.getElementById('videoPrompt');
-        promptArea.addEventListener('input', () => {
-            updateCreationFormValidation();
-        });
+        if (promptArea) {
+            promptArea.addEventListener('input', () => {
+                updateCreationFormValidation();
+            });
+        }
+
+        // Écouteur en temps réel sur le script horodaté
+        const scriptArea = document.getElementById('videoCustomScript');
+        if (scriptArea) {
+            scriptArea.addEventListener('input', () => {
+                updateCreationFormValidation();
+            });
+        }
 
         // Gestion du style de montage (Sans template sélectionné par défaut), format, audio et sous-titres
                 // --- GESTION DU FOND DE BASE DE LA VIDÉO (UX ÉPURÉ, CADRE FIXE, COULEURS GLISSABLES SANS FERMETURE) ---
@@ -3666,7 +3852,7 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         function selectBackgroundType(type) {
             currentBackgroundType = type;
 
-            ['white', 'black', 'gradient', 'solid'].forEach(t => {
+            ['auto', 'white', 'black', 'gradient', 'solid'].forEach(t => {
                 const btn = document.getElementById(`bgRow_${t}`);
                 if (btn) {
                     if (t === type) btn.classList.add('selected');
@@ -3674,9 +3860,13 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 }
             });
 
+            const panelAuto = document.getElementById('panelAuto');
             const panelSolid = document.getElementById('panelSolid');
             const panelGradient = document.getElementById('panelGradient');
 
+            if (panelAuto) {
+                panelAuto.style.display = (type === 'auto') ? 'block' : 'none';
+            }
             if (panelSolid) {
                 if (type === 'solid') {
                     panelSolid.classList.remove('disabled-panel');
@@ -3692,7 +3882,9 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 }
             }
 
-            if (type === 'white') {
+            if (type === 'auto') {
+                currentBackgroundColor = '#000000';
+            } else if (type === 'white') {
                 currentBackgroundColor = '#ffffff';
             } else if (type === 'black') {
                 currentBackgroundColor = '#000000';
@@ -3715,7 +3907,9 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             if (!canvas) return;
 
             let appliedBg = '#000000';
-            if (currentBackgroundType === 'white') {
+            if (currentBackgroundType === 'auto') {
+                appliedBg = 'radial-gradient(ellipse 75% 65% at 50% 25%, #1e1b4b 0%, #030712 100%)';
+            } else if (currentBackgroundType === 'white') {
                 appliedBg = '#ffffff';
             } else if (currentBackgroundType === 'black') {
                 appliedBg = '#000000';
@@ -3787,8 +3981,8 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             // 3. Modèles de sous-titres par défaut : Sans sous-titres
             selectSubtitlesOption(false);
 
-            // 4. Fond de base par défaut : Blanc
-            selectBackgroundType('white');
+            // 4. Fond de base par défaut : Décision IA
+            selectBackgroundType('auto');
         }
 
         function selectVideoFormat(fmt) {
@@ -4852,8 +5046,8 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
             // 3. Modèles de sous-titres par défaut : Sans sous-titres
             selectSubtitlesOption(false);
 
-            // 4. Fond de base par défaut : Blanc
-            selectBackgroundType('white');
+            // 4. Fond de base par défaut : Décision IA
+            selectBackgroundType('auto');
             
             selectMontageStyle('none');
             await loadTemplatesFromApi();
@@ -5031,8 +5225,21 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 return;
             }
 
+            // Vérification stricte du script horodaté
+            const scriptEl = document.getElementById('videoCustomScript');
+            const customScript = scriptEl ? scriptEl.value.trim() : (customScriptContent || '').trim();
+            const detectedTimings = countTimestamps(customScript);
+
+            if (!customScript || customScript.length < 30 || detectedTimings < 1) {
+                alert('Le script horodaté est obligatoire (minimum 30 caractères avec au moins 1 timecode ex: [00:00 - 00:03]).');
+                if (scriptEl) scriptEl.focus();
+                btn.disabled = false;
+                btn.innerHTML = `<span>🚀 Créer la Vidéo (Génération IA)</span>`;
+                return;
+            }
+
             btn.disabled = true;
-            btn.innerHTML = `<span>Préparation du processus...</span>`;
+            btn.innerHTML = `<span>Préparation du pipeline IA...</span>`;
 
             const useTemplate = (currentSelectedStyle !== 'none');
             const channelId = currentChannelId;
@@ -5055,6 +5262,22 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
 
             // Format choisi par l'utilisateur
             const format = currentSelectedFormat || '16:9';
+
+            // Inventaire exhaustif et rigoureux de TOUS les assets explicitement fournis par l'utilisateur
+            const userUploadedAssets = [];
+            Object.keys(assetsState).forEach(cat => {
+                assetsState[cat].forEach(item => {
+                    const cleanName = item.name;
+                    const relPath = item.relativePath || (currentChannelId ? `01_Assets/${cat}/${currentChannelId}/${cleanName}` : `01_Assets/${cat}/${cleanName}`);
+                    userUploadedAssets.push({
+                        category: cat,
+                        name: cleanName,
+                        relativePath: relPath,
+                        url: `/${relPath.replace(/\\/g, '/')}`,
+                        size: item.size || 0
+                    });
+                });
+            });
 
             const imageFiles = assetsState.Images.map(img => img.name);
             const voiceFile = assetsState.Voix_Off.length > 0 ? assetsState.Voix_Off[0].name : '';
@@ -5084,13 +5307,15 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
                 subtitlePosition: currentSubtitlePos,
                 subfolder,
                 channelId: channelId,
-                images: imageFiles.length > 0 ? imageFiles : ['01.jpg', '02.jpg', '03.jpg'],
+                userUploadedAssets: userUploadedAssets,
+                hasUserAssets: userUploadedAssets.length > 0,
+                images: imageFiles,
                 hasUserImages: imageFiles.length > 0,
                 hasUserVoice: Boolean(voiceFile),
                 hasUserMusic: Boolean(musicFile),
-                hasCustomScript: Boolean(isCustomScriptEnabled && customScriptContent.trim().length > 0),
-                customScript: isCustomScriptEnabled ? customScriptContent.trim() : '',
-                script: isCustomScriptEnabled ? customScriptContent.trim() : '',
+                hasCustomScript: true,
+                customScript: customScript,
+                script: customScript,
                 style: currentSelectedStyle,
                 voiceover: voiceFile,
                 music: musicFile,

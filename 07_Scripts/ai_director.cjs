@@ -312,6 +312,9 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const customScript = (payload.customScript || payload.script || '').trim();
     const hasCustomScript = Boolean(payload.hasCustomScript || customScript.length > 0);
 
+    // Extraction et liaison stricte des assets explicitement fournis par l'utilisateur
+    const userUploadedAssets = Array.isArray(payload.userUploadedAssets) ? payload.userUploadedAssets : [];
+
     // Si une durée n'a pas été trouvée dans le prompt textuel mais qu'un script est fourni,
     // on déduit la durée à partir du dernier timestamp trouvé dans le script (ex: "[00:20 - 00:30]" => 30s)
     if (!promptDuration && hasCustomScript) {
@@ -637,19 +640,22 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exact
 - Durée ciblée : ${promptDuration ? promptDuration + ' secondes (demandée explicitement dans le brief)' : '15 à 20 secondes'}
 - Audio souhaité : ${audioSetup} (Voix: ${hasVoice ? 'OUI' : 'NON'}, Musique: ${hasMusic ? 'OUI' : 'NON'})
 - Sous-titres demandés : ${showSubtitles ? 'OUI' : 'NON'}
-- Images fournies par l'utilisateur : ${JSON.stringify(payload.images || [])}
 - Style sélectionné : ${payload.template || payload.style || 'Libre (sans template)'}
 - Chaîne associée : ${channelId || 'Aucune (vidéo autonome)'}
-- Fond de base imposé par l'utilisateur : ${payload.backgroundType || 'black'} (${payload.backgroundType === 'white' ? 'Blanc pur #ffffff' : (payload.backgroundType === 'solid' ? (payload.backgroundColor || '#111827') : (payload.backgroundType === 'gradient' ? (payload.backgroundGradient || 'Dégradé') : 'Noir pur #000000'))})
+- Fond de base imposé : ${payload.backgroundType || 'black'}
+
+- ASSETS UPLOADÉS PAR L'UTILISATEUR LIÉS À CETTE VIDÉO :
+${userUploadedAssets.length > 0 ? JSON.stringify(userUploadedAssets.map(u => ({ category: u.category, name: u.name, url: u.url })), null, 2) : "Aucun asset externe fourni (créer une vidéo 100% vectorielle Canvas 2D/SVG ou 3D sans inventer de faux fichiers images !)"}
+
 ${hasCustomScript ? `
-- SCRIPT HORODATÉ FOURNI PAR L'UTILISATEUR (OBLIGATOIRE ET STRICTEMENT RESPECTÉ) :
+- SCRIPT HORODATÉ OBLIGATOIRE FOURNI PAR L'UTILISATEUR :
 """
 ${customScript}
 """
-CONSIGNE IMPÉRATIVE SUR LE SCRIPT :
-L'utilisateur a fourni un script horodaté précis ci-dessus.
-1. Tu DOIS découper les scènes dans "scenes" pour qu'elles correspondent exactement aux tranches horaires et aux concepts visuels du script.
-2. Pour le champ "narration", rassemble et utilise fidèlement les répliques voix indiquées dans le script horodaté.
+CONSIGNES STRICTES SUR LE SCRIPT HORODATÉ :
+1. Tu DOIS découper les scènes dans "scenes" pour qu'elles correspondent EXACTEMENT aux tranches horaires et aux concepts visuels du script horodaté.
+2. Pour le champ "narration", rassemble fidèlement toutes les répliques voix du script sans en inventer de nouvelles.
+3. Si des marques, clubs de foot ou pays sont mentionnés dans le script, active les outils correspondants dans "toolsNeeded".
 ` : ''}
 
 Conçois le plan narratif, la direction artistique et détermine les outils externes nécessaires (logos, drapeaux, cartes). Réponds UNIQUEMENT en JSON.`;
@@ -855,6 +861,33 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             console.warn("Erreur brandfetch:", e.message);
         }
     }
+
+    // 4.1 BIS LOGOS OFFICIELS DE CLUBS DE FOOTBALL (07_Scripts/fetch_football_logo.cjs)
+    const downloadedFootballLogos = [];
+    try {
+        const { fetchFootballLogo } = require('./fetch_football_logo.cjs');
+        const footballClubs = [
+            'real madrid', 'manchester city', 'bayern munich', 'barcelona', 'barça',
+            'inter', 'inter milan', 'milan', 'ac milan', 'psg', 'arsenal', 'liverpool',
+            'chelsea', 'juventus', 'dortmund', 'atletico madrid', 'atletico', 'tottenham'
+        ];
+        const fullPromptAndScript = (normPrompt + ' ' + (customScript || '').toLowerCase());
+        for (const clubName of footballClubs) {
+            if (fullPromptAndScript.includes(clubName)) {
+                try {
+                    const fbRes = await fetchFootballLogo(clubName);
+                    if (fbRes && fbRes.localPath && fs.existsSync(path.join(ROOT_DIR, fbRes.localPath))) {
+                        const clubSlug = path.basename(fbRes.localPath);
+                        downloadedFootballLogos.push({
+                            name: clubName,
+                            path: `${assetPrefix}/Logos/Football/${clubSlug}`
+                        });
+                        onProgress('step_logo', `Blason officiel récupéré : ${clubName}`, 43, `07_Scripts/fetch_football_logo.cjs : ${clubSlug}`, 'info');
+                    }
+                } catch (e) { }
+            }
+        }
+    } catch (e) { }
 
     // 4.2 DRAPEAUX NATIONAUX & SYMBOLES
     let downloadedFlagPath = '';
@@ -1110,9 +1143,12 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
 
     // Paramétrage flexible du fond (Blanc, Noir, Couleur unie, Dégradé)
     const userBgType = payload.backgroundType;
+    const isAiDecidedBg = (!userBgType || userBgType === 'auto' || userBgType === 'ai');
     const bgPlan = plan.background || {};
     let baseBg = bgPlan.global || plan.theme?.primaryColor || '#000000';
-    if (userBgType === 'white') {
+    if (isAiDecidedBg) {
+        baseBg = bgPlan.global || '#000000';
+    } else if (userBgType === 'white') {
         baseBg = '#ffffff';
     } else if (userBgType === 'black') {
         baseBg = '#000000';
@@ -1127,7 +1163,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     }
 
     // Neutraliser les bleus ardoise/navy indésirables non demandés seulement si l'utilisateur n'a pas explicitement choisi un fond uni ou dégradé
-    if (!userBgType || userBgType === 'black') {
+    if (isAiDecidedBg || userBgType === 'black') {
         if (typeof baseBg === 'string' && /#0f172a|#1e293b|#0b1329|#090d16|#071228/i.test(baseBg) && !/bleu|blue|cyan|navy/i.test(prompt)) {
             baseBg = '#000000';
         }
@@ -1162,13 +1198,47 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
 
     // Liste textuelle des assets disponibles pour le prompt
     const availableAssetsList = [];
+
+    // 1. Assets uploadés par l'utilisateur (liés prioritairement à cette vidéo)
+    const formattedUserAssets = userUploadedAssets.map(a => {
+        let relPath = a.url || '';
+        if (relPath.startsWith('/01_Assets/')) {
+            relPath = `${assetPrefix}/${relPath.replace(/^\/01_Assets\//, '')}`;
+        } else if (relPath.startsWith('01_Assets/')) {
+            relPath = `${assetPrefix}/${relPath.replace(/^01_Assets\//, '')}`;
+        } else if (!relPath.startsWith('http') && !relPath.startsWith('.')) {
+            relPath = `${assetPrefix}/Images/${a.name || relPath}`;
+        }
+        return {
+            name: a.name,
+            category: a.category || 'image',
+            path: relPath
+        };
+    });
+
+    if (formattedUserAssets.length > 0) {
+        availableAssetsList.push(`- ASSETS IMPORTÉS PAR L'UTILISATEUR (OBLIGATOIREMENT ASSOCIÉS À CETTE VIDÉO ET À INTÉGRER EN PRIORITÉ) :`);
+        formattedUserAssets.forEach(u => {
+            availableAssetsList.push(`  * [${u.category.toUpperCase()}] "${u.name}" -> Chemin HTML relatif : "${u.path}"`);
+        });
+    }
+
+    if (downloadedFootballLogos && downloadedFootballLogos.length > 0) {
+        availableAssetsList.push(`- BLASONS OFFICIELS DE FOOTBALL RÉCUPÉRÉS PAR LE PIPELINE (07_Scripts/fetch_football_logo.cjs) :`);
+        downloadedFootballLogos.forEach(fb => {
+            availableAssetsList.push(`  * Blason officiel "${fb.name}" -> Chemin HTML : "${fb.path}"`);
+        });
+    }
+
     if (downloadedWebCapturePath) availableAssetsList.push(`- Capture d'écran HD du site/produit : "${downloadedWebCapturePath}" (à intégrer dans l'UI ou comme visuel principal)`);
-    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel : "${downloadedLogoPath}" (format SVG vectoriel ou PNG haute résolution)`);
+    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel de marque : "${downloadedLogoPath}" (format SVG vectoriel ou PNG haute résolution)`);
     if (downloadedFlagPath) availableAssetsList.push(`- Drapeau national officiel : "${downloadedFlagPath}" (format SVG vectoriel)`);
     if (downloadedMapPath) availableAssetsList.push(`- Carte géographique satellite : "${downloadedMapPath}" (format PNG HD)`);
     if (processedChromaAssets && processedChromaAssets.length > 0) availableAssetsList.push(`- Sujets détourés (sans fond vert, 100% transparents) : ${JSON.stringify(processedChromaAssets)}`);
     if (downloadedCoverrVideo) availableAssetsList.push(`- Vidéo de fond B-roll cinéma : "${downloadedCoverrVideo}"`);
-    if (payload.images && payload.images.length > 0) availableAssetsList.push(`- Images fournies : ${JSON.stringify(payload.images)}`);
+    if ((!formattedUserAssets || formattedUserAssets.length === 0) && payload.images && payload.images.length > 0) {
+        availableAssetsList.push(`- Images supplémentaires : ${JSON.stringify(payload.images)}`);
+    }
 
     // Instructions spécifiques de style selon le template choisi
     let templateInstructions = '';
@@ -1226,22 +1296,26 @@ ${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS (00_Skills/) :\n${skillsDirect
 
 DIRECTIVES CRÉATIVES ET TECHNIQUES ABSOLUES :
 1. LIBERTÉ ET MAÎTRISE SCÉNOGRAPHIQUE DU FOND :
-   - Fond global suggéré : ${baseBg} (${isLight ? 'Ambiance claire' : 'Ambiance sombre'}).
+   ${isAiDecidedBg ? `- OPTION "DÉCISION IA" ACTIVÉE : L'utilisateur te délègue entièrement le choix des fonds et de la scénographie ! Conçois des fonds riches, dramatiques et cinématiques adaptés à chaque scène : radial spotlight dynamique, fond noir obsidienne texturé, ou variations scéniques (.scene-container#scene_1, #scene_2...). Fais vivre la scène avec un éclairage organique !` : `- Fond global suggéré : ${baseBg} (${isLight ? 'Ambiance claire' : 'Ambiance sombre'}).`}
    - Tu peux soit appliquer ce fond global à #stage, SOIT attribuer des fonds uniques à chaque conteneur de scène (ex: .scene-container#scene_1 { background: ... }, .scene-container#scene_2 { background: ... }) pour rythmer le voyage visuel du spectateur !
    - Le fond peut être noir, blanc, couleur unie adaptée au thème (bordeaux, navy, forêt, terracotta...) ou dégradé élégant (linear-gradient, radial spotlight).
    - Veille impérativement au contraste du texte (texte clair sur fond sombre, texte sombre sur fond clair) et à la lisibilité 100% nette.
    - BANNISSEMENT ABSOLU du fond cliché IA (la grille 1px avec halo vert/cyan répétitif).
+   - BANNISSEMENT ABSOLU du fond espace avec étoiles, galaxies ou nébuleuses (ne l'utiliser QUE si le thème est expressément l'astronomie ou demandé texto par l'utilisateur).
 
 2. CHARTE HARMONIQUE 60-30-10 :
    - 60% : Fond dominant.
    - 30% : Surfaces, cartes, bordures et texte secondaire.
    - 10% : UNE SEULE couleur d'accent vive signature : ${accentColor}.
 
-3. ORIGINALITÉ & DIRECTION ARTISTIQUE SUR-MESURE :
+3. ORIGINALITÉ & DIRECTION ARTISTIQUE SUR-MESURE (ZÉRO POWERPOINT) :
    - Crée des graphismes et animations SVG vectorielles riches, uniques et adaptées au sujet.
    - RÈGLE CRITIQUE D'ANCRAGE SVG / 2D (AIGUILLES, ROUES, HORLOGES) : Dans GSAP, svgOrigin opère TOUJOURS dans les coordonnées globales du viewBox SVG ! Tu dois impérativement utiliser les coordonnées réelles du centre du cadran : svgOrigin: "\${cx} \${cy}" (ex: svgOrigin: "180 180" si le cadran est centré à 180, 180). INTERDICTION FORMELLE ET ABSOLUE d'écrire svgOrigin: "0 0", car cela fait voltiger l'aiguille hors du cadran !
-   - BANNISSEMENT ABSOLU DES TEXTES ET BADGES AUX 4 COINS DE L'ÉCRAN : INTERDICTION FORMELLE de coller des badges, timecodes, textes techniques ou faux indicateurs HUD dans les 4 coins du cadre (type .hud-telemetry, hud-tl, hud-tr, hud-bl, hud-br, "VIBE ENGINE", "1080p 60fps", "TEMPO 120 BPM", etc.). Cela fait amateur et ressemble à une présentation PowerPoint surchargée. Les 4 coins de l'écran doivent rester 100% vides, épurés et respirer ! Tout cadrage doit être cinématographique et centré sur l'histoire.
-   - Zéro titrage scolaire / PowerPoint (aucun [ Étape 01 ], [ Chapitre 1 ], ni de conteneur .tag-pill).
+   - BANNISSEMENT TOTAL DU STYLE POWERPOINT :
+     * INTERDICTION de mettre une barre de progression de lecture en haut de l'écran.
+     * INTERDICTION de coller des badges, timecodes, faux indicateurs HUD ou textes dans les 4 coins de l'écran (ex: "TEMPO 120", "1080p 60fps", "VIBE ENGINE", etc.).
+     * INTERDICTION de titrages scolaires (aucun [ Étape 01 ], [ Chapitre 1 ], ni de conteneur .tag-pill artificiel).
+     * Les bordures et coins de l'écran doivent rester 100% épurés et respirer.
    - Typographie cinétique stable sans reflow : balises <span class="title-line"> avec display:block et white-space:nowrap.
    - Centrage absolu de la scène de conclusion finale : position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%).
 
@@ -1249,19 +1323,26 @@ DIRECTIVES CRÉATIVES ET TECHNIQUES ABSOLUES :
 ${availableAssetsList.join('\n') || '- Aucun asset externe particulier, utilise du pur motion design vectoriel SVG.'}
    - INTERDICTION FORMELLE D'INVENTER DES CHEMINS OU DES FICHIERS IMAGES FICTIFS (ex: '01.jpg', 'gpu.png', 'image1.jpg').
    - SI UN FICHIER N'EST PAS EXPLICITEMENT PRÉSENT DANS LA LISTE 'ASSETS DISPONIBLES' CI-DESSUS, NE METS AUCUNE BALISE <img> ! Conçois impérativement les éléments en PUR MOTION DESIGN VECTORIEL SVG (dessine le produit, le chip, le HUD technologique, les jauges, graphiques, cartes et icônes directement en SVG soigné avec gradients et animations GSAP).
+   - RÈGLE DU SOCLE / CARTOUCHE POUR PERSONNAGES & JOUEURS :
+     * AUCUNE DÉFORMATION : object-fit: contain (ou cover sans déformation de ratio). Ne JAMAIS compresser ou étirer l'image.
+     * Si l'image d'un personnage, joueur ou invité a le bas coupé (torse ou taille nette), tu DOIS obligatoirement insérer un socle ou un card acrylique élégant à sa base pour cacher la coupure, et y loger son nom, club/titre et statistiques clés !
+   - Si des logos de football ou de marque sont disponibles, affiche-les nettement aux côtés des sujets correspondants.
    - Si une capture d'écran web est disponible, insère-la dans l'interface ou au cœur de la scène avec mockup soigné.
    - Si un logo est disponible, affiche-le avec élégance (max-height 90-110px).
    - Si un drapeau est disponible, intègre-le (badge national circulaire ou rectangulaire stylisé, en-tête de scène, ou élément graphique).
    - Si une carte est disponible, intègre-la avec un cadrage harmonieux (border-radius 16px).
    - Si un clip vidéo B-roll est disponible, intègre-le avec : <video src="..." data-start="T_DEBUT" data-end="T_FIN" data-duration="DUREE" muted loop playsinline preload="auto"></video>. ATTRIBUTS data-start ET data-end STRICTEMENT OBLIGATOIRES pour la synchronisation automatique 60 FPS du Studio ! Ne JAMAIS appeler video.play() ou video.pause() dans le script GSAP. BANNISSEMENT ABSOLU de tout badge factice « LIVE BROADCAST ».
 
-5. CHORÉGRAPHIE GSAP :
+5. CHORÉGRAPHIE GSAP & SYNCHRONISATION ABSOLUE DU SCRIPT HORODATÉ :
    - La vidéo dure exactement ${totalVideoDuration.toFixed(1)} secondes.
    - Il y a ${plan.scenes.length} scènes à animer sur la timeline GSAP 'tl' (qui est déjà initialisée).
+   - SYNCHRONISATION DU SCRIPT HORODATÉ :
+     * Chaque tranche de temps du script horodaté de l'utilisateur définit exactement quand chaque élément et chaque scène s'anime.
+     * Ce qui est dit dans la voix off et ce qui est affiché à l'écran DOIVENT se produire en même temps, sans retard ni saut d'étape.
    - Scène 1 : 0s -> ${(totalVideoDuration / plan.scenes.length).toFixed(1)}s
    - Scène 2 : ${(totalVideoDuration / plan.scenes.length).toFixed(1)}s -> ${(2 * totalVideoDuration / plan.scenes.length).toFixed(1)}s
    - Scène 3 : ${(2 * totalVideoDuration / plan.scenes.length).toFixed(1)}s -> ${totalVideoDuration.toFixed(1)}s
-   - MOUVEMENT ET VIE CONTINUE : Ne laisse JAMAIS une scène devenir statique ou figée après son animation d'entrée ! Chaque scène doit vivre tout au long de sa durée avec des mouvements subtils (pulsation de lueur, rotation continue d'aiguilles ou de ventilateurs avec ease: 'none', progression de jauges de données, ou flottement lent).
+   - MOUVEMENT ET VIE CONTINUE : Ne laisse JAMAIS une scène devenir statique ou figée après son animation d'entrée ! Chaque scène doit vivre tout au long de sa durée avec des mouvements subtils (pulsation de lueur, rotation continue d'aiguilles avec ease: 'none', progression de jauges de données, ou flottement lent).
    - ISOLATION STRICTE DES SCÈNES (ZÉRO SUPERPOSITION) :
      * Chaque scène doit être totalement masquée avant d'afficher la suivante.
      * Pour passer de Scène 1 à Scène 2 :
@@ -1293,7 +1374,7 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide avec 3 champs :
     const codeGenUserPrompt = `Génère le code HTML, CSS et GSAP sur-mesure pour :
 Sujet : "${prompt}"
 Format : ${format} (${width}x${height})
-Fond de base : ${baseBg}
+Fond : ${isAiDecidedBg ? 'Décision IA (Liberté scénographique totale adaptée au sujet)' : `${baseBg} (${userBgType || 'fixé'})`}
 Couleur d'accent : ${accentColor}
 Durée totale : ${totalVideoDuration.toFixed(1)}s
 ${isUsingTemplate ? `Style / Template imposé : "${chosenTemplate}"` : 'Style : Libre (sans template)'}
