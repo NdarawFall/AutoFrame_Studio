@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLAUDE FABLE 5.2 — 30s Promotional Film (1920x1080 @ 30fps)</title>
+
+    <!-- Google Fonts: Editorial Serif (Instrument Serif), Precision Grotesque (Plus Jakarta Sans), Technical Mono (JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-obsidian: #050506;
+            --bg-carbon: #0a0a0c;
+            --bg-surface: #111114;
+            --claude-orange: #D97757;
+            --claude-amber: #E88B69;
+            --claude-peach: #F2A68A;
+            --claude-copper: #C45A36;
+            --text-ivory: #F5F3EF;
+            --text-stone: #E6E2DA;
+            --text-muted: #8C877E;
+            --font-serif: 'Instrument Serif', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #020203;
+            font-family: var(--font-sans);
+            color: var(--text-ivory);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #viewport-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #020203;
+        }
+
+        /* Fixed 1920x1080 (16:9) Internal Stage — Pur Contenu Vidéo */
+        #stage {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transform-origin: center center;
+            width: 1920px;
+            height: 1080px;
+            aspect-ratio: 16 / 9;
+            background-color: var(--bg-obsidian);
+            overflow: hidden;
+            box-shadow: 0 40px 160px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(245, 243, 239, 0.06);
+            perspective: 1800px;
+        }
+
+        /* Subtle Tactile Film Grain Overlay */
+        .film-grain {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 90;
+            opacity: 0.04;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Architectural 1px Hairline Grid */
+        .arch-grid {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            background-size: 120px 120px;
+            background-image:
+                linear-gradient(to right, rgba(245, 243, 239, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(245, 243, 239, 0.025) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 85%);
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 85%);
+        }
+
+        /* Linear / Apple Grade Dark Obsidian Glass Panels */
+        .obsidian-card {
+            background: linear-gradient(165deg, rgba(24, 23, 26, 0.86) 0%, rgba(11, 11, 13, 0.92) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(245, 243, 239, 0.08);
+            box-shadow:
+                0 30px 80px -15px rgba(0, 0, 0, 0.85),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(217, 119, 87, 0.06);
+        }
+
+        .obsidian-pill {
+            background: linear-gradient(180deg, rgba(28, 26, 27, 0.85) 0%, rgba(14, 13, 15, 0.9) 100%);
+            border: 1px solid rgba(217, 119, 87, 0.28);
+            box-shadow: 0 10px 30px -5px rgba(217, 119, 87, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .serif-italic {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .serif-regular {
+            font-family: var(--font-serif);
+            font-weight: 400;
+        }
+
+        /* Scene Layer Wrapper */
+        .scene-layer {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            pointer-events: none;
+            will-change: transform, opacity, filter;
+            transform-style: preserve-3d;
+        }
+
+        /* Persistent Minimal Telemetry Frame */
+        #cinema-frame {
+            position: absolute;
+            inset: 44px 64px;
+            pointer-events: none;
+            z-index: 75;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Final Master Blackout Curtain */
+        #blackout-curtain {
+            position: absolute;
+            inset: 0;
+            background: #000000;
+            pointer-events: none;
+            z-index: 88;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="viewport-wrapper">
+        <!-- ===================================================================
+             1920x1080 FIXED 16:9 COMMERCIAL STAGE
+             =================================================================== -->
+        <div id="stage">
+
+            <!-- Primary High-DPI Procedural Shader & Wave Canvas (All 6 Scenes) -->
+            <canvas id="shader-canvas" width="1920" height="1080" class="absolute inset-0 z-10 pointer-events-none"></canvas>
+
+            <!-- Subtle Architectural Hairline Grid -->
+            <div id="arch-grid" class="arch-grid"></div>
+
+            <!-- Persistent Minimalist Telemetry Frame -->
+            <div id="cinema-frame">
+                <div class="flex items-center justify-between text-[11px] font-mono tracking-[0.22em] text-[#8C877E] uppercase">
+                    <div class="flex items-center gap-3">
+                        <span id="frame-dot" class="w-2 h-2 rounded-full bg-[#D97757]"></span>
+                        <span>ANTHROPIC // CLAUDE FABLE 5.2</span>
+                    </div>
+                    <div id="frame-scene-label" class="text-[#E6E2DA]">01 // SINGULARITY</div>
+                    <div id="frame-timecode" class="tabular-nums">00:00:00</div>
+                </div>
+
+                <div class="flex items-center justify-between text-[10px] font-mono tracking-[0.2em] text-[#8C877E]/60 uppercase">
+                    <span>ARCH: OPUS-CLASS NEURAL TOPOLOGY</span>
+                    <div class="flex items-center gap-2">
+                        <span>SYNC: 30.00 FPS DETERMINISTIC</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================================================
+                 SCENE 1 (00:00 - 00:04): HOOK
+                 "The next level of intelligence."
+                 =============================================================== -->
+            <section id="scene-1" class="scene-layer z-20 flex flex-col items-center justify-center">
+                <div id="s1-text-container" class="text-center px-12 mt-16">
+                    <div id="s1-eyebrow" class="font-mono text-xs uppercase tracking-[0.35em] text-[#D97757] mb-5">
+                        ANTHROPIC RESEARCH PRESENTS
+                    </div>
+                    <h1 class="text-[88px] leading-[1.02] tracking-[-0.03em] font-light text-[#F5F3EF] flex items-baseline justify-center gap-x-5 flex-wrap">
+                        <span id="s1-w1" class="inline-block">The</span>
+                        <span id="s1-w2" class="inline-block">next</span>
+                        <span id="s1-w3" class="inline-block">level</span>
+                        <span id="s1-w4" class="inline-block">of</span>
+                        <span id="s1-w5" class="inline-block serif-italic text-[104px] text-[#E88B69] pr-2">intelligence.</span>
+                    </h1>
+                </div>
+            </section>
+
+            <!-- ===============================================================
+                 SCENE 2 (00:04 - 00:08): PRODUCT REVEAL
+                 "Meet Claude Fable 5.2"
+                 =============================================================== -->
+            <section id="scene-2" class="scene-layer z-20 flex flex-col items-center justify-center">
+                <!-- Architectural Crosshair Lines -->
+                <div id="s2-hairline-h" class="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#D97757]/35 to-transparent top-1/2 -translate-y-16"></div>
+                <div id="s2-hairline-v" class="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#D97757]/25 to-transparent left-1/2"></div>
+
+                <!-- Central Claude Geometric Emblem SVG -->
+                <div id="s2-emblem-wrap" class="relative w-[220px] h-[220px] flex items-center justify-center mb-10">
+                    <div id="s2-emblem-glow" class="absolute inset-0 rounded-full bg-[#D97757]/25 blur-[55px]"></div>
+                    <svg id="s2-emblem-svg" class="w-40 h-40 relative z-10" viewBox="0 0 160 160" fill="none">
+                        <g id="s2-rays" stroke="#D97757" stroke-linecap="round">
+                            <line x1="80" y1="14" x2="80" y2="146" stroke-width="5.5" />
+                            <line x1="14" y1="80" x2="146" y2="80" stroke-width="5.5" />
+                            <line x1="33.3" y1="33.3" x2="126.7" y2="126.7" stroke-width="5.5" />
+                            <line x1="126.7" y1="33.3" x2="33.3" y2="126.7" stroke-width="5.5" />
+                            <line x1="54.7" y1="19.1" x2="105.3" y2="140.9" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="19.1" y1="54.7" x2="140.9" y2="105.3" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="19.1" y1="105.3" x2="140.9" y2="54.7" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="54.7" y1="140.9" x2="105.3" y2="19.1" stroke-width="3.5" stroke="#E88B69" />
+                        </g>
+                        <circle cx="80" cy="80" r="16" fill="#050506" stroke="#F2A68A" stroke-width="3" />
+                        <circle cx="80" cy="80" r="6" fill="#D97757" />
+                    </svg>
+                </div>
+
+                <!-- Product Reveal Badge -->
+                <div id="s2-badge" class="obsidian-pill px-5 py-1.5 rounded-full font-mono text-xs tracking-[0.25em] text-[#F2A68A] uppercase mb-6">
+                    MODEL // FABLE-5.2-OPUS-CLASS
+                </div>
+
+                <!-- Main Product Title -->
+                <h1 id="s2-title" class="text-[96px] leading-[1.0] tracking-[-0.035em] font-medium text-[#F5F3EF] text-center">
+                    Meet Claude <span class="serif-italic font-normal text-[#D97757] pr-2">Fable 5.2</span>
+                </h1>
+            </section>
+
+            <!-- ===============================================================
+                 SCENE 3 (00:08 - 00:13): REASONING
+                 "Think deeper. Solve harder problems."
+                 =============================================================== -->
+            <section id="scene-3" class="scene-layer z-20 px-[110px] pt-[110px] pb-[90px] flex flex-col justify-between">
+                <!-- Top Editorial Header -->
+                <div id="s3-header" class="flex items-end justify-between border-b border-white/10 pb-6">
+                    <div>
+                        <div class="font-mono text-xs tracking-[0.28em] text-[#D97757] uppercase mb-2">
+                            03 // EXTENDED COGNITIVE ARCHITECTURE
+                        </div>
+                        <h2 class="text-[68px] leading-[1.02] tracking-[-0.03em] font-medium text-[#F5F3EF]">
+                            Think deeper. <span class="serif-italic text-[#E88B69]">Solve harder problems.</span>
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-6 font-mono text-xs text-[#8C877E]">
+                        <div class="obsidian-card px-4 py-2.5 rounded-xl border border-white/10">
+                            <span class="block text-[10px] text-[#8C877E]">REASONING DEPTH</span>
+                            <span id="s3-depth-val" class="text-base font-semibold text-[#F5F3EF]">64 STEPS</span>
+                        </div>
+                        <div class="obsidian-card px-4 py-2.5 rounded-xl border border-white/10">
+                            <span class="block text-[10px] text-[#8C877E]">FORMAL PROOF CONFIDENCE</span>
+                            <span id="s3-conf-val" class="text-base font-semibold text-[#D97757]">99.94%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main 2-Column Reasoning Composition -->
+                <div id="s3-workspace" class="grid grid-cols-12 gap-8 flex-1 mt-8 items-stretch">
+                    
+                    <!-- Left Column: Live Code & Formal Verification Panel -->
+                    <div id="s3-code-panel" class="col-span-5 obsidian-card rounded-2xl p-6 flex flex-col justify-between font-mono text-xs relative overflow-hidden">
+                        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#D97757]"></span>
+                                <span class="text-[#E6E2DA] font-medium">consensus_solver.rs</span>
+                            </div>
+                            <span id="s3-verify-pill" class="px-2.5 py-0.5 rounded bg-[#D97757]/15 text-[#F2A68A] text-[10px]">
+                                VERIFYING INVARIANTS
+                            </span>
+                        </div>
+
+                        <!-- Deterministic Animated Code Lines -->
+                        <div id="s3-code-lines" class="space-y-2.5 my-auto py-4 text-[13px] leading-relaxed">
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">01</span><span><span class="text-[#D97757]">pub async fn</span> <span class="text-[#F5F3EF]">solve_manifold</span>(dag: &amp;TensorGraph) -&gt; Proof {</span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">02</span><span class="pl-4"><span class="text-[#8C877E]">// Decompose non-linear boundary constraints</span></span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">03</span><span class="pl-4"><span class="text-[#D97757]">let</span> branches = dag.<span class="text-[#F2A68A]">partition_hypotheses</span>(<span class="text-[#E88B69]">64</span>);</span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">04</span><span class="pl-4"><span class="text-[#D97757]">let</span> verified = branches.<span class="text-[#F2A68A]">prune_contradictions</span>().<span class="text-[#D97757]">await</span>?;</span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">05</span><span class="pl-4"><span class="text-[#D97757]">assert_eq!</span>(verified.residual_error(), <span class="text-[#E88B69]">0.0000</span>);</span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">06</span><span class="pl-4"><span class="text-[#D97757]">Ok</span>(verified.<span class="text-[#F2A68A]">synthesize_optimal_path</span>())</span></div>
+                            <div class="s3-line flex gap-4"><span class="text-[#8C877E]/50">07</span><span>}</span></div>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 flex items-center justify-between text-[11px]">
+                            <span class="text-[#8C877E]">AST SYMBOLIC CHECK</span>
+                            <span id="s3-proof-status" class="text-[#E88B69] font-semibold">● Q.E.D. CONVERGED</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Multi-Node Reasoning DAG (Directed Acyclic Graph) -->
+                    <div id="s3-dag-panel" class="col-span-7 obsidian-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-xs text-[#8C877E] uppercase tracking-wider">MULTI-PATH HYPOTHESIS TREE // REAL-TIME TRACE</span>
+                            <span class="font-mono text-xs text-[#D97757]">LATENCY: 18ms / STEP</span>
+                        </div>
+
+                        <!-- Interactive SVG Reasoning Graph -->
+                        <div class="relative flex-1 flex items-center justify-center my-2">
+                            <svg id="s3-dag-svg" class="w-full h-[380px]" viewBox="0 0 920 380" fill="none">
+                                <defs>
+                                    <linearGradient id="dagEdgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#D97757" stop-opacity="0.25" />
+                                        <stop offset="60%" stop-color="#E88B69" stop-opacity="0.95" />
+                                        <stop offset="100%" stop-color="#F5F3EF" stop-opacity="0.95" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Graph Bezier Edges -->
+                                <path id="dag-p1" d="M 110 190 C 230 190, 240 80, 370 80" stroke="url(#dagEdgeGrad)" stroke-width="2.5" />
+                                <path id="dag-p2" d="M 110 190 C 230 190, 240 190, 370 190" stroke="url(#dagEdgeGrad)" stroke-width="3" />
+                                <path id="dag-p3" d="M 110 190 C 230 190, 240 300, 370 300" stroke="rgba(245,243,239,0.15)" stroke-width="1.5" stroke-dasharray="6 6" />
+
+                                <path id="dag-p4" d="M 370 80 C 490 80, 510 135, 630 135" stroke="url(#dagEdgeGrad)" stroke-width="2.5" />
+                                <path id="dag-p5" d="M 370 190 C 490 190, 510 135, 630 135" stroke="url(#dagEdgeGrad)" stroke-width="3" />
+                                <path id="dag-p6" d="M 370 190 C 490 190, 510 255, 630 255" stroke="rgba(245,243,239,0.18)" stroke-width="1.5" stroke-dasharray="6 6" />
+
+                                <path id="dag-p7" d="M 630 135 C 720 135, 740 190, 820 190" stroke="#D97757" stroke-width="3.5" />
+
+                                <!-- Graph Nodes -->
+                                <g id="dag-n0">
+                                    <circle cx="110" cy="190" r="22" fill="#111114" stroke="#D97757" stroke-width="2.5" />
+                                    <circle cx="110" cy="190" r="7" fill="#D97757" />
+                                    <text x="110" y="232" text-anchor="middle" fill="#E6E2DA" font-family="JetBrains Mono" font-size="11">PROMPT AST</text>
+                                </g>
+
+                                <g id="dag-n1">
+                                    <circle cx="370" cy="80" r="18" fill="#111114" stroke="#E88B69" stroke-width="2" />
+                                    <text x="370" y="46" text-anchor="middle" fill="#E6E2DA" font-family="JetBrains Mono" font-size="10">HYPOTHESIS A</text>
+                                </g>
+
+                                <g id="dag-n2">
+                                    <circle cx="370" cy="190" r="20" fill="#111114" stroke="#D97757" stroke-width="2.5" />
+                                    <circle cx="370" cy="190" r="6" fill="#F2A68A" />
+                                    <text x="370" y="228" text-anchor="middle" fill="#F5F3EF" font-family="JetBrains Mono" font-size="10">FORMAL KERNEL</text>
+                                </g>
+
+                                <g id="dag-n3">
+                                    <circle cx="370" cy="300" r="15" fill="#0A0A0C" stroke="rgba(245,243,239,0.25)" stroke-width="1.5" />
+                                    <text x="370" y="332" text-anchor="middle" fill="#8C877E" font-family="JetBrains Mono" font-size="10">PRUNED PATH</text>
+                                </g>
+
+                                <g id="dag-n4">
+                                    <circle cx="630" cy="135" r="22" fill="#111114" stroke="#F2A68A" stroke-width="2.5" />
+                                    <circle cx="630" cy="135" r="7" fill="#D97757" />
+                                    <text x="630" y="98" text-anchor="middle" fill="#F5F3EF" font-family="JetBrains Mono" font-size="10">INVARIANT LOCK</text>
+                                </g>
+
+                                <g id="dag-n5">
+                                    <circle cx="820" cy="190" r="28" fill="#D97757" fill-opacity="0.18" stroke="#D97757" stroke-width="3" />
+                                    <circle cx="820" cy="190" r="10" fill="#F5F3EF" />
+                                    <text x="820" y="238" text-anchor="middle" fill="#F2A68A" font-family="JetBrains Mono" font-weight="600" font-size="11">VERIFIED SOLUTION</text>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono text-[#8C877E] pt-3 border-t border-white/10">
+                            <span>PARALLEL THOUGHT STREAMS: 16 ACTIVE</span>
+                            <span class="text-[#F5F3EF]">BACKTRACKING OVERHEAD: 0.0%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===============================================================
+                 SCENE 4 (00:13 - 00:19): CAPABILITIES
+                 "From complex ideas to real results."
+                 =============================================================== -->
+            <section id="scene-4" class="scene-layer z-20 flex flex-col items-center justify-between px-[96px] pt-[100px] pb-[75px]">
+                <!-- Headline Row -->
+                <div id="s4-header" class="w-full flex items-end justify-between mb-5">
+                    <div>
+                        <span class="font-mono text-xs tracking-[0.28em] text-[#D97757] uppercase block mb-1.5">
+                            04 // AUTONOMOUS ORCHESTRATION WORKSPACE
+                        </span>
+                        <h2 class="text-[64px] leading-[1.02] tracking-[-0.03em] font-medium text-[#F5F3EF]">
+                            From complex ideas to <span class="serif-italic text-[#D97757]">real results.</span>
+                        </h2>
+                    </div>
+                    <div class="obsidian-pill px-4 py-2 rounded-full font-mono text-xs text-[#F2A68A]">
+                        ● CLAUDE FABLE 5.2 AGENT RUNTIME
+                    </div>
+                </div>
+
+                <!-- 3D Perspective Flagship Workspace Mockup -->
+                <div id="s4-ui-window" class="w-full flex-1 obsidian-card rounded-[28px] p-6 flex flex-col justify-between relative overflow-hidden">
+                    <!-- Window Title Bar -->
+                    <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-[#D97757]"></span>
+                            <span class="w-3 h-3 rounded-full bg-white/15"></span>
+                            <span class="w-3 h-3 rounded-full bg-white/15"></span>
+                            <span class="ml-3 font-mono text-xs text-[#E6E2DA] bg-white/5 px-3 py-1 rounded-md border border-white/5">
+                                claude://fable-5.2/workspace/global-edge-migration
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-4 font-mono text-xs">
+                            <span class="text-[#8C877E]">CONTEXT: <strong class="text-[#F5F3EF]">1,420,000 TOKENS</strong></span>
+                            <span class="px-3 py-1 rounded-md bg-[#D97757] text-[#050506] font-semibold">PRODUCTION READY</span>
+                        </div>
+                    </div>
+
+                    <!-- 3-Column Coordinated Workflow Body -->
+                    <div class="grid grid-cols-12 gap-6 flex-1 pt-5">
+                        <!-- Col 1: Autonomous Agent Task Tree -->
+                        <div class="col-span-3 bg-black/40 rounded-2xl p-5 border border-white/5 flex flex-col justify-between">
+                            <div>
+                                <div class="font-mono text-[11px] text-[#8C877E] uppercase tracking-wider mb-4">
+                                    COORDINATED SUB-AGENTS
+                                </div>
+                                <div class="space-y-3">
+                                    <div id="s4-task-1" class="p-3.5 rounded-xl bg-white/5 border border-[#D97757]/40 flex items-center justify-between">
+                                        <div>
+                                            <div class="text-xs font-semibold text-[#F5F3EF]">01 Synthesize Schema</div>
+                                            <div class="text-[11px] font-mono text-[#8C877E]">Zero-downtime DDL</div>
+                                        </div>
+                                        <span class="text-xs font-mono text-[#D97757]">DONE</span>
+                                    </div>
+                                    <div id="s4-task-2" class="p-3.5 rounded-xl bg-white/5 border border-[#D97757]/40 flex items-center justify-between">
+                                        <div>
+                                            <div class="text-xs font-semibold text-[#F5F3EF]">02 Refactor Core Kernel</div>
+                                            <div class="text-[11px] font-mono text-[#8C877E]">42 modules updated</div>
+                                        </div>
+                                        <span class="text-xs font-mono text-[#D97757]">DONE</span>
+                                    </div>
+                                    <div id="s4-task-3" class="p-3.5 rounded-xl bg-white/5 border border-[#D97757]/40 flex items-center justify-between">
+                                        <div>
+                                            <div class="text-xs font-semibold text-[#F5F3EF]">03 Verify Invariants</div>
+                                            <div class="text-[11px] font-mono text-[#8C877E]">2,400 integration tests</div>
+                                        </div>
+                                        <span class="text-xs font-mono text-[#D97757]">100%</span>
+                                    </div>
+                                    <div id="s4-task-4" class="p-3.5 rounded-xl bg-[#D97757]/15 border border-[#D97757] flex items-center justify-between">
+                                        <div>
+                                            <div class="text-xs font-semibold text-[#F5F3EF]">04 Deploy Edge Cluster</div>
+                                            <div class="text-[11px] font-mono text-[#F2A68A]">Global rollout active</div>
+                                        </div>
+                                        <span class="text-xs font-mono text-[#F2A68A]">LIVE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-xs">
+                                <span class="text-[#8C877E]">AUTONOMY LEVEL</span>
+                                <span class="text-[#F5F3EF]">TIER-5 VERIFIED</span>
+                            </div>
+                        </div>
+
+                        <!-- Col 2: Live Interactive Architecture & Code Synthesis -->
+                        <div class="col-span-6 bg-black/40 rounded-2xl p-5 border border-white/5 flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-xs text-[#E6E2DA]">LIVE TOPOLOGY &amp; DIFF SYNTHESIS</span>
+                                <span class="font-mono text-xs text-[#D97757]">+1,840 −620 LINES</span>
+                            </div>
+
+                            <!-- Live Canvas Architecture Visualizer -->
+                            <canvas id="s4-topology-canvas" width="760" height="310" class="w-full h-[300px] my-2 rounded-xl bg-[#070709] border border-white/5"></canvas>
+
+                            <div class="grid grid-cols-3 gap-4 pt-3 border-t border-white/10 font-mono text-xs">
+                                <div>
+                                    <span class="text-[#8C877E] block text-[10px]">COMPILATION</span>
+                                    <span class="text-[#F5F3EF] font-semibold">0 WARNINGS / 0 ERRORS</span>
+                                </div>
+                                <div>
+                                    <span class="text-[#8C877E] block text-[10px]">MEMORY SAFETY</span>
+                                    <span class="text-[#E88B69] font-semibold">BORROW-CHECKED</span>
+                                </div>
+                                <div>
+                                    <span class="text-[#8C877E] block text-[10px]">THROUGHPUT</span>
+                                    <span class="text-[#F5F3EF] font-semibold">1.24M REQ/S</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col 3: Telemetry & Parallax Artifact Card -->
+                        <div class="col-span-3 flex flex-col justify-between gap-4">
+                            <div class="bg-black/40 rounded-2xl p-5 border border-white/5 flex-1 flex flex-col justify-between">
+                                <span class="font-mono text-[11px] text-[#8C877E] uppercase">EXECUTION TELEMETRY</span>
+                                <div class="my-auto">
+                                    <div class="text-xs text-[#8C877E] mb-1">Reasoning Velocity</div>
+                                    <div id="s4-tok-speed" class="text-4xl font-semibold text-[#F5F3EF] font-mono">284 tok/s</div>
+                                    <div class="w-full h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
+                                        <div id="s4-prog-bar" class="h-full bg-gradient-to-r from-[#D97757] to-[#F2A68A]" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-[11px] font-mono text-[#8C877E] flex justify-between">
+                                    <span>SANDBOX STATUS</span>
+                                    <span class="text-[#F2A68A]">ISOLATED</span>
+                                </div>
+                            </div>
+
+                            <div id="s4-artifact-card" class="obsidian-pill rounded-2xl p-5 flex flex-col justify-between h-[195px]">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-[10px] tracking-widest uppercase text-[#F2A68A]">GENERATED ARTIFACT</span>
+                                    <span class="w-2 h-2 rounded-full bg-[#D97757]"></span>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-semibold text-[#F5F3EF]">Production Cluster v5.2</div>
+                                    <div class="text-xs text-[#8C877E] mt-1">All 18 microservices orchestrated &amp; live-verified.</div>
+                                </div>
+                                <div class="font-mono text-xs text-[#D97757] flex items-center justify-between pt-2 border-t border-white/10">
+                                    <span>CHECKSUM SHA-256</span>
+                                    <span>9F8A...E41C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===============================================================
+                 SCENE 5 (00:19 - 00:25): PERFORMANCE
+                 "More capable. Up to 30% faster."
+                 =============================================================== -->
+            <section id="scene-5" class="scene-layer z-20 flex flex-col justify-between px-[110px] pt-[115px] pb-[90px]">
+                <!-- Kinetic Headline -->
+                <div id="s5-header" class="max-w-[1200px]">
+                    <div class="font-mono text-xs tracking-[0.3em] text-[#D97757] uppercase mb-3">
+                        05 // NEXT-GENERATION INFERENCE KERNEL
+                    </div>
+                    <h2 class="text-[86px] leading-[0.98] tracking-[-0.035em] font-medium text-[#F5F3EF]">
+                        More capable. <span class="serif-italic text-[#E88B69]">Up to 30% faster.</span>
+                    </h2>
+                </div>
+
+                <!-- Performance Trajectory Curve & Benchmark Counters -->
+                <div class="grid grid-cols-12 gap-8 items-end mt-auto">
+                    <!-- Trajectory Graph Panel -->
+                    <div id="s5-curve-card" class="col-span-7 obsidian-card rounded-3xl p-7">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="font-mono text-xs text-[#8C877E] uppercase block">THROUGHPUT &amp; REASONING EFFICIENCY</span>
+                                <span class="text-lg font-medium text-[#F5F3EF]">Claude Fable 5.2 vs. Prior Generation</span>
+                            </div>
+                            <span class="obsidian-pill px-3.5 py-1 rounded-full font-mono text-xs text-[#F2A68A]">
+                                +30.0% SPEEDUP
+                            </span>
+                        </div>
+                        <canvas id="s5-perf-canvas" width="860" height="290" class="w-full h-[270px]"></canvas>
+                    </div>
+
+                    <!-- 3 Kinetic Metric Cards -->
+                    <div class="col-span-5 flex flex-col gap-5">
+                        <div id="s5-stat-1" class="obsidian-card rounded-2xl p-6 flex items-center justify-between">
+                            <div>
+                                <span class="font-mono text-xs text-[#8C877E] uppercase">INFERENCE VELOCITY</span>
+                                <div class="text-sm text-[#E6E2DA] mt-1">Sustained token generation</div>
+                            </div>
+                            <div id="s5-val-1" class="text-5xl font-semibold text-[#D97757] font-mono">+30%</div>
+                        </div>
+
+                        <div id="s5-stat-2" class="obsidian-card rounded-2xl p-6 flex items-center justify-between">
+                            <div>
+                                <span class="font-mono text-xs text-[#8C877E] uppercase">SWE-BENCH VERIFIED</span>
+                                <div class="text-sm text-[#E6E2DA] mt-1">Autonomous software engineering</div>
+                            </div>
+                            <div id="s5-val-2" class="text-5xl font-semibold text-[#F5F3EF] font-mono">99.4%</div>
+                        </div>
+
+                        <div id="s5-stat-3" class="obsidian-card rounded-2xl p-6 flex items-center justify-between">
+                            <div>
+                                <span class="font-mono text-xs text-[#8C877E] uppercase">TIME TO FIRST TOKEN</span>
+                                <div class="text-sm text-[#E6E2DA] mt-1">Sub-perceptual response latency</div>
+                            </div>
+                            <div id="s5-val-3" class="text-5xl font-semibold text-[#E88B69] font-mono">38ms</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===============================================================
+                 SCENE 6 (00:25 - 00:30): FINAL BRAND REVEAL
+                 "Claude Fable 5.2" / "Intelligence without limits."
+                 =============================================================== -->
+            <section id="scene-6" class="scene-layer z-20 flex flex-col items-center justify-center">
+                <!-- Final Centered Claude Emblem -->
+                <div id="s6-emblem" class="relative w-28 h-28 flex items-center justify-center mb-8">
+                    <div class="absolute inset-0 rounded-full bg-[#D97757]/30 blur-[40px]"></div>
+                    <svg class="w-24 h-24 relative z-10" viewBox="0 0 160 160" fill="none">
+                        <g stroke="#D97757" stroke-linecap="round">
+                            <line x1="80" y1="18" x2="80" y2="142" stroke-width="5.5" />
+                            <line x1="18" y1="80" x2="142" y2="80" stroke-width="5.5" />
+                            <line x1="36" y1="36" x2="124" y2="124" stroke-width="5.5" />
+                            <line x1="124" y1="36" x2="36" y2="124" stroke-width="5.5" />
+                            <line x1="56" y1="22" x2="104" y2="138" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="22" y1="56" x2="138" y2="104" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="22" y1="104" x2="138" y2="56" stroke-width="3.5" stroke="#E88B69" />
+                            <line x1="56" y1="138" x2="104" y2="22" stroke-width="3.5" stroke="#E88B69" />
+                        </g>
+                        <circle cx="80" cy="80" r="14" fill="#050506" stroke="#F2A68A" stroke-width="2.5" />
+                        <circle cx="80" cy="80" r="5.5" fill="#D97757" />
+                    </svg>
+                </div>
+
+                <!-- Brand Lockup -->
+                <h1 id="s6-title" class="text-[92px] leading-[1.0] tracking-[-0.035em] font-medium text-[#F5F3EF] mb-4">
+                    Claude <span class="serif-italic font-normal text-[#D97757]">Fable 5.2</span>
+                </h1>
+
+                <p id="s6-subtitle" class="text-[32px] font-light tracking-[-0.01em] text-[#E6E2DA] mb-10">
+                    Intelligence without <span class="serif-italic text-[#F2A68A]">limits.</span>
+                </p>
+
+                <div id="s6-footer-tag" class="font-mono text-xs tracking-[0.35em] text-[#8C877E] uppercase">
+                    ANTHROPIC.COM // AVAILABLE TODAY
+                </div>
+            </section>
+
+            <!-- Tactile Film Grain -->
+            <div class="film-grain"></div>
+
+            <!-- Final Smooth Fade-to-Black Curtain (28.5s -> 30.0s) -->
+            <div id="blackout-curtain"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================
+         DETERMINISTIC 30.00s (900 FRAMES @ 30 FPS) ENGINE & SOUND SYNTH
+         ZÉRO PLAYER INTERNE — CONTRÔLÉ PAR LE LECTEUR PARENT / STUDIO
+         =================================================================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            const FPS = 30;
+            const DURATION = 30.0;
+            const TOTAL_FRAMES = 900;
+
+            // -----------------------------------------------------------------
+            // 1. RESPONSIVE 1920x1080 STAGE SCALING (STRICT 16:9 LOCKED)
+            // -----------------------------------------------------------------
+            const stage = document.getElementById('stage');
+            const wrapper = document.getElementById('viewport-wrapper');
+
+            function updateStageScale() {
+                const parent = stage.parentElement || document.body;
+                const w = parent.clientWidth || window.innerWidth;
+                const h = parent.clientHeight || window.innerHeight;
+                const scale = Math.min(w / 1920, h / 1080);
+                stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            }
+            const ro = new ResizeObserver(updateStageScale);
+            ro.observe(wrapper);
+            window.addEventListener('resize', updateStageScale);
+            updateStageScale();
+
+            // -----------------------------------------------------------------
+            // 2. MATHEMATICAL EASING & INTERPOLATION HELPERS
+            // -----------------------------------------------------------------
+            const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+            const invLerp = (a, b, v) => clamp((v - a) / (b - a), 0, 1);
+            const lerp = (a, b, u) => a + (b - a) * u;
+            const easeOutCubic = (x) => 1 - Math.pow(1 - x, 3);
+            const easeOutExpo = (x) => (x === 1 ? 1 : 1 - Math.pow(2, -10 * x));
+            const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+            const easeInCubic = (x) => x * x * x;
+
+            // Cached DOM References
+            const shaderCanvas = document.getElementById('shader-canvas');
+            const ctx = shaderCanvas.getContext('2d');
+            const topoCanvas = document.getElementById('s4-topology-canvas');
+            const topoCtx = topoCanvas.getContext('2d');
+            const perfCanvas = document.getElementById('s5-perf-canvas');
+            const perfCtx = perfCanvas.getContext('2d');
+
+            const scenes = {
+                s1: document.getElementById('scene-1'),
+                s2: document.getElementById('scene-2'),
+                s3: document.getElementById('scene-3'),
+                s4: document.getElementById('scene-4'),
+                s5: document.getElementById('scene-5'),
+                s6: document.getElementById('scene-6')
+            };
+
+            const s1Words = [
+                document.getElementById('s1-w1'),
+                document.getElementById('s1-w2'),
+                document.getElementById('s1-w3'),
+                document.getElementById('s1-w4'),
+                document.getElementById('s1-w5')
+            ];
+            const s1Eyebrow = document.getElementById('s1-eyebrow');
+
+            const s2EmblemWrap = document.getElementById('s2-emblem-wrap');
+            const s2EmblemSvg = document.getElementById('s2-emblem-svg');
+            const s2Badge = document.getElementById('s2-badge');
+            const s2Title = document.getElementById('s2-title');
+            const s2HairH = document.getElementById('s2-hairline-h');
+            const s2HairV = document.getElementById('s2-hairline-v');
+
+            const s3Header = document.getElementById('s3-header');
+            const s3CodePanel = document.getElementById('s3-code-panel');
+            const s3DagPanel = document.getElementById('s3-dag-panel');
+            const s3CodeLines = Array.from(document.querySelectorAll('#s3-code-lines .s3-line'));
+            const s3DepthVal = document.getElementById('s3-depth-val');
+            const s3ConfVal = document.getElementById('s3-conf-val');
+            const dagPaths = ['dag-p1', 'dag-p2', 'dag-p3', 'dag-p4', 'dag-p5', 'dag-p6', 'dag-p7'].map(id => document.getElementById(id));
+
+            const s4Header = document.getElementById('s4-header');
+            const s4Window = document.getElementById('s4-ui-window');
+            const s4Tasks = ['s4-task-1', 's4-task-2', 's4-task-3', 's4-task-4'].map(id => document.getElementById(id));
+            const s4TokSpeed = document.getElementById('s4-tok-speed');
+            const s4ProgBar = document.getElementById('s4-prog-bar');
+            const s4Artifact = document.getElementById('s4-artifact-card');
+
+            const s5Header = document.getElementById('s5-header');
+            const s5CurveCard = document.getElementById('s5-curve-card');
+            const s5Stats = ['s5-stat-1', 's5-stat-2', 's5-stat-3'].map(id => document.getElementById(id));
+            const s5Val1 = document.getElementById('s5-val-1');
+            const s5Val2 = document.getElementById('s5-val-2');
+            const s5Val3 = document.getElementById('s5-val-3');
+
+            const s6Emblem = document.getElementById('s6-emblem');
+            const s6Title = document.getElementById('s6-title');
+            const s6Subtitle = document.getElementById('s6-subtitle');
+            const s6Footer = document.getElementById('s6-footer-tag');
+
+            const frameSceneLabel = document.getElementById('frame-scene-label');
+            const frameTimecode = document.getElementById('frame-timecode');
+            const blackoutCurtain = document.getElementById('blackout-curtain');
+
+            // -----------------------------------------------------------------
+            // 3. PRIMARY BACKGROUND SHADER / LUMINOUS WAVE & LIGHT TRAILS CANVAS
+            // -----------------------------------------------------------------
+            function renderPrimaryCanvas(t) {
+                const w = 1920, h = 1080;
+                ctx.clearRect(0, 0, w, h);
+
+                // Subtle 120 BPM Electronic Pulse Modulation
+                const beatPulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 4);
+
+                // Warm Atmospheric Radial Glow
+                let glowX = 960, glowY = 540, glowRadius = 680, glowAlpha = 0.14;
+                if (t < 4.0) {
+                    const u = easeOutCubic(invLerp(0, 3.5, t));
+                    glowRadius = lerp(60, 750, u);
+                    glowAlpha = lerp(0.05, 0.20, u);
+                } else if (t >= 19.0 && t < 25.0) {
+                    glowX = lerp(600, 1400, invLerp(19, 25, t));
+                    glowAlpha = 0.22;
+                } else if (t >= 25.0) {
+                    glowY = 480;
+                    glowAlpha = lerp(0.22, 0.0, invLerp(27.5, 29.8, t));
+                }
+
+                const bgGrad = ctx.createRadialGradient(glowX, glowY, 10, glowX, glowY, glowRadius);
+                bgGrad.addColorStop(0, `rgba(217, 119, 87, ${(glowAlpha + beatPulse * 0.025).toFixed(3)})`);
+                bgGrad.addColorStop(0.5, `rgba(196, 90, 54, ${(glowAlpha * 0.45).toFixed(3)})`);
+                bgGrad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                // SCENE 1 (00:00 - 00:04): Singularity ignition & luminous harmonic wave
+                if (t < 4.4) {
+                    const singU = easeOutExpo(invLerp(0.0, 1.1, t));
+                    const waveExpand = easeInOutCubic(invLerp(0.45, 3.2, t));
+                    const collapseU = easeInCubic(invLerp(3.55, 4.05, t));
+
+                    // Luminous harmonic silk ribbons
+                    if (t > 0.35) {
+                        const spreadW = lerp(0, 960, waveExpand) * (1 - collapseU * 0.88);
+                        const ampBase = lerp(0, 115, waveExpand) * (1 - collapseU * 0.85);
+
+                        for (let r = 0; r < 7; r++) {
+                            ctx.beginPath();
+                            const alpha = (1 - r / 7) * 0.55 * (1 - collapseU * 0.5);
+                            ctx.strokeStyle = r % 2 === 0
+                                ? `rgba(217, 119, 87, ${alpha.toFixed(3)})`
+                                : `rgba(242, 166, 138, ${(alpha * 0.8).toFixed(3)})`;
+                            ctx.lineWidth = r === 0 ? 3.0 : 1.5;
+
+                            for (let dx = -spreadW; dx <= spreadW; dx += 12) {
+                                const x = 960 + dx;
+                                const env = Math.cos((dx / Math.max(1, spreadW)) * (Math.PI / 2));
+                                const y = 540 + Math.sin(dx * 0.0085 - t * 4.5 + r * 0.45) * ampBase * env * env;
+                                if (dx === -spreadW) ctx.moveTo(x, y);
+                                else ctx.lineTo(x, y);
+                            }
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Core Singularity Point
+                    const coreR = lerp(2, 14, singU) * (1 + collapseU * 2.2);
+                    const pGrad = ctx.createRadialGradient(960, 540, 1, 960, 540, coreR * 5);
+                    pGrad.addColorStop(0, '#FFFFFF');
+                    pGrad.addColorStop(0.25, '#F2A68A');
+                    pGrad.addColorStop(0.6, 'rgba(217, 119, 87, 0.5)');
+                    pGrad.addColorStop(1, 'rgba(217, 119, 87, 0)');
+                    ctx.fillStyle = pGrad;
+                    ctx.beginPath();
+                    ctx.arc(960, 540, coreR * 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // SCENE 2 (00:04 - 00:08): Radial shockwave & acoustic rings around emblem
+                if (t >= 3.9 && t < 8.4) {
+                    const ringU = easeOutCubic(invLerp(4.0, 6.8, t));
+                    const fadeS2 = 1 - invLerp(7.4, 8.1, t);
+                    for (let k = 0; k < 3; k++) {
+                        const rad = lerp(40, 560 + k * 140, ringU);
+                        ctx.strokeStyle = `rgba(217, 119, 87, ${(0.22 * (1 - ringU * 0.6) * fadeS2).toFixed(3)})`;
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.arc(960, 405, rad, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+
+                // SCENE 5 (00:19 - 00:25): High-Velocity Orange Light Trails
+                if (t >= 18.8 && t < 25.3) {
+                    const trailVis = invLerp(18.8, 19.4, t) * (1 - invLerp(24.6, 25.2, t));
+                    ctx.save();
+                    for (let i = 0; i < 22; i++) {
+                        const y = 110 + ((i * 43) % 880);
+                        const speed = 1350 + (i % 5) * 420;
+                        const length = 260 + (i % 4) * 140;
+                        const xHead = ((t - 18.8) * speed + i * 310) % (w + length * 2) - length;
+
+                        const lGrad = ctx.createLinearGradient(xHead - length, y, xHead, y);
+                        lGrad.addColorStop(0, 'rgba(217, 119, 87, 0)');
+                        lGrad.addColorStop(0.7, `rgba(217, 119, 87, ${(0.28 * trailVis).toFixed(3)})`);
+                        lGrad.addColorStop(1, `rgba(245, 243, 239, ${(0.75 * trailVis).toFixed(3)})`);
+
+                        ctx.strokeStyle = lGrad;
+                        ctx.lineWidth = (i % 3 === 0) ? 2.8 : 1.2;
+                        ctx.beginPath();
+                        ctx.moveTo(xHead - length, y);
+                        ctx.lineTo(xHead, y);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
+                // SCENE 6 (00:25 - 00:30): Horizon Rim Light Sweep
+                if (t >= 25.0) {
+                    const sweepU = invLerp(25.2, 29.2, t);
+                    const fadeOut = 1 - invLerp(28.4, 29.8, t);
+                    const sweepX = lerp(360, 1560, sweepU);
+
+                    const rimGrad = ctx.createRadialGradient(sweepX, 540, 10, sweepX, 540, 520);
+                    rimGrad.addColorStop(0, `rgba(242, 166, 138, ${(0.22 * fadeOut).toFixed(3)})`);
+                    rimGrad.addColorStop(0.5, `rgba(217, 119, 87, ${(0.08 * fadeOut).toFixed(3)})`);
+                    rimGrad.addColorStop(1, 'rgba(5, 5, 6, 0)');
+                    ctx.fillStyle = rimGrad;
+                    ctx.fillRect(0, 0, w, h);
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // 4. SCENE 4 TOPOLOGY CANVAS & SCENE 5 PERFORMANCE GRAPH CANVAS
+            // -----------------------------------------------------------------
+            function renderWorkspaceTopology(t) {
+                if (t < 12.8 || t > 19.2) return;
+                const w = topoCanvas.width, h = topoCanvas.height;
+                topoCtx.clearRect(0, 0, w, h);
+
+                const u = easeOutCubic(invLerp(13.3, 17.5, t));
+
+                // Grid lines
+                topoCtx.strokeStyle = 'rgba(245, 243, 239, 0.04)';
+                topoCtx.lineWidth = 1;
+                for (let x = 40; x < w; x += 60) {
+                    topoCtx.beginPath();
+                    topoCtx.moveTo(x, 0);
+                    topoCtx.lineTo(x, h);
+                    topoCtx.stroke();
+                }
+
+                const nodes = [
+                    { x: 110, y: 155, label: 'INGEST' },
+                    { x: 290, y: 85, label: 'AST-1' },
+                    { x: 290, y: 225, label: 'AST-2' },
+                    { x: 480, y: 85, label: 'VERIFY' },
+                    { x: 480, y: 225, label: 'SYNTH' },
+                    { x: 655, y: 155, label: 'EDGE-PROD' }
+                ];
+
+                const edges = [
+                    [0, 1], [0, 2], [1, 3], [2, 4], [1, 4], [3, 5], [4, 5]
+                ];
+
+                // Draw connections
+                edges.forEach(([a, b], idx) => {
+                    const n1 = nodes[a], n2 = nodes[b];
+                    topoCtx.strokeStyle = 'rgba(217, 119, 87, 0.45)';
+                    topoCtx.lineWidth = 2;
+                    topoCtx.beginPath();
+                    topoCtx.moveTo(n1.x, n1.y);
+                    topoCtx.lineTo(lerp(n1.x, n2.x, u), lerp(n1.y, n2.y, u));
+                    topoCtx.stroke();
+
+                    // Travelling pulse
+                    const pU = ((t * 1.4 + idx * 0.17) % 1) * u;
+                    const px = lerp(n1.x, n2.x, pU);
+                    const py = lerp(n1.y, n2.y, pU);
+                    topoCtx.fillStyle = '#F2A68A';
+                    topoCtx.beginPath();
+                    topoCtx.arc(px, py, 4, 0, Math.PI * 2);
+                    topoCtx.fill();
+                });
+
+                // Draw nodes
+                nodes.forEach((n, idx) => {
+                    const nAppear = easeOutCubic(invLerp(13.2 + idx * 0.2, 14.0 + idx * 0.2, t));
+                    topoCtx.save();
+                    topoCtx.translate(n.x, n.y);
+                    topoCtx.scale(nAppear, nAppear);
+                    topoCtx.fillStyle = '#111114';
+                    topoCtx.strokeStyle = idx === 5 ? '#F2A68A' : '#D97757';
+                    topoCtx.lineWidth = 2.5;
+                    topoCtx.beginPath();
+                    topoCtx.arc(0, 0, 22, 0, Math.PI * 2);
+                    topoCtx.fill();
+                    topoCtx.stroke();
+
+                    topoCtx.fillStyle = '#F5F3EF';
+                    topoCtx.font = '500 10px "JetBrains Mono"';
+                    topoCtx.textAlign = 'center';
+                    topoCtx.fillText(n.label, 0, 38);
+                    topoCtx.restore();
+                });
+            }
+
+            function renderPerformanceCurve(t) {
+                if (t < 18.8 || t > 25.2) return;
+                const w = perfCanvas.width, h = perfCanvas.height;
+                perfCtx.clearRect(0, 0, w, h);
+
+                const drawU = easeOutCubic(invLerp(19.3, 22.8, t));
+
+                // Horizontal grid lines
+                perfCtx.strokeStyle = 'rgba(245, 243, 239, 0.06)';
+                perfCtx.lineWidth = 1;
+                for (let r = 1; r <= 4; r++) {
+                    const y = (h / 5) * r;
+                    perfCtx.beginPath();
+                    perfCtx.moveTo(20, y);
+                    perfCtx.lineTo(w - 20, y);
+                    perfCtx.stroke();
+                }
+
+                const maxX = lerp(30, w - 30, drawU);
+
+                // Baseline Curve (Muted Stone)
+                perfCtx.beginPath();
+                for (let x = 30; x <= maxX; x += 10) {
+                    const norm = (x - 30) / (w - 60);
+                    const y = h - 35 - Math.pow(norm, 0.75) * 120;
+                    if (x === 30) perfCtx.moveTo(x, y);
+                    else perfCtx.lineTo(x, y);
+                }
+                perfCtx.strokeStyle = 'rgba(140, 135, 126, 0.45)';
+                perfCtx.lineWidth = 2.5;
+                perfCtx.setLineDash([6, 6]);
+                perfCtx.stroke();
+                perfCtx.setLineDash([]);
+
+                // Claude Fable 5.2 Curve (Warm Luminous Orange + Area Fill)
+                perfCtx.save();
+                perfCtx.beginPath();
+                perfCtx.moveTo(30, h - 35);
+                for (let x = 30; x <= maxX; x += 8) {
+                    const norm = (x - 30) / (w - 60);
+                    const y = h - 35 - Math.pow(norm, 0.68) * 215;
+                    perfCtx.lineTo(x, y);
+                }
+                perfCtx.lineTo(maxX, h - 35);
+                perfCtx.closePath();
+
+                const fillG = perfCtx.createLinearGradient(0, 20, 0, h - 35);
+                fillG.addColorStop(0, 'rgba(217, 119, 87, 0.35)');
+                fillG.addColorStop(1, 'rgba(217, 119, 87, 0.0)');
+                perfCtx.fillStyle = fillG;
+                perfCtx.fill();
+
+                perfCtx.beginPath();
+                let tipY = h - 35;
+                for (let x = 30; x <= maxX; x += 8) {
+                    const norm = (x - 30) / (w - 60);
+                    const y = h - 35 - Math.pow(norm, 0.68) * 215;
+                    tipY = y;
+                    if (x === 30) perfCtx.moveTo(x, y);
+                    else perfCtx.lineTo(x, y);
+                }
+                perfCtx.strokeStyle = '#D97757';
+                perfCtx.lineWidth = 4;
+                perfCtx.stroke();
+
+                // Glowing Leading Point
+                perfCtx.fillStyle = '#F5F3EF';
+                perfCtx.beginPath();
+                perfCtx.arc(maxX, tipY, 6, 0, Math.PI * 2);
+                perfCtx.fill();
+                perfCtx.restore();
+            }
+
+            // -----------------------------------------------------------------
+            // 5. MASTER DETERMINISTIC RENDERER: renderFrame(t)
+            // -----------------------------------------------------------------
+            function setLayerState(el, visible, opacity, transformStr, blurPx = 0) {
+                el.style.visibility = visible ? 'visible' : 'hidden';
+                el.style.opacity = opacity.toFixed(3);
+                el.style.transform = transformStr;
+                el.style.filter = blurPx > 0.05 ? `blur(${blurPx.toFixed(2)}px)` : 'none';
+            }
+
+            function renderFrame(rawTime) {
+                const t = clamp(Number(rawTime) || 0, 0, DURATION);
+
+                // Update top telemetry bar
+                const sec = Math.floor(t);
+                const frm = Math.floor((t * FPS) % FPS);
+                frameTimecode.textContent = `00:${String(sec).padStart(2, '0')}:${String(frm).padStart(2, '0')}`;
+
+                if (t < 4.0) frameSceneLabel.textContent = '01 // HOOK: SINGULARITY';
+                else if (t < 8.0) frameSceneLabel.textContent = '02 // PRODUCT REVEAL';
+                else if (t < 13.0) frameSceneLabel.textContent = '03 // DEEP REASONING';
+                else if (t < 19.0) frameSceneLabel.textContent = '04 // WORKSPACE CAPABILITIES';
+                else if (t < 25.0) frameSceneLabel.textContent = '05 // INFERENCE PERFORMANCE';
+                else frameSceneLabel.textContent = '06 // CLAUDE FABLE 5.2';
+
+                // Render Procedural Canvases
+                renderPrimaryCanvas(t);
+                renderWorkspaceTopology(t);
+                renderPerformanceCurve(t);
+
+                // =============================================================
+                // SCENE 1 (00:00 - 00:04): "The next level of intelligence."
+                // =============================================================
+                if (t >= 0.0 && t < 4.3) {
+                    const exitU = easeInCubic(invLerp(3.55, 4.15, t));
+                    const camScale = lerp(0.96, 1.08, invLerp(0, 4.0, t)) + exitU * 0.22;
+                    const sceneOp = (1 - exitU);
+                    setLayerState(scenes.s1, true, sceneOp, `scale(${camScale.toFixed(4)})`, exitU * 10);
+
+                    const eyeU = easeOutCubic(invLerp(0.85, 1.5, t));
+                    s1Eyebrow.style.opacity = eyeU.toFixed(3);
+                    s1Eyebrow.style.transform = `translateY(${lerp(18, 0, eyeU).toFixed(1)}px)`;
+
+                    s1Words.forEach((wEl, i) => {
+                        const wU = easeOutExpo(invLerp(1.05 + i * 0.14, 1.85 + i * 0.14, t));
+                        const blurW = (1 - wU) * 12;
+                        wEl.style.opacity = wU.toFixed(3);
+                        wEl.style.transform = `translateY(${lerp(36, 0, wU).toFixed(1)}px)`;
+                        wEl.style.filter = blurW > 0.1 ? `blur(${blurW.toFixed(1)}px)` : 'none';
+                    });
+                } else {
+                    setLayerState(scenes.s1, false, 0, 'none');
+                }
+
+                // =============================================================
+                // SCENE 2 (00:04 - 00:08): "Meet Claude Fable 5.2"
+                // =============================================================
+                if (t >= 3.85 && t < 8.35) {
+                    const enterU = easeOutExpo(invLerp(3.9, 4.65, t));
+                    const exitU = easeInCubic(invLerp(7.45, 8.1, t));
+                    const op = enterU * (1 - exitU);
+                    const scale = lerp(0.88, 1.03, invLerp(4.0, 8.0, t)) + exitU * 0.15;
+                    setLayerState(scenes.s2, true, op, `scale(${scale.toFixed(4)})`, (1 - enterU) * 8 + exitU * 10);
+
+                    const rot = lerp(-35, 15, easeOutCubic(invLerp(4.0, 8.0, t)));
+                    s2EmblemSvg.style.transform = `rotate(${rot.toFixed(2)}deg) scale(${lerp(0.5, 1.0, enterU).toFixed(3)})`;
+
+                    const hairU = easeOutCubic(invLerp(4.1, 5.2, t));
+                    s2HairH.style.transform = `scaleX(${hairU.toFixed(3)})`;
+                    s2HairV.style.transform = `scaleY(${hairU.toFixed(3)})`;
+
+                    const badgeU = easeOutCubic(invLerp(4.45, 5.15, t));
+                    s2Badge.style.opacity = badgeU.toFixed(3);
+                    s2Badge.style.transform = `translateY(${lerp(20, 0, badgeU).toFixed(1)}px)`;
+
+                    const titleU = easeOutExpo(invLerp(4.65, 5.55, t));
+                    s2Title.style.opacity = titleU.toFixed(3);
+                    s2Title.style.transform = `translateY(${lerp(42, 0, titleU).toFixed(1)}px)`;
+                } else {
+                    setLayerState(scenes.s2, false, 0, 'none');
+                }
+
+                // =============================================================
+                // SCENE 3 (00:08 - 00:13): "Think deeper. Solve harder problems."
+                // =============================================================
+                if (t >= 7.85 && t < 13.35) {
+                    const enterU = easeOutExpo(invLerp(7.95, 8.75, t));
+                    const exitU = easeInCubic(invLerp(12.45, 13.1, t));
+                    const op = enterU * (1 - exitU);
+                    const rotX = lerp(10, 0, enterU) - exitU * 8;
+                    const rotY = lerp(-8, 2, invLerp(8.0, 13.0, t));
+                    setLayerState(
+                        scenes.s3,
+                        true,
+                        op,
+                        `perspective(1800px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(${lerp(0.94, 1.0, enterU).toFixed(3)})`,
+                        exitU * 8
+                    );
+
+                    s3CodeLines.forEach((lineEl, idx) => {
+                        const lU = easeOutCubic(invLerp(8.35 + idx * 0.25, 8.85 + idx * 0.25, t));
+                        lineEl.style.opacity = lU.toFixed(3);
+                        lineEl.style.transform = `translateX(${lerp(-18, 0, lU).toFixed(1)}px)`;
+                    });
+
+                    const depthCount = Math.round(lerp(8, 64, easeOutCubic(invLerp(8.3, 11.5, t))));
+                    s3DepthVal.textContent = `${depthCount} STEPS`;
+                    const confVal = lerp(91.2, 99.94, easeOutCubic(invLerp(8.3, 11.8, t)));
+                    s3ConfVal.textContent = `${confVal.toFixed(2)}%`;
+
+                    dagPaths.forEach((pathEl, idx) => {
+                        if (!pathEl) return;
+                        const pU = easeOutCubic(invLerp(8.5 + idx * 0.28, 9.6 + idx * 0.28, t));
+                        pathEl.style.strokeDasharray = '600';
+                        pathEl.style.strokeDashoffset = String((1 - pU) * 600);
+                    });
+                } else {
+                    setLayerState(scenes.s3, false, 0, 'none');
+                }
+
+                // =============================================================
+                // SCENE 4 (00:13 - 00:19): "From complex ideas to real results."
+                // =============================================================
+                if (t >= 12.85 && t < 19.35) {
+                    const enterU = easeOutExpo(invLerp(12.95, 13.85, t));
+                    const exitU = easeInCubic(invLerp(18.45, 19.1, t));
+                    const op = enterU * (1 - exitU);
+                    setLayerState(scenes.s4, true, op, `scale(${lerp(0.94, 1.0, enterU).toFixed(4)})`, exitU * 10);
+
+                    const winRotX = lerp(16, 2, enterU);
+                    const winRotY = lerp(12, -3, invLerp(13.0, 19.0, t));
+                    s4Window.style.transform = `perspective(1800px) rotateX(${winRotX.toFixed(2)}deg) rotateY(${winRotY.toFixed(2)}deg)`;
+
+                    s4Tasks.forEach((tEl, idx) => {
+                        const u = easeOutCubic(invLerp(13.4 + idx * 0.35, 14.1 + idx * 0.35, t));
+                        tEl.style.opacity = u.toFixed(3);
+                        tEl.style.transform = `translateY(${lerp(16, 0, u).toFixed(1)}px)`;
+                    });
+
+                    const tok = Math.round(lerp(110, 284, easeOutCubic(invLerp(13.5, 17.5, t))));
+                    s4TokSpeed.textContent = `${tok} tok/s`;
+                    const prog = lerp(18, 100, easeOutCubic(invLerp(13.4, 18.0, t)));
+                    s4ProgBar.style.width = `${prog.toFixed(1)}%`;
+
+                    const artU = easeOutExpo(invLerp(14.6, 15.6, t));
+                    s4Artifact.style.opacity = artU.toFixed(3);
+                    s4Artifact.style.transform = `translateY(${lerp(28, 0, artU).toFixed(1)}px)`;
+                } else {
+                    setLayerState(scenes.s4, false, 0, 'none');
+                }
+
+                // =============================================================
+                // SCENE 5 (00:19 - 00:25): "More capable. Up to 30% faster."
+                // =============================================================
+                if (t >= 18.85 && t < 25.35) {
+                    const enterU = easeOutExpo(invLerp(18.95, 19.75, t));
+                    const exitU = easeInCubic(invLerp(24.45, 25.1, t));
+                    const op = enterU * (1 - exitU);
+                    const skewX = (1 - enterU) * -8 + exitU * 6;
+                    setLayerState(
+                        scenes.s5,
+                        true,
+                        op,
+                        `translateX(${lerp(60, 0, enterU).toFixed(1)}px) skewX(${skewX.toFixed(2)}deg)`,
+                        (1 - enterU) * 8 + exitU * 10
+                    );
+
+                    const cU = easeOutCubic(invLerp(19.3, 22.2, t));
+                    s5Val1.textContent = `+${Math.round(lerp(5, 30, cU))}%`;
+                    s5Val2.textContent = `${lerp(72.0, 99.4, cU).toFixed(1)}%`;
+                    s5Val3.textContent = `${Math.round(lerp(95, 38, cU))}ms`;
+
+                    s5Stats.forEach((stEl, idx) => {
+                        const sU = easeOutExpo(invLerp(19.35 + idx * 0.22, 20.15 + idx * 0.22, t));
+                        stEl.style.opacity = sU.toFixed(3);
+                        stEl.style.transform = `translateX(${lerp(48, 0, sU).toFixed(1)}px)`;
+                    });
+                } else {
+                    setLayerState(scenes.s5, false, 0, 'none');
+                }
+
+                // =============================================================
+                // SCENE 6 (00:25 - 00:30): FINAL BRAND REVEAL & FADE TO BLACK
+                // =============================================================
+                if (t >= 24.85) {
+                    const enterU = easeOutExpo(invLerp(24.95, 26.0, t));
+                    const scale = lerp(0.92, 1.02, invLerp(25.0, 30.0, t));
+                    setLayerState(scenes.s6, true, enterU, `scale(${scale.toFixed(4)})`, (1 - enterU) * 8);
+
+                    const subU = easeOutCubic(invLerp(25.6, 26.6, t));
+                    s6Subtitle.style.opacity = subU.toFixed(3);
+                    s6Subtitle.style.transform = `translateY(${lerp(20, 0, subU).toFixed(1)}px)`;
+
+                    const footU = easeOutCubic(invLerp(26.1, 27.0, t));
+                    s6Footer.style.opacity = footU.toFixed(3);
+                } else {
+                    setLayerState(scenes.s6, false, 0, 'none');
+                }
+
+                // Final Smooth Fade to Black at 30.00s (Frame 900)
+                const fadeBlack = easeInOutCubic(invLerp(28.3, 29.95, t));
+                blackoutCurtain.style.opacity = fadeBlack.toFixed(3);
+            }
+
+            // -----------------------------------------------------------------
+            // 6. PROCEDURAL WEB AUDIO API CINEMATIC SOUNDTRACK GENERATOR
+            // -----------------------------------------------------------------
+            let audioCtx = null;
+            let soundEnabled = false;
+            let lastTriggeredSecond = -1;
+
+            function triggerSynthStep(t) {
+                if (!soundEnabled || !audioCtx) return;
+                const currentHalfBeat = Math.floor(t * 4); // 120 BPM sixteenth/eighth grid
+                if (currentHalfBeat === lastTriggeredSecond) return;
+                lastTriggeredSecond = currentHalfBeat;
+
+                const now = audioCtx.currentTime;
+
+                // Deep cinematic bass impact at scene transitions (0s, 4s, 8s, 13s, 19s, 25s)
+                const isTransition = [0, 16, 32, 52, 76, 100].includes(currentHalfBeat);
+                if (isTransition) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(65.41, now); // C2 deep sub
+                    osc.frequency.exponentialRampToValueAtTime(32.7, now + 1.4);
+                    gain.gain.setValueAtTime(0.32, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+                    osc.connect(gain).connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 1.55);
+                }
+
+                // Subtle rhythmic electronic pulse
+                if (t < 28.4 && currentHalfBeat % 2 === 0) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    const notes = [130.81, 146.83, 164.81, 196.0];
+                    osc.frequency.setValueAtTime(notes[(currentHalfBeat / 2) % notes.length], now);
+                    gain.gain.setValueAtTime(0.045, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.22);
+                    osc.connect(gain).connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.24);
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // 7. PURE VIDEO APIS (AUTOFRAME STUDIO TIMELINE & HYPERFRAMES)
+            // ZÉRO PLAYER INTERNE — CONTRÔLÉ DIRECTEMENT PAR LE STUDIO PARENT
+            // -----------------------------------------------------------------
+            let currentTime = 0.0;
+            let isPlaying = true;
+            let lastRaf = performance.now();
+
+            function tick(now) {
+                const dt = (now - lastRaf) / 1000;
+                lastRaf = now;
+
+                if (isPlaying) {
+                    currentTime += dt;
+                    if (currentTime >= DURATION) {
+                        currentTime = 0.0;
+                        lastTriggeredSecond = -1;
+                    }
+                    renderFrame(currentTime);
+                    triggerSynthStep(currentTime);
+                }
+                requestAnimationFrame(tick);
+            }
+
+            // Interface unifiée AutoFrame Studio / render.cjs
+            window.__timeline = {
+                seek: function (timeInSeconds) {
+                    isPlaying = false;
+                    currentTime = clamp(Number(timeInSeconds) || 0, 0, DURATION);
+                    renderFrame(currentTime);
+                    return currentTime;
+                },
+                play: function () {
+                    isPlaying = true;
+                    lastRaf = performance.now();
+                },
+                pause: function () {
+                    isPlaying = false;
+                },
+                duration: DURATION
+            };
+
+            // Compatibilité Hyperframes CLI & renderFrame
+            window.renderFrame = function (timeInSeconds) {
+                return window.__timeline.seek(timeInSeconds);
+            };
+
+            window.seekTo = function (timeInSeconds) {
+                return window.__timeline.seek(timeInSeconds);
+            };
+
+            window.seekToFrame = function (frameIndex) {
+                const f = clamp(Math.round(Number(frameIndex) || 0), 0, TOTAL_FRAMES);
+                return window.seekTo(f / FPS);
+            };
+
+            // Raccourcis pour prévisualisation directe autonome
+            window.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    isPlaying = !isPlaying;
+                    lastRaf = performance.now();
+                }
+            });
+
+            stage.addEventListener('click', () => {
+                isPlaying = !isPlaying;
+                lastRaf = performance.now();
+            });
+
+            // Initial Frame 0 render & loop start
+            window.__timeline.seek(0);
+            requestAnimationFrame(tick);
+        })();
+    </script>
+</body>
+</html>
