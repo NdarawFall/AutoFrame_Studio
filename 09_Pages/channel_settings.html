@@ -470,7 +470,7 @@
                 <span>Retour à la chaîne</span>
             </a>
             <div class="nav-breadcrumb">
-                <a href="channels.html">Chaînes & Vidéos</a>
+                <a href="createur.html">Chaînes & Vidéos</a>
                 <span class="sep">/</span>
                 <a href="channel.html" id="breadcrumbChannelName">Ma Chaîne</a>
                 <span class="sep">/</span>
@@ -714,7 +714,7 @@
             const channelId = getChannelId();
             if (!channelId) {
                 alert('Aucune chaîne spécifiée.');
-                window.location.href = 'channels.html';
+                window.location.href = 'createur.html';
                 return;
             }
 
@@ -740,7 +740,7 @@
             currentChannel = channels.find(c => c.id === channelId);
             if (!currentChannel) {
                 alert('Chaîne introuvable.');
-                window.location.href = 'channels.html';
+                window.location.href = 'createur.html';
                 return;
             }
 

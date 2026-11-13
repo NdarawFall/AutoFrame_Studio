@@ -537,7 +537,7 @@
     <!-- TOP NAVIGATION BAR -->
     <header class="top-nav">
         <div class="nav-left">
-            <a href="channels.html" class="nav-btn" title="Retour aux Chaînes">
+            <a href="createur.html" class="nav-btn" title="Retour aux Chaînes">
                 <svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 <span>Toutes les Chaînes</span>
             </a>
@@ -548,7 +548,7 @@
         </div>
 
         <nav class="nav-links">
-            <a href="channels.html" class="nav-btn active">
+            <a href="createur.html" class="nav-btn active">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
                 <span>Chaînes & Vidéos</span>
             </a>
@@ -745,7 +745,7 @@
                 <div style="grid-column: 1/-1; padding: 70px 24px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg);">
                     <p style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 8px;">Chaîne non trouvée</p>
                     <p style="font-size: 13px; margin-bottom: 20px; color: var(--text-muted);">Cette chaîne n'existe pas ou a été supprimée.</p>
-                    <a href="channels.html" class="btn-cancel" style="display:inline-flex; align-items:center; gap:8px;">
+                    <a href="createur.html" class="btn-cancel" style="display:inline-flex; align-items:center; gap:8px;">
                         <span>Retour aux chaînes</span>
                     </a>
                 </div>
@@ -848,7 +848,7 @@
                         localStorage.setItem(STORAGE_KEY_CHANNELS, JSON.stringify(channels));
                     } catch(e) {}
                 }
-                window.location.href = 'channels.html';
+                window.location.href = 'createur.html';
                 return;
             }
 

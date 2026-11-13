@@ -116,8 +116,8 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(302, { 'Location': '/09_Pages/monteur.html' });
         return res.end();
     }
-    if (cleanUrl === '/channels' || cleanUrl === '/channels.html') {
-        res.writeHead(302, { 'Location': '/09_Pages/channels.html' });
+    if (cleanUrl === '/createur' || cleanUrl === '/createur.html' || cleanUrl === '/channels' || cleanUrl === '/channels.html') {
+        res.writeHead(302, { 'Location': '/09_Pages/createur.html' });
         return res.end();
     }
 
