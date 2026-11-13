@@ -154,7 +154,7 @@
 
         .hero {
             text-align: center;
-            max-width: 960px;
+            max-width: 1080px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -315,7 +315,7 @@
             grid-template-columns: 1fr 1fr;
             gap: clamp(14px, 2.2vw, 24px);
             width: 100%;
-            max-width: 860px;
+            max-width: 1080px;
             margin-top: 6px;
             z-index: 10;
         }
@@ -330,7 +330,8 @@
             background: rgba(14, 16, 22, 0.88);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-lg);
-            padding: clamp(18px, 2.2vh, 24px);
+            padding: clamp(22px, 2.8vh, 32px);
+            min-height: 250px;
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -465,70 +466,76 @@
             transform: translateX(4px);
         }
 
-        /* --- AVATARS DE FOND HOMEPAGE (FEMME GAUCHE / HOMME DROITE) --- */
-        .avatar-backdrop {
+        /* --- AVATARS EN FOND DANS LES CARDS (FEMME À GAUCHE DANS CARD CRÉATEUR / HOMME À DROITE DANS CARD MONTEUR) --- */
+        .card-bg-avatar {
             position: absolute;
             top: 0;
             bottom: 0;
-            height: 100%;
+            width: 50%;
             pointer-events: none;
             z-index: 1;
             display: flex;
             align-items: flex-end;
-            user-select: none;
             overflow: hidden;
         }
 
-        .avatar-backdrop.left {
+        .card-bg-avatar-left {
             left: 0;
             justify-content: flex-start;
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to right, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
         }
 
-        .avatar-backdrop.right {
+        .card-bg-avatar-right {
             right: 0;
             justify-content: flex-end;
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
         }
 
-        .hero-avatar-img {
+        .card-avatar-img {
             height: 100%;
-            max-height: calc(100vh - 56px);
+            max-height: 290px;
             width: auto;
             object-fit: contain;
             object-position: bottom;
-            filter: drop-shadow(0 0 35px rgba(0, 0, 0, 0.9));
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0.55;
+            transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
-        /* La femme est à gauche, montrant le côté droit de son visage orienté vers le centre */
-        .hero-avatar-img.avatar-woman {
-            transform: translateX(-28%);
+        .workspace-card:hover .card-avatar-img {
+            opacity: 0.85;
+            transform: scale(1.04);
         }
 
-        /* L'homme est à droite, montrant le côté gauche de son visage orienté vers le centre */
-        .hero-avatar-img.avatar-man {
-            transform: translateX(28%);
+        .card-inner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            height: 100%;
+            justify-content: space-between;
         }
 
-        @media (max-width: 1200px) {
-            .hero-avatar-img.avatar-woman {
-                transform: translateX(-40%);
-                opacity: 0.6;
-            }
-            .hero-avatar-img.avatar-man {
-                transform: translateX(40%);
-                opacity: 0.6;
-            }
+        /* Décalage doux pour donner de la place à l'avatar tout en gardant une excellente lisibilité */
+        .card-creator .card-inner-content {
+            padding-left: clamp(20px, 7vw, 105px);
+        }
+
+        .card-monteur .card-inner-content {
+            padding-right: clamp(20px, 7vw, 105px);
         }
 
         @media (max-width: 900px) {
-            .avatar-backdrop {
+            .card-creator .card-inner-content {
+                padding-left: 0;
+            }
+            .card-monteur .card-inner-content {
+                padding-right: 0;
+            }
+            .card-avatar-img {
                 opacity: 0.35;
-            }
-            .hero-avatar-img.avatar-woman {
-                transform: translateX(-55%);
-            }
-            .hero-avatar-img.avatar-man {
-                transform: translateX(55%);
             }
         }
 
@@ -546,8 +553,17 @@
             flex-shrink: 0;
         }
     
-        /* --- GRAND BOUTON SUIVRE LE TUTO (FOND BLANC, TEXTE NOIR) --- */
-        .btn-hero-tuto {
+        /* --- GRAND BOUTON SUIVRE DÉMO PLEINE LARGEUR (MÊME LARGEUR QUE LES 2 CARDS) --- */
+        .hero-demo-action {
+            width: 100%;
+            max-width: 1080px;
+            display: flex;
+            margin-top: 4px;
+            z-index: 10;
+        }
+
+        .btn-hero-demo-full {
+            width: 100%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -556,24 +572,35 @@
             color: #000000;
             font-size: clamp(14px, 1.6vh, 16px);
             font-weight: 800;
-            padding: clamp(12px, 1.6vh, 15px) clamp(26px, 2.4vw, 34px);
-            border-radius: var(--radius-sm);
+            padding: clamp(14px, 1.8vh, 17px) clamp(24px, 2.4vw, 32px);
+            border-radius: var(--radius-md);
             text-decoration: none;
             transition: var(--transition-smooth);
             border: 2px solid #ffffff;
-            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.28);
             cursor: pointer;
             letter-spacing: -0.01em;
         }
 
-        .btn-hero-tuto:hover {
+        .btn-hero-demo-full:hover {
             background: #f0f0f0;
             transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.55);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.48);
         }
 
-        .btn-hero-tuto:active {
+        .btn-hero-demo-full:active {
             transform: translateY(0);
+        }
+
+        .btn-hero-demo-full .icon-camera {
+            width: 20px;
+            height: 20px;
+            stroke: #000000;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
         }
 
         /* --- MODAL PLAYER VIDÉO TUTORIEL --- */
@@ -768,16 +795,6 @@
     
     <!-- HERO BANNER SOMBRE PUR — ADAPTÉ À L'ÉCRAN SANS AUCUN DÉFILEMENT -->
     <main class="hero-banner-wrapper">
-        <!-- AVATAR FEMME À GAUCHE (EN FOND) -->
-        <div class="avatar-backdrop left" aria-hidden="true">
-            <img src="../01_Assets/Images/avatar_homepage_woman.png" alt="" class="hero-avatar-img avatar-woman">
-        </div>
-
-        <!-- AVATAR HOMME À DROITE (EN FOND) -->
-        <div class="avatar-backdrop right" aria-hidden="true">
-            <img src="../01_Assets/Images/avatar_homepage_man.png" alt="" class="hero-avatar-img avatar-man">
-        </div>
-
         <section class="hero">
             <div class="hero-pill">
                 <div class="hero-pill-platforms">
@@ -806,61 +823,65 @@
                 </div>
                 <span>Pensé pour les Créateurs YouTube, TikTok & Instagram</span>
             </div>
-            
-            <h1 class="hero-title">
-                <span class="title-line">Produisez des vidéos qui captivent,</span>
-                <span class="title-line"><span class="badge-10x">10 X</span> plus vite.</span>
-            </h1>
-            
-            <p class="hero-desc">
-                Passez de l'idée au fichier MP4 en quelques minutes. Vos scripts et vos images se transforment automatiquement en vidéos cinématiques à fort taux de rétention, taillées pour faire des vues.
-            </p>
-            
-            <div class="hero-actions">
-                <!-- 1. BOUTON SUIVRE LE TUTO (Grand bouton épuré fond blanc, texte noir) -->
-                <button type="button" class="btn-hero-tuto" onclick="openTutorialModal()" title="Visionner le tutoriel vidéo">
-                    <svg class="icon" viewBox="0 0 24 24" style="fill: currentColor; width: 18px; height: 18px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    <span>Suivre le tuto</span>
-                </button>
+
+            <!-- 2 GRANDES CARDS D'ACCÈS : CRÉATEUR DE CONTENU & MONTEUR VIDÉO AVEC AVATARS EN FOND -->
+            <div class="workspace-cards-container">
+                <!-- CARD 1 : CRÉATEUR DE CONTENU (Avatar femme en fond sur le côté gauche) -->
+                <a href="channels.html" class="workspace-card card-creator" title="Accéder à l'espace Créateur de Contenu">
+                    <div class="card-bg-avatar card-bg-avatar-left" aria-hidden="true">
+                        <img src="../01_Assets/Images/avatar_homepage_woman.png" alt="" class="card-avatar-img">
+                    </div>
+                    <div class="card-inner-content">
+                        <div class="workspace-card-top">
+                            <div class="workspace-card-icon icon-creator">
+                                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                            </div>
+                            <span class="workspace-card-tag tag-creator">Créateur de Contenu</span>
+                        </div>
+                        <div class="workspace-card-body">
+                            <h3 class="workspace-card-title">Gérer mes Chaînes & Vidéos</h3>
+                            <p class="workspace-card-desc">Pilotez vos chaînes YouTube & TikTok, générez des scripts automatisés et produisez des formats courts percutants.</p>
+                        </div>
+                        <div class="workspace-card-footer">
+                            <span>Ouvrir les Chaînes</span>
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- CARD 2 : MONTEUR VIDÉO (Avatar homme en fond sur le côté droit) -->
+                <a href="monteur.html" class="workspace-card card-monteur" title="Accéder à l'espace Monteur Vidéo & Clients">
+                    <div class="card-bg-avatar card-bg-avatar-right" aria-hidden="true">
+                        <img src="../01_Assets/Images/avatar_homepage_man.png" alt="" class="card-avatar-img">
+                    </div>
+                    <div class="card-inner-content">
+                        <div class="workspace-card-top">
+                            <div class="workspace-card-icon icon-monteur">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            </div>
+                            <span class="workspace-card-tag tag-monteur">Monteur Vidéo</span>
+                        </div>
+                        <div class="workspace-card-body">
+                            <h3 class="workspace-card-title">Espace Clients & Rushes</h3>
+                            <p class="workspace-card-desc">Créez vos dossiers clients et centralisez les 5 types d'assets essentiels : rushes bruts, voix off, musiques, clips et références.</p>
+                        </div>
+                        <div class="workspace-card-footer">
+                            <span>Gérer les Clients</span>
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </div>
+                    </div>
+                </a>
             </div>
 
-            <!-- 2 GRANDES CARDS D'ACCÈS : CRÉATEUR DE CONTENU & MONTEUR VIDÉO -->
-            <div class="workspace-cards-container">
-                <!-- CARD 1 : CRÉATEUR DE CONTENU (Redirection vers channels.html) -->
-                <a href="channels.html" class="workspace-card card-creator" title="Accéder à l'espace Créateur de Contenu">
-                    <div class="workspace-card-top">
-                        <div class="workspace-card-icon icon-creator">
-                            <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                        </div>
-                        <span class="workspace-card-tag tag-creator">Créateur de Contenu</span>
-                    </div>
-                    <div class="workspace-card-body">
-                        <h3 class="workspace-card-title">Gérer mes Chaînes & Vidéos</h3>
-                        <p class="workspace-card-desc">Pilotez vos chaînes YouTube & TikTok, générez des scripts automatisés et produisez des formats courts percutants.</p>
-                    </div>
-                    <div class="workspace-card-footer">
-                        <span>Ouvrir les Chaînes</span>
-                        <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </div>
-                </a>
-
-                <!-- CARD 2 : MONTEUR VIDÉO (Redirection vers monteur.html) -->
-                <a href="monteur.html" class="workspace-card card-monteur" title="Accéder à l'espace Monteur Vidéo & Clients">
-                    <div class="workspace-card-top">
-                        <div class="workspace-card-icon icon-monteur">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                        </div>
-                        <span class="workspace-card-tag tag-monteur">Monteur Vidéo</span>
-                    </div>
-                    <div class="workspace-card-body">
-                        <h3 class="workspace-card-title">Espace Clients & Rushes</h3>
-                        <p class="workspace-card-desc">Créez vos dossiers clients et centralisez les 5 types d'assets essentiels : rushes bruts, voix off, musiques, clips et références.</p>
-                    </div>
-                    <div class="workspace-card-footer">
-                        <span>Gérer les Clients</span>
-                        <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </div>
-                </a>
+            <!-- BOUTON SUIVRE DÉMO PLEINE LARGEUR (MÊME LONGUEUR QUE LES 2 CARDS) AVEC ICÔNE VIDÉO -->
+            <div class="hero-demo-action">
+                <button type="button" class="btn-hero-demo-full" onclick="openTutorialModal()" title="Visionner la démo vidéo">
+                    <svg class="icon-camera" viewBox="0 0 24 24">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                    <span>Suivre démo</span>
+                </button>
             </div>
         </section>
     </main>
