@@ -1,4 +1,4 @@
-# 🎬 VibeEditor Studio — Moteur Autonome de Création Vidéo IA
+# 🎬 AutoFrame Studio — Moteur Autonome de Création Vidéo IA
 
 > **Studio vidéo automatisé pour générer, animer et exporter des vidéos percutantes (HTML5, GSAP, Three.js, ElevenLabs, Gemini).**
 
@@ -36,7 +36,7 @@ Le projet est configuré pour ne **jamais commiter vos clés secrètes** sur Git
 
 | Commande | Action |
 | :--- | :--- |
-| `npm start` ou `npm run studio` | Démarre le serveur local VibeEditor sur `http://localhost:3000` |
+| `npm start` ou `npm run studio` | Démarre le serveur local AutoFrame sur `http://localhost:3000` |
 | `npm run render` | Lance le moteur de rendu vidéo headless (Puppeteer + FFmpeg) |
 
 ---

@@ -1,13 +1,13 @@
-# Manuel & Spécifications Officielles de Création Vidéo (VibeEditor)
+# Manuel & Spécifications Officielles de Création Vidéo (AutoFrame)
 
-> Ce document est la **référence technique absolue** de l'application VibeEditor. Il doit être mis à jour à chaque évolution du projet.
-> **Pour l'utilisateur :** Vous pouvez copier-coller l'intégralité de ce document dans une IA externe (**Claude, Grok, ChatGPT ou Gemini**) pour brainstormer et générer un **script horodaté parfait**, prêt à être injecté dans VibeEditor.
+> Ce document est la **référence technique absolue** de l'application AutoFrame. Il doit être mis à jour à chaque évolution du projet.
+> **Pour l'utilisateur :** Vous pouvez copier-coller l'intégralité de ce document dans une IA externe (**Claude, Grok, ChatGPT ou Gemini**) pour brainstormer et générer un **script horodaté parfait**, prêt à être injecté dans AutoFrame.
 
 ---
 
-## 1. Vue d'Ensemble de l'Architecture VibeEditor
+## 1. Vue d'Ensemble de l'Architecture AutoFrame
 
-VibeEditor est un studio de production vidéo automatisé et déterministe propulsé par le web moderne (**HTML5 / Canvas 2D / GSAP / Three.js / WebGL**) calculé à **60 FPS constants**.
+AutoFrame est un studio de production vidéo automatisé et déterministe propulsé par le web moderne (**HTML5 / Canvas 2D / GSAP / Three.js / WebGL**) calculé à **60 FPS constants**.
 
 ### Principes d'Exécution :
 1. **Contrat Déterministe Iframe / Studio** :
@@ -25,7 +25,7 @@ VibeEditor est un studio de production vidéo automatisé et déterministe propu
 
 ## 2. L'Arsenal des Outils & Scripts Intégrés
 
-L'orchestrateur de VibeEditor (`07_Scripts/ai_director.cjs`) dispose d'outils automatisés activables selon le script :
+L'orchestrateur de AutoFrame (`07_Scripts/ai_director.cjs`) dispose d'outils automatisés activables selon le script :
 
 ### A. Voix Off & Traitement Audio
 - **`generate_voice.cjs`** :
@@ -130,11 +130,11 @@ Assets : bouton_cta.png
 Copiez le bloc ci-dessous dans votre IA préférée avec votre idée pour obtenir le script parfait :
 
 ```markdown
-Tu es le Scénariste et Directeur Artistique de VibeEditor, un moteur de motion design vidéo 60 FPS basé sur Canvas 2D et GSAP.
+Tu es le Scénariste et Directeur Artistique de AutoFrame, un moteur de motion design vidéo 60 FPS basé sur Canvas 2D et GSAP.
 Je souhaite créer une vidéo sur le sujet suivant :
 « [INSÉRER LE SUJET DE LA VIDÉO ICI] »
 
-Contraintes techniques de VibeEditor :
+Contraintes techniques de AutoFrame :
 1. Format : [16:9 horizontal OU 9:16 vertical].
 2. Durée totale : [ex: 15 secondes / 20 secondes / 30 secondes].
 3. Style : [ex: Sport Broadcast, Minimaliste Tech, Growkaw Motivation, SaaS Explainer].

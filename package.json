@@ -1,7 +1,7 @@
 {
-  "name": "vibe-editor",
+  "name": "autoframe",
   "version": "1.0.0",
-  "description": "Studio vidéo automatisé & moteur de motion design IA",
+  "description": "AutoFrame 1.0 — Studio vidéo automatisé & moteur de motion design IA",
   "main": "07_Scripts/studio-server.cjs",
   "scripts": {
     "start": "node 07_Scripts/studio-server.cjs",

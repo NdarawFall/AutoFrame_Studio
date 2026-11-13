@@ -41,7 +41,7 @@ let renderState = {
 };
 let currentRenderProcess = null;
 
-// Intégration du moteur Orchestrateur IA VibeEditor
+// Intégration du moteur Orchestrateur IA AutoFrame
 const { runAiVideoPipeline } = require('./ai_director.cjs');
 
 // Registre des tâches de création vidéo en cours
@@ -97,7 +97,7 @@ const activeConfigPath = getResolvedConfigPath();
 if (!fs.existsSync(activeConfigPath)) {
     try {
         fs.writeFileSync(activeConfigPath, JSON.stringify(DEFAULT_CONFIG, null, 2), 'utf8');
-        console.log('ℹ️  [VibeEditor] Configuration utilisateur initialisée :', activeConfigPath);
+        console.log('ℹ️  [AutoFrame] Configuration utilisateur initialisée :', activeConfigPath);
     } catch (err) {
         console.warn('⚠️  Impossible d\'initialiser la configuration utilisateur :', err.message);
     }
@@ -1792,7 +1792,7 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    // 5e3. API pour ouvrir directement l'explorateur Windows dans le dossier sécurisé VibeEditor (%APPDATA%/VibeEditor)
+    // 5e3. API pour ouvrir directement l'explorateur Windows dans le dossier sécurisé AutoFrame (%APPDATA%/AutoFrame)
     if (cleanUrl === '/api/open-projects-folder') {
         const targetOpen = USER_DATA_DIR;
         const { exec } = require('child_process');
@@ -2143,7 +2143,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Appel Gemini avec détection d'intention (Question/Discussion vs Modification réelle)
                 const httpsMod = require('https');
-                const systemPrompt = "Tu es l'assistant IA créatif et motion designer de VibeEditor pour le studio de montage vidéo.\n" +
+                const systemPrompt = "Tu es l'assistant IA créatif et motion designer de AutoFrame pour le studio de montage vidéo.\n" +
                     "L'utilisateur s'adresse à toi dans l'interface de discussion dédiée à la vidéo en cours d'édition (" + path.basename(videoPathRel) + ").\n\n" +
                     "DÉCISION D'INTENTION CRUCIALE :\n" +
                     "1. TYPE 'reply' (Question, salutation, discussion, conseil ou explication) :\n" +
@@ -2420,7 +2420,7 @@ function startNativeRender(videoName) {
 server.listen(PORT, () => {
     const url = `http://localhost:${PORT}/09_Pages/home.html`;
     console.log(`\n======================================================`);
-    console.log(`🎬  VIBEEDITOR LANCÉ AVEC SUCCÈS !`);
+    console.log(`🎬  AUTOFRAME LANCÉ AVEC SUCCÈS !`);
     console.log(`👉  URL : ${url}`);
     console.log(`📁  Racine : ${ROOT_DIR}`);
     console.log(`⌨️   Appuyez sur [Ctrl + C] pour arrêter le serveur.`);
