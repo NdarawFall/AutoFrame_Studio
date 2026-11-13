@@ -73,11 +73,11 @@
             font-weight: 900;
             font-size: 16px;
             letter-spacing: -0.4px;
-            background: linear-gradient(135deg, #ffffff 15%, #ff7b8a 52%, #ff2e43 100%);
+            background: linear-gradient(135deg, #ffffff 20%, #ff6b7d 60%, #60a5fa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            filter: drop-shadow(0 0 14px rgba(255, 51, 68, 0.3));
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.25));
         }
 
         .badge-monteur {
@@ -129,19 +129,19 @@
         }
 
         .nav-btn.btn-create-video {
-            background: #dc2626;
+            background: #2563eb;
             color: #ffffff !important;
-            border-color: #ef4444;
+            border-color: #3b82f6;
             font-weight: 600;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
         }
 
         .nav-btn.btn-create-video:hover {
-            background: #b91c1c;
-            border-color: #f87171;
+            background: #1d4ed8;
+            border-color: #60a5fa;
             color: #ffffff !important;
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
         }
 
         svg.icon {
@@ -283,66 +283,129 @@
             letter-spacing: 0.5px;
         }
 
+        /* --- REAL CLIENT CARDS (CARDS VERTICALES AVEC GRAND AVATAR ET GLOW BLEU) --- */
         .clients-list {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: stretch;
+            gap: 14px;
             overflow-x: auto;
-            padding-bottom: 6px;
+            padding: 8px 4px 16px 4px;
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+            scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
         }
 
         .client-card {
             flex-shrink: 0;
-            min-width: 180px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
+            width: 175px;
+            min-height: 165px;
+            background: rgba(14, 18, 28, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-md);
-            padding: 10px 14px;
+            padding: 18px 14px 16px 14px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(14px);
         }
 
         .client-card:hover {
-            background: var(--bg-elevated);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
+            background: rgba(18, 24, 40, 0.96);
+            border-color: rgba(59, 130, 246, 0.55);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 0 22px rgba(59, 130, 246, 0.25);
         }
 
         .client-card.active {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(16, 22, 36, 0.4));
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 18, 34, 0.96) 100%);
             border-color: #3b82f6;
-            box-shadow: 0 0 0 1px #3b82f6, 0 6px 18px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85), 0 0 28px rgba(59, 130, 246, 0.38);
+            transform: translateY(-2px);
         }
 
-        .client-card-name {
-            font-size: 14px;
-            font-weight: 700;
+        .client-card-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            background: #111;
+        }
+
+        .client-card:hover .client-card-avatar,
+        .client-card.active .client-card-avatar {
+            border-color: #60a5fa;
+            box-shadow: 0 0 18px rgba(59, 130, 246, 0.45);
+        }
+
+        .client-card-avatar-fallback {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .client-asset-count {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-secondary);
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
             flex-shrink: 0;
         }
 
-        .client-card.active .client-asset-count {
-            background: rgba(220, 38, 38, 0.25);
-            color: #fca5a5;
+        .client-card:hover .client-card-avatar-fallback,
+        .client-card.active .client-card-avatar-fallback {
+            border-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .client-card-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .client-card-name {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.2px;
+        }
+
+        .client-card-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 3px 9px;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .client-card.active .client-card-badge {
+            background: rgba(37, 99, 235, 0.25);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, 0.4);
         }
 
         /* --- SELECTED CLIENT WORKSPACE --- */
@@ -377,7 +440,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 2.5px solid #3b82f6;
-            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
             flex-shrink: 0;
             cursor: pointer;
             transition: var(--transition);
@@ -386,8 +449,8 @@
 
         .client-avatar-circle-wrapper:hover {
             transform: scale(1.05);
-            border-color: #f87171;
-            box-shadow: 0 6px 22px rgba(239, 68, 68, 0.55);
+            border-color: #60a5fa;
+            box-shadow: 0 6px 22px rgba(59, 130, 246, 0.55);
         }
 
         .client-avatar-circle-img {
@@ -402,7 +465,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(135deg, #991b1b, #ef4444);
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -504,9 +567,9 @@
         }
 
         .btn-danger {
-            color: #f87171;
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.2);
+            color: #60a5fa;
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
         .btn-danger:hover {
@@ -603,7 +666,7 @@
 
         .icon-ref-img { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
         .icon-ref-vid { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
-        .icon-clips { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .icon-clips { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
         .icon-voice { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
         .icon-music { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
         .icon-sfx { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
@@ -642,8 +705,8 @@
         }
 
         .dropzone:hover, .dropzone.dragover {
-            border-color: #ef4444;
-            background: rgba(220, 38, 38, 0.08);
+            border-color: #3b82f6;
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .dropzone-icon {
@@ -863,8 +926,8 @@
         }
 
         .form-input:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
         }
 
         .modal-subfolders-preview {
@@ -940,7 +1003,7 @@
         }
 
         .skill-file-icon.md { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-        .skill-file-icon.pdf { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .skill-file-icon.pdf { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
 
         .skill-name {
             font-size: 12.5px;
@@ -1217,10 +1280,7 @@
                     </div>
                 </div>
                 <div class="workspace-actions">
-                    <a id="btnOpenInStudio" href="studio.html" class="btn-secondary" title="Ouvrir dans le Studio">
-                        <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
-                        <span>Monter dans le Studio</span>
-                    </a>
+                    
                     <button type="button" class="btn-secondary btn-danger" onclick="openDeleteClientModal()" title="Supprimer ce client">
                         <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         <span>Supprimer</span>
@@ -1460,7 +1520,7 @@
         <div class="modal-card">
             <div class="modal-title-group">
                 <h2>Nouveau Dossier Client</h2>
-                <p>Création automatique dans <code style="color:#f87171;">Clients/&lt;nom_client&gt;/</code></p>
+                <p>Création automatique dans <code style="color:#60a5fa;">Clients/&lt;nom_client&gt;/</code></p>
             </div>
 
             <div class="form-group">
@@ -1492,7 +1552,7 @@
         <div class="modal-card">
             <div class="modal-title-group">
                 <h2>Renommer le Client</h2>
-                <p>Renomme le dossier du client dans <code style="color:#f87171;">Clients/</code></p>
+                <p>Renomme le dossier du client dans <code style="color:#60a5fa;">Clients/</code></p>
             </div>
 
             <div class="form-group">
@@ -1556,7 +1616,7 @@
             <div class="modal-title-group" style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
                     <h2>🧠 Skills & Directives de Montage</h2>
-                    <p>Fichiers transversaux (.md, .pdf) stockés dans <code style="color:#f87171;">00_Skills/Monteur/</code></p>
+                    <p>Fichiers transversaux (.md, .pdf) stockés dans <code style="color:#60a5fa;">00_Skills/Monteur/</code></p>
                 </div>
                 <button type="button" class="btn-icon" onclick="closeGlobalSkillsModal()" title="Fermer">
                     <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -2079,15 +2139,18 @@
                 card.onclick = () => selectClient(c);
 
                 const avatarThumb = c.avatarUrl 
-                    ? `<img src="/${c.avatarUrl}" class="client-thumb-mini" alt="${c.name}">`
-                    : `<div class="client-thumb-mini-fallback">${c.name.charAt(0).toUpperCase()}</div>`;
+                    ? `<img src="/${c.avatarUrl}" class="client-card-avatar" alt="${c.name}">`
+                    : `<div class="client-card-avatar-fallback">${c.name.charAt(0).toUpperCase()}</div>`;
+
+                const assetCount = c.totalAssets || 0;
+                const assetLabel = assetCount > 1 ? `${assetCount} assets` : `${assetCount} asset`;
 
                 card.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
-                        ${avatarThumb}
+                    ${avatarThumb}
+                    <div class="client-card-info">
                         <div class="client-card-name" title="${c.name}">${c.name}</div>
+                        <span class="client-card-badge">${assetLabel}</span>
                     </div>
-                    <span class="client-asset-count">${c.totalAssets || 0}</span>
                 `;
                 listEl.appendChild(card);
             });
@@ -2100,7 +2163,7 @@
 
             document.getElementById('currentClientName').textContent = client.name;
             document.getElementById('currentClientPath').textContent = `Clients/${client.name}/`;
-            document.getElementById('btnOpenInStudio').href = `studio.html?client=${encodeURIComponent(client.name)}`;
+            const btnStudio = document.getElementById('btnOpenInStudio'); if (btnStudio) btnStudio.href = `studio.html?client=${encodeURIComponent(client.name)}`;
 
             // Mettre à jour l'avatar circulaire du client (avec fallback initial)
             const avatarImg = document.getElementById('currentClientAvatarImg');
