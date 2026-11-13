@@ -138,13 +138,13 @@
             box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
         }
 
-        /* --- HERO BANNER — FOND 100% NOIR PUR SANS SCROLL --- */
+        /* --- HERO BANNER — FOND 100% NOIR PUR AVEC LUEURS ROUGE ET BLEUE ANIMEES --- */
         .hero-banner-wrapper {
             flex: 1;
             width: 100%;
             min-height: 0;
             background: #000000;
-            padding: 12px 24px;
+            padding: 16px 30px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -152,15 +152,43 @@
             position: relative;
         }
 
+        /* Ambient Glow rouge à gauche et bleu à droite qui bouge en fond */
+        .hero-ambient-glow {
+            position: absolute;
+            inset: -25%;
+            pointer-events: none;
+            z-index: 1;
+            background: 
+                radial-gradient(circle 560px at 18% 50%, rgba(220, 38, 38, 0.28) 0%, transparent 70%),
+                radial-gradient(circle 560px at 82% 50%, rgba(37, 99, 235, 0.30) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: ambientGlowMotion 14s ease-in-out infinite alternate;
+        }
+
+        @keyframes ambientGlowMotion {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+                opacity: 0.85;
+            }
+            50% {
+                transform: translate(-25px, 20px) scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(25px, -20px) scale(1.03);
+                opacity: 0.88;
+            }
+        }
+
         .hero {
             text-align: center;
-            max-width: 1080px;
+            max-width: 1220px;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: clamp(10px, 2.3vh, 22px);
+            gap: clamp(12px, 2vh, 20px);
             position: relative;
             z-index: 2;
         }
@@ -309,64 +337,77 @@
             transform: translateY(-2px);
         }
 
-        /* --- 2 GRANDES CARDS D'ESPACES DE TRAVAIL (CRÉATEUR & MONTEUR) --- */
+        /* --- 2 GRANDES CARDS D'ESPACES DE TRAVAIL (CRÉATEUR ROUGE & MONTEUR BLEU) --- */
         .workspace-cards-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: clamp(14px, 2.2vw, 24px);
+            gap: clamp(16px, 2.5vw, 28px);
             width: 100%;
-            max-width: 1080px;
-            margin-top: 6px;
+            max-width: 1220px;
+            margin-top: 4px;
             z-index: 10;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 860px) {
             .workspace-cards-container {
                 grid-template-columns: 1fr;
             }
         }
 
         .workspace-card {
-            background: rgba(14, 16, 22, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-lg);
-            padding: clamp(22px, 2.8vh, 32px);
-            min-height: 250px;
+            padding: clamp(26px, 3vh, 34px);
+            min-height: 290px;
             text-decoration: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
             text-align: left;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             transition: var(--transition-smooth);
             cursor: pointer;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
         }
 
-        .workspace-card:hover {
-            transform: translateY(-4px);
-            background: rgba(20, 24, 34, 0.98);
+        /* Card Créateur : Lueur Rouge Studio Distinctive */
+        .card-creator {
+            background: linear-gradient(135deg, rgba(28, 12, 14, 0.94) 0%, rgba(14, 10, 14, 0.96) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.42);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8), 0 0 32px rgba(220, 38, 38, 0.22), inset 0 0 25px rgba(220, 38, 38, 0.08);
         }
 
-        /* Card Créateur : Lueur Rouge Studio */
         .card-creator:hover {
-            border-color: rgba(239, 68, 68, 0.55);
-            box-shadow: 0 18px 45px rgba(220, 38, 38, 0.28), 0 0 0 1px rgba(239, 68, 68, 0.35);
+            transform: translateY(-4px);
+            border-color: rgba(239, 68, 68, 0.9);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 55px rgba(239, 68, 68, 0.45), inset 0 0 30px rgba(220, 38, 38, 0.16);
         }
 
-        /* Card Monteur : Lueur Bleue Électrique */
+        /* Card Monteur : Lueur Bleue Électrique Distinctive */
+        .card-monteur {
+            background: linear-gradient(135deg, rgba(12, 18, 34, 0.94) 0%, rgba(10, 12, 20, 0.96) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.42);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8), 0 0 32px rgba(59, 130, 246, 0.24), inset 0 0 25px rgba(59, 130, 246, 0.08);
+        }
+
         .card-monteur:hover {
-            border-color: rgba(239, 68, 68, 0.55);
-            box-shadow: 0 18px 45px rgba(220, 38, 38, 0.28), 0 0 0 1px rgba(239, 68, 68, 0.35);
+            transform: translateY(-4px);
+            border-color: rgba(96, 165, 250, 0.9);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 55px rgba(59, 130, 246, 0.45), inset 0 0 30px rgba(59, 130, 246, 0.16);
         }
 
         .workspace-card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        /* Ligne de Titre avec Icône juste à côté */
+        .card-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .workspace-card-icon {
@@ -377,6 +418,7 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
+            flex-shrink: 0;
         }
 
         .workspace-card-icon svg {
@@ -385,67 +427,71 @@
         }
 
         .icon-creator {
-            background: rgba(220, 38, 38, 0.16);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(220, 38, 38, 0.22);
+            color: #ff5252;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.35);
         }
 
         .card-creator:hover .icon-creator {
             background: #dc2626;
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+            box-shadow: 0 4px 18px rgba(220, 38, 38, 0.65);
         }
 
         .icon-monteur {
-            background: rgba(220, 38, 38, 0.16);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(59, 130, 246, 0.22);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.45);
+            box-shadow: 0 0 18px rgba(59, 130, 246, 0.35);
         }
 
         .card-monteur:hover .icon-monteur {
-            background: #dc2626;
+            background: #2563eb;
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.65);
         }
 
         .workspace-card-tag {
             font-size: 11px;
             font-weight: 700;
-            padding: 3px 10px;
+            padding: 4px 11px;
             border-radius: 20px;
             text-transform: uppercase;
             letter-spacing: 0.6px;
+            display: inline-block;
         }
 
         .tag-creator {
-            background: rgba(220, 38, 38, 0.12);
-            color: #f87171;
-            border: 1px solid rgba(220, 38, 38, 0.25);
+            background: rgba(220, 38, 38, 0.18);
+            color: #ff8585;
+            border: 1px solid rgba(220, 38, 38, 0.35);
         }
 
         .tag-monteur {
-            background: rgba(220, 38, 38, 0.12);
-            color: #f87171;
-            border: 1px solid rgba(220, 38, 38, 0.25);
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.35);
         }
 
         .workspace-card-body {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
         }
 
         .workspace-card-title {
-            font-size: clamp(18px, 2.2vh, 22px);
+            font-size: clamp(20px, 2.4vh, 24px);
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.4px;
+            line-height: 1.2;
         }
 
         .workspace-card-desc {
-            font-size: clamp(12px, 1.4vh, 13px);
-            color: var(--text-secondary);
-            line-height: 1.5;
+            font-size: clamp(12.5px, 1.5vh, 14px);
+            color: #a3a3b0;
+            line-height: 1.55;
         }
 
         .workspace-card-footer {
@@ -455,12 +501,12 @@
             font-size: 13px;
             font-weight: 700;
             margin-top: auto;
-            padding-top: 6px;
+            padding-top: 10px;
             transition: var(--transition-smooth);
         }
 
         .card-creator .workspace-card-footer { color: #f87171; }
-        .card-monteur .workspace-card-footer { color: #f87171; }
+        .card-monteur .workspace-card-footer { color: #60a5fa; }
 
         .workspace-card:hover .workspace-card-footer svg {
             transform: translateX(4px);
@@ -471,7 +517,7 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            width: 50%;
+            width: 52%;
             pointer-events: none;
             z-index: 1;
             display: flex;
@@ -482,29 +528,29 @@
         .card-bg-avatar-left {
             left: 0;
             justify-content: flex-start;
-            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
-            mask-image: linear-gradient(to right, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
         }
 
         .card-bg-avatar-right {
             right: 0;
             justify-content: flex-end;
-            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
-            mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 35%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
         }
 
         .card-avatar-img {
             height: 100%;
-            max-height: 290px;
+            max-height: 330px;
             width: auto;
             object-fit: contain;
             object-position: bottom;
-            opacity: 0.55;
+            opacity: 0.65;
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
         .workspace-card:hover .card-avatar-img {
-            opacity: 0.85;
+            opacity: 0.95;
             transform: scale(1.04);
         }
 
@@ -513,29 +559,35 @@
             z-index: 2;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
             height: 100%;
             justify-content: space-between;
         }
 
-        /* Décalage doux pour donner de la place à l'avatar tout en gardant une excellente lisibilité */
+        /* Card Créateur (Gauche) : Les textes sont positionnés sur la DROITE de la card */
         .card-creator .card-inner-content {
-            padding-left: clamp(20px, 7vw, 105px);
+            margin-left: auto;
+            width: 58%;
+            max-width: 340px;
         }
 
+        /* Card Monteur (Droite) : Les textes sont positionnés sur la GAUCHE de la card */
         .card-monteur .card-inner-content {
-            padding-right: clamp(20px, 7vw, 105px);
+            margin-right: auto;
+            width: 58%;
+            max-width: 340px;
         }
 
-        @media (max-width: 900px) {
-            .card-creator .card-inner-content {
-                padding-left: 0;
-            }
+        @media (max-width: 860px) {
+            .card-creator .card-inner-content,
             .card-monteur .card-inner-content {
-                padding-right: 0;
+                width: 100%;
+                max-width: 100%;
+                margin-left: 0;
+                margin-right: 0;
             }
             .card-avatar-img {
-                opacity: 0.35;
+                opacity: 0.25;
             }
         }
 
@@ -553,10 +605,10 @@
             flex-shrink: 0;
         }
     
-        /* --- GRAND BOUTON SUIVRE DÉMO PLEINE LARGEUR (MÊME LARGEUR QUE LES 2 CARDS) --- */
+        /* --- GRAND BOUTON REGARDER LE TUTORIEL PLEINE LARGEUR (MÊME LARGEUR QUE LES 2 CARDS) --- */
         .hero-demo-action {
             width: 100%;
-            max-width: 1080px;
+            max-width: 1220px;
             display: flex;
             margin-top: 4px;
             z-index: 10;
@@ -795,6 +847,9 @@
     
     <!-- HERO BANNER SOMBRE PUR — ADAPTÉ À L'ÉCRAN SANS AUCUN DÉFILEMENT -->
     <main class="hero-banner-wrapper">
+        <!-- AMBIENT GLOW ROUGE ET BLEU EN FOND NOIR NOIR QUI BOUGE SUBTILEMENT -->
+        <div class="hero-ambient-glow" aria-hidden="true"></div>
+
         <section class="hero">
             <div class="hero-pill">
                 <div class="hero-pill-platforms">
@@ -824,22 +879,24 @@
                 <span>Pensé pour les Créateurs YouTube, TikTok & Instagram</span>
             </div>
 
-            <!-- 2 GRANDES CARDS D'ACCÈS : CRÉATEUR DE CONTENU & MONTEUR VIDÉO AVEC AVATARS EN FOND -->
+            <!-- 2 GRANDES CARDS D'ACCÈS : CRÉATEUR DE CONTENU & MONTEUR AVEC LUEURS ET AVATARS EN FOND -->
             <div class="workspace-cards-container">
-                <!-- CARD 1 : CRÉATEUR DE CONTENU (Avatar femme en fond sur le côté gauche) -->
+                <!-- CARD 1 : CRÉATEUR DE CONTENU (Textes & icône à droite, avatar femme à gauche) -->
                 <a href="channels.html" class="workspace-card card-creator" title="Accéder à l'espace Créateur de Contenu">
                     <div class="card-bg-avatar card-bg-avatar-left" aria-hidden="true">
                         <img src="../01_Assets/Images/avatar_homepage_woman.png" alt="" class="card-avatar-img">
                     </div>
                     <div class="card-inner-content">
                         <div class="workspace-card-top">
-                            <div class="workspace-card-icon icon-creator">
-                                <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                            </div>
                             <span class="workspace-card-tag tag-creator">Chaînes & Vidéos</span>
                         </div>
                         <div class="workspace-card-body">
-                            <h3 class="workspace-card-title">Créateur de Contenu</h3>
+                            <div class="card-title-row">
+                                <div class="workspace-card-icon icon-creator">
+                                    <svg class="icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                                </div>
+                                <h3 class="workspace-card-title">Créateur de Contenu</h3>
+                            </div>
                             <p class="workspace-card-desc">Pilotez vos chaînes YouTube & TikTok, générez des scripts automatisés et produisez des formats courts percutants.</p>
                         </div>
                         <div class="workspace-card-footer">
@@ -849,20 +906,22 @@
                     </div>
                 </a>
 
-                <!-- CARD 2 : MONTEUR VIDÉO (Avatar homme en fond sur le côté droit) -->
+                <!-- CARD 2 : MONTEUR (Textes & icône à gauche, avatar homme à droite) -->
                 <a href="monteur.html" class="workspace-card card-monteur" title="Accéder à l'espace Monteur Vidéo & Clients">
                     <div class="card-bg-avatar card-bg-avatar-right" aria-hidden="true">
                         <img src="../01_Assets/Images/avatar_homepage_man.png" alt="" class="card-avatar-img">
                     </div>
                     <div class="card-inner-content">
                         <div class="workspace-card-top">
-                            <div class="workspace-card-icon icon-monteur">
-                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            </div>
                             <span class="workspace-card-tag tag-monteur">Clients & Rushes</span>
                         </div>
                         <div class="workspace-card-body">
-                            <h3 class="workspace-card-title">Monteur</h3>
+                            <div class="card-title-row">
+                                <div class="workspace-card-icon icon-monteur">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                </div>
+                                <h3 class="workspace-card-title">Monteur</h3>
+                            </div>
                             <p class="workspace-card-desc">Créez vos dossiers clients et centralisez les 5 types d'assets essentiels : rushes bruts, voix off, musiques, clips et références.</p>
                         </div>
                         <div class="workspace-card-footer">
@@ -873,14 +932,14 @@
                 </a>
             </div>
 
-            <!-- BOUTON SUIVRE DÉMO PLEINE LARGEUR (MÊME LONGUEUR QUE LES 2 CARDS) AVEC ICÔNE VIDÉO -->
+            <!-- BOUTON REGARDER LE TUTORIEL PLEINE LARGEUR (MÊME LONGUEUR QUE LES 2 CARDS) -->
             <div class="hero-demo-action">
-                <button type="button" class="btn-hero-demo-full" onclick="openTutorialModal()" title="Visionner la démo vidéo">
+                <button type="button" class="btn-hero-demo-full" onclick="openTutorialModal()" title="Visionner le tutoriel vidéo">
                     <svg class="icon-camera" viewBox="0 0 24 24">
                         <polygon points="23 7 16 12 23 17 23 7"></polygon>
                         <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                     </svg>
-                    <span>Suivre démo</span>
+                    <span>Regarder le tutoriel</span>
                 </button>
             </div>
         </section>
