@@ -839,46 +839,21 @@ const server = http.createServer(async (req, res) => {
                     let desc = 'Template vidéo prêt pour la composition.';
                     let icon = '';
                     let image = '/01_Assets/Images/styles/template_stikman_history.jpg';
-                    if (id === 'Stikman_history') {
-                        name = 'Stikman History';
-                        desc = 'Storytelling immersif, effet Ken Burns & zooms dynamiques.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_stikman_history.jpg';
-                    } else if (id === 'Story_vox_style') {
+                    if (id === 'Story_vox_style') {
                         name = 'Story Vox Style';
                         desc = 'Format explicatif visuel, infographies, schémas 2D & motion design.';
                         icon = '';
                         image = '/01_Assets/Images/styles/template_story_vox_style.jpg';
-                    } else if (id === 'Tutoriel') {
-                        name = 'Tutoriel';
-                        desc = 'Guide pédagogique étape par étape, démonstration d\'écrans & focus UI.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_tutoriel.jpg';
-                    } else if (id === 'Faceless_brand') {
-                        name = 'Faceless Brand';
-                        desc = 'Vidéos de marque sans visage, esthétique B-roll & branding moderne.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_faceless_brand.jpg';
-                    } else if (id === 'Ego_lite') {
-                        name = 'Ego Lite';
-                        desc = 'Format court ultra-punchy, kinetic typography & accroches rythmées.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_ego_lite.jpg';
                     } else if (id === 'Saas_Motion_Design') {
                         name = 'Saas Motion Design';
                         desc = 'Présentation produit logiciel, interface moderne et focus features.';
                         icon = '';
                         image = '/01_Assets/Images/styles/template_saas_motion_design.jpg';
-                    } else if (id === 'Top_10') {
-                        name = 'Top 10';
-                        desc = 'Compte à rebours dynamique, podium et classements viraux.';
+                    } else if (id === 'Stikman_history') {
+                        name = 'Stikman History';
+                        desc = 'Storytelling immersif, effet Ken Burns & zooms dynamiques.';
                         icon = '';
-                        image = '/01_Assets/Images/styles/template_top_10.jpg';
-                    } else if (id === 'Tier_List') {
-                        name = 'Tier List';
-                        desc = 'Classement visuel par rangs S-A-B-C-D et comparatifs hiérarchiques.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_tier_list.jpg';
+                        image = '/01_Assets/Images/styles/template_stikman_history.jpg';
                     } else if (id === 'Iman_Gadzhi_Style') {
                         name = 'Iman Gadzhi Style';
                         desc = 'Esthétique documentaire sombre, découpages papier & storytelling business.';
@@ -889,11 +864,6 @@ const server = http.createServer(async (req, res) => {
                         desc = 'Montage chaotique, punk edit, découpages papier & effets grunge énergiques.';
                         icon = '';
                         image = '/01_Assets/Images/styles/template_trash_style.jpg';
-                    } else if (id === '2D_explainer') {
-                        name = '2D Explainer';
-                        desc = 'Animation vectorielle 2D, infographies animées & mise en scène visuelle claire.';
-                        icon = '';
-                        image = '/01_Assets/Images/styles/template_2d_explainer.jpg';
                     }
                     return { id, name, file, desc, icon, image };
                 });
