@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrowKaz Stickman 2D — Visual Design Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #030a07;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Blueprint grid */
+        .bg-grid {
+            background-image: 
+                linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+        /* Neon rim glow effect */
+        .rim-glow-emerald {
+            filter: drop-shadow(0 0 12px rgba(198, 255, 61, 0.75)) drop-shadow(0 0 3px rgba(198, 255, 61, 0.95));
+        }
+        .hud-glass {
+            background: rgba(6, 26, 18, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(140, 255, 170, 0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(16, 185, 129, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 bg-grid selection:bg-emerald-500/30 selection:text-emerald-300">
+
+    <!-- Header info -->
+    <div class="max-w-4xl w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    SKILL 00_Skills/GrowKaz_Stickman_2D
+                </span>
+                <span class="text-xs text-slate-400 font-mono">STYLE BIBLE : EMERALD 2.5D</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                Style GrowKaz Stickman
+            </h1>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 text-xs font-semibold">
+            <span class="text-slate-400 px-2">Palette :</span>
+            <button onclick="setTheme('emerald')" id="btn-emerald" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 transition">Emerald</button>
+            <button onclick="setTheme('ember')" id="btn-ember" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Ember</button>
+            <button onclick="setTheme('arctic')" id="btn-arctic" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Arctic</button>
+            <button onclick="setTheme('sakura')" id="btn-sakura" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Sakura</button>
+        </div>
+    </div>
+
+    <!-- Main 16:9 Showcase Stage -->
+    <div id="stageContainer" class="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-emerald-500/30 shadow-2xl transition-all duration-500" style="background: radial-gradient(circle at 60% 40%, #0a261a 0%, #03100c 70%, #010503 100%);">
+        
+        <!-- Subtle radial aura -->
+        <div id="glowAura" class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none transition-all duration-500"></div>
+        <div id="glowAura2" class="absolute -bottom-32 -right-32 w-96 h-96 bg-lime-400/10 rounded-full blur-3xl pointer-events-none transition-all duration-500"></div>
+
+        <!-- Blueprint overlay elements -->
+        <div class="absolute top-6 left-6 font-mono text-xs space-y-1 text-emerald-400/70 select-none">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-bold">SYSTEM // NEURAL RIG 2.5D</span>
+            </div>
+            <div class="text-[10px] text-emerald-500/50">COORDINATES: X: 482.14 / Y: 109.80 / Z: 1.00</div>
+        </div>
+
+        <div class="absolute top-6 right-6 font-mono text-xs text-right text-emerald-400/70 select-none">
+            <div class="font-bold tracking-widest text-[11px] text-emerald-300">DISCIPLINE > MOTIVATION</div>
+            <div class="text-[10px] text-emerald-500/50">RULE 01 : 1% COMPOUND EFFECT</div>
+        </div>
+
+        <!-- Graphic Stage Content -->
+        <div class="absolute inset-0 flex items-center justify-between px-12 md:px-20 pointer-events-none">
+            
+            <!-- Stickman SVG Character with Rim Light -->
+            <div class="relative flex flex-col items-center justify-center w-64 h-80">
+                <svg id="stickmanSvg" class="w-full h-full rim-glow-emerald transition-all duration-500" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground shadow -->
+                    <ellipse cx="100" cy="270" rx="60" ry="8" fill="rgba(0,0,0,0.6)" />
+
+                    <!-- Stickman body lines - Black core with Neon Rim stroke -->
+                    <!-- Legs -->
+                    <path d="M100 170 L70 260" stroke="#c6ff3d" stroke-width="7" stroke-linecap="round" id="rimLegL"/>
+                    <path d="M100 170 L70 260" stroke="#040c08" stroke-width="4.5" stroke-linecap="round" />
+
+                    <path d="M100 170 L130 260" stroke="#c6ff3d" stroke-width="7" stroke-linecap="round" id="rimLegR"/>
+                    <path d="M100 170 L130 260" stroke="#040c08" stroke-width="4.5" stroke-linecap="round" />
+
+                    <!-- Torso -->
+                    <path d="M100 80 L100 170" stroke="#c6ff3d" stroke-width="8" stroke-linecap="round" id="rimTorso"/>
+                    <path d="M100 80 L100 170" stroke="#040c08" stroke-width="5" stroke-linecap="round" />
+
+                    <!-- Left Arm (Gesturing towards HUD) -->
+                    <path d="M100 100 L55 135 L40 175" stroke="#c6ff3d" stroke-width="7" stroke-linecap="round" id="rimArmL"/>
+                    <path d="M100 100 L55 135 L40 175" stroke="#040c08" stroke-width="4.5" stroke-linecap="round" />
+
+                    <!-- Right Arm (Pointing at the exponential curve) -->
+                    <path d="M100 100 L145 85 L180 70" stroke="#c6ff3d" stroke-width="7" stroke-linecap="round" id="rimArmR"/>
+                    <path d="M100 100 L145 85 L180 70" stroke="#040c08" stroke-width="4.5" stroke-linecap="round" />
+
+                    <!-- Head -->
+                    <circle cx="100" cy="50" r="26" fill="#040c08" stroke="#c6ff3d" stroke-width="4.5" id="rimHead"/>
+
+                    <!-- Expressive minimal eyes / focus -->
+                    <ellipse cx="112" cy="48" rx="3.5" ry="5" fill="#c6ff3d" id="rimEye"/>
+                </svg>
+            </div>
+
+            <!-- Floating Holographic Data Card (Blueprint UI) -->
+            <div id="hudCard" class="hud-glass rounded-2xl p-5 w-72 md:w-80 shadow-2xl transition-all duration-500 pointer-events-auto">
+                <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-500/20">
+                    <div class="flex items-center gap-2">
+                        <div id="hudDot" class="w-2.5 h-2.5 rounded-full bg-lime-400 animate-pulse"></div>
+                        <span id="hudBadge" class="text-[11px] font-mono font-bold text-emerald-300 uppercase tracking-wider">RETENTION MATRIX</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-emerald-400/60">+340% COMPOUND</span>
+                </div>
+
+                <!-- Minimalist Line Graph with Neon Curve -->
+                <div class="relative h-28 w-full mb-3 flex items-end">
+                    <svg class="w-full h-full overflow-visible" viewBox="0 0 240 100">
+                        <defs>
+                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#c6ff3d" stop-opacity="0.3"/>
+                                <stop offset="100%" stop-color="#c6ff3d" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Grid lines -->
+                        <line x1="0" y1="25" x2="240" y2="25" stroke="rgba(16, 185, 129, 0.15)" stroke-dasharray="3 3"/>
+                        <line x1="0" y1="60" x2="240" y2="60" stroke="rgba(16, 185, 129, 0.15)" stroke-dasharray="3 3"/>
+                        
+                        <!-- Area fill -->
+                        <path id="chartArea" d="M0 85 Q 70 82 120 70 T 240 15 L 240 100 L 0 100 Z" fill="url(#chartGrad)"/>
+                        
+                        <!-- Glowing Curve line -->
+                        <path id="chartLine" d="M0 85 Q 70 82 120 70 T 240 15" fill="none" stroke="#c6ff3d" stroke-width="3.5" stroke-linecap="round" style="filter: drop-shadow(0 0 8px #c6ff3d);"/>
+                        
+                        <!-- Climax target dot -->
+                        <circle id="chartTarget" cx="240" cy="15" r="5" fill="#f2ffe8" stroke="#c6ff3d" stroke-width="3" style="filter: drop-shadow(0 0 10px #c6ff3d);"/>
+                    </svg>
+                </div>
+
+                <!-- Metrics breakdown -->
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="bg-black/40 p-2 rounded-lg border border-emerald-500/10">
+                        <div class="text-[9px] text-slate-400">HABIT PROGRESSION</div>
+                        <div id="stat1" class="text-sm font-bold text-lime-400 mt-0.5">365 JOURS</div>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-lg border border-emerald-500/10">
+                        <div class="text-[9px] text-slate-400">RÉSULTAT EXP.</div>
+                        <div id="stat2" class="text-sm font-bold text-emerald-300 mt-0.5">x37.78</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cinematic Subtitle Banner at bottom (Hook) -->
+        <div class="absolute bottom-5 inset-x-0 flex justify-center px-6">
+            <div id="subCard" class="px-5 py-2 rounded-xl bg-black/80 backdrop-blur-md border border-emerald-500/30 text-center shadow-lg transition-all">
+                <span class="text-xs md:text-sm font-extrabold uppercase tracking-wide text-white">
+                    "99% des gens abandonnent au jour 14. Voici pourquoi."
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Features below -->
+    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <div class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+                <span>⚡</span> Rim Lighting Iconique
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Le personnage stickman est d'un noir profond, bordé d'une lumière néon vibrante (lime, cyan ou orange) pour un détachement cinématique parfait sur fond sombre.
+            </p>
+        </div>
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <div class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+                <span>📐</span> HUD & Blueprints Procéduraux
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Graphiques mathématiques, courbes de compound effect, horloges et statistiques futuristes dessinées en temps réel par code (zéro artefact IA).
+            </p>
+        </div>
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <div class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+                <span>🎯</span> Niche YouTube Haute Rétention
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Adapté aux chaînes Faceless de développement personnel, psychologie, finance stoïque et vulgarisation scientifique à suspense.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const THEMES = {
+            emerald: {
+                bg: 'radial-gradient(circle at 60% 40%, #0a261a 0%, #03100c 70%, #010503 100%)',
+                border: 'rgba(16, 185, 129, 0.3)',
+                glowAura1: 'rgba(16, 185, 129, 0.12)',
+                glowAura2: 'rgba(198, 255, 61, 0.12)',
+                rimColor: '#c6ff3d',
+                hudBorder: 'rgba(140, 255, 170, 0.25)',
+                hudBg: 'rgba(6, 26, 18, 0.75)',
+                chartFill: '#c6ff3d',
+                btnClass: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+            },
+            ember: {
+                bg: 'radial-gradient(circle at 60% 40%, #2a0e0a 0%, #0c0404 70%, #050101 100%)',
+                border: 'rgba(239, 68, 68, 0.35)',
+                glowAura1: 'rgba(249, 115, 22, 0.15)',
+                glowAura2: 'rgba(239, 68, 68, 0.15)',
+                rimColor: '#ff6a2e',
+                hudBorder: 'rgba(255, 140, 90, 0.3)',
+                hudBg: 'rgba(30, 12, 10, 0.85)',
+                chartFill: '#ff7a2e',
+                btnClass: 'bg-orange-500/20 text-orange-400 border border-orange-500/40'
+            },
+            arctic: {
+                bg: 'radial-gradient(circle at 60% 40%, #0c2636 0%, #040e16 70%, #02060a 100%)',
+                border: 'rgba(56, 189, 248, 0.35)',
+                glowAura1: 'rgba(56, 189, 248, 0.15)',
+                glowAura2: 'rgba(6, 182, 212, 0.15)',
+                rimColor: '#3de0ff',
+                hudBorder: 'rgba(160, 240, 255, 0.3)',
+                hudBg: 'rgba(10, 30, 44, 0.85)',
+                chartFill: '#3de0ff',
+                btnClass: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+            },
+            sakura: {
+                bg: 'radial-gradient(circle at 60% 40%, #3a1a32 0%, #1a0a18 70%, #0b0209 100%)',
+                border: 'rgba(236, 72, 153, 0.35)',
+                glowAura1: 'rgba(244, 63, 94, 0.15)',
+                glowAura2: 'rgba(236, 72, 153, 0.15)',
+                rimColor: '#ff5fa0',
+                hudBorder: 'rgba(255, 170, 210, 0.3)',
+                hudBg: 'rgba(50, 20, 40, 0.85)',
+                chartFill: '#ff5fa0',
+                btnClass: 'bg-pink-500/20 text-pink-400 border border-pink-500/40'
+            }
+        };
+
+        function setTheme(themeKey) {
+            const t = THEMES[themeKey];
+            if (!t) return;
+
+            document.getElementById('stageContainer').style.background = t.bg;
+            document.getElementById('stageContainer').style.borderColor = t.border;
+            document.getElementById('glowAura').style.background = t.glowAura1;
+            document.getElementById('glowAura2').style.background = t.glowAura2;
+
+            // Stickman rim strokes
+            ['rimLegL', 'rimLegR', 'rimTorso', 'rimArmL', 'rimArmR', 'rimEye'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === 'rimEye') el.setAttribute('fill', t.rimColor);
+                    else el.setAttribute('stroke', t.rimColor);
+                }
+            });
+            document.getElementById('rimHead').setAttribute('stroke', t.rimColor);
+
+            // Stickman glow filter
+            document.getElementById('stickmanSvg').style.filter = `drop-shadow(0 0 12px ${t.rimColor}b3) drop-shadow(0 0 3px ${t.rimColor})`;
+
+            // HUD
+            const hud = document.getElementById('hudCard');
+            hud.style.borderColor = t.hudBorder;
+            hud.style.background = t.hudBg;
+
+            document.getElementById('hudDot').style.background = t.rimColor;
+            document.getElementById('hudBadge').style.color = t.rimColor;
+            document.getElementById('chartLine').setAttribute('stroke', t.rimColor);
+            document.getElementById('chartLine').style.filter = `drop-shadow(0 0 8px ${t.rimColor})`;
+            document.getElementById('chartTarget').setAttribute('stroke', t.rimColor);
+            document.getElementById('stat1').style.color = t.rimColor;
+
+            // Buttons state
+            ['emerald', 'ember', 'arctic', 'sakura'].forEach(k => {
+                const b = document.getElementById(`btn-${k}`);
+                if (k === themeKey) {
+                    b.className = `px-3 py-1.5 rounded-lg font-bold transition ${t.btnClass}`;
+                } else {
+                    b.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
