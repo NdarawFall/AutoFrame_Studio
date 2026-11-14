@@ -283,129 +283,122 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- REAL CLIENT CARDS (CARDS VERTICALES AVEC GRAND AVATAR ET GLOW BLEU) --- */
+        /* --- CERCLES CLIENTS EN GRAND (STYLE AVATAR DIRECT SANS CARD) --- */
         .clients-list {
             display: flex;
-            align-items: stretch;
-            gap: 14px;
+            align-items: flex-start;
+            gap: 22px;
             overflow-x: auto;
-            padding: 8px 4px 16px 4px;
+            padding: 10px 4px 18px 4px;
             scrollbar-width: thin;
             scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
         }
 
-        .client-card {
-            flex-shrink: 0;
-            width: 175px;
-            min-height: 165px;
-            background: rgba(14, 18, 28, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-md);
-            padding: 18px 14px 16px 14px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        .client-circle-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 4px;
+            outline: none;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(14px);
+            user-select: none;
+            flex-shrink: 0;
         }
 
-        .client-card:hover {
-            background: rgba(18, 24, 40, 0.96);
-            border-color: rgba(59, 130, 246, 0.55);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 0 22px rgba(59, 130, 246, 0.25);
+        .client-circle-item:hover {
+            transform: translateY(-4px);
         }
 
-        .client-card.active {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 18, 34, 0.96) 100%);
+        .client-avatar-ring {
+            position: relative;
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            padding: 4px;
+            background: rgba(18, 22, 34, 0.88);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+        }
+
+        .client-circle-item:hover .client-avatar-ring {
+            border-color: #60a5fa;
+            box-shadow: 0 0 22px rgba(59, 130, 246, 0.5);
+            transform: scale(1.05);
+        }
+
+        .client-circle-item.active .client-avatar-ring {
             border-color: #3b82f6;
-            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85), 0 0 28px rgba(59, 130, 246, 0.38);
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(12, 18, 34, 0.95));
+            box-shadow: 0 0 28px rgba(59, 130, 246, 0.7), 0 0 0 3px rgba(59, 130, 246, 0.25);
+            transform: scale(1.08);
         }
 
-        .client-card-avatar {
-            width: 56px;
-            height: 56px;
+        .client-avatar-img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
-            transition: all 0.25s ease;
-            flex-shrink: 0;
-            background: #111;
+            display: block;
         }
 
-        .client-card:hover .client-card-avatar,
-        .client-card.active .client-card-avatar {
-            border-color: #60a5fa;
-            box-shadow: 0 0 18px rgba(59, 130, 246, 0.45);
-        }
-
-        .client-card-avatar-fallback {
-            width: 56px;
-            height: 56px;
+        .client-avatar-fallback {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: #ffffff;
-            font-size: 22px;
+            font-size: 32px;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid rgba(59, 130, 246, 0.4);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
-            flex-shrink: 0;
+            text-transform: uppercase;
         }
 
-        .client-card:hover .client-card-avatar-fallback,
-        .client-card.active .client-card-avatar-fallback {
-            border-color: #60a5fa;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-        }
-
-        .client-card-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            width: 100%;
-            min-width: 0;
-        }
-
-        .client-card-name {
-            font-size: 14.5px;
-            font-weight: 800;
-            color: #ffffff;
+        .client-circle-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #e2e8f0;
             text-align: center;
-            width: 100%;
+            max-width: 95px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             letter-spacing: -0.2px;
+            transition: color 0.2s ease;
         }
 
-        .client-card-badge {
-            font-size: 11px;
-            font-weight: 700;
-            color: #94a3b8;
-            background: rgba(255, 255, 255, 0.07);
-            padding: 3px 9px;
-            border-radius: 12px;
-            letter-spacing: 0.3px;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.25s ease;
+        .client-circle-item:hover .client-circle-name {
+            color: #ffffff;
         }
 
-        .client-card.active .client-card-badge {
-            background: rgba(37, 99, 235, 0.25);
+        .client-circle-item.active .client-circle-name {
+            color: #60a5fa;
+            font-weight: 800;
+        }
+
+        .client-circle-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #0f172a;
+            border: 1.5px solid #3b82f6;
             color: #93c5fd;
-            border-color: rgba(59, 130, 246, 0.4);
+            font-size: 10.5px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2px 7px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         /* --- SELECTED CLIENT WORKSPACE --- */
@@ -2134,30 +2127,37 @@
 
             listEl.innerHTML = '';
             allClients.forEach(c => {
-                const card = document.createElement('div');
-                card.className = `client-card ${currentClient && currentClient.name === c.name ? 'active' : ''}`;
-                card.onclick = () => selectClient(c);
+                const item = document.createElement('div');
+                item.className = `client-circle-item ${currentClient && currentClient.name === c.name ? 'active' : ''}`;
+                item.onclick = () => selectClient(c);
 
                 const avatarThumb = c.avatarUrl 
-                    ? `<img src="/${c.avatarUrl}" class="client-card-avatar" alt="${c.name}">`
-                    : `<div class="client-card-avatar-fallback">${c.name.charAt(0).toUpperCase()}</div>`;
+                    ? `<img src="/${c.avatarUrl}" class="client-avatar-img" alt="${c.name}">`
+                    : `<div class="client-avatar-fallback">${c.name.charAt(0).toUpperCase()}</div>`;
 
                 const assetCount = c.totalAssets || 0;
-                const assetLabel = assetCount > 1 ? `${assetCount} assets` : `${assetCount} asset`;
+                const countBadge = assetCount > 0 ? `<span class="client-circle-count">${assetCount}</span>` : '';
 
-                card.innerHTML = `
-                    ${avatarThumb}
-                    <div class="client-card-info">
-                        <div class="client-card-name" title="${c.name}">${c.name}</div>
-                        <span class="client-card-badge">${assetLabel}</span>
+                item.innerHTML = `
+                    <div class="client-avatar-ring">
+                        ${avatarThumb}
+                        ${countBadge}
                     </div>
+                    <div class="client-circle-name" title="${c.name}">${c.name}</div>
                 `;
-                listEl.appendChild(card);
+                listEl.appendChild(item);
             });
         }
 
         function selectClient(client) {
             currentClient = client;
+
+            // Mettre à jour l'état actif sur les cercles clients
+            document.querySelectorAll('.client-circle-item').forEach(el => {
+                const nameEl = el.querySelector('.client-circle-name');
+                el.classList.toggle('active', nameEl && nameEl.textContent === client.name);
+            });
+
             document.getElementById('noClientWorkspace').style.display = 'none';
             document.getElementById('workspaceContainer').style.display = 'flex';
 
