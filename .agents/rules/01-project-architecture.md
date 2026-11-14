@@ -2,9 +2,7 @@
 
 > [!IMPORTANT]
 > **NATURE DU PROJET & PHILOSOPHIE UTILISATEUR** :
-> 1. **Studio Web Local Autonome & Exécution Serveur** :
->    - **RÈGLE ABSOLUE POUR ANTIGRAVITY** : L'assistant Antigravity ne doit **JAMAIS** lancer le serveur local en arrière-plan (`node 07_Scripts/studio-server.cjs`) ou laisser un processus serveur tourner. C'est l'utilisateur qui démarre et gère le serveur dans son propre terminal. Laisser un processus serveur actif dans Antigravity bloque et met en file d'attente les requêtes de l'utilisateur. Le port 3000 doit toujours être laissé libre par Antigravity.
->    - **Comportement Utilisateur Final (Packagé)** : Dans la version distribuée (.exe), Electron lance automatiquement le serveur interne au démarrage de l'application de façon transparente.
+> 1. **Studio Web Local Autonome** : AutoFrame est un **studio de création vidéo web/local** propulsé par un serveur Node.js (`07_Scripts/studio-server.cjs`).
 > 2. **Interface Studio Interactive** : L'accès, la création et la prévisualisation se font directement via le navigateur web sur `http://localhost:3000` (`npm start` ou `npm run studio`).
 > 3. **Gestion Transparente des Paramètres & Clés API** :
 >    - Toute la configuration se fait exclusivement à travers l'interface graphique ([`09_Pages/settings.html`](../../09_Pages/settings.html)).
