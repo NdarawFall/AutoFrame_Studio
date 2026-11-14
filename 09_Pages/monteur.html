@@ -203,11 +203,14 @@
             color: #ffffff;
             font-weight: 700;
             font-size: 13px;
-            padding: 9px 18px;
+            padding: 10px 18px;
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            flex-shrink: 0;
+            white-space: nowrap;
+            margin-bottom: 22px;
         }
 
         .btn-create-client:hover {
@@ -262,11 +265,12 @@
             flex-shrink: 0;
         }
 
-        /* --- BARRE CLIENTS COMPACTE --- */
+        /* --- BARRE CLIENTS COMPACTE SUR LA MÊME LIGNE QUE LE BOUTON --- */
         .clients-bar {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
 
         .clients-bar-header {
@@ -280,16 +284,28 @@
             letter-spacing: 0.5px;
         }
 
+        .clients-bar-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 18px;
+            width: 100%;
+            min-width: 0;
+        }
+
         /* --- CERCLES CLIENTS EN GRAND (STYLE AVATAR DIRECT SANS CARD) --- */
         .clients-list {
             display: flex;
             align-items: flex-start;
             gap: 22px;
             overflow-x: auto;
-            overflow-y: visible;
-            padding: 18px 14px 22px 14px;
+            overflow-y: hidden;
+            padding: 14px 6px 18px 6px;
             scrollbar-width: thin;
             scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+            flex: 0 1 auto;
+            min-width: 0;
+            max-width: 100%;
         }
 
         .client-circle-item {
@@ -1210,13 +1226,10 @@
 
     <div class="main-container">
 
-        <!-- HEADER COMPACT AVEC BOUTON DE CRÉATION À GAUCHE -->
-        <div class="page-header">
-            <div class="header-left-group">
-                <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
-                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span>Nouveau Client</span>
-                </button>
+        <!-- CLIENTS SELECTOR BAR -->
+        <div class="clients-bar">
+            <div class="clients-bar-header">
+                <span>Mes Clients (<span id="clientsCount">0</span>)</span>
                 <button type="button" class="btn-skills-global" onclick="openGlobalSkillsModal()" title="Consulter et gérer les directives de montage globales (.md / .pdf)">
                     <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                     <span>Skills Monteur</span>
@@ -1224,16 +1237,14 @@
                 </button>
             </div>
 
-        </div>
-
-        <!-- CLIENTS SELECTOR BAR -->
-        <div class="clients-bar">
-            <div class="clients-bar-header">
-                <span>Mes Clients (<span id="clientsCount">0</span>)</span>
-                
-            </div>
-            <div class="clients-list" id="clientsListContainer">
-                <div style="color: var(--text-muted); font-size: 12px; padding: 6px 0;">Chargement...</div>
+            <div class="clients-bar-row">
+                <div class="clients-list" id="clientsListContainer">
+                    <div style="color: var(--text-muted); font-size: 12px; padding: 6px 0;">Chargement...</div>
+                </div>
+                <button type="button" class="btn-create-client" onclick="openCreateClientModal()">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Nouveau Client</span>
+                </button>
             </div>
         </div>
 
@@ -1500,30 +1511,17 @@
 
     <!-- MODAL CRÉATION DE CLIENT -->
     <div class="modal-overlay" id="createClientModal" onclick="handleModalOverlayClick(event)">
-        <div class="modal-card">
+        <div class="modal-card" style="max-width: 420px;">
             <div class="modal-title-group">
-                <h2>Nouveau Dossier Client</h2>
-                <p>Création automatique dans <code style="color:#60a5fa;">Clients/&lt;nom_client&gt;/</code></p>
+                <h2>Nouveau Client</h2>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 14px;">
                 <label class="form-label" for="inputClientName">Nom du Client</label>
                 <input type="text" id="inputClientName" class="form-input" placeholder="Ex: Alexandre_Fit, SaaS_Flow, Brand_X..." autofocus>
             </div>
 
-            <div class="modal-subfolders-preview">
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 2px;">8 sous-dossiers créés automatiquement :</div>
-                <span>📁 images_references/ (Moodboard & chartes)</span>
-                <span>📁 videos_references/ (Vidéos cibles)</span>
-                <span>📁 clips_video/ (Rushes bruts du client)</span>
-                <span>📁 voix_off/ (Narration vocale)</span>
-                <span>📁 musiques/ (Bandes-son BGM)</span>
-                <span>📁 effets_sonores/ (SFX, whooshes, impacts)</span>
-                <span>📁 images_illustrations/ (Logos, stickers, overlays)</span>
-                <span>📁 skills/ (Directives & compétences spécifiques client)</span>
-            </div>
-
-            <div class="modal-actions">
+            <div class="modal-actions" style="margin-top: 24px;">
                 <button type="button" class="btn-secondary" onclick="closeCreateClientModal()">Annuler</button>
                 <button type="button" class="btn-create-client" onclick="submitCreateClient()">Créer le Client</button>
             </div>
@@ -1550,12 +1548,12 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMATION SUPPRESSION CLIENT (MODERNE, SANS PROMPT/ALERT) -->
+    <!-- MODAL CONFIRMATION SUPPRESSION CLIENT (STRICTEMENT NOIR ET BLANC) -->
     <div class="modal-overlay" id="confirmDeleteClientModal" onclick="handleModalOverlayClick(event)">
-        <div class="modal-card" style="max-width: 440px; border-color: rgba(239, 68, 68, 0.45);">
+        <div class="modal-card" style="max-width: 440px; border-color: rgba(255, 255, 255, 0.18);">
             <div class="modal-title-group">
-                <h2 style="color: #f87171; display: flex; align-items: center; gap: 8px;">
-                    <span>⚠️</span>
+                <h2 style="color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                    <svg class="icon" style="width:20px;height:20px;stroke:#ffffff;" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     <span>Supprimer ce Client ?</span>
                 </h2>
                 <p id="deleteClientPromptText" style="margin-top: 8px; font-size: 13px; line-height: 1.5; color: #cbd5e1;">
@@ -1563,23 +1561,23 @@
                 </p>
             </div>
 
-            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11.5px; color: #fca5a5; line-height: 1.4;">
+            <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11.5px; color: #94a3b8; line-height: 1.4;">
                 Cette action supprimera tous les rushes, voix, musiques, effets et directives associés à ce client sur le disque.
             </div>
 
             <div class="modal-actions">
                 <button type="button" class="btn-secondary" onclick="closeDeleteClientModal()">Annuler</button>
-                <button type="button" class="btn-secondary btn-danger" onclick="submitDeleteClient()" style="background: #dc2626; color: #ffffff; font-weight: 700; border-color: #ef4444;">Supprimer Définitivement</button>
+                <button type="button" class="btn-secondary" onclick="submitDeleteClient()" style="background: #ffffff; color: #000000; font-weight: 700; border: 1px solid #ffffff;">Supprimer Définitivement</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CONFIRMATION SUPPRESSION FICHIER (SANS POPUP JS) -->
+    <!-- MODAL CONFIRMATION SUPPRESSION FICHIER (STRICTEMENT NOIR ET BLANC) -->
     <div class="modal-overlay" id="confirmDeleteAssetModal" onclick="handleModalOverlayClick(event)">
-        <div class="modal-card" style="max-width: 410px; border-color: rgba(239, 68, 68, 0.45);">
+        <div class="modal-card" style="max-width: 410px; border-color: rgba(255, 255, 255, 0.18);">
             <div class="modal-title-group">
-                <h2 style="color: #f87171; display: flex; align-items: center; gap: 8px;">
-                    <span>🗑️</span>
+                <h2 style="color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                    <svg class="icon" style="width:20px;height:20px;stroke:#ffffff;" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     <span>Supprimer ce Fichier ?</span>
                 </h2>
                 <p id="deleteAssetPromptText" style="margin-top: 8px; font-size: 13px; line-height: 1.5; color: #cbd5e1;">
@@ -1588,7 +1586,7 @@
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn-secondary" onclick="closeDeleteAssetModal()">Annuler</button>
-                <button type="button" class="btn-secondary btn-danger" onclick="submitDeleteAsset()" style="background: #dc2626; color: #ffffff; font-weight: 700; border-color: #ef4444;">Supprimer</button>
+                <button type="button" class="btn-secondary" onclick="submitDeleteAsset()" style="background: #ffffff; color: #000000; font-weight: 700; border: 1px solid #ffffff;">Supprimer</button>
             </div>
         </div>
     </div>
