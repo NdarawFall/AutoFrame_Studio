@@ -66,18 +66,15 @@
             gap: 14px;
         }
 
-        .brand-badge {
+        a.brand-badge, a.brand-badge:link, a.brand-badge:visited, .brand-badge {
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 900;
             font-size: 16px;
             letter-spacing: -0.4px;
-            background: linear-gradient(135deg, #ffffff 20%, #ff6b7d 60%, #60a5fa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
             text-decoration: none;
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.25));
         }
 
         .badge-monteur {
@@ -98,7 +95,7 @@
             gap: 8px;
         }
 
-        .nav-btn {
+        a.nav-btn, a.nav-btn:link, a.nav-btn:visited, .nav-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -114,7 +111,7 @@
             transition: var(--transition-smooth, all 0.25s cubic-bezier(0.16, 1, 0.3, 1));
         }
 
-        .nav-btn:hover {
+        a.nav-btn:hover, .nav-btn:hover {
             color: var(--text-primary);
             background: var(--bg-hover);
             border-color: rgba(255, 255, 255, 0.25);
@@ -289,7 +286,8 @@
             align-items: flex-start;
             gap: 22px;
             overflow-x: auto;
-            padding: 10px 4px 18px 4px;
+            overflow-y: visible;
+            padding: 18px 14px 22px 14px;
             scrollbar-width: thin;
             scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
         }
@@ -331,15 +329,15 @@
 
         .client-circle-item:hover .client-avatar-ring {
             border-color: #60a5fa;
-            box-shadow: 0 0 22px rgba(59, 130, 246, 0.5);
-            transform: scale(1.05);
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.45);
+            transform: scale(1.04);
         }
 
         .client-circle-item.active .client-avatar-ring {
             border-color: #3b82f6;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(12, 18, 34, 0.95));
-            box-shadow: 0 0 28px rgba(59, 130, 246, 0.7), 0 0 0 3px rgba(59, 130, 246, 0.25);
-            transform: scale(1.08);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(12, 18, 34, 0.95));
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.55), inset 0 0 10px rgba(59, 130, 246, 0.25);
+            transform: scale(1.05);
         }
 
         .client-avatar-img {
@@ -1199,12 +1197,8 @@
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                 <span>Studio</span>
             </a>
-            <a href="assets.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                <span>Assets</span>
-            </a>
             <a href="settings.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Paramètres</span>
             </a>
             <a href="create_video.html" class="nav-btn btn-create-video">
@@ -1229,18 +1223,14 @@
                     <span class="category-badge-count" id="headerSkillsCount">0</span>
                 </button>
             </div>
-            <div class="header-right-title">
-                <h1>
-                    <span>📁 Espace Monteur & Dossiers Clients</span>
-                </h1>
-            </div>
+
         </div>
 
         <!-- CLIENTS SELECTOR BAR -->
         <div class="clients-bar">
             <div class="clients-bar-header">
                 <span>Mes Clients (<span id="clientsCount">0</span>)</span>
-                <span style="font-size: 11px; color: var(--text-muted);">Stockage : /Clients/</span>
+                
             </div>
             <div class="clients-list" id="clientsListContainer">
                 <div style="color: var(--text-muted); font-size: 12px; padding: 6px 0;">Chargement...</div>

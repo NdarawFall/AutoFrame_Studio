@@ -62,18 +62,15 @@
             gap: 14px;
         }
 
-        .brand-badge {
+        a.brand-badge, a.brand-badge:link, a.brand-badge:visited, .brand-badge {
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 900;
             font-size: 16px;
             letter-spacing: -0.4px;
-            background: linear-gradient(135deg, #ffffff 20%, #ff6b7d 60%, #60a5fa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
             text-decoration: none;
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.25));
         }
 
         .badge-createur {
@@ -94,7 +91,7 @@
             gap: 8px;
         }
 
-        .nav-btn {
+        a.nav-btn, a.nav-btn:link, a.nav-btn:visited, .nav-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -110,7 +107,7 @@
             transition: var(--transition-smooth);
         }
 
-        .nav-btn:hover {
+        a.nav-btn:hover, .nav-btn:hover {
             color: var(--text-primary);
             background: var(--bg-hover);
             border-color: rgba(255, 255, 255, 0.25);
@@ -758,17 +755,9 @@
         </div>
 
         <nav class="nav-links">
-            <a href="createur.html" class="nav-btn active">
-                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                <span>Chaînes & Vidéos</span>
-            </a>
             <a href="studio.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                 <span>Studio</span>
-            </a>
-            <a href="assets.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                <span>Assets</span>
             </a>
             <a href="settings.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>

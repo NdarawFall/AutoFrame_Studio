@@ -13,7 +13,7 @@
 >    - Tous les skills, guides et documentations techniques du projet résident exclusivement dans `00_Skills/`.
 > 5. **Règle Stricte sur les Scripts Temporaires** :
 >    - **JAMAIS** de script temporaire/jetable dans `07_Scripts/` ni à la racine du projet ! Le dossier `07_Scripts/` est réservé aux scripts permanents du moteur.
->    - Tout script temporaire/jetable pour des tests, manipulations ou calculs doit impérativement être créé dans le dossier `scratch/`.
+>    - Tout script temporaire/jetable pour des tests, manipulations ou contournements doit impérativement être créé dans le dossier `scratch/` ET être immédiatement supprimé après son exécution (aucun déchet résiduel).
 
 ---
 
