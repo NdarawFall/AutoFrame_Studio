@@ -692,6 +692,17 @@
 
             const btnCreate = document.getElementById('btnCreateVideoForChannel');
             if (btnCreate) btnCreate.href = `create_video.html?channel=${encodeURIComponent(ch.id)}`;
+            document.querySelectorAll('nav.nav-links a.btn-create-video').forEach(btn => {
+                btn.href = `create_video.html?channel=${encodeURIComponent(ch.id)}`;
+            });
+            try {
+                sessionStorage.setItem('vibeeditor_active_channel', JSON.stringify({
+                    id: ch.id,
+                    name: ch.name,
+                    avatar: ch.avatar || '',
+                    platform: ch.platform || ''
+                }));
+            } catch (e) {}
             const btnSettings = document.getElementById('btnChannelSettings');
             if (btnSettings) {
                 btnSettings.href = `channel_settings.html?id=${encodeURIComponent(ch.id)}`;

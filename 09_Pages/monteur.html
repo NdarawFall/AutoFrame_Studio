@@ -2115,6 +2115,17 @@
                 return;
             }
 
+            if (allClients.length > 0) {
+                const first = currentClient || allClients[0];
+                document.querySelectorAll('a.btn-create-video').forEach(btn => {
+                    btn.href = 'create_video.html?client=' + encodeURIComponent(first.name);
+                });
+            } else {
+                document.querySelectorAll('a.btn-create-video').forEach(btn => {
+                    btn.href = 'create_video.html?from=monteur';
+                });
+            }
+
             listEl.innerHTML = '';
             allClients.forEach(c => {
                 const item = document.createElement('div');
@@ -2141,6 +2152,17 @@
 
         function selectClient(client) {
             currentClient = client;
+
+            try {
+                sessionStorage.setItem('vibeeditor_active_client', JSON.stringify({
+                    name: client.name,
+                    avatarUrl: client.avatarUrl || ''
+                }));
+            } catch (e) {}
+
+            document.querySelectorAll('a.btn-create-video').forEach(btn => {
+                btn.href = 'create_video.html?client=' + encodeURIComponent(client.name);
+            });
 
             // Mettre à jour l'état actif sur les cercles clients
             document.querySelectorAll('.client-circle-item').forEach(el => {

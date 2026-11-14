@@ -152,6 +152,139 @@
             gap: 6px;
         }
 
+        .page-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .page-header-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* PROFILE BADGE (AVATAR CLIENT OU CHAÎNE TOUT À DROITE) */
+        .header-profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(14, 18, 28, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 6px 16px 6px 8px;
+            border-radius: 32px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(12px);
+            user-select: none;
+            flex-shrink: 0;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .header-profile-badge:hover {
+            background: rgba(20, 26, 40, 0.96);
+            border-color: rgba(255, 255, 255, 0.28);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        .profile-badge-avatar-ring {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            padding: 2px;
+            background: #0f131f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-badge-avatar-ring.ring-client {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+        }
+
+        .profile-badge-avatar-ring.ring-channel {
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+        }
+
+        .profile-badge-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .profile-badge-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .fallback-client {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        }
+
+        .fallback-channel {
+            background: linear-gradient(135deg, #991b1b, #dc2626);
+        }
+
+        .profile-badge-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .profile-badge-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            width: fit-content;
+            line-height: 1.2;
+        }
+
+        .tag-client {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .tag-channel {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .profile-badge-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .page-title {
             font-size: 28px;
             font-weight: 800;
@@ -2390,8 +2523,23 @@
     <main class="container">
         
         <div class="page-header">
-            <h1 class="page-title">Créer une vidéo</h1>
-            <p class="page-desc">Générez votre vidéo à partir d'un prompt, d'un script horodaté et de vos médias.</p>
+            <div class="page-header-row">
+                <div class="page-header-text">
+                    <h1 class="page-title">Créer une vidéo</h1>
+                    <p class="page-desc">Générez votre vidéo à partir d'un prompt, d'un script horodaté et de vos médias.</p>
+                </div>
+                <!-- PROFILE BADGE (AVATAR CLIENT OU CHAÎNE TOUT À DROITE) -->
+                <div class="header-profile-badge" id="headerProfileBadge" style="display: none;">
+                    <div class="profile-badge-avatar-ring" id="profileBadgeRing">
+                        <img id="headerProfileAvatarImg" src="" alt="Avatar" class="profile-badge-avatar-img" style="display: none;">
+                        <div id="headerProfileAvatarFallback" class="profile-badge-avatar-fallback">C</div>
+                    </div>
+                    <div class="profile-badge-info">
+                        <span class="profile-badge-tag" id="headerProfileTag">Client</span>
+                        <span class="profile-badge-name" id="headerProfileName">Nom</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 1. CHAMP DE PROMPT EN HAUT (TOUJOURS OUVERT) -->
@@ -3966,6 +4114,133 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         // Suffixe aléatoire à 4 chiffres unique pour identifier et lier tous les assets d'une même vidéo autonome
         const sessionAssetSuffix = Math.floor(1000 + Math.random() * 9000).toString();
 
+        
+        async function initHeaderProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const channelId = urlParams.get('channel') || '';
+            const clientParam = urlParams.get('client') || '';
+            const fromParam = urlParams.get('from') || '';
+            const referrer = document.referrer || '';
+
+            const badge = document.getElementById('headerProfileBadge');
+            const imgEl = document.getElementById('headerProfileAvatarImg');
+            const fallbackEl = document.getElementById('headerProfileAvatarFallback');
+            const tagEl = document.getElementById('headerProfileTag');
+            const nameEl = document.getElementById('headerProfileName');
+            const ringEl = document.getElementById('profileBadgeRing');
+
+            if (!badge) return;
+
+            // 1. Détection CLIENT (paramètre URL ?client=... OU provenance directe depuis monteur.html)
+            if (clientParam || fromParam === 'monteur' || referrer.includes('monteur.html')) {
+                let clientName = clientParam;
+                let clientAvatarUrl = '';
+
+                try {
+                    const saved = sessionStorage.getItem('vibeeditor_active_client');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (!clientName && parsed.name) clientName = parsed.name;
+                        if (parsed.avatarUrl) clientAvatarUrl = parsed.avatarUrl;
+                    }
+                } catch (e) {}
+
+                if (!clientName || !clientAvatarUrl) {
+                    try {
+                        const res = await fetch('/api/clients');
+                        if (res.ok) {
+                            const data = await res.json();
+                            const clients = data.clients || [];
+                            const found = clientName ? clients.find(c => c.name === clientName) : clients[0];
+                            if (found) {
+                                clientName = found.name;
+                                clientAvatarUrl = found.avatarUrl || '';
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                if (clientName) {
+                    badge.style.display = 'inline-flex';
+                    ringEl.className = 'profile-badge-avatar-ring ring-client';
+                    tagEl.className = 'profile-badge-tag tag-client';
+                    tagEl.textContent = 'Client';
+                    nameEl.textContent = clientName;
+                    badge.title = 'Client : ' + clientName;
+
+                    if (clientAvatarUrl) {
+                        imgEl.src = clientAvatarUrl.startsWith('/') ? clientAvatarUrl : ('/' + clientAvatarUrl);
+                        imgEl.style.display = 'block';
+                        fallbackEl.style.display = 'none';
+                    } else {
+                        imgEl.style.display = 'none';
+                        fallbackEl.style.display = 'flex';
+                        fallbackEl.className = 'profile-badge-avatar-fallback fallback-client';
+                        fallbackEl.textContent = clientName.charAt(0).toUpperCase();
+                    }
+                    return;
+                }
+            }
+
+            // 2. Détection CHAÎNE (paramètre URL ?channel=... OU provenance depuis channel.html)
+            if (channelId || fromParam === 'channel' || referrer.includes('channel.html')) {
+                let chId = channelId;
+                let chName = '';
+                let chAvatar = '';
+                let chPlatform = '';
+
+                try {
+                    const saved = sessionStorage.getItem('vibeeditor_active_channel');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (!chId && parsed.id) chId = parsed.id;
+                        if (parsed.name) chName = parsed.name;
+                        if (parsed.avatar) chAvatar = parsed.avatar;
+                        if (parsed.platform) chPlatform = parsed.platform;
+                    }
+                } catch (e) {}
+
+                if (!chName) {
+                    try {
+                        const res = await fetch('/api/channels');
+                        if (res.ok) {
+                            const chans = await res.json();
+                            const found = chId ? chans.find(c => c.id === chId) : chans[0];
+                            if (found) {
+                                chName = found.name;
+                                chAvatar = found.avatar || '';
+                                chPlatform = found.platform || 'Chaîne';
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                if (chName) {
+                    badge.style.display = 'inline-flex';
+                    ringEl.className = 'profile-badge-avatar-ring ring-channel';
+                    tagEl.className = 'profile-badge-tag tag-channel';
+                    tagEl.textContent = chPlatform || 'Chaîne';
+                    nameEl.textContent = chName;
+                    badge.title = 'Chaîne : ' + chName + (chPlatform ? ' (' + chPlatform + ')' : '');
+
+                    if (chAvatar) {
+                        imgEl.src = chAvatar.startsWith('/') ? chAvatar : ('/' + chAvatar);
+                        imgEl.style.display = 'block';
+                        fallbackEl.style.display = 'none';
+                    } else {
+                        imgEl.style.display = 'none';
+                        fallbackEl.style.display = 'flex';
+                        fallbackEl.className = 'profile-badge-avatar-fallback fallback-channel';
+                        fallbackEl.textContent = chName.charAt(0).toUpperCase();
+                    }
+                    return;
+                }
+            }
+
+            // 3. Ni client ni chaîne : ON NE MET RIEN
+            badge.style.display = 'none';
+        }
+
         function applyAppInitialDefaults() {
             renderStyleCards(DEFAULT_STYLES);
             renderGradientStopsUI();
@@ -4910,7 +5185,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     <div class="style-image-card${isSelected}" id="styleCard_${style.id}" data-style-id="${style.id}" onclick="selectMontageStyle('${style.id}')">
                         <img class="style-card-bg-img" src="${style.image}" alt="${escapeHtml(style.title)}" loading="lazy" onerror="this.onerror=null; this.src='/01_Assets/Images/styles/style_none.jpg'">
                         <div class="style-card-gradient-fade">
-                            <span class="style-card-title">${escapeHtml(style.title)}</span>
+                            <span class="style-card-title">${escapeHtml(style.title)}</span>
                         </div>
                         <div class="style-card-check">✓</div>
                     </div>`;
@@ -4978,6 +5253,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
         document.addEventListener('DOMContentLoaded', applyAppInitialDefaults);
         window.addEventListener('load', async () => {
+            initHeaderProfile();
             applyAppInitialDefaults();
             // Affichage des cartes de style avec Sans Template ("Libre") sélectionné par défaut
             renderStyleCards(DEFAULT_STYLES);
