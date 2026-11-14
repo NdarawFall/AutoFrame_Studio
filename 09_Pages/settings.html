@@ -759,33 +759,16 @@
                         <label class="form-label">Style de Montage / Template par Défaut</label>
                         <select class="form-select" id="prefTemplate">
                             <option value="none" selected>Sans template (Génération libre)</option>
-                            <option value="Stikman_history">Stikman History (Storytelling & Zooms Ken Burns)</option>
                             <option value="Story_vox_style">Story Vox Style (Infographies 2D & Motion Design)</option>
-                            <option value="Tutoriel">Tutoriel (Guide pédagogique, Démo d'écran & Focus UI)</option>
-                            <option value="Faceless_brand">Faceless Brand (Vidéos de marque sans visage & B-Roll)</option>
-                            <option value="Ego_lite">Ego Lite (Format court, Kinetic typography & Punchlines)</option>
                             <option value="Saas_Motion_Design">SaaS Motion Design (Présentation produit, UI & Features)</option>
-                            <option value="Top_10">Top 10 (Compte à rebours dynamique & Podium viral)</option>
-                            <option value="Tier_List">Tier List (Classement par rangs S-A-B-C-D)</option>
+                            <option value="Stikman_history">Stickman History (Storytelling & Zooms Ken Burns)</option>
                             <option value="Iman_Gadzhi_Style">Iman Gadzhi Style (Documentaire sombre & Haute finance)</option>
                             <option value="trash_style">Trash Style (Punk edit, chaos & collages)</option>
-                            <option value="2D_explainer">2D Explainer (Animation vectorielle 2D & schémas)</option>
                         </select>
                         <span class="form-hint">Définit le style pré-sélectionné lors de la création d'une vidéo ou d'une chaîne.</span>
                     </div>
 
-                    <div class="form-row" style="grid-column: 1 / -1;">
-                        <label class="form-label">
-                            Type de Sous-Titres par Défaut
-                        </label>
-                        <select class="form-select" id="prefSubtitleStyle">
-                            <option value="type-wordbyword" selected>2. Mot-à-mot Coloré (Chaque mot se colore un par un au rythme vocal)</option>
-                            <option value="type-standard">1. Sous-titre Basique (Phrase par phrase, texte blanc ou noir épuré)</option>
-                            <option value="none">Sans sous-titres (Vidéo pure sans texte incrusté)</option>
-                        </select>
-                        <span class="form-hint">Définit le type de sous-titrage utilisé par défaut lors de la génération de vos vidéos.</span>
                     </div>
-                </div>
             </section>
 
             <!-- 2. VOIX OFF (ELEVENLABS & HEYGEN) & MODÈLE IA -->
@@ -1810,7 +1793,7 @@
             const fps = document.getElementById('prefFps').value;
             const quality = document.getElementById('prefQuality').value;
             const template = document.getElementById('prefTemplate').value;
-            const subtitleStyle = document.getElementById('prefSubtitleStyle').value;
+            const subtitleStyle = document.getElementById('prefSubtitleStyle') ? document.getElementById('prefSubtitleStyle').value : (localStorage.getItem(PREF_KEY_SUBTITLE_STYLE) || 'type-wordbyword');
             
             let geminiModel = document.getElementById('prefGeminiModel') ? document.getElementById('prefGeminiModel').value : 'gemini-3.5-flash-lite';
             if (geminiModel === 'custom') {
