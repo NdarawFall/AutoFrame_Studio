@@ -224,7 +224,6 @@ Pour garantir une lecture fluide (sans blocage à la lecture ni textes figés) e
 ---
 
 ## 📁 Composants associés dans le projet
-* Visualiseur Interactif d'Animations (Paramètres) : `09_Pages/animation_viewer.html`
 * Bibliothèque d'Animations de Textes (Entrées, Sorties, Boucles) : `02_Composants/Text animation/mes_animations_textes.html`
 * Dual-Font Typography : `02_Composants/Text animation/dual_font_typography.html`
 * Fond Texturé Shorts (Grille + Halftone) : `02_Composants/Background/short_textured_backdrop.html`
