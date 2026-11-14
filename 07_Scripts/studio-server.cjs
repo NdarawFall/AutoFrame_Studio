@@ -2483,6 +2483,14 @@ function startNativeRender(videoName) {
     });
 }
 
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.log(`ℹ️   Le port ${PORT} est déjà utilisé par une instance active. Connexion directe.`);
+    } else {
+        console.error('Erreur serveur HTTP :', err);
+    }
+});
+
 server.listen(PORT, () => {
     const url = `http://localhost:${PORT}/09_Pages/home.html`;
     console.log(`\n======================================================`);

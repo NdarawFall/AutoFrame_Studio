@@ -9,6 +9,15 @@ const { autoUpdater } = require('electron-updater');
 // Indique au serveur studio-server qu'il s'exécute dans Electron (évite d'ouvrir le navigateur externe)
 process.env.IS_ELECTRON = '1';
 
+// Ignore silencieusement si le port 3000 est déjà occupé par un serveur existant
+process.on('uncaughtException', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+        console.log('ℹ️ Port 3000 déjà actif, connexion transparente.');
+        return;
+    }
+    console.error('Erreur inattendue :', err);
+});
+
 // Lancement automatique du serveur Node.js studio-server
 try {
     require('./07_Scripts/studio-server.cjs');
