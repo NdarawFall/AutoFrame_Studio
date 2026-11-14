@@ -65,18 +65,17 @@
                 
 
         .brand-logo-img {
-            width: 22px;
-            height: 22px;
-            border-radius: 5px;
-            object-fit: cover;
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
             flex-shrink: 0;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.45);
+            filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.45));
         }
 
         .brand-badge, a.brand-badge, a.brand-badge:link, a.brand-badge:visited {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-weight: 800;
             font-size: 16px;
             letter-spacing: -0.3px;
@@ -1144,8 +1143,7 @@
             </section>
 
             <!-- ACTIONS -->
-            <div class="actions-row">
-                <a href="studio.html" class="btn-secondary">Retour au Studio</a>
+            <div class="actions-row" style="justify-content: flex-end;">
                 <button class="btn-primary" onclick="saveSettings()">Enregistrer les Paramètres</button>
             </div>
 
