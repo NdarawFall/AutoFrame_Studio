@@ -44,14 +44,23 @@
     "electron-builder": "^26.18.0"
   },
   "build": {
-    "appId": "com.autoframe.app",
+    "appId": "com.autoframe.studio",
     "productName": "AutoFrame",
-    "copyright": "Copyright © 2026 NdarawFall",
+    "copyright": "Copyright © 2026 Ndaraw Fall",
     "directories": {
       "output": "dist"
     },
     "files": [
       "**/*",
+      "!Clients/**/*",
+      "!00_Docs/**/*",
+      "!03_Chaines/**/*",
+      "!04_Videos/**/*",
+      "!08_Rendus/**/*",
+      "!07_Scripts/api_config.json",
+      "!07_Scripts/api_config*.json",
+      "!api_config.json",
+      "!user_settings.json",
       "!dist/**/*",
       "!.git/**/*",
       "!.agents/**/*",
@@ -61,7 +70,7 @@
       {
         "provider": "github",
         "owner": "NdarawFall",
-        "repo": "Vibe_Editor_App"
+        "repo": "AutoFrame_Studio"
       }
     ],
     "win": {
@@ -72,14 +81,23 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "01_Assets/Logos/autoframe_robot_logo.png"
     },
     "nsis": {
       "oneClick": false,
+      "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "AutoFrame"
+      "shortcutName": "AutoFrame Studio",
+      "uninstallDisplayName": "AutoFrame Studio ${version}",
+      "artifactName": "AutoFrame-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NdarawFall/AutoFrame_Studio.git"
   }
 }

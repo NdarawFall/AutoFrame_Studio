@@ -1,13 +1,28 @@
 /**
  * ELECTRON-MAIN.CJS — Point d'entrée de l'application de bureau Windows AutoFrame
- * Démarre le serveur local en arrière-plan, gère la fenêtre native et les mises à jour automatiques via GitHub Releases.
+ * Démarre le serveur local en arrière-plan, gère la fenêtre native et les mises à jour directes via GitHub Releases.
  */
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
-const { autoUpdater } = require('electron-updater');
+const fs = require('fs');
+const https = require('https');
+const { spawn } = require('child_process');
 
 // Indique au serveur studio-server qu'il s'exécute dans Electron (évite d'ouvrir le navigateur externe)
 process.env.IS_ELECTRON = '1';
+
+// Détermine le répertoire de données de l'utilisateur (dossier avec pleins droits de lecture/écriture)
+// Les clients, chaînes et vidéos créés par l'utilisateur sont stockés dans Documents/AutoFrame
+const userDataDir = path.join(app.getPath('documents'), 'AutoFrame');
+process.env.VIBE_USER_DATA = userDataDir;
+
+// S'assurer que les sous-dossiers existent pour l'utilisateur
+try {
+    ['Clients', '03_Chaines', '04_Videos', '08_Rendus'].forEach(folder => {
+        const p = path.join(userDataDir, folder);
+        if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+    });
+} catch(e) {}
 
 // Ignore silencieusement si le port 3000 est déjà occupé par un serveur existant
 process.on('uncaughtException', (err) => {
@@ -27,103 +42,166 @@ try {
 
 let mainWindow = null;
 
-// Configuration de l'auto-updater (GitHub Releases)
-autoUpdater.autoDownload = true;
-autoUpdater.autoInstallOnAppQuit = true;
+// -----------------------------------------------------------------------------
+// SYSTÈME DE MISE À JOUR DIRECT VIA L'API GITHUB RELEASES (SANS LATEST.YML)
+// -----------------------------------------------------------------------------
+let updateDownloadProcess = null;
 
-// Écouteurs de mise à jour pour notifier le frontend via l'état global
-autoUpdater.on('checking-for-update', () => {
-    console.log('[AutoUpdater] Vérification des mises à jour sur GitHub...');
+global.triggerElectronUpdateCheck = () => {
     if (global.setAppUpdateState) {
         global.setAppUpdateState({ status: 'checking', progress: 0, error: null });
     }
-});
 
-autoUpdater.on('update-available', (info) => {
-    console.log('[AutoUpdater] Mise à jour disponible :', info.version);
-    if (global.setAppUpdateState) {
-        global.setAppUpdateState({
-            status: 'available',
-            latestVersion: info.version,
-            releaseNotes: info.releaseNotes || '',
-            progress: 0
-        });
-    }
-});
+    const reqOpts = {
+        hostname: 'api.github.com',
+        path: '/repos/NdarawFall/AutoFrame_Studio/releases/latest',
+        headers: { 'User-Agent': 'AutoFrame-Studio-Desktop' }
+    };
 
-autoUpdater.on('update-not-available', (info) => {
-    console.log('[AutoUpdater] Application à jour.');
-    if (global.setAppUpdateState) {
-        global.setAppUpdateState({
-            status: 'up-to-date',
-            latestVersion: info ? info.version : app.getVersion(),
-            progress: 100
-        });
-    }
-});
+    https.get(reqOpts, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+            try {
+                if (res.statusCode === 200) {
+                    const release = JSON.parse(data);
+                    const latestTag = release.tag_name ? release.tag_name.replace(/^v/, '') : null;
+                    const currentVersion = app.getVersion();
 
-autoUpdater.on('download-progress', (progressObj) => {
-    const percent = Math.round(progressObj.percent || 0);
-    console.log(`[AutoUpdater] Téléchargement : ${percent}%`);
-    if (global.setAppUpdateState) {
-        global.setAppUpdateState({
-            status: 'downloading',
-            progress: percent,
-            bytesPerSecond: progressObj.bytesPerSecond,
-            transferred: progressObj.transferred,
-            total: progressObj.total
-        });
-    }
-});
+                    // Trouver le fichier .exe dans les assets de la release
+                    let exeAsset = null;
+                    if (Array.isArray(release.assets)) {
+                        exeAsset = release.assets.find(a => a.name && a.name.endsWith('.exe'));
+                    }
 
-autoUpdater.on('update-downloaded', (info) => {
-    console.log('[AutoUpdater] Mise à jour téléchargée prête à installer :', info.version);
-    if (global.setAppUpdateState) {
-        global.setAppUpdateState({
-            status: 'downloaded',
-            latestVersion: info.version,
-            progress: 100
-        });
-    }
-});
+                    const downloadUrl = exeAsset ? exeAsset.browser_download_url : release.html_url;
 
-autoUpdater.on('error', (err) => {
-    console.log('[AutoUpdater] Info / Note :', err ? err.message : 'Notice');
-    if (global.setAppUpdateState) {
-        global.setAppUpdateState({
-            status: 'error',
-            error: err ? err.message : 'Erreur'
+                    if (latestTag && latestTag !== currentVersion) {
+                        console.log(`[AutoFrame Update] Nouvelle version trouvée : v${latestTag} (actuelle: v${currentVersion})`);
+                        if (global.setAppUpdateState) {
+                            global.setAppUpdateState({
+                                status: 'available',
+                                latestVersion: latestTag,
+                                releaseNotes: release.body || '',
+                                downloadUrl: downloadUrl,
+                                progress: 0
+                            });
+                        }
+                    } else {
+                        console.log(`[AutoFrame Update] Application à jour (v${currentVersion}).`);
+                        if (global.setAppUpdateState) {
+                            global.setAppUpdateState({
+                                status: 'up-to-date',
+                                latestVersion: currentVersion,
+                                progress: 100
+                            });
+                        }
+                    }
+                } else {
+                    if (global.setAppUpdateState) {
+                        global.setAppUpdateState({ status: 'up-to-date', progress: 100 });
+                    }
+                }
+            } catch (err) {
+                console.error('[AutoFrame Update] Erreur parsing release :', err);
+                if (global.setAppUpdateState) {
+                    global.setAppUpdateState({ status: 'error', error: err.message });
+                }
+            }
         });
-    }
-});
-
-// Fonctions exposées au serveur local pour répondre aux requêtes HTTP de l'interface
-global.triggerElectronUpdateCheck = () => {
-    if (app.isPackaged) {
-        autoUpdater.checkForUpdates().catch(err => {
-            console.log('[AutoUpdater] Check :', err.message);
-        });
-    } else {
-        console.log('[AutoUpdater Dev Mode] Vérification simulée');
-        autoUpdater.checkForUpdates().catch(err => {
-            console.log('[AutoUpdater Dev Mode Note] Pas de release packagée en local :', err.message);
-        });
-    }
+    }).on('error', (err) => {
+        console.error('[AutoFrame Update] Erreur réseau vérification :', err);
+        if (global.setAppUpdateState) {
+            global.setAppUpdateState({ status: 'error', error: err.message });
+        }
+    });
 };
 
 global.triggerElectronInstallUpdate = () => {
-    console.log('[AutoUpdater] Redémarrage pour installation de la mise à jour...');
-    autoUpdater.quitAndInstall(false, true);
+    const state = typeof global.getAppUpdateState === 'function' ? global.getAppUpdateState() : null;
+    const downloadUrl = state && state.downloadUrl ? state.downloadUrl : null;
+
+    if (!downloadUrl) {
+        shell.openExternal('https://github.com/NdarawFall/AutoFrame_Studio/releases/latest');
+        return;
+    }
+
+    // Si c'est un lien direct vers le fichier .exe, on le télécharge dans le dossier temporaire
+    if (downloadUrl.endsWith('.exe')) {
+        const tempPath = path.join(app.getPath('temp'), `AutoFrame-Setup-v${state.latestVersion || 'update'}.exe`);
+        console.log(`[AutoFrame Update] Téléchargement de ${downloadUrl} vers ${tempPath}...`);
+
+        if (global.setAppUpdateState) {
+            global.setAppUpdateState({ status: 'downloading', progress: 10 });
+        }
+
+        const file = fs.createWriteStream(tempPath);
+        
+        const downloadFile = (url) => {
+            https.get(url, (res) => {
+                // Suivre les redirections GitHub (302 vers AWS S3)
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                    downloadFile(res.headers.location);
+                    return;
+                }
+
+                const totalBytes = parseInt(res.headers['content-length'] || '0', 10);
+                let receivedBytes = 0;
+
+                res.on('data', (chunk) => {
+                    receivedBytes += chunk.length;
+                    if (totalBytes > 0 && global.setAppUpdateState) {
+                        const pct = Math.round((receivedBytes / totalBytes) * 100);
+                        global.setAppUpdateState({ status: 'downloading', progress: pct });
+                    }
+                });
+
+                res.pipe(file);
+
+                file.on('finish', () => {
+                    file.close(() => {
+                        console.log('[AutoFrame Update] Téléchargement terminé. Lancement de l\\'installeur...');
+                        if (global.setAppUpdateState) {
+                            global.setAppUpdateState({ status: 'downloaded', progress: 100 });
+                        }
+                        
+                        // Lancer l'installeur téléchargé et fermer l'app actuelle
+                        try {
+                            const installer = spawn(tempPath, [], { detached: true, stdio: 'ignore' });
+                            installer.unref();
+                            app.quit();
+                        } catch (err) {
+                            shell.openPath(tempPath);
+                            app.quit();
+                        }
+                    });
+                });
+            }).on('error', (err) => {
+                fs.unlink(tempPath, () => {});
+                console.error('[AutoFrame Update] Erreur téléchargement :', err);
+                shell.openExternal(downloadUrl);
+            });
+        };
+
+        downloadFile(downloadUrl);
+    } else {
+        // Redirection vers la page GitHub
+        shell.openExternal(downloadUrl);
+    }
 };
 
 function createWindow() {
+    // Chemin de l'icône de l'application (Logo tête de robot rouge et blanc)
+    const iconPath = path.join(__dirname, '01_Assets', 'Logos', 'autoframe_robot_logo.jpg');
+
     mainWindow = new BrowserWindow({
         width: 1440,
         height: 920,
         minWidth: 1080,
         minHeight: 720,
         backgroundColor: '#050507',
-        title: 'AutoFrame 1.0',
+        title: 'AutoFrame Studio',
+        icon: fs.existsSync(iconPath) ? iconPath : undefined,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true
@@ -133,21 +211,19 @@ function createWindow() {
     });
 
     const startUrl = 'http://localhost:3000/09_Pages/home.html';
-
-    // Chargement de la page d'accueil de l'application
     mainWindow.loadURL(startUrl);
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
-        // Vérification automatique en tâche de fond après démarrage
+        // Vérification silencieuse de mise à jour 4 secondes après ouverture
         setTimeout(() => {
             if (global.triggerElectronUpdateCheck) {
                 global.triggerElectronUpdateCheck();
             }
-        }, 5000);
+        }, 4000);
     });
 
-    // Ouvre les liens externes (GitHub, LinkedIn, sites web) dans le navigateur par défaut
+    // Ouvre les liens externes (GitHub, LinkedIn, sites web) dans le vrai navigateur
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         if (!url.startsWith('http://localhost:3000')) {
             shell.openExternal(url);

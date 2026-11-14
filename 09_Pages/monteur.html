@@ -66,7 +66,15 @@
             gap: 14px;
         }
 
-        a.brand-badge, a.brand-badge:link, a.brand-badge:visited, .brand-badge {
+        a.brand-badge, a.brand-badge:link, a.brand-badge:visited,         .brand-logo-img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .brand-badge {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1203,6 +1211,7 @@
                 <span>Accueil</span>
             </a>
             <a href="home.html" class="brand-badge">
+                <img src="/01_Assets/Logos/autoframe_robot_logo.png" class="brand-logo-img" alt="AutoFrame">
                 <span>AutoFrame 1.0</span>
             </a>
             <span class="badge-monteur">Espace Monteur</span>

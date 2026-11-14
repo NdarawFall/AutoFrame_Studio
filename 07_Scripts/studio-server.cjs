@@ -48,17 +48,17 @@ const { runAiVideoPipeline } = require('./ai_director.cjs');
 const activeCreationJobs = new Map();
 
 // Détermination transparente du dossier de travail et de configuration :
-// Dossier racine du projet
-const USER_DATA_DIR = ROOT_DIR;
+// En mode bureau / packagé : utilise le dossier utilisateur (ex: Documents/AutoFrame ou AppData)
+// En mode dev local : utilise le dossier racine du projet
+const USER_DATA_DIR = process.env.VIBE_USER_DATA || ROOT_DIR;
 
-if (process.env.VIBE_USER_DATA) {
-    ['01_Assets', '03_Chaines', '04_Videos', '08_Rendus', 'Clients'].forEach(folder => {
-        const full = path.join(USER_DATA_DIR, folder);
-        if (!fs.existsSync(full)) {
-            try { fs.mkdirSync(full, { recursive: true }); } catch (e) {}
-        }
-    });
-}
+// Initialiser les dossiers de données utilisateur essentiels
+['Clients', '03_Chaines', '04_Videos', '08_Rendus'].forEach(folder => {
+    const full = path.join(USER_DATA_DIR, folder);
+    if (!fs.existsSync(full)) {
+        try { fs.mkdirSync(full, { recursive: true }); } catch (e) {}
+    }
+});
 
 function getResolvedConfigPath() {
     if (process.env.VIBE_USER_DATA) {
@@ -162,7 +162,7 @@ const server = http.createServer(async (req, res) => {
         const https = require('https');
         const reqOpts = {
             hostname: 'api.github.com',
-            path: '/repos/NdarawFall/Vibe_Editor_App/releases/latest',
+            path: '/repos/NdarawFall/AutoFrame_Studio/releases/latest',
             headers: { 'User-Agent': 'AutoFrame-Desktop-App' }
         };
 
@@ -177,6 +177,13 @@ const server = http.createServer(async (req, res) => {
                         appUpdateState.latestVersion = latestTag;
                         appUpdateState.releaseNotes = release.body || '';
                         appUpdateState.releaseUrl = release.html_url;
+
+                        // Trouver l'URL directe du .exe dans les assets de la release
+                        let exeAsset = null;
+                        if (Array.isArray(release.assets)) {
+                            exeAsset = release.assets.find(a => a.name && a.name.endsWith('.exe'));
+                        }
+                        appUpdateState.downloadUrl = exeAsset ? exeAsset.browser_download_url : release.html_url;
 
                         if (latestTag && latestTag !== appUpdateState.currentVersion) {
                             appUpdateState.status = 'available';
@@ -230,7 +237,7 @@ const server = http.createServer(async (req, res) => {
         'images_illustrations',
         'skills'
     ];
-    const clientsBasePath = path.join(ROOT_DIR, 'Clients');
+    const clientsBasePath = path.join(USER_DATA_DIR, 'Clients');
     if (!fs.existsSync(clientsBasePath)) {
         try { fs.mkdirSync(clientsBasePath, { recursive: true }); } catch (e) {}
     }
@@ -765,7 +772,7 @@ const server = http.createServer(async (req, res) => {
 
     // 1. API pour lister les fichiers des dossiers
     if (cleanUrl === '/api/files' && req.method === 'GET') {
-        const chainesDir = path.join(ROOT_DIR, '03_Chaines');
+        const chainesDir = path.join(USER_DATA_DIR, '03_Chaines');
         const videosDir = path.join(ROOT_DIR, '04_Videos');
         const rendusDir = path.join(ROOT_DIR, '08_Rendus');
         const channelsPath = path.join(ROOT_DIR, '07_Scripts', 'channels.json');
@@ -1721,7 +1728,7 @@ const server = http.createServer(async (req, res) => {
     // 5e2. API pour gérer les chaînes utilisateur créées (channels.json & dossiers 03_Chaines)
     if (req.url.startsWith('/api/channels')) {
         const channelsPath = path.join(ROOT_DIR, '07_Scripts', 'channels.json');
-        const chainesBaseDir = path.join(ROOT_DIR, '03_Chaines');
+        const chainesBaseDir = path.join(USER_DATA_DIR, '03_Chaines');
         if (!fs.existsSync(chainesBaseDir)) fs.mkdirSync(chainesBaseDir, { recursive: true });
 
         const readChannels = () => {

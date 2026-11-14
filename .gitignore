@@ -62,6 +62,8 @@ Clients/**
 01_Assets/**
 !01_Assets/**/
 !01_Assets/**/.gitkeep
+!01_Assets/Logos/autoframe_robot_logo*
+!01_Assets/Icones/autoframe_robot_logo*
 
 # ==============================================================================
 # CHAÎNES UTILISATEUR & DONNÉES LOCALES
