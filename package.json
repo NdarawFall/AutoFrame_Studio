@@ -2,12 +2,15 @@
   "name": "autoframe",
   "version": "1.0.0",
   "description": "AutoFrame 1.0 — Studio vidéo automatisé & moteur de motion design IA",
-  "main": "07_Scripts/studio-server.cjs",
+  "main": "electron-main.cjs",
   "scripts": {
     "start": "node 07_Scripts/studio-server.cjs",
     "studio": "node 07_Scripts/studio-server.cjs",
     "home": "node 07_Scripts/studio-server.cjs",
-    "render": "node 07_Scripts/render.cjs"
+    "render": "node 07_Scripts/render.cjs",
+    "desktop": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
   },
   "keywords": [
     "video-editor",
@@ -25,6 +28,7 @@
     "@xenova/transformers": "^2.17.2",
     "chart.js": "^4.6.1",
     "countup.js": "^2.10.1",
+    "electron-updater": "^6.8.11",
     "football-logos": "^0.4.0",
     "gsap": "^3.15.0",
     "lottie-web": "^5.13.0",
@@ -34,5 +38,48 @@
     "srt-parser-2": "^1.2.3",
     "three": "^0.186.1",
     "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.autoframe.app",
+    "productName": "AutoFrame",
+    "copyright": "Copyright © 2026 NdarawFall",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**/*",
+      "!.git/**/*",
+      "!.agents/**/*",
+      "!scratch/**/*"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NdarawFall",
+        "repo": "Vibe_Editor_App"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AutoFrame"
+    }
   }
 }

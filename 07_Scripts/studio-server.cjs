@@ -103,6 +103,28 @@ if (!fs.existsSync(activeConfigPath)) {
     }
 }
 
+// -------------------------------------------------------------------------
+// ÉTAT DE MISE À JOUR DE L'APPLICATION (ÉLECTRON & RELEASES GITHUB)
+// -------------------------------------------------------------------------
+let appUpdateState = {
+    status: 'idle', // 'idle' | 'checking' | 'available' | 'downloading' | 'downloaded' | 'up-to-date' | 'error'
+    progress: 0,
+    currentVersion: '1.0.0',
+    latestVersion: null,
+    releaseNotes: '',
+    error: null
+};
+
+try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'package.json'), 'utf8'));
+    if (pkg.version) appUpdateState.currentVersion = pkg.version;
+} catch (e) {}
+
+global.setAppUpdateState = (newState) => {
+    appUpdateState = { ...appUpdateState, ...newState };
+};
+global.getAppUpdateState = () => appUpdateState;
+
 const server = http.createServer(async (req, res) => {
     const cleanUrl = req.url.split('?')[0];
     // Redirection racine immédiate
@@ -119,6 +141,80 @@ const server = http.createServer(async (req, res) => {
     if (cleanUrl === '/createur' || cleanUrl === '/createur.html' || cleanUrl === '/channels' || cleanUrl === '/channels.html') {
         res.writeHead(302, { 'Location': '/09_Pages/createur.html' });
         return res.end();
+    }
+
+    // -------------------------------------------------------------------------
+    // API AUTO-UPDATE (GITHUB RELEASES & ELECTRON)
+    // -------------------------------------------------------------------------
+    if (cleanUrl === '/api/app/update-status' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(appUpdateState));
+        return;
+    }
+
+    if (cleanUrl === '/api/app/check-update' && req.method === 'POST') {
+        if (typeof global.triggerElectronUpdateCheck === 'function') {
+            global.triggerElectronUpdateCheck();
+        }
+
+        // Vérification directe sur l'API GitHub Releases
+        appUpdateState.status = 'checking';
+        const https = require('https');
+        const reqOpts = {
+            hostname: 'api.github.com',
+            path: '/repos/NdarawFall/Vibe_Editor_App/releases/latest',
+            headers: { 'User-Agent': 'AutoFrame-Desktop-App' }
+        };
+
+        const ghReq = https.get(reqOpts, (apiRes) => {
+            let data = '';
+            apiRes.on('data', chunk => data += chunk);
+            apiRes.on('end', () => {
+                try {
+                    if (apiRes.statusCode === 200) {
+                        const release = JSON.parse(data);
+                        const latestTag = release.tag_name ? release.tag_name.replace(/^v/, '') : null;
+                        appUpdateState.latestVersion = latestTag;
+                        appUpdateState.releaseNotes = release.body || '';
+                        appUpdateState.releaseUrl = release.html_url;
+
+                        if (latestTag && latestTag !== appUpdateState.currentVersion) {
+                            appUpdateState.status = 'available';
+                        } else {
+                            appUpdateState.status = 'up-to-date';
+                        }
+                    } else {
+                        // Pas encore de release publiée
+                        appUpdateState.status = 'up-to-date';
+                    }
+                } catch (e) {
+                    appUpdateState.status = 'error';
+                    appUpdateState.error = e.message;
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(appUpdateState));
+            });
+        });
+
+        ghReq.on('error', (err) => {
+            appUpdateState.status = 'error';
+            appUpdateState.error = err.message;
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(appUpdateState));
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/app/install-update' && req.method === 'POST') {
+        if (typeof global.triggerElectronInstallUpdate === 'function') {
+            global.triggerElectronInstallUpdate();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, message: 'Redémarrage et installation...' }));
+            return;
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, message: 'Mise à jour disponible dans l\'application de bureau installée.' }));
+        return;
     }
 
     // -------------------------------------------------------------------------
@@ -2396,8 +2492,12 @@ server.listen(PORT, () => {
     console.log(`⌨️   Appuyez sur [Ctrl + C] pour arrêter le serveur.`);
     console.log(`======================================================\n`);
 
-    const startCmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`;
-    exec(startCmd, (err) => {
-        if (err) console.log(`Ouvrez manuellement votre navigateur sur ${url}`);
-    });
+    if (!process.env.IS_ELECTRON) {
+        const startCmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`;
+        exec(startCmd, (err) => {
+            if (err) console.log(`Ouvrez manuellement votre navigateur sur ${url}`);
+        });
+    } else {
+        console.log('🖥️   Mode Bureau Electron actif : affichage dans la fenêtre native.');
+    }
 });

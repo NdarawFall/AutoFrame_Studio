@@ -1055,7 +1055,7 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
-        <span>AutoFrame 1.0 est à jour (v1.0.4)</span>
+        <span id="updateToastText">AutoFrame 1.0 est à jour</span>
     </div>
 
     <script>
@@ -1074,16 +1074,117 @@
             }
         }, { passive: true });
     
-        function showUpdateNotice(e) {
-            e.stopPropagation();
+        let isCheckingUpdate = false;
+        let updatePollInterval = null;
+
+        async function showUpdateNotice(e) {
+            if (e) e.stopPropagation();
+            const btn = document.querySelector('.btn-update-pill');
+            const label = btn ? btn.querySelector('.update-label') : null;
             const toast = document.getElementById('updateToast');
-            if (!toast) return;
-            toast.classList.add('show');
-            clearTimeout(window._updateToastTimer);
-            window._updateToastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            const toastText = document.getElementById('updateToastText');
+
+            // Si une mise à jour est déjà téléchargée et prête, déclencher l'installation
+            if (window._updateReadyToInstall) {
+                if (label) label.textContent = 'Installation...';
+                if (toastText) toastText.textContent = 'Redémarrage de l\'application pour mise à jour...';
+                if (toast) toast.classList.add('show');
+                try {
+                    await fetch('/api/app/install-update', { method: 'POST' });
+                } catch (err) {
+                    console.error('Erreur install update:', err);
+                }
+                return;
+            }
+
+            if (isCheckingUpdate) return;
+            isCheckingUpdate = true;
+
+            if (label) label.textContent = 'Vérification...';
+            if (btn) btn.classList.add('checking');
+
+            try {
+                const res = await fetch('/api/app/check-update', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.status === 'available') {
+                    if (toastText) toastText.textContent = 'Nouvelle version v' + (data.latestVersion || '') + ' trouvée ! Téléchargement...';
+                    if (toast) toast.classList.add('show');
+                    if (label) label.textContent = 'Téléchargement...';
+
+                    // Suivre la progression du téléchargement
+                    clearInterval(updatePollInterval);
+                    updatePollInterval = setInterval(async () => {
+                        try {
+                            const pollRes = await fetch('/api/app/update-status');
+                            const pollData = await pollRes.json();
+
+                            if (pollData.status === 'downloading') {
+                                if (label) label.textContent = pollData.progress + '%';
+                                if (toastText) toastText.textContent = 'Téléchargement de la mise à jour : ' + pollData.progress + '%';
+                            } else if (pollData.status === 'downloaded') {
+                                clearInterval(updatePollInterval);
+                                window._updateReadyToInstall = true;
+                                if (label) label.textContent = 'Installer (v' + (pollData.latestVersion || '') + ')';
+                                if (btn) {
+                                    btn.classList.remove('checking');
+                                    btn.style.borderColor = '#ffffff';
+                                    btn.style.boxShadow = '0 0 14px rgba(255, 255, 255, 0.4)';
+                                }
+                                if (toastText) toastText.textContent = 'Mise à jour prête ! Cliquez pour redémarrer et installer.';
+                                if (toast) toast.classList.add('show');
+                            }
+                        } catch (e) {}
+                    }, 1500);
+
+                } else if (data.status === 'downloaded') {
+                    window._updateReadyToInstall = true;
+                    if (label) label.textContent = 'Installer (v' + (data.latestVersion || '') + ')';
+                    if (toastText) toastText.textContent = 'Mise à jour téléchargée ! Cliquez pour redémarrer.';
+                    if (toast) toast.classList.add('show');
+                } else {
+                    // À jour
+                    if (label) label.textContent = 'Mise à jour';
+                    if (toastText) toastText.textContent = 'AutoFrame 1.0 est à jour (v' + (data.currentVersion || '1.0.0') + ')';
+                    if (toast) {
+                        toast.classList.add('show');
+                        clearTimeout(window._updateToastTimer);
+                        window._updateToastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+                    }
+                }
+            } catch (err) {
+                if (label) label.textContent = 'Mise à jour';
+                if (toastText) toastText.textContent = 'AutoFrame 1.0 est à jour.';
+                if (toast) {
+                    toast.classList.add('show');
+                    clearTimeout(window._updateToastTimer);
+                    window._updateToastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+                }
+            } finally {
+                isCheckingUpdate = false;
+                if (btn) btn.classList.remove('checking');
+            }
         }
+
+        // Vérification silencieuse discrète en tâche de fond 4s après le chargement
+        window.addEventListener('load', () => {
+            setTimeout(async () => {
+                try {
+                    const res = await fetch('/api/app/update-status');
+                    const data = await res.json();
+                    if (data.status === 'downloaded') {
+                        window._updateReadyToInstall = true;
+                        const btn = document.querySelector('.btn-update-pill');
+                        const label = btn ? btn.querySelector('.update-label') : null;
+                        if (label) label.textContent = 'Installer (v' + (data.latestVersion || '') + ')';
+                        if (btn) {
+                            btn.style.borderColor = '#ffffff';
+                            btn.style.boxShadow = '0 0 14px rgba(255, 255, 255, 0.4)';
+                        }
+                    }
+                } catch(e) {}
+            }, 4000);
+        });
     </script>
 
     <!-- MODAL VIDÉO TUTORIEL PLAYER -->
