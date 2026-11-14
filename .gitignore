@@ -1,4 +1,11 @@
 # ==============================================================================
+# DOCUMENTATION PRIVÉE LOCALE (HORS GITHUB)
+# ==============================================================================
+00_Docs/
+00_Docs/**
+DOCUMENTATION_CREATION_VIDEO.md
+
+# ==============================================================================
 # SECRETS & CONFIGURATION LOCALE (NE JAMAIS COMMITER SUR GITHUB)
 # ==============================================================================
 # Fichier local contenant les clés API (géré automatiquement par settings.html ou settings.html)
