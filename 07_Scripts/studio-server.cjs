@@ -2202,7 +2202,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Chargement de la configuration API
                 const apiCfg = (() => {
-                    const cPath = path.join(ROOT_DIR, '07_Scripts', 'api_config.json');
+                    const cPath = getResolvedConfigPath();
                     if (fs.existsSync(cPath)) {
                         try { return JSON.parse(fs.readFileSync(cPath, 'utf8')); } catch (e) {}
                     }

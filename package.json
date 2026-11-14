@@ -10,7 +10,8 @@
     "render": "node 07_Scripts/render.cjs",
     "desktop": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win",
+    "predist": "node 07_Scripts/audit-build-security.cjs"
   },
   "keywords": [
     "video-editor",
@@ -53,14 +54,15 @@
     "files": [
       "**/*",
       "!Clients/**/*",
-      "!Docs/**/*",
       "!03_Chaines/**/*",
       "!04_Videos/**/*",
       "!08_Rendus/**/*",
+      "!Docs/**/*",
       "!07_Scripts/api_config.json",
       "!07_Scripts/api_config*.json",
       "!api_config.json",
       "!user_settings.json",
+      "!.env*",
       "!dist/**/*",
       "!.git/**/*",
       "!.agents/**/*",
