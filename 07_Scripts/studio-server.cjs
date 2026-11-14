@@ -848,7 +848,7 @@ const server = http.createServer(async (req, res) => {
                 });
             }
 
-            // B. Vidéos des chaînes (03_Chaines/<channelId>/...)
+            // B. Vidéos des chaînes / Créateurs (03_Chaines/<channelId>/...)
             if (fs.existsSync(chainesDir)) {
                 const chFolders = fs.readdirSync(chainesDir, { withFileTypes: true }).filter(d => d.isDirectory());
                 chFolders.forEach(chDir => {
@@ -864,8 +864,36 @@ const server = http.createServer(async (req, res) => {
                             file: file,
                             path: `03_Chaines/${chDir.name}/${file}`,
                             isStandalone: false,
+                            isClient: false,
                             channelId: chDir.name,
                             channelName: chName,
+                            status: meta.status,
+                            duration: meta.duration,
+                            format: meta.format
+                        });
+                    });
+                });
+            }
+
+            // B-bis. Vidéos des Clients du Monteur (Clients/<clientName>/*.html)
+            const clientsBaseDir = path.join(USER_DATA_DIR, 'Clients');
+            if (fs.existsSync(clientsBaseDir)) {
+                const clientFolders = fs.readdirSync(clientsBaseDir, { withFileTypes: true }).filter(d => d.isDirectory());
+                clientFolders.forEach(cDir => {
+                    const clientFolderFull = path.join(clientsBaseDir, cDir.name);
+                    const cVids = fs.readdirSync(clientFolderFull).filter(f => f.endsWith('.html'));
+                    cVids.forEach(file => {
+                        const fullPath = path.join(clientFolderFull, file);
+                        const meta = readVideoMetadata(fullPath);
+                        videos.push({
+                            name: file,
+                            file: file,
+                            path: `Clients/${cDir.name}/${file}`,
+                            isStandalone: false,
+                            isClient: true,
+                            clientName: cDir.name,
+                            channelId: cDir.name,
+                            channelName: cDir.name,
                             status: meta.status,
                             duration: meta.duration,
                             format: meta.format
@@ -894,18 +922,22 @@ const server = http.createServer(async (req, res) => {
         // B-bis. Inclure les créations en cours issues d'activeCreationJobs
         for (const [jId, job] of activeCreationJobs.entries()) {
             if (job.status === 'processing') {
-                const vidPath = job.videoUrl || (job.channelId ? `03_Chaines/${job.channelId}/${job.fileName}` : `04_Videos/${job.fileName}`);
+                const isJobClient = Boolean(job.isClient || job.clientName);
+                const vidPath = job.videoUrl || (isJobClient ? `Clients/${job.clientName}/${job.fileName}` : (job.channelId ? `03_Chaines/${job.channelId}/${job.fileName}` : `04_Videos/${job.fileName}`));
                 const existingIdx = videos.findIndex(v => v.path === vidPath || (job.fileName && (v.name === job.fileName || v.name === `${job.fileName}.html`)));
                 if (existingIdx !== -1) {
                     videos[existingIdx].status = 'processing';
                     videos[existingIdx].jobId = jId;
+                    if (isJobClient) videos[existingIdx].isClient = true;
                 } else {
                     const cleanName = job.fileName ? (job.fileName.endsWith('.html') ? job.fileName : `${job.fileName}.html`) : 'Vidéo en cours...';
                     videos.unshift({
                         name: cleanName,
                         file: cleanName,
                         path: vidPath.endsWith('.html') ? vidPath : `${vidPath}.html`,
-                        isStandalone: !job.channelId,
+                        isStandalone: !job.channelId && !isJobClient,
+                        isClient: isJobClient,
+                        clientName: job.clientName || null,
                         channelId: job.channelId || null,
                         channelName: job.channelName || null,
                         status: 'processing',
@@ -2484,7 +2516,8 @@ const server = http.createServer(async (req, res) => {
         reqPath.startsWith('/09_Pages/05_Scenes/') || 
         reqPath.startsWith('/09_Pages/06_Templates/') || 
         reqPath.startsWith('/09_Pages/07_Scripts/') || 
-        reqPath.startsWith('/09_Pages/08_Rendus/')) {
+        reqPath.startsWith('/09_Pages/08_Rendus/') || 
+        reqPath.startsWith('/09_Pages/Clients/')) {
         reqPath = reqPath.replace('/09_Pages', '');
     }
 

@@ -1195,6 +1195,216 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+    
+        /* --- SECTION PROMPT DU MONTEUR & SLIDE COLLAPSIBLE --- */
+        .monteur-prompt-card {
+            background: #0f1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+        .monteur-prompt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .monteur-prompt-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+        .monteur-fmt-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 3px;
+        }
+        .btn-fmt-pill {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-fmt-pill:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .btn-fmt-pill.active {
+            background: #ffffff;
+            color: #000000;
+            font-weight: 700;
+        }
+        .monteur-prompt-textarea {
+            width: 100%;
+            min-height: 90px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .monteur-prompt-textarea:focus {
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+        }
+        .monteur-prompt-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.32);
+        }
+        .monteur-prompt-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .monteur-assets-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .asset-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .asset-pill b {
+            color: #ffffff;
+        }
+        .btn-create-client-video {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+        .btn-create-client-video:hover {
+            background: #e4e4e7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
+        }
+        .btn-create-client-video:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* --- SWITCH SCRIPT HORODATÉ DANS MONTEUR --- */
+        .switch-script-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 4px 12px 4px 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        .switch-script-container:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+        .switch-script-container input[type="checkbox"] {
+            display: none;
+        }
+        .switch-script-track {
+            width: 32px;
+            height: 18px;
+            background: #27272a;
+            border-radius: 18px;
+            position: relative;
+            transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+        }
+        .switch-script-thumb {
+            width: 14px;
+            height: 14px;
+            background: #a1a1aa;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
+        }
+        .switch-script-container input[type="checkbox"]:checked + .switch-script-track {
+            background: #ffffff;
+        }
+        .switch-script-container input[type="checkbox"]:checked + .switch-script-track .switch-script-thumb {
+            transform: translateX(14px);
+            background: #09090b;
+        }
+        .switch-script-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #e4e4e7;
+            letter-spacing: 0.2px;
+        }
+
+        /* --- CONTENEUR COLLAPSIBLE DU SCRIPT HORODATÉ (SLIDE FLUIDE) --- */
+        .script-collapsible-wrapper {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-8px);
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, transform 0.3s ease, margin 0.3s ease;
+            margin-top: 0;
+            pointer-events: none;
+        }
+        .script-collapsible-wrapper.open {
+            max-height: 800px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 10px;
+            pointer-events: auto;
+        }
+
     </style>
 </head>
 <body>
@@ -1498,6 +1708,84 @@
 
             </div>
 
+        
+            <!-- ============================================================= -->
+            <!-- SECTION 3 : GÉNÉRATION VIDÉO DU MONTEUR POUR CE CLIENT         -->
+            <!-- ============================================================= -->
+            <div class="section-separator" style="margin-top: 20px;">
+                <div class="section-title">
+                    <span>⚡ 3. Génération Vidéo IA</span>
+                </div>
+                <span class="section-desc">Générez la vidéo finale du client à partir de ses rushes, voix off, musiques et directives</span>
+            </div>
+
+            <div class="monteur-prompt-card" id="monteurPromptCard">
+                <div class="monteur-prompt-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="monteur-prompt-icon">✨</div>
+                        <div>
+                            <div style="font-size: 13.5px; font-weight: 700; color: #ffffff;">Prompt de Montage Vidéo</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">Directives créatives, structure narrative et consignes de découpage</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <!-- Sélecteur de format rapide -->
+                        <div class="monteur-fmt-group">
+                            <button type="button" class="btn-fmt-pill active" data-fmt="9:16" onclick="setMonteurVideoFormat('9:16', this)">📱 9:16 Short</button>
+                            <button type="button" class="btn-fmt-pill" data-fmt="16:9" onclick="setMonteurVideoFormat('16:9', this)">🖥️ 16:9 Paysage</button>
+                            <button type="button" class="btn-fmt-pill" data-fmt="1:1" onclick="setMonteurVideoFormat('1:1', this)">⬛ 1:1 Carré</button>
+                        </div>
+
+                        <!-- Switch Script horodaté -->
+                        <label class="switch-script-container" title="Activer pour renseigner un script horodaté scène par scène">
+                            <input type="checkbox" id="monteurToggleScriptCheckbox" onchange="toggleMonteurScriptBlock(this.checked)">
+                            <span class="switch-script-track">
+                                <span class="switch-script-thumb"></span>
+                            </span>
+                            <span class="switch-script-label">Script horodaté</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Textarea du Prompt -->
+                <textarea class="monteur-prompt-textarea" id="monteurVideoPrompt" placeholder="Décrivez les consignes de montage pour ce client : sujet de la vidéo, ton, rythme dynamique, animations souhaitées, mise en avant des rushes et synchronisation..."></textarea>
+
+                <!-- Bloc collapsible pour Script Horodaté (optionnel, fluide) -->
+                <div class="script-collapsible-wrapper" id="monteurScriptCollapsibleWrapper">
+                    <div style="margin-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.12); padding-top: 10px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="font-size: 11.5px; font-weight: 600; color: #ffffff;">Script Horodaté Scène par Scène (Optionnel) :</span>
+                            <span style="font-size: 10.5px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Exemple : [00:00 - 00:05] Scène 1 : Intro</span>
+                        </div>
+                        <textarea class="monteur-prompt-textarea" id="monteurVideoCustomScript" style="min-height: 120px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; line-height: 1.5;" placeholder="[00:00 - 00:05] Scène 1 : Accroche percutante
+Voix : &quot;Voici le secret numéro 1 pour doubler vos résultats.&quot;
+Visuel : Rush intro avec zoom avant dynamique et titre 3D.
+
+[00:05 - 00:15] Scène 2 : Démonstration
+Voix : &quot;Regardez attentivement cette méthode étape par étape.&quot;
+Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></textarea>
+                    </div>
+                </div>
+
+                <!-- Footer : Résumé des assets du client & Bouton de Génération -->
+                <div class="monteur-prompt-footer">
+                    <div class="monteur-assets-pills" id="monteurAssetsPills">
+                        <span class="asset-pill" id="pillClips">📹 <b id="pillCountClips">0</b> rush</span>
+                        <span class="asset-pill" id="pillVoice">🎙️ <b id="pillCountVoice">0</b> voix</span>
+                        <span class="asset-pill" id="pillMusic">🎵 <b id="pillCountMusic">0</b> musique</span>
+                        <span class="asset-pill" id="pillSfx">🔊 <b id="pillCountSfx">0</b> SFX</span>
+                        <span class="asset-pill" id="pillImages">🎨 <b id="pillCountImages">0</b> image</span>
+                        <span class="asset-pill" id="pillSkills">📘 <b id="pillCountSkills">0</b> directive</span>
+                    </div>
+
+                    <button type="button" class="btn-create-client-video" id="btnSubmitClientVideo" onclick="submitClientVideoCreation()">
+                        <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span>Créer la Vidéo (Génération IA)</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
 
         <!-- EMPTY STATE LORSQU'AUCUN CLIENT N'EXISTE -->
@@ -1728,6 +2016,7 @@
                         avatarFallback.style.display = 'none';
                         showToast(`Photo de profil du client "${currentClient.name}" mise à jour !`);
                         renderClientsList();
+            updateMonteurAssetsSummary();
                     } else {
                         showToast(data.error || 'Erreur enregistrement photo client', 'error');
                     }
@@ -2446,6 +2735,152 @@
         // Initialisation globale au chargement
         fetchGlobalSkills();
         fetchClients();
+    
+        let monteurSelectedFormat = '9:16';
+
+        function setMonteurVideoFormat(fmt, btnEl) {
+            monteurSelectedFormat = fmt;
+            document.querySelectorAll('.monteur-fmt-group .btn-fmt-pill').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+        }
+
+        function toggleMonteurScriptBlock(active) {
+            const wrapper = document.getElementById('monteurScriptCollapsibleWrapper');
+            const chk = document.getElementById('monteurToggleScriptCheckbox');
+            if (chk) chk.checked = active;
+            if (wrapper) {
+                if (active) {
+                    wrapper.classList.add('open');
+                    const scriptArea = document.getElementById('monteurVideoCustomScript');
+                    if (scriptArea) setTimeout(() => scriptArea.focus(), 250);
+                } else {
+                    wrapper.classList.remove('open');
+                }
+            }
+        }
+
+        function updateMonteurAssetsSummary() {
+            if (!currentClient || !currentClient.folders) return;
+            const f = currentClient.folders;
+            const clips = (f.clips_video || []).length;
+            const voice = (f.voix_off || []).length;
+            const music = (f.musiques || []).length;
+            const sfx = (f.effets_sonores || []).length;
+            const imgs = (f.images_illustrations || []).length + (f.images_references || []).length;
+            const skills = (f.skills || []).length;
+
+            const elClips = document.getElementById('pillCountClips'); if (elClips) elClips.textContent = clips;
+            const elVoice = document.getElementById('pillCountVoice'); if (elVoice) elVoice.textContent = voice;
+            const elMusic = document.getElementById('pillCountMusic'); if (elMusic) elMusic.textContent = music;
+            const elSfx = document.getElementById('pillCountSfx'); if (elSfx) elSfx.textContent = sfx;
+            const elImgs = document.getElementById('pillCountImages'); if (elImgs) elImgs.textContent = imgs;
+            const elSkills = document.getElementById('pillCountSkills'); if (elSkills) elSkills.textContent = skills;
+        }
+
+        async function submitClientVideoCreation() {
+            if (!currentClient || !currentClient.name) {
+                alert('Veuillez sélectionner un client.');
+                return;
+            }
+            const promptEl = document.getElementById('monteurVideoPrompt');
+            const prompt = promptEl ? promptEl.value.trim() : '';
+            if (!prompt) {
+                alert('Veuillez renseigner les consignes ou le prompt de montage pour ce client.');
+                if (promptEl) promptEl.focus();
+                return;
+            }
+
+            const isScriptActive = Boolean(document.getElementById('monteurToggleScriptCheckbox')?.checked);
+            const scriptEl = document.getElementById('monteurVideoCustomScript');
+            const customScript = isScriptActive && scriptEl ? scriptEl.value.trim() : '';
+
+            const btn = document.getElementById('btnSubmitClientVideo');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span>Préparation du montage IA...</span>`;
+            }
+
+            // Récupérer tous les assets du client
+            const clientName = currentClient.name;
+            const userUploadedAssets = [];
+            const imageFiles = [];
+            let voiceFile = '';
+            let musicFile = '';
+
+            if (currentClient.folders) {
+                Object.keys(currentClient.folders).forEach(cat => {
+                    (currentClient.folders[cat] || []).forEach(f => {
+                        const relPath = `Clients/${clientName}/${cat}/${f.name}`;
+                        userUploadedAssets.push({
+                            category: cat,
+                            name: f.name,
+                            relativePath: relPath,
+                            url: `/${relPath}`,
+                            size: f.size || 0
+                        });
+                        if (['images_illustrations', 'images_references'].includes(cat) && !imageFiles.includes(f.name)) {
+                            imageFiles.push(f.name);
+                        }
+                        if (cat === 'voix_off' && !voiceFile) {
+                            voiceFile = f.name;
+                        }
+                        if (cat === 'musiques' && !musicFile) {
+                            musicFile = f.name;
+                        }
+                    });
+                });
+            }
+
+            const cleanPromptWords = prompt
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim()
+                .split(/\s+/)
+                .filter(w => w.length > 2);
+            
+            let autoName = cleanPromptWords.slice(0, 3).join('_');
+            if (!autoName || autoName.length < 2) {
+                autoName = `client_${clientName.toLowerCase()}_${Date.now().toString().slice(-4)}`;
+            }
+
+            const payload = {
+                fileName: autoName,
+                prompt: prompt,
+                format: monteurSelectedFormat || '9:16',
+                useTemplate: false,
+                template: 'none',
+                style: 'none',
+                backgroundType: 'black',
+                backgroundColor: '#000000',
+                audioSetup: voiceFile ? (musicFile ? 'full_mix' : 'voice_only') : (musicFile ? 'music_only' : 'full_mix'),
+                subtitles: true,
+                subtitleType: 'karaoke',
+                subtitleFont: 'Montserrat',
+                subtitleBaseColor: '#ffffff',
+                subtitleAccentColor: '#38bdf8',
+                channelId: clientName,
+                subfolder: clientName,
+                isClient: true,
+                clientName: clientName,
+                userUploadedAssets: userUploadedAssets,
+                hasUserAssets: userUploadedAssets.length > 0,
+                images: imageFiles,
+                hasUserImages: imageFiles.length > 0,
+                hasUserVoice: Boolean(voiceFile),
+                hasUserMusic: Boolean(musicFile),
+                voiceover: voiceFile,
+                music: musicFile,
+                hasCustomScript: isScriptActive && customScript.length > 0,
+                customScript: customScript,
+                script: customScript,
+                timestamp: Date.now()
+            };
+
+            localStorage.setItem('vibeeditor_pending_creation', JSON.stringify(payload));
+            window.location.href = `video_processus.html?client=${encodeURIComponent(clientName)}&channel=${encodeURIComponent(clientName)}`;
+        }
+
     </script>
 </body>
 </html>

@@ -1337,6 +1337,62 @@
             animation: scanningBeamLoop 1.8s ease-in-out infinite alternate;
         }
 
+    
+        /* --- SOUS-MENUS DU VOLET VIDÉOS : CRÉATEURS VS CLIENTS --- */
+        .video-subnav-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #09090b;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+        .video-subnav-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .video-subnav-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+        .video-subnav-btn.active {
+            color: #000000;
+            background: #ffffff;
+            border-color: #ffffff;
+            font-weight: 700;
+        }
+        .subnav-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #d4d4d8;
+        }
+        .video-subnav-btn.active .subnav-badge {
+            background: #000000;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
     </style>
 </head>
 <body>
@@ -1585,8 +1641,22 @@
                 </button>
             </div>
 
-            <!-- VUE 1 : MES VIDÉOS -->
+            <!-- VUE 1 : MES VIDÉOS (AVEC SOUS-MENUS CRÉATEURS VS CLIENTS) -->
             <div id="viewVideos" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+                <!-- SOUS-MENUS DU VOLET VIDÉOS : CRÉATEURS VS CLIENTS -->
+                <div class="video-subnav-bar">
+                    <button type="button" class="video-subnav-btn active" id="subnavBtnCreateur" onclick="setVideoFilter('createur')" title="Afficher les vidéos des créateurs & chaînes">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Vidéos Créateurs</span>
+                        <span class="subnav-badge" id="badgeCountCreateurs">0</span>
+                    </button>
+                    <button type="button" class="video-subnav-btn" id="subnavBtnClient" onclick="setVideoFilter('client')" title="Afficher les vidéos des clients du monteur">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Vidéos Clients</span>
+                        <span class="subnav-badge" id="badgeCountClients">0</span>
+                    </button>
+                </div>
+
                 <div class="panel-content" id="videoListContainer">
                     <!-- Hydraté immédiatement sans délai depuis le cache local -->
                 </div>
@@ -3058,42 +3128,82 @@
             }
         }
 
+        let currentVideoFilter = 'createur'; // 'createur' | 'client'
+        let allWorkspaceVideos = [];
+
+        function setVideoFilter(filter) {
+            currentVideoFilter = filter;
+            const btnCreateur = document.getElementById('subnavBtnCreateur');
+            const btnClient = document.getElementById('subnavBtnClient');
+            if (btnCreateur) btnCreateur.classList.toggle('active', filter === 'createur');
+            if (btnClient) btnClient.classList.toggle('active', filter === 'client');
+            renderVideosUI(allWorkspaceVideos, activeVideoPath);
+        }
+
         function renderVideosUI(videos, preferredActivePath) {
             const container = document.getElementById('videoListContainer');
             if (!container) return;
 
-            if (!videos || videos.length === 0) {
+            if (videos && Array.isArray(videos)) {
+                allWorkspaceVideos = videos;
+            }
+
+            // Découpage en 2 collections : Créateurs vs Clients
+            const createurVideos = (allWorkspaceVideos || []).filter(v => {
+                const p = (typeof v === 'string' ? v : (v.path || v.file || '')).toLowerCase();
+                const isCl = typeof v === 'object' && Boolean(v.isClient || v.clientName);
+                return !isCl && !p.startsWith('clients/');
+            });
+
+            const clientVideos = (allWorkspaceVideos || []).filter(v => {
+                const p = (typeof v === 'string' ? v : (v.path || v.file || '')).toLowerCase();
+                const isCl = typeof v === 'object' && Boolean(v.isClient || v.clientName);
+                return isCl || p.startsWith('clients/');
+            });
+
+            // Mise à jour des compteurs dans les badges des sous-menus
+            const badgeCountCreateurs = document.getElementById('badgeCountCreateurs');
+            if (badgeCountCreateurs) badgeCountCreateurs.textContent = createurVideos.length;
+
+            const badgeCountClients = document.getElementById('badgeCountClients');
+            if (badgeCountClients) badgeCountClients.textContent = clientVideos.length;
+
+            // Sélection de la liste à afficher selon le filtre actif
+            const displayVideos = (currentVideoFilter === 'client') ? clientVideos : createurVideos;
+
+            if (!displayVideos || displayVideos.length === 0) {
+                const emptyTitle = (currentVideoFilter === 'client') ? 'Aucune vidéo client' : 'Aucune vidéo créateur';
+                const emptySub = (currentVideoFilter === 'client') 
+                    ? 'Générez des vidéos pour vos clients depuis la page Monteur.' 
+                    : 'Ajoutez ou générez des vidéos dans 04_Videos/ ou dans vos Chaînes.';
+
                 container.innerHTML = `
                     <div class="empty-state">
                         <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                        <div class="empty-state-title">Aucune vidéo</div>
-                        <div class="empty-state-sub">Ajoutez des vidéos dans 04_Videos/ ou dans vos Chaînes</div>
+                        <div class="empty-state-title">${emptyTitle}</div>
+                        <div class="empty-state-sub">${emptySub}</div>
                     </div>
                 `;
-                activeVideoPath = '';
-                localStorage.removeItem(CACHE_KEY_ACTIVE);
-                duration = 0.0;
-                totalFrames = 0;
-                currentFrame = 0;
-                pausePlayback();
-                document.getElementById('activeCompositionName').textContent = 'Aucune vidéo';
-                previewFrame.src = 'about:blank';
-                updateTimelineTracksFromVideoConfig();
-                updateTimelineUI();
                 return;
             }
 
             const activeName = (preferredActivePath || activeVideoPath || '').split('/').pop();
-            const chosenObj = videos.find(v => (typeof v === 'string' ? v : v.file) === activeName) || videos[0];
+            const chosenObj = displayVideos.find(v => (typeof v === 'string' ? v : v.file) === activeName) || displayVideos[0];
             const chosenName = typeof chosenObj === 'string' ? chosenObj : chosenObj.name;
-            const targetPath = typeof chosenObj === 'string' ? `04_Videos/${chosenName}` : chosenObj.path;
+            const targetPath = typeof chosenObj === 'string' ? (currentVideoFilter === 'client' ? `Clients/${chosenName}` : `04_Videos/${chosenName}`) : chosenObj.path;
 
             container.innerHTML = '';
-            videos.forEach((vidObj) => {
+            displayVideos.forEach((vidObj) => {
                 const vidName = typeof vidObj === 'string' ? vidObj : vidObj.name;
-                const vidPath = typeof vidObj === 'string' ? `04_Videos/${vidName}` : vidObj.path;
+                const vidPath = typeof vidObj === 'string' ? (currentVideoFilter === 'client' ? `Clients/${vidName}` : `04_Videos/${vidName}`) : vidObj.path;
                 const isProcessing = (typeof vidObj === 'object' && vidObj.status === 'processing');
-                const channelLabel = (typeof vidObj === 'object' && vidObj.channelName) ? vidObj.channelName : (typeof vidObj === 'object' && !vidObj.isStandalone ? 'Chaîne' : 'Sans chaîne');
+                
+                const isClientItem = (typeof vidObj === 'object' && Boolean(vidObj.isClient || vidObj.clientName)) || vidPath.toLowerCase().startsWith('clients/');
+                const clientTitle = (typeof vidObj === 'object' && vidObj.clientName) ? `👤 ${vidObj.clientName}` : '👤 Client';
+                const channelLabel = isClientItem 
+                    ? clientTitle 
+                    : ((typeof vidObj === 'object' && vidObj.channelName) ? vidObj.channelName : (typeof vidObj === 'object' && !vidObj.isStandalone ? 'Chaîne' : 'Sans chaîne'));
+
                 const isCurrentActive = (!isProcessing && (vidPath === targetPath || vidName === chosenName));
 
                 const card = document.createElement('div');
@@ -3125,7 +3235,7 @@
                         </div>
                     </div>
                     <div class="item-meta">
-                        <span style="color:${channelLabel === 'Sans chaîne' ? '#ef4444' : '#ffffff'}; font-weight:600;">${escapeHtml(channelLabel)}</span>
+                        <span style="color:${isClientItem ? '#60a5fa' : (channelLabel === 'Sans chaîne' ? '#ef4444' : '#ffffff')}; font-weight:600;">${escapeHtml(channelLabel)}</span>
                         <span>•</span>
                         <span>${isProcessing ? 'Génération en cours...' : (videoDur ? videoDur + 's' : 'Prête')}</span>
                     </div>
@@ -3304,7 +3414,18 @@
                     if (previewFrame && activeVideoPath) previewFrame.src = '/' + activeVideoPath.replace(/^\/+/, '');
                 }
 
-                // 2. Restaurer la liste des vidéos
+                
+            // Détection automatique du filtre actif (Client vs Créateur) depuis l'URL ou le chemin actif
+            const urlQuery = new URLSearchParams(window.location.search);
+            if (urlQuery.has('client') || (activeVideoPath && activeVideoPath.toLowerCase().startsWith('clients/'))) {
+                currentVideoFilter = 'client';
+                const btnCreateur = document.getElementById('subnavBtnCreateur');
+                const btnClient = document.getElementById('subnavBtnClient');
+                if (btnCreateur) btnCreateur.classList.remove('active');
+                if (btnClient) btnClient.classList.add('active');
+            }
+
+            // 2. Restaurer la liste des vidéos
                 let cachedVideos = null;
                 if (lastVideosJson) {
                     try { cachedVideos = JSON.parse(lastVideosJson); } catch (e) {}

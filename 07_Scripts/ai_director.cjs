@@ -580,16 +580,24 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     baseRawName = baseRawName.replace(/\.html$/i, '');
     let finalFileName = `${baseRawName}${suffix}.html`;
 
+    // Détection du mode Client vs Créateur / Chaîne
+    const isClient = Boolean(payload.isClient || payload.clientName);
+    const clientName = payload.clientName || '';
+
     // Chemins cibles
     const baseProjectDir = ROOT_DIR;
-    let videosTargetDir = isChannel
-        ? path.join(baseProjectDir, '03_Chaines', channelId)
-        : path.join(baseProjectDir, '04_Videos');
+    let videosTargetDir = isClient
+        ? path.join(baseProjectDir, 'Clients', clientName)
+        : (isChannel
+            ? path.join(baseProjectDir, '03_Chaines', channelId)
+            : path.join(baseProjectDir, '04_Videos'));
     ensureDir(videosTargetDir);
     let finalFilePath = path.join(videosTargetDir, finalFileName);
-    let relVideoPath = isChannel
-        ? `03_Chaines/${channelId}/${finalFileName}`
-        : `04_Videos/${finalFileName}`;
+    let relVideoPath = isClient
+        ? `Clients/${clientName}/${finalFileName}`
+        : (isChannel
+            ? `03_Chaines/${channelId}/${finalFileName}`
+            : `04_Videos/${finalFileName}`);
 
     // Prise en charge de la reprise d'une vidéo interrompue
     if (payload.resume && payload.targetVideo) {
@@ -717,7 +725,19 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
         fs.writeFileSync(finalFilePath, initialDraftHtml, 'utf8');
     }
 
-    const skillsDirectives = loadSkillsDirectives();
+    let skillsDirectives = loadSkillsDirectives();
+    if (isClient && clientName) {
+        const clientSkillsDir = path.join(ROOT_DIR, 'Clients', clientName, 'skills');
+        if (fs.existsSync(clientSkillsDir)) {
+            try {
+                const sFiles = fs.readdirSync(clientSkillsDir).filter(f => f.endsWith('.md') || f.endsWith('.txt'));
+                sFiles.forEach(sf => {
+                    const c = fs.readFileSync(path.join(clientSkillsDir, sf), 'utf8');
+                    skillsDirectives += `\n\n--- DIRECTIVES SPÉCIFIQUES DU CLIENT ${clientName} (${sf}) ---\n${c.slice(0, 3000)}`;
+                });
+            } catch (e) {}
+        }
+    }
     let templateDirectives = isUsingTemplate ? loadTemplateDirectives(chosenTemplate) : null;
 
     let plan = checkpoint.plan;
@@ -875,11 +895,13 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             logAndSaveStep('step_voice', 'Voix off déjà existante (Reprise)', 38, `[Reprise] Voix off réutilisée : ${generatedVoiceRelPath} (${voiceDurationSeconds.toFixed(1)}s)`, 'success');
         } else if (payload.hasUserVoice && payload.voiceover) {
             logAndSaveStep('step_voice', 'Indexation de la voix off fournie...', 28, `Utilisation du fichier audio fourni : ${payload.voiceover}`, 'info');
-            generatedVoiceRelPath = isChannel
-                ? `${assetPrefix}/Voix_Off/${channelId}/${payload.voiceover}`
-                : `${assetPrefix}/Voix_Off/${payload.voiceover}`;
+            generatedVoiceRelPath = isClient
+                ? `Clients/${clientName}/voix_off/${payload.voiceover}`
+                : (isChannel
+                    ? `${assetPrefix}/Voix_Off/${channelId}/${payload.voiceover}`
+                    : `${assetPrefix}/Voix_Off/${payload.voiceover}`);
 
-            const fullVoicePath = path.join(ROOT_DIR, isChannel ? `01_Assets/Voix_Off/${channelId}/${payload.voiceover}` : `01_Assets/Voix_Off/${payload.voiceover}`);
+            const fullVoicePath = path.resolve(ROOT_DIR, generatedVoiceRelPath);
             const exactDur = await getAudioDuration(fullVoicePath);
             if (exactDur) voiceDurationSeconds = exactDur;
             checkpoint.voice = { done: true, path: generatedVoiceRelPath, duration: voiceDurationSeconds };

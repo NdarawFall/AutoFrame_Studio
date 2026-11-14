@@ -705,7 +705,10 @@
                     }
                 }
 
-                if (payload.channelId) {
+                if (payload.isClient && payload.clientName) {
+                    document.getElementById('badgeChannel').textContent = `Client : ${payload.clientName}`;
+                    document.getElementById('badgeChannel').style.display = 'inline-flex';
+                } else if (payload.channelId) {
                     document.getElementById('badgeChannel').textContent = `Chaîne : ${payload.channelId}`;
                 } else {
                     document.getElementById('badgeChannel').textContent = `Chaîne : Aucune (Autonome)`;
@@ -835,7 +838,7 @@
 
             // Finalisation & Préparation du Studio
             if (!targetVideoPath && payload) {
-                targetVideoPath = payload.channelId ? `03_Chaines/${payload.channelId}/${payload.fileName}.html` : `04_Videos/${payload.fileName}.html`;
+                targetVideoPath = payload.isClient ? `Clients/${payload.clientName}/${payload.fileName}.html` : (payload.channelId ? `03_Chaines/${payload.channelId}/${payload.fileName}.html` : `04_Videos/${payload.fileName}.html`);
             }
 
             updateProgress(100, 'Vidéo prête à être montée !');
@@ -845,7 +848,8 @@
                 localStorage.setItem('hyperstudio_cached_active_video', targetVideoPath);
             }
 
-            const studioUrl = targetVideoPath ? `studio.html?video=${encodeURIComponent(targetVideoPath)}` : 'studio.html';
+            const clientParam = payload.isClient ? `&client=${encodeURIComponent(payload.clientName)}` : '';
+                const studioUrl = targetVideoPath ? `studio.html?video=${encodeURIComponent(targetVideoPath)}${clientParam}` : 'studio.html';
             document.getElementById('btnGoStudio').href = studioUrl;
             document.getElementById('completionBar').classList.add('show');
 
