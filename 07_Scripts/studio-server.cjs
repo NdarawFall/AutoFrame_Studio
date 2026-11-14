@@ -227,6 +227,13 @@ const server = http.createServer(async (req, res) => {
     // -------------------------------------------------------------------------
     // API ESPACE MONTEUR & GESTIONNAIRE DE CLIENTS
     // -------------------------------------------------------------------------
+    
+    // Cache en mémoire pour accélérer instantanément les réponses API de l'espace Monteur
+    let cachedClientsResponseJson = null;
+    let cachedSkillsResponseJson = null;
+    function invalidateClientsCache() { cachedClientsResponseJson = null; }
+    function invalidateSkillsCache() { cachedSkillsResponseJson = null; }
+
     const CLIENT_SUBFOLDERS = [
         'images_references',
         'videos_references',
@@ -244,6 +251,10 @@ const server = http.createServer(async (req, res) => {
 
     // API : Lister tous les clients et leurs sous-dossiers
     if (cleanUrl === '/api/clients' && req.method === 'GET') {
+        if (cachedClientsResponseJson) {
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(cachedClientsResponseJson);
+        }
         try {
             const entries = fs.readdirSync(clientsBasePath, { withFileTypes: true });
             const clientsList = [];
@@ -304,8 +315,10 @@ const server = http.createServer(async (req, res) => {
 
             clientsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+            const jsonOut = JSON.stringify({ success: true, clients: clientsList });
+            cachedClientsResponseJson = jsonOut;
             res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-            return res.end(JSON.stringify({ success: true, clients: clientsList }));
+            return res.end(jsonOut);
         } catch (err) {
             console.error('Erreur GET /api/clients :', err);
             res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -315,6 +328,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Créer un nouveau client avec ses 5 sous-dossiers
     if (cleanUrl === '/api/clients/create' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -359,6 +373,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Uploader un asset dans un des 5 sous-dossiers du client
     if (cleanUrl === '/api/clients/upload' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -409,6 +424,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Supprimer un asset d'un client
     if (cleanUrl === '/api/clients/delete-asset' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -436,6 +452,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Supprimer un client
     if (cleanUrl === '/api/clients/delete-client' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -461,6 +478,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Définir ou modifier la photo de profil du client (avatar rond avec suppression de l'ancien)
     if (cleanUrl === '/api/clients/avatar' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -517,6 +535,7 @@ const server = http.createServer(async (req, res) => {
 
     // API : Renommer un client
     if (cleanUrl === '/api/clients/rename' && req.method === 'POST') {
+        invalidateClientsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -676,6 +695,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (cleanUrl === '/api/skills/monteur' && req.method === 'GET') {
+        if (cachedSkillsResponseJson) {
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(cachedSkillsResponseJson);
+        }
         try {
             if (!fs.existsSync(monteurSkillsDir)) fs.mkdirSync(monteurSkillsDir, { recursive: true });
             const files = fs.readdirSync(monteurSkillsDir, { withFileTypes: true })
@@ -691,8 +714,10 @@ const server = http.createServer(async (req, res) => {
                     };
                 });
             files.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+            const skillsOut = JSON.stringify({ success: true, files });
+            cachedSkillsResponseJson = skillsOut;
             res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-            return res.end(JSON.stringify({ success: true, files }));
+            return res.end(skillsOut);
         } catch (err) {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ error: err.message }));
@@ -700,6 +725,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (cleanUrl === '/api/skills/monteur/upload' && req.method === 'POST') {
+        invalidateSkillsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {
@@ -733,6 +759,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (cleanUrl === '/api/skills/monteur/delete' && req.method === 'POST') {
+        invalidateSkillsCache();
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', () => {

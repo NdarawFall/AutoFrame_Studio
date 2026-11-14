@@ -6,7 +6,9 @@
     <title>Espace Monteur — Gestionnaire de Clients & Assets | AutoFrame 1.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
     <style>
         :root {
             --bg-base: #000000;
@@ -2379,12 +2381,14 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
                 const data = await res.json();
                 if (data.success) {
                     allClients = data.clients || [];
+                    try { localStorage.setItem('autoframe_monteur_clients_cache', JSON.stringify(allClients)); } catch (e) {}
                     renderClientsList();
                     if (allClients.length > 0) {
+                        const savedName = localStorage.getItem('autoframe_monteur_active_client_name');
                         const target = currentClient 
                             ? (allClients.find(c => c.name === currentClient.name) || allClients[0])
-                            : allClients[0];
-                        selectClient(target);
+                            : ((savedName && allClients.find(c => c.name === savedName)) || allClients[0]);
+                        selectClient(target, false);
                     } else {
                         document.getElementById('workspaceContainer').style.display = 'none';
                         document.getElementById('noClientWorkspace').style.display = 'block';
@@ -2392,7 +2396,6 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
                 }
             } catch (err) {
                 console.error('Erreur fetchClients:', err);
-                showToast('Impossible de charger les clients', 'error');
             }
         }
 
@@ -2441,10 +2444,11 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
             });
         }
 
-        function selectClient(client) {
+        function selectClient(client, shouldReRenderList = false) {
             currentClient = client;
 
             try {
+                localStorage.setItem('autoframe_monteur_active_client_name', client.name);
                 sessionStorage.setItem('vibeeditor_active_client', JSON.stringify({
                     name: client.name,
                     avatarUrl: client.avatarUrl || ''
@@ -2482,7 +2486,7 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
                 avatarFallback.textContent = client.name.charAt(0).toUpperCase();
             }
 
-            renderClientsList();
+            if (shouldReRenderList) { renderClientsList(); }
 
             // Remplir les 8 catégories (incluant 'skills')
             ALL_CATEGORIES.forEach(cat => {
@@ -2730,7 +2734,28 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
             }
         });
 
-        // Initialisation globale au chargement
+        // Initialisation globale ultra-rapide (Restauration instantanée 0ms depuis le cache local)
+        try {
+            const cachedClientsJson = localStorage.getItem('autoframe_monteur_clients_cache');
+            if (cachedClientsJson) {
+                allClients = JSON.parse(cachedClientsJson);
+                if (allClients.length > 0) {
+                    const savedClientName = localStorage.getItem('autoframe_monteur_active_client_name');
+                    const target = (savedClientName && allClients.find(c => c.name === savedClientName)) || allClients[0];
+                    renderClientsList();
+                    selectClient(target, false);
+                }
+            }
+            const cachedSkillsJson = localStorage.getItem('autoframe_monteur_skills_cache');
+            if (cachedSkillsJson) {
+                globalSkills = JSON.parse(cachedSkillsJson);
+                renderGlobalSkills();
+            }
+        } catch (e) {
+            console.warn('Erreur lecture cache local monteur:', e);
+        }
+
+        // Rafraîchissement silencieux en arrière-plan sans bloquer l'affichage
         fetchGlobalSkills();
         fetchClients();
     
