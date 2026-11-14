@@ -204,9 +204,10 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
 
-        .profile-badge-avatar-ring.ring-client {
-            border: 2px solid #3b82f6;
-            box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+        .profile-badge-avatar-ring.ring-client,
+        .profile-badge-avatar-ring.ring-channel {
+            border: 2px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
         }
 
         .profile-badge-avatar-ring.ring-channel {
@@ -235,12 +236,10 @@
             text-transform: uppercase;
         }
 
-        .fallback-client {
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-        }
-
+        .fallback-client,
         .fallback-channel {
-            background: linear-gradient(135deg, #991b1b, #dc2626);
+            background: #222226;
+            color: #ffffff;
         }
 
         .profile-badge-info {
@@ -262,10 +261,11 @@
             line-height: 1.2;
         }
 
-        .tag-client {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.4);
+        .tag-client,
+        .tag-channel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .tag-channel {
@@ -2247,11 +2247,11 @@
         }
 
         .btn-generate {
-            background: #ff3344;
-            color: #ffffff;
-            border: 1px solid #ff3344;
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #ffffff;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             padding: 13px 26px;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -2259,15 +2259,15 @@
             align-items: center;
             gap: 10px;
             transition: var(--transition-smooth);
-            box-shadow: 0 4px 22px rgba(255, 51, 68, 0.4);
+            box-shadow: 0 4px 22px rgba(255, 255, 255, 0.25);
             text-decoration: none;
         }
 
         .btn-generate:hover:not(:disabled) {
-            background: #e62234;
-            border-color: #e62234;
+            background: #f0f0f0;
+            border-color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(255, 51, 68, 0.6);
+            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.45);
         }
 
         .btn-generate:disabled, .btn-generate[disabled] {
@@ -2500,10 +2500,6 @@
         </div>
 
         <nav class="nav-links">
-            <a href="createur.html" class="nav-btn">
-                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                <span>Chaînes & Vidéos</span>
-            </a>
             <a href="studio.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                 <span>Studio</span>
@@ -2511,10 +2507,6 @@
             <a href="settings.html" class="nav-btn">
                 <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Paramètres</span>
-            </a>
-            <a href="create_video.html" class="nav-btn btn-create-video active">
-                <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Créer une Vidéo</span>
             </a>
         </nav>
     </header>
@@ -2549,22 +2541,22 @@
                     <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                     <span>1. Prompt Général</span>
                 </span>
-                <span class="folder-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">Étape 1 / 2</span>
+                <span class="folder-badge" style="background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);">Étape 1 / 2</span>
             </div>
             <textarea class="prompt-textarea" id="videoPrompt" placeholder="Décrivez votre sujet, l'angle éditorial, le ton ou les directives générales (minimum 20 caractères)..."></textarea>
 
             <div class="prompt-hint" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                 <span>Contexte et direction éditoriale globale.</span>
-                <span id="promptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #f59e0b;">
+                <span id="promptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #a3a3a3;">
                     0 / 20 caractères (encore 20 requis)
                 </span>
             </div>
         </section>
 
         <!-- 1.BIS SCRIPT HORODATÉ OBLIGATOIRE (DIRECTEMENT VISIBLE) -->
-        <section class="prompt-card" id="scriptDirectCard" style="margin-top: 14px; border-left: 3px solid #dc2626;">
+        <section class="prompt-card" id="scriptDirectCard" style="margin-top: 14px; border-left: 3px solid rgba(255, 255, 255, 0.45);">
             <div class="prompt-header">
-                <span class="prompt-title" style="color: #f87171;">
+                <span class="prompt-title" style="color: #ffffff;">
                     <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                     <span>2. Script Horodaté</span>
                 </span>
@@ -2572,10 +2564,10 @@
                     <button type="button" id="btnPasteScriptTemplate" class="btn-script-trigger" onclick="fillDirectSampleScript()" style="font-size: 11.5px; padding: 5px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);">
                         📋 Coller Modèle
                     </button>
-                    <button type="button" id="btnShowPromptGuide" class="btn-script-trigger" onclick="openDocModal()" style="font-size: 11.5px; padding: 5px 12px; background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35);">
+                    <button type="button" id="btnShowPromptGuide" class="btn-script-trigger" onclick="openDocModal()" style="font-size: 11.5px; padding: 5px 12px; background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);">
                         💡 Guide Prompt IA
                     </button>
-                    <span class="folder-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);">Obligatoire *</span>
+                    <span class="folder-badge" style="background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);">Obligatoire *</span>
                 </div>
             </div>
             
@@ -2588,8 +2580,8 @@ Voix : &quot;À la 10e place, Harry Kane avec 52 buts.&quot;
 Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure basse."></textarea>
 
             <div class="prompt-hint" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                <span id="scriptTimingsCount" style="color: #60a5fa; font-weight: 600;">⏳ 0 timing(s) détecté(s) (format attendu : [00:00 - 00:03])</span>
-                <span id="scriptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #ef4444;">
+                <span id="scriptTimingsCount" style="color: #a3a3a3; font-weight: 600;">⏳ 0 timing(s) détecté(s) (format attendu : [00:00 - 00:03])</span>
+                <span id="scriptCharCount" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #a3a3a3;">
                     0 / 30 caractères (encore 30 requis)
                 </span>
             </div>
@@ -2674,8 +2666,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                             <!-- Décision IA -->
                             <button type="button" class="bg-type-row-btn selected" id="bgRow_auto" onclick="selectBackgroundType('auto')">
                                 <div class="bg-type-row-left">
-                                    <span class="bg-type-swatch swatch-ai">✨</span>
-                                    <span class="bg-type-title">Décision IA</span>
+                                    <span class="bg-type-title">Libre</span>
                                 </div>
                                 <span class="bg-type-indicator">✓</span>
                             </button>
@@ -2720,10 +2711,9 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         <!-- Sous-paramètres dynamiques (Couleur unie ou Dégradé) -->
                         <div class="bg-sub-settings-box">
                             <!-- DÉCISION IA (PAR DÉFAUT) -->
-                            <div id="panelAuto" class="bg-sub-panel" style="padding: 10px 14px; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.22); border-radius: 8px; margin-bottom: 10px;">
-                                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c4b5fd;">
-                                    <span>✨</span>
-                                    <span><strong>Scénographie libre :</strong> L'IA choisit l'ambiance et les fonds optimaux pour chaque scène selon le sujet.</span>
+                            <div id="panelAuto" class="bg-sub-panel" style="padding: 12px 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #e2e8f0;">
+                                    <span><strong>Libre :</strong> L'IA choisit l'ambiance et les fonds optimaux pour chaque scène selon le sujet.</span>
                                 </div>
                             </div>
                             <!-- COULEUR UNIE (PRÉSENT DÈS LE DÉBUT, DÉSACTIVÉ JUSQU'À SÉLECTION DE COULEUR UNIE) -->
@@ -3426,7 +3416,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         <div class="script-modal-dialog" style="max-width: 780px;">
             <div class="script-modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="script-modal-icon" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+                    <div class="script-modal-icon" style="background: rgba(255, 255, 255, 0.08); color: #ffffff;">
                         💡
                     </div>
                     <div>
@@ -3725,11 +3715,11 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (promptCounter) {
                 if (hasPrompt) {
                     promptCounter.textContent = `${promptLen} caractères (Valide ✓)`;
-                    promptCounter.style.color = '#10b981';
+                    promptCounter.style.color = '#ffffff';
                 } else {
                     const remaining = 20 - promptLen;
                     promptCounter.textContent = `${promptLen} / 20 caractères (${remaining} requis)`;
-                    promptCounter.style.color = '#f59e0b';
+                    promptCounter.style.color = '#a3a3a3';
                 }
             }
 
@@ -3737,21 +3727,21 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (scriptCounter) {
                 if (hasScript) {
                     scriptCounter.textContent = `${scriptLen} caractères (Valide ✓)`;
-                    scriptCounter.style.color = '#10b981';
+                    scriptCounter.style.color = '#ffffff';
                 } else {
                     const remaining = Math.max(0, 30 - scriptLen);
                     scriptCounter.textContent = `${scriptLen} / 30 caractères (${remaining > 0 ? remaining + ' requis' : 'timings requis'})`;
-                    scriptCounter.style.color = '#ef4444';
+                    scriptCounter.style.color = '#a3a3a3';
                 }
             }
 
             if (timingsCounter) {
                 if (detectedTimings > 0) {
                     timingsCounter.textContent = `✓ ${detectedTimings} scène(s) horodatée(s) détectée(s)`;
-                    timingsCounter.style.color = '#10b981';
+                    timingsCounter.style.color = '#ffffff';
                 } else {
                     timingsCounter.textContent = `⏳ 0 timing détecté (Exemple requis : [00:00 - 00:03])`;
-                    timingsCounter.style.color = '#ef4444';
+                    timingsCounter.style.color = '#a3a3a3';
                 }
             }
 
@@ -3766,19 +3756,19 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 btn.disabled = false;
                 if (hint) {
                     hint.textContent = 'Prompt et Script horodaté validés ! Prêt pour la génération IA.';
-                    hint.style.color = '#10b981';
+                    hint.style.color = '#ffffff';
                 }
-                if (dot) dot.style.background = '#10b981';
+                if (dot) dot.style.background = '#ffffff';
             } else {
                 btn.disabled = true;
                 if (hint) {
                     if (!hasPrompt) {
                         const remaining = 20 - promptLen;
                         hint.textContent = `Le prompt doit comporter au moins 20 caractères (${remaining} restant${remaining > 1 ? 's' : ''})`;
-                        hint.style.color = '#f59e0b';
+                        hint.style.color = '#a3a3a3';
                     } else if (!hasScript) {
                         hint.textContent = 'Le script horodaté est obligatoire (min. 30 car. avec au moins 1 timecode ex: [00:00 - 00:03])';
-                        hint.style.color = '#ef4444';
+                        hint.style.color = '#a3a3a3';
                     } else if (!hasFormat) {
                         hint.textContent = 'Veuillez choisir un format vidéo (16:9, 9:16 ou 1:1)';
                         hint.style.color = 'var(--text-secondary)';
@@ -3793,7 +3783,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                         hint.style.color = 'var(--text-secondary)';
                     }
                 }
-                if (dot) dot.style.background = '#ef4444';
+                if (dot) dot.style.background = 'rgba(255, 255, 255, 0.25)';
             }
         }
 
