@@ -146,13 +146,6 @@
 
                 
 
-        .brand-robot-svg {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-            display: block;
-        }
-
         .brand-badge, a.brand-badge, a.brand-badge:link, a.brand-badge:visited {
             display: inline-flex;
             align-items: center;
@@ -1637,22 +1630,11 @@
             <!-- VUE 3 : MODIFIER (CHATBOT IA) -->
             <div id="viewModifier" style="flex:1; display:none; flex-direction:column; overflow:hidden; background:var(--bg-base);">
                 <!-- Header Modifier épuré sans cible/nom encombrant -->
-                <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <a href="settings.html" id="chatModifierModelBadge" title="Changer de modèle dans Paramètres" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-size:10px; padding:3px 8px; border-radius:4px; background:rgba(255,255,255,0.06); border:1px solid var(--border-subtle); color:var(--text-secondary); transition:var(--transition-smooth);">
-                            <span style="width:6px; height:6px; border-radius:50%; background:#10b981;"></span>
-                            <span id="chatModifierModelName">gemini-3.5-flash-lite</span>
-                        </a>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-                        <a href="settings.html" id="chatModifierModelBadge" title="Changer de modèle dans Paramètres" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-size:10px; padding:3px 7px; border-radius:4px; background:rgba(255,255,255,0.06); border:1px solid var(--border-subtle); color:var(--text-secondary); transition:var(--transition-smooth);">
-                            <span style="width:6px; height:6px; border-radius:50%; background:#10b981;"></span>
-                            <span id="chatModifierModelName">gemini-3.5-flash-lite</span>
-                        </a>
-                        <button onclick="clearModifierChatHistory()" class="btn-icon" title="Effacer l'historique de cette vidéo" style="width:26px; height:26px; color:var(--text-muted); cursor:pointer;">
-                            <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                    </div>
+                <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                    <button onclick="clearModifierChatHistory()" class="btn-icon" title="Effacer l'historique de cette vidéo" style="display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); color:var(--text-muted); font-size:11px; cursor:pointer; transition:var(--transition-smooth);">
+                        <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Effacer l'historique</span>
+                    </button>
                 </div>
 
                 <!-- Zone de messages scrollable -->

@@ -543,10 +543,10 @@
             </div>
         </div>
 
-        <!-- COMPLETION BAR (SHOWN WHEN DONE) -->
+        <!-- COMPLETION BAR (SHOWN WHEN DONE OR INTERRUPTED) -->
         <div class="completion-bar" id="completionBar">
             <div>
-                <div style="font-size:15px; font-weight:800; color:#10b981; display:flex; align-items:center; gap:8px;">
+                <div style="font-size:15px; font-weight:800; color:#10b981; display:flex; align-items:center; gap:8px;" id="completionTitle">
                     <svg class="icon" style="stroke:#10b981; stroke-width:3;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     <span>Composition créée avec succès !</span>
                 </div>
@@ -554,10 +554,15 @@
                     Redirection vers le Studio dans quelques secondes...
                 </div>
             </div>
-            <a href="#" class="btn-open-studio" id="btnGoStudio">
-                <span>Ouvrir dans le Studio</span>
-                <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
+            <div style="display:flex; align-items:center; gap:10px;" id="completionActions">
+                <button type="button" id="btnResumeCreation" onclick="resumeCreation()" style="display:none; background:#10b981; border:1px solid #059669; color:#fff; border-radius:6px; padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer; align-items:center; gap:8px;">
+                    <span>▶ Reprendre la génération</span>
+                </button>
+                <a href="#" class="btn-open-studio" id="btnGoStudio">
+                    <span>Ouvrir dans le Studio</span>
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
         </div>
 
     </main>
@@ -808,27 +813,20 @@
                         targetVideoPath = statusData.videoUrl || targetVideoPath;
                         currentSteps.forEach(s => setStepDomState(s.id, 'completed', 'Terminé'));
                         break;
+                    } else if (statusData.status === 'interrupted' || statusData.canResume) {
+                        logToTerminal(`⚠️ Création interrompue. Les étapes précédentes (voix, assets, scènes) sont sauvegardées.`, 'warning');
+                        isCompleted = true;
+                        updateProgress(statusData.progress || 35, statusData.phaseLabel || 'Création interrompue — Prête à reprendre');
+                        showResumeBar('Création Interrompue', 'Les étapes déjà validées sont conservées. Vous pouvez reprendre la création dès maintenant.');
+                        return;
                     } else if (statusData.status === 'error') {
                         logToTerminal(`❌ Erreur du pipeline : ${statusData.error}`, 'error');
                         isCompleted = true;
                         updateProgress(statusData.progress || 20, 'Génération interrompue');
                         const curStep = document.getElementById(`step_item_${statusData.currentStep || 'step_prompt'}`);
                         if (curStep) curStep.classList.add('error');
-                        
-                        // Afficher un panneau d'erreur clair avec bouton de retour
-                        const completionBar = document.getElementById('completionBar');
-                        if (completionBar) {
-                            completionBar.style.background = 'rgba(239, 68, 68, 0.15)';
-                            completionBar.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-                            document.getElementById('completionTitle').textContent = 'Échec de la génération';
-                            document.getElementById('completionSubtext').textContent = statusData.error || 'Une erreur est survenue lors du traitement IA.';
-                            const btn = document.getElementById('btnGoStudio');
-                            btn.textContent = 'Créer une autre vidéo';
-                            btn.href = 'create_video.html';
-                            btn.style.background = '#ef4444';
-                            completionBar.classList.add('show');
-                        }
-                        return; // Arrêt strict : aucune simulation de 100% ni de redirection vers le studio
+                        showResumeBar('Génération Interrompue', (statusData.error || 'Une erreur est survenue.') + ' — Les étapes validées sont conservées, vous pouvez reprendre.');
+                        return;
                     }
                 } catch(pollErr) {
                     console.warn("Polling error:", pollErr);
@@ -864,6 +862,69 @@
                 }
             }, 1000);
         }
+
+        function showResumeBar(title, subtext) {
+            const completionBar = document.getElementById('completionBar');
+            if (!completionBar) return;
+            completionBar.style.background = 'rgba(245, 158, 11, 0.12)';
+            completionBar.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+            const titleEl = document.getElementById('completionTitle');
+            if (titleEl) {
+                titleEl.innerHTML = `
+                    <svg class="icon" style="stroke:#f59e0b; stroke-width:3;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <span style="color:#f59e0b;">${title}</span>
+                `;
+            }
+            const subtextEl = document.getElementById('completionSubtext');
+            if (subtextEl) subtextEl.textContent = subtext;
+            const btnResume = document.getElementById('btnResumeCreation');
+            if (btnResume) {
+                btnResume.style.display = 'inline-flex';
+                btnResume.disabled = false;
+                btnResume.innerHTML = '<span>▶ Reprendre la génération</span>';
+            }
+            const btnGoStudio = document.getElementById('btnGoStudio');
+            if (btnGoStudio) btnGoStudio.style.display = 'none';
+            completionBar.classList.add('show');
+        }
+
+        window.resumeCreation = async function() {
+            const btnResume = document.getElementById('btnResumeCreation');
+            if (btnResume) {
+                btnResume.disabled = true;
+                btnResume.innerHTML = '<span>Reprise en cours...</span>';
+            }
+            logToTerminal("Demande de reprise du pipeline envoyé au serveur...", "info");
+
+            const vidTarget = targetVideoPath || queryVideo;
+            try {
+                const res = await fetch('/api/create-video-resume', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video: vidTarget, channelId: queryChannel })
+                });
+                const data = await res.json();
+                if (data && data.jobId) {
+                    jobId = data.jobId;
+                    logToTerminal(`Reprise connectée (Session : ${jobId}). Reprise à l'étape exacte...`, "success");
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('jobId', jobId);
+                    window.history.replaceState({}, '', newUrl.toString());
+
+                    // Masquer la barre de completion et relancer la surveillance
+                    document.getElementById('completionBar').classList.remove('show');
+                    runProcess();
+                } else {
+                    throw new Error(data.error || 'Erreur lors de la reprise');
+                }
+            } catch (err) {
+                logToTerminal(`Erreur lors de la reprise : ${err.message}`, "error");
+                if (btnResume) {
+                    btnResume.disabled = false;
+                    btnResume.innerHTML = '<span>▶ Réessayer la reprise</span>';
+                }
+            }
+        };
 
         window.addEventListener('load', runProcess);
     </script>

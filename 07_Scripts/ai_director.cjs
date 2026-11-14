@@ -1,19 +1,14 @@
 /**
- * AI_DIRECTOR.CJS — Moteur Orchestrateur Autonome de Création Vidéo IA (VibeEditor)
+ * AI_DIRECTOR.CJS — Moteur Orchestrateur Autonome de Création Vidéo IA (AutoFrame)
  * 
- * Pipeline 100% autonome conforme aux règles de gouvernance .agents/rules/ :
- * 1. Analyse narrative & direction artistique par Google Gemini (Google AI Studio)
- *    - Liberté de fond : Noir, Blanc, Couleur Unie (bordeaux, navy, forêt...) ou Dégradé élégant.
- *    - Variations scénographiques : Chaque scène/clip peut avoir son propre fond tout en préservant l'harmonie globale.
- * 2. Exécution autonome des outils requis :
- *    - generate_voice.cjs (ElevenLabs / TTS) + Mesure précise de la durée audio via FFmpeg
- *    - brandfetch.cjs (Logos officiels de marques SVG / PNG)
- *    - fetch_map.cjs (Cartes géographiques HD sans watermark)
- *    - fetch_flag.cjs (Drapeaux nationaux & territoriaux SVG vectoriels & PNG gratuits)
- *    - Sous-titres calibrés mot-à-mot avec animation percutante instantanée (Hormozi style)
- * 3. Génération dynamique du code (HTML, CSS, GSAP) par Gemini sans template figé
- * 4. Modularité par scènes dans 05_Scenes/ et assemblage final dans 04_Videos/ ou 03_Chaines/
- * 5. Gestion des statuts ('processing' -> 'completed') et streaming temps réel des logs vers video_processus.html
+ * Architecture séquentielle et résiliente par étapes concrètes :
+ * 1. Initialisation du projet vidéo HTML & Plan narratif découpé (Storyboard avec timecodes stricts).
+ * 2. Gestion de la Voix Off (génération TTS ElevenLabs/HeyGen ou fichier fourni) & Pose directe sur la timeline.
+ * 3. Gestion & Téléchargement des Assets (logos vectoriels, drapeaux, cartes, captures web, blasons, chroma key).
+ * 4. Découpage et Génération Scène par Scène (Animations & Transitions GSAP avec synchronisation mot-à-mot sur les paroles).
+ *    -> Sauvegarde après chaque scène dans un Checkpoint (.checkpoint.json). En cas de blocage ou interruption,
+ *       le pipeline reprend exactement à la scène suivante sans tout recommencer !
+ * 5. Sous-titres dynamiques mot-à-mot (style Hormozi) & Finalisation complète.
  */
 
 const fs = require('fs');
@@ -42,7 +37,6 @@ function loadSkillsDirectives() {
         const skillsDir = path.join(ROOT_DIR, '00_Skills');
         const agentSkillsDir = path.join(ROOT_DIR, '.agents', 'skills');
 
-        // Skill Design Joseph (vérification Joseph_Edit_Skills ou fallback video_design_mastery)
         const josephPath = path.join(agentSkillsDir, 'Joseph_Edit_Skills', 'SKILL.md');
         const legacyDesignPath = path.join(skillsDir, 'video_design_mastery', 'SKILL.md');
         const designSkillPath = fs.existsSync(josephPath) ? josephPath : legacyDesignPath;
@@ -56,7 +50,6 @@ function loadSkillsDirectives() {
             text += '\n=== DIRECTIVES SKILL: ANIMATION 2D & PHYSIQUE GÉOMÉTRIQUE ===\n' + fs.readFileSync(physicsSkillPath, 'utf8') + '\n';
         }
 
-        // Chargement automatique des nouveaux skills personnalisés (.agents/skills/My_Skills/)
         const mySkillsDir = path.join(agentSkillsDir, 'My_Skills');
         if (fs.existsSync(mySkillsDir)) {
             for (const sub of fs.readdirSync(mySkillsDir)) {
@@ -245,7 +238,7 @@ async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7) {
     throw lastError || new Error("Tous les modèles Gemini ont échoué.");
 }
 
-// Extraction d'un slug court, clair et pertinent (2 à 3 mots clés du sujet, max 4 mots)
+// Extraction d'un slug court, clair et pertinent (2 à 3 mots clés du sujet)
 function extractCleanSlug(text, maxWords = 3) {
     if (!text || typeof text !== 'string') return 'video';
     const stopWords = new Set([
@@ -257,8 +250,7 @@ function extractCleanSlug(text, maxWords = 3) {
         'qui', 'que', 'quoi', 'dont', 'ou', 'est', 'sont', 'comme', 'plus', 'tres', 'bien',
         'dune', 'dun', 'afin', 'vers', 'sous', 'sans', 'tout', 'tous', 'toute', 'toutes',
         'nouvelle', 'nouveau', 'presentation', 'presente', 'montre', 'montrer', 'illustre', 'affiche', 'donne', 'donner',
-        'part', 'dure', 'durant', 'temps', 'autour', 'produis', 'produire', 'realise', 'realiser',
-        'create', 'make', 'generate', 'video', 'for', 'with', 'about', 'from', 'into', 'the', 'a', 'an'
+        'part', 'dure', 'durant', 'temps', 'autour', 'produis', 'produire', 'realise', 'realiser'
     ]);
     const clean = text
         .toLowerCase()
@@ -286,10 +278,250 @@ function ensureDir(dirPath) {
     }
 }
 
+// Découpage déterministe d'un script horodaté en scènes précises
+function parseTimestampedScript(scriptText, fallbackDuration = 18.0) {
+    if (!scriptText || typeof scriptText !== 'string') return [];
+    
+    const blockRegex = /\[?\s*(\d{1,2}):(\d{2})\s*(?:-|à|to)\s*(\d{1,2}):(\d{2})\s*\]?([\s\S]*?)(?=\[?\s*\d{1,2}:\d{2}\s*(?:-|à|to)\s*\d{1,2}:\d{2}|$)/gi;
+    const matches = [...scriptText.matchAll(blockRegex)];
+    
+    if (matches.length > 0) {
+        return matches.map((m, idx) => {
+            const startSec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+            const endSec = parseInt(m[3], 10) * 60 + parseInt(m[4], 10);
+            const body = (m[5] || '').trim();
+            
+            let voice = '';
+            let visual = '';
+            const lines = body.split('\n');
+            lines.forEach(l => {
+                const tr = l.trim();
+                if (/^(?:voix|voice|narrateur)\s*:/i.test(tr)) {
+                    voice += (voice ? ' ' : '') + tr.replace(/^(?:voix|voice|narrateur)\s*:\s*/i, '').trim();
+                } else if (/^(?:visuel|visual|scene|ecran|titre)\s*:/i.test(tr)) {
+                    visual += (visual ? ' ' : '') + tr.replace(/^(?:visuel|visual|scene|ecran|titre)\s*:\s*/i, '').trim();
+                } else if (tr && !voice) {
+                    voice = tr;
+                } else if (tr && !visual) {
+                    visual = tr;
+                }
+            });
+            
+            return {
+                id: idx + 1,
+                timeStart: startSec,
+                timeEnd: Math.max(endSec, startSec + 1.5),
+                duration: Math.max(endSec - startSec, 1.5),
+                voiceLine: voice || body,
+                visualConcept: visual || voice || body
+            };
+        });
+    }
+    return [];
+}
+
+// Gestion des Checkpoints (persistance de l'état de création séquentielle)
+function getCheckpointPath(videoPath) {
+    const fullPath = path.isAbsolute(videoPath) ? videoPath : path.resolve(ROOT_DIR, videoPath);
+    return fullPath.replace(/\.html$/i, '') + '.checkpoint.json';
+}
+
+function loadCheckpoint(checkpointPath) {
+    try {
+        if (fs.existsSync(checkpointPath)) {
+            return JSON.parse(fs.readFileSync(checkpointPath, 'utf8'));
+        }
+    } catch (e) {
+        console.warn("[Checkpoint] Erreur lecture checkpoint:", e.message);
+    }
+    return null;
+}
+
+function saveCheckpoint(checkpointPath, data) {
+    try {
+        ensureDir(path.dirname(checkpointPath));
+        fs.writeFileSync(checkpointPath, JSON.stringify(data, null, 2), 'utf8');
+    } catch (e) {
+        console.error("[Checkpoint] Erreur sauvegarde checkpoint:", e.message);
+    }
+}
+
+// Constructeur de scène de secours (fallback résilient en cas d'indisponibilité de l'API)
+function buildFallbackScene(sceneIndex, totalScenes, scenePlan, format, accentColor, availableAssetsList) {
+    const isFirstScene = (sceneIndex === 1);
+    const start = scenePlan.timeStart || 0;
+    const end = scenePlan.timeEnd || (start + 5);
+    const dur = end - start;
+    const headline = scenePlan.headline || `SCÈNE ${sceneIndex}`;
+    const headlineAccent = scenePlan.headlineAccent || '';
+    const subtitle = scenePlan.subtitle || '';
+    
+    const logoAsset = availableAssetsList.find(a => a.includes('Logo officiel'))?.match(/"([^"]+)"/)?.[1];
+    const flagAsset = availableAssetsList.find(a => a.includes('Drapeau national'))?.match(/"([^"]+)"/)?.[1];
+    const mapAsset = availableAssetsList.find(a => a.includes('Carte géographique'))?.match(/"([^"]+)"/)?.[1];
+
+    let mediaHtml = '';
+    if (logoAsset) {
+        mediaHtml = `<img src="${logoAsset}" class="scene-logo-${sceneIndex}" alt="Logo" style="max-height:85px; margin-top:20px; filter:drop-shadow(0 10px 25px rgba(0,0,0,0.45));">`;
+    } else if (flagAsset) {
+        mediaHtml = `<img src="${flagAsset}" class="scene-flag-${sceneIndex}" alt="Flag" style="width:110px; height:auto; margin-top:20px; border-radius:8px; box-shadow:0 12px 25px rgba(0,0,0,0.4);">`;
+    } else if (mapAsset) {
+        mediaHtml = `<img src="${mapAsset}" class="scene-map-${sceneIndex}" alt="Map" style="width:70%; max-height:360px; object-fit:cover; border-radius:14px; margin-top:20px; box-shadow:0 18px 35px rgba(0,0,0,0.5);">`;
+    } else {
+        mediaHtml = `
+        <div class="scene-graphic-${sceneIndex}" style="margin-top:24px;">
+            <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="50" r="42" stroke="${accentColor}" stroke-width="4" stroke-dasharray="6 6"/>
+                <circle cx="50" cy="50" r="28" fill="${accentColor}" fill-opacity="0.15"/>
+                <polygon points="45,38 62,50 45,62" fill="${accentColor}"/>
+            </svg>
+        </div>`;
+    }
+
+    const htmlContent = `
+        <div class="scene-container" id="scene_${sceneIndex}">
+            <div class="scene-content-${sceneIndex}">
+                <h2 class="scene-title-${sceneIndex}">
+                    <span class="title-main">${headline}</span>
+                    ${headlineAccent ? `<span class="title-accent" style="color:${accentColor};">${headlineAccent}</span>` : ''}
+                </h2>
+                ${subtitle ? `<p class="scene-sub-${sceneIndex}">${subtitle}</p>` : ''}
+                ${mediaHtml}
+            </div>
+        </div>`;
+
+    const customCss = `
+        #scene_${sceneIndex} {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        .scene-content-${sceneIndex} {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+        }
+        .scene-title-${sceneIndex} {
+            font-family: var(--font-title);
+            font-size: ${format === '9:16' ? '3.8rem' : '4.4rem'};
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .scene-sub-${sceneIndex} {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            max-width: 780px;
+            line-height: 1.45;
+        }`;
+
+    const outTime = Math.max(start + 0.5, end - 0.4);
+    const gsapTimelineCode = `
+        // --- SCÈNE ${sceneIndex} (${start.toFixed(1)}s -> ${end.toFixed(1)}s) ---
+        ${isFirstScene ? `
+        tl.set('#scene_${sceneIndex}', { display: 'flex', opacity: 1, visibility: 'visible', pointerEvents: 'auto' }, 0);
+        tl.from('#scene_${sceneIndex} .scene-title-${sceneIndex}', { y: 50, opacity: 0, duration: 0.8, ease: 'power3.out' }, 0.1);
+        ${subtitle ? `tl.from('#scene_${sceneIndex} .scene-sub-${sceneIndex}', { y: 25, opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.35);` : ''}
+        tl.from('#scene_${sceneIndex} img, #scene_${sceneIndex} svg', { scale: 0.85, opacity: 0, duration: 0.7, ease: 'back.out(1.5)' }, 0.4);
+        ` : `
+        tl.set('#scene_${sceneIndex}', { display: 'flex', opacity: 0, visibility: 'visible', pointerEvents: 'auto' }, ${start});
+        tl.to('#scene_${sceneIndex}', { opacity: 1, duration: 0.35, ease: 'power2.out' }, ${start});
+        tl.from('#scene_${sceneIndex} .scene-title-${sceneIndex}', { y: 40, opacity: 0, duration: 0.7, ease: 'power3.out' }, ${(start + 0.15).toFixed(2)});
+        ${subtitle ? `tl.from('#scene_${sceneIndex} .scene-sub-${sceneIndex}', { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' }, ${(start + 0.35).toFixed(2)});` : ''}
+        tl.from('#scene_${sceneIndex} img, #scene_${sceneIndex} svg', { scale: 0.88, opacity: 0, duration: 0.6, ease: 'back.out(1.4)' }, ${(start + 0.4).toFixed(2)});
+        `}
+        ${sceneIndex < totalScenes ? `
+        tl.to('#scene_${sceneIndex}', { opacity: 0, y: -20, duration: 0.35, ease: 'power2.in' }, ${outTime.toFixed(2)});
+        tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${end.toFixed(2)});
+        ` : ''}
+    `;
+
+    return {
+        htmlContent,
+        customCss,
+        gsapTimelineCode
+    };
+}
+
+// Génération individuelle d'une scène par Gemini avec synchronisation stricte sur la voix
+async function generateSceneCodeWithGemini({
+    sceneIndex,
+    totalScenes,
+    scenePlan,
+    theme,
+    baseBg,
+    format,
+    width,
+    height,
+    accentColor,
+    availableAssetsList,
+    skillsDirectives,
+    templateDirectives
+}) {
+    const isFirstScene = (sceneIndex === 1);
+    const systemPrompt = `Tu es l'Expert Motion Designer et Développeur GSAP en chef de AutoFrame.
+Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo fluide et cinématique.
+
+${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS :\n${skillsDirectives}\n` : ''}
+
+RÈGLES MAÎTRESSES POUR CETTE SCÈNE :
+1. ISOLATION STRICTE :
+   - Tout le code HTML de cette scène DOIT être encapsulé dans :
+     <div class="scene-container" id="scene_${sceneIndex}">...</div>
+   - Le CSS de cette scène DOIT être préfixé par #scene_${sceneIndex}.
+   - NE JAMAIS utiliser '!important'.
+2. SCÈNE 1 (ACCROCHE INITIALE) :
+   - Si scène 1 : active immédiatement dès t=0.0s { opacity: 1; visibility: visible; display: flex; }. BANNIR tout écran noir ou vide à t=0 !
+   - Si scène > 1 : commence à t = ${scenePlan.timeStart}s avec { opacity: 0; display: flex; }.
+3. SYNCHRONISATION ABSOLUE SUR LA VOIX OFF :
+   - Paroles exactes dites pendant cette tranche horaire [${scenePlan.timeStart}s -> ${scenePlan.timeEnd}s] :
+     "${scenePlan.voiceLine || scenePlan.subtitle || ''}"
+   - Le texte à l'écran, le titre ou le mot-clé DOIVENT s'animer et apparaître AU MOMENT EXACT OÙ LA VOIX LES PRONONCE. Pas avant, pas après.
+4. ANIMATION GSAP & TRANSITIONS :
+   - Début à ${scenePlan.timeStart}s : apparition percutante des visuels et typographies.
+   - Sortie à ${scenePlan.timeEnd}s : fondu de sortie ou translation fluide, puis :
+     tl.to('#scene_${sceneIndex}', { opacity: 0, duration: 0.35 }, ${(Math.max(scenePlan.timeStart + 0.4, scenePlan.timeEnd - 0.35)).toFixed(2)});
+     tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
+   - Utilise l'instance 'tl' existante. Ne redéclare PAS 'const tl'.
+
+Réponds UNIQUEMENT par un objet JSON valide avec 3 champs :
+{
+  "htmlContent": "<div class='scene-container' id='scene_${sceneIndex}'>...</div>",
+  "customCss": "#scene_${sceneIndex} { ... }",
+  "gsapTimelineCode": "..."
+}`;
+
+    const userPrompt = `Génère le code complet de la Scène ${sceneIndex}/${totalScenes} :
+- Tranche horaire : de ${scenePlan.timeStart}s à ${scenePlan.timeEnd}s (Durée : ${(scenePlan.timeEnd - scenePlan.timeStart).toFixed(1)}s)
+- Voix off correspondante : "${scenePlan.voiceLine || scenePlan.subtitle || ''}"
+- Titre : "${scenePlan.headline}"
+- Mot-clé accent : "${scenePlan.headlineAccent || ''}"
+- Sous-titre : "${scenePlan.subtitle || ''}"
+- Concept visuel : "${scenePlan.concept || ''}"
+- Format : ${format} (${width}x${height})
+- Couleur accent : ${accentColor}
+- Assets disponibles à intégrer si pertinents :
+${availableAssetsList.join('\n') || '- Générer des éléments vectoriels SVG.'}
+
+Réponds UNIQUEMENT en JSON.`;
+
+    const res = await callGeminiAPI(systemPrompt, userPrompt, 0.7);
+    if (res && res.htmlContent && res.gsapTimelineCode) {
+        return res;
+    }
+    throw new Error(`Réponse Gemini incomplète pour la scène ${sceneIndex}`);
+}
+
 /**
- * MOTEUR PRINCIPAL D'EXÉCUTION DU PIPELINE
+ * MOTEUR PRINCIPAL D'EXÉCUTION DU PIPELINE (PAR ÉTAPES SÉQUENTIELLES AVEC CHECKPOINTING)
  * @param {object} payload - Données du formulaire create_video.html
- * @param {function} onProgress - Callback (stepId, phaseLabel, percent, logMsg, logType)
+ * @param {function} onProgress - Callback (stepId, phaseLabel, percent, logMsg, logType, extraData)
  */
 async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const startTime = Date.now();
@@ -315,8 +547,7 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     // Extraction et liaison stricte des assets explicitement fournis par l'utilisateur
     const userUploadedAssets = Array.isArray(payload.userUploadedAssets) ? payload.userUploadedAssets : [];
 
-    // Si une durée n'a pas été trouvée dans le prompt textuel mais qu'un script est fourni,
-    // on déduit la durée à partir du dernier timestamp trouvé dans le script (ex: "[00:20 - 00:30]" => 30s)
+    // Détection de durée depuis le dernier timestamp du script si non précisée dans le prompt
     if (!promptDuration && hasCustomScript) {
         const tsMatches = [...customScript.matchAll(/\[?\s*(\d{1,2}):(\d{2})\s*(?:-|à|to)\s*(\d{1,2}):(\d{2})\s*\]?/gi)];
         if (tsMatches.length > 0) {
@@ -333,7 +564,6 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     // Préfixe relatif des assets selon l'emplacement du fichier généré
     const assetPrefix = isChannel ? '../../01_Assets' : '../01_Assets';
 
-    // Génération du suffixe unique strict (règle .agents/rules/project-architecture.md)
     let suffix = '';
     if (isChannel) {
         suffix = channelId.includes('_') ? '_' + channelId.split('_').pop() : '-ch';
@@ -342,7 +572,6 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
         suffix = `-${rand4}`;
     }
 
-    // Nom de base court, percutant et propre (2 à 3 mots, max 4 mots) extrait directement du sujet complet
     let baseRawName = extractCleanSlug(prompt, 3);
     if (!baseRawName || baseRawName === 'video' || baseRawName.length < 3) {
         baseRawName = extractCleanSlug(payload.fileName || '', 3);
@@ -353,7 +582,7 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
 
     // Chemins cibles
     const baseProjectDir = ROOT_DIR;
-    const videosTargetDir = isChannel
+    let videosTargetDir = isChannel
         ? path.join(baseProjectDir, '03_Chaines', channelId)
         : path.join(baseProjectDir, '04_Videos');
     ensureDir(videosTargetDir);
@@ -361,6 +590,38 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     let relVideoPath = isChannel
         ? `03_Chaines/${channelId}/${finalFileName}`
         : `04_Videos/${finalFileName}`;
+
+    // Prise en charge de la reprise d'une vidéo interrompue
+    if (payload.resume && payload.targetVideo) {
+        relVideoPath = payload.targetVideo;
+        finalFilePath = path.resolve(ROOT_DIR, relVideoPath);
+        finalFileName = path.basename(finalFilePath);
+        videosTargetDir = path.dirname(finalFilePath);
+    }
+
+    const checkpointPath = getCheckpointPath(finalFilePath);
+    let checkpoint = loadCheckpoint(checkpointPath);
+    if (checkpoint && checkpoint.payload) {
+        payload = { ...checkpoint.payload, ...payload };
+    }
+    if (!checkpoint) {
+        checkpoint = {
+            version: 1,
+            status: 'processing',
+            targetVideo: relVideoPath,
+            fileName: finalFileName,
+            channelId: channelId || null,
+            payload: { ...payload },
+            plan: null,
+            voice: { done: false, path: '', duration: 0 },
+            assets: { done: false, downloaded: {} },
+            scenes: [],
+            subtitles: { done: false, cues: [] },
+            currentStep: 'step_init',
+            progress: 5,
+            logs: []
+        };
+    }
 
     // Dimensions
     let width = 1920, height = 1080;
@@ -372,7 +633,6 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const hasMusic = (audioSetup === 'music_only' || audioSetup === 'full_mix');
     const showSubtitles = payload.subtitles !== false && hasVoice;
 
-    // Détection en amont des caractéristiques pour construire la matrice des étapes 100% réelles
     const chosenTemplate = payload.template || payload.style;
     const isUsingTemplate = Boolean(chosenTemplate && chosenTemplate !== 'none' && chosenTemplate !== 'libre');
     const normPromptPre = prompt.toLowerCase();
@@ -380,137 +640,58 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const hasBrandPre = /logo|marque|apple|nike|tesla|google|meta|amazon|rolex|spotify|netflix|adidas|porsche|ferrari|bmw|audi/i.test(normPromptPre);
     const hasFlagPre = /france|français|japon|japan|usa|états-unis|suisse|switzerland|allemagne|germany|brésil|brazil|chine|china|italie|italy|espagne|spain|royaume-uni|angleterre|canada|maroc|algérie|sénégal|drapeau|pays|nation/i.test(normPromptPre);
     const hasMapPre = /carte|map|satellite|géographie|territoire|capitale|ville|localisation/i.test(normPromptPre);
-    const hasChromaPre = (payload.images && payload.images.some(img => /green|vert|fond_vert|chroma/i.test(typeof img === 'string' ? img : img.name))) || /detour|fond vert|chroma/i.test(normPromptPre);
 
-    // CONSTRUCTION DE LA MATRICE VÉRIDIQUE DES ÉTAPES ACTIVES (Zéro fake step)
+    // CONSTRUCTION DE LA MATRICE VÉRIDIQUE DES ÉTAPES SÉQUENTIELLES (ZÉRO FAKE STEP)
     const pipelineSteps = [
         {
             id: 'step_init',
-            title: isChannel ? `Initialisation de la vidéo pour la chaîne "${channelId}"` : "Initialisation du projet vidéo autonome (04_Videos/)",
-            desc: `Attribution du nom "${finalFileName}" et calibrage ${format} (${width}x${height}).`
+            title: isChannel ? `1. Initialisation du Projet ("${channelId}")` : "1. Initialisation du Projet Vidéo",
+            desc: `Fichier "${finalFileName}" (${format}) et découpage du plan narratif.`
         },
         {
-            id: 'step_skills',
-            title: "Lecture & Intégration des Skills (00_Skills/)",
-            desc: "Consultation des directives de design 80/20, 60/30/10, contraste et physique 2D."
+            id: 'step_voice',
+            title: "2. Voix Off & Calage sur la Timeline",
+            desc: hasVoice ? "Synthèse vocale IA ElevenLabs et mesure exacte via FFmpeg." : "Configuration sans voix off."
         },
         {
-            id: 'step_prompt',
-            title: "Réflexion, Direction Artistique & Découpage Narratif (Gemini)",
-            desc: "Gemini analyse le brief, conçoit le storyboard, choisit la palette et inventorie les besoins."
+            id: 'step_assets',
+            title: "3. Téléchargement & Indexation des Assets",
+            desc: "Récupération des logos officiels, blasons, drapeaux, cartes et médias."
+        },
+        {
+            id: 'step_scenes',
+            title: "4. Conception Scène par Scène (Animations & Transitions)",
+            desc: "Génération séquentielle ordonnée synchronisée mot-à-mot avec la voix off."
+        },
+        {
+            id: 'step_final',
+            title: "5. Sous-titres Mot-à-Mot & Finalisation Studio",
+            desc: "Assemblage final complet et transition vers le Studio de montage."
         }
     ];
 
-    if (isUsingTemplate) {
-        pipelineSteps.push({
-            id: 'step_template',
-            title: `Inspection des Consignes du Template (${chosenTemplate})`,
-            desc: `Analyse des règles de style et des composants dans 06_Templates/${chosenTemplate}.`
+    const logAndSaveStep = (stepId, phaseLabel, percent, logMsg, logType = 'info') => {
+        checkpoint.currentStep = stepId;
+        checkpoint.phaseLabel = phaseLabel;
+        checkpoint.progress = percent;
+        checkpoint.lastUpdated = Date.now();
+        checkpoint.logs = checkpoint.logs || [];
+        checkpoint.logs.push({
+            time: new Date().toTimeString().split(' ')[0],
+            text: logMsg,
+            type: logType
         });
-    }
+        saveCheckpoint(checkpointPath, checkpoint);
+        onProgress(stepId, phaseLabel, percent, logMsg, logType, { steps: pipelineSteps });
+    };
 
-    if (isChannel) {
-        pipelineSteps.push({
-            id: 'step_brandkit',
-            title: `Application du Brand Kit de la Chaîne (${channelId})`,
-            desc: "Harmonisation des polices primaires et des couleurs signatures de la chaîne."
-        });
-    }
+    // =========================================================================
+    // ÉTAPE 1 : INITIALISATION DU FICHIER VIDÉO HTML & DU PLAN DE SCÈNES
+    // =========================================================================
+    logAndSaveStep('step_init', 'Initialisation du projet vidéo...', 8, `Création / vérification du fichier vidéo : ${finalFileName}`, 'info');
 
-    if (hasWebCapturePre) {
-        pipelineSteps.push({
-            id: 'step_web_record',
-            title: "Capture d'écran HD du Site Web (07_Scripts/record_web.cjs)",
-            desc: "Capture automatisée haute fidélité du site pour intégration au mockup."
-        });
-    }
-
-    if (hasBrandPre) {
-        pipelineSteps.push({
-            id: 'step_logo',
-            title: "Récupération du Logo Officiel (07_Scripts/brandfetch.cjs)",
-            desc: "Téléchargement du logo officiel vectoriel SVG ou PNG haute définition."
-        });
-    }
-
-    if (hasFlagPre) {
-        pipelineSteps.push({
-            id: 'step_flag',
-            title: "Récupération du Drapeau Vectoriel (07_Scripts/fetch_flag.cjs)",
-            desc: "Téléchargement du drapeau national officiel SVG sans watermark."
-        });
-    }
-
-    if (hasMapPre) {
-        pipelineSteps.push({
-            id: 'step_map',
-            title: "Génération de Carte Géographique (07_Scripts/fetch_map.cjs)",
-            desc: "Rendu de la carte satellite et tracé territorial haute résolution."
-        });
-    }
-
-    if (hasChromaPre) {
-        pipelineSteps.push({
-            id: 'step_chroma',
-            title: "Détourage Fond Vert Chroma Key (07_Scripts/chroma_key.cjs)",
-            desc: "Extraction du sujet transparent et suppression instantanée du fond vert."
-        });
-    }
-
-    if (hasVoice) {
-        if (payload.hasUserVoice && payload.voiceover) {
-            pipelineSteps.push({
-                id: 'step_voice_user',
-                title: "Indexation & Mesure de la Voix Off Fournie",
-                desc: "Mesure précise de la durée audio via FFmpeg et calage rythmique."
-            });
-        } else {
-            pipelineSteps.push({
-                id: 'step_voice_tts',
-                title: "Synthèse Vocale IA ElevenLabs (07_Scripts/generate_voice.cjs)",
-                desc: "Génération vocale haute expressivité et mesure exacte de la durée via FFmpeg."
-            });
-        }
-    }
-
-    if (hasMusic) {
-        pipelineSteps.push({
-            id: 'step_music',
-            title: "Mixage de la Musique d'Ambiance & Ducking",
-            desc: "Sélection de la piste d'ambiance et équilibrage automatique sous la voix."
-        });
-    }
-
-    if (showSubtitles) {
-        pipelineSteps.push({
-            id: 'step_subtitles',
-            title: "Synchronisation Dynamique des Sous-Titres Mot-à-Mot",
-            desc: "Calage temporel exact pondéré sur la cadence vocale (style Hormozi)."
-        });
-    }
-
-    pipelineSteps.push({
-        id: 'step_gsap_code',
-        title: "Génération Dynamique du Code (HTML, CSS & GSAP) par Gemini",
-        desc: "Création autonome du design vectoriel, timeline GSAP fluide et scène 1 immédiatement visible."
-    });
-
-    pipelineSteps.push({
-        id: 'step_disk_save',
-        title: isChannel ? `Sauvegarde dans 03_Chaines/${channelId}/` : "Sauvegarde dans 04_Videos/",
-        desc: "Enregistrement physique de la vidéo unique complète (aucun fichier loose dans 05_Scenes/)."
-    });
-
-    pipelineSteps.push({
-        id: 'step_studio_ready',
-        title: "Ouverture dans le Studio de Montage",
-        desc: "Liaison au lecteur interactif et synchronisation des pistes audio."
-    });
-
-    // 1. Initialiser le fichier avec status: "processing"
-    onProgress('step_init', 'Initialisation du pipeline IA...', 5, `Initialisation de la vidéo : ${finalFileName}`, 'info', { steps: pipelineSteps });
-
-    const initialConfigHeader = `<!DOCTYPE html>
+    if (!fs.existsSync(finalFilePath)) {
+        const initialDraftHtml = `<!DOCTYPE html>
 <!-- STATUT TEMPORAIRE : CRÉATION EN COURS PAR L'IA -->
 <html lang="fr">
 <head>
@@ -533,73 +714,45 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     </script>
 </body>
 </html>`;
-    fs.writeFileSync(finalFilePath, initialConfigHeader, 'utf8');
-
-    // 2. ÉTAPE : LECTURE DES SKILLS (00_Skills/)
-    onProgress('step_skills', 'Chargement des Skills de design et physique 2D...', 10, 'Lecture approfondie de 00_Skills/video_design_mastery/ et 00_Skills/animation_2d_physics/...', 'info', { steps: pipelineSteps });
-    const skillsDirectives = loadSkillsDirectives();
-
-    // 3. ÉTAPE : INSPECTION DU TEMPLATE S'IL Y A LIEU (06_Templates/)
-    let templateDirectives = null;
-    if (isUsingTemplate) {
-        onProgress('step_template', `Inspection du template "${chosenTemplate}"...`, 13, `Lecture des consignes architecturales de 06_Templates/ pour "${chosenTemplate}"...`, 'info', { steps: pipelineSteps });
-        templateDirectives = loadTemplateDirectives(chosenTemplate);
+        fs.writeFileSync(finalFilePath, initialDraftHtml, 'utf8');
     }
 
-    // 4. ÉTAPE : Planification & Direction Artistique Gemini
-    onProgress('step_prompt', 'Gemini analyse le brief et conçoit le storyboard...', 16, `Gemini (Google AI Studio) : analyse sémantique, direction artistique & inventaire des besoins...`, 'info', { steps: pipelineSteps });
+    const skillsDirectives = loadSkillsDirectives();
+    let templateDirectives = isUsingTemplate ? loadTemplateDirectives(chosenTemplate) : null;
 
-    const systemPrompt = `Tu es le Directeur Créatif et Motion Designer en chef de VibeEditor.
-Tu dois analyser le brief utilisateur, intégrer les skills professionnels et concevoir une vidéo d'une qualité cinématique exceptionnelle sans code dur ni solution stéréotypée.
+    let plan = checkpoint.plan;
+    if (plan && plan.scenes && plan.scenes.length > 0) {
+        logAndSaveStep('step_init', 'Plan narratif restauré depuis le point de contrôle', 15, `[Reprise] Plan existant réutilisé : "${plan.title}" (${plan.scenes.length} scènes)`, 'success');
+    } else {
+        logAndSaveStep('step_init', 'Gemini conçoit le découpage et le plan des scènes...', 15, `Analyse du brief et découpage des scènes avec timecodes stricts...`, 'info');
+
+        const parsedScriptScenes = hasCustomScript ? parseTimestampedScript(customScript, promptDuration || 20.0) : [];
+
+        const systemPrompt = `Tu es le Directeur Créatif et Motion Designer en chef de AutoFrame.
+Tu dois analyser le brief utilisateur, intégrer les skills professionnels et concevoir le plan narratif structuré de la vidéo.
 
 ${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS (00_Skills/) :\n${skillsDirectives}\n` : ''}
 
-${templateDirectives ? `DIRECTIVES DU TEMPLATE CHOISI (${chosenTemplate}) - 06_Templates/${templateDirectives.fileName} :
-Inspire-toi des principes structurels et visuels de ce template pour concevoir la vidéo sans pour autant reproduire de code rigide :
-CSS du template :
-${templateDirectives.styleSnippet.slice(0, 1000)}
-` : ''}
-
 RÈGLES CRÉATIVES ET DIRECTION ARTISTIQUE :
 1. LIBERTÉ & MAÎTRISE DU FOND (Arrière-plans adaptés à chaque scène) :
-   - Le fond de base N'EST PAS strictement limité au noir ou au blanc. Le noir et le blanc sont d'excellentes bases neutres et contrastées, mais le fond doit s'adapter à la dynamique de chaque scène et au style de la vidéo :
-     * Fond Noir pur ou obsidienne (#000000, #08080a, #0c0c10)
-     * Fond Blanc pur ou ivoire/studio (#ffffff, #f8fafc, #f5f5f7)
-     * Fond de Couleur Unie spécifique au sujet (ex: bordeaux/rouge nuit #2b0b0b, vert forêt sombre #062016, terre brûlée #20120c, terracotta, beige chaud...)
-     * Fond Dégradé élégant (dégradé linéaire studio 135deg, radial spotlight cinématique, subtil mesh gradient)
-   - BANNISSEMENT ABSOLU DU FOND BLEU ARDOISE / NAVY (#0f172a, #1e293b, #0b1329) PAR DÉFAUT :
-     Ne mets JAMAIS de fond bleu sauf si le prompt de l'utilisateur demande explicitement la couleur bleue ! Pour un univers technologique ou SaaS, utilise un Noir Pur (#000000) ou Noir Obsidienne (#08080a).
-   - VARIATION PAR SCÈNE :
-     Un clip ou une scène peut avoir son propre fond pour marquer une transition narrative (ex: Scène 1 fond sombre pour l'accroche mystérieuse, Scène 2 fond contrasté ou carte unie pour l'explication, Scène 3 fond dynamique pour la conclusion).
-   - EXIGENCE DE COHÉRENCE GLOBALE :
-     Toute la vidéo doit rester visuellement harmonieuse : même typographie (Dual-Font 80/20), même couleur d'accent signature (10%), et contraste impeccable (texte clair sur fond sombre, texte sombre sur fond clair).
-   - BANNISSEMENT ABSOLU du fond cliché IA (la grille 1px avec halo vert/cyan répété partout).
+   - Fond Noir pur (#000000, #08080a), Blanc studio (#ffffff, #f8fafc), Couleur Unie spécifique (#111827) ou Dégradé.
+   - BANNISSEMENT ABSOLU DU FOND BLEU ARDOISE / NAVY (#0f172a, #1e293b) sauf demande explicite.
+2. CHARTE 60-30-10 : 60% fond, 30% surfaces/texte secondaire, 10% une seule couleur d'accent vive signature.
+3. SCÈNES DISTINCTES & TIME-CODES :
+   - Tu DOIS diviser la vidéo en 3 à 5 scènes précises. Chaque scène possède : id, timeStart (en s), timeEnd (en s), headline (titre fort), headlineAccent (mot-clé accent), subtitle (phrase d'accompagnement), concept (visuel prévu), voiceLine (paroles exactes de la voix dites pendant cette tranche horaire).
+4. DÉTECTION DES OUTILS : brandLogo (true/false), brandDomain, map, mapQuery, flag, country.
 
-2. CHARTE HARMONIQUE STRICTE : RÈGLE 60-30-10 :
-   - 60% : Fond dominant (uni ou dégradé).
-   - 30% : Surfaces, cartes, bordures et texte secondaire.
-   - 10% : UNE SEULE couleur d'accent vive signature (ex: Ambre #f59e0b, Cyan électrique #06b6d4, Émeraude #10b981, Cramoisi #ef4444).
-
-3. BANNISSEMENT ABSOLU DES TITRAGES SCOLAIRES / BADGES POWERPOINT :
-   - INTERDIT formellement d'ajouter des étiquettes didactiques comme [ Règle Fondamentale • 01 ], [ Lois du Jeu ], [ Chapitre 1 ], [ Étape 01 ] ou des conteneurs .tag-pill.
-   - Utilise un copywriting percutant, immersif et axé sur le spectateur.
-
-4. DÉTECTION AUTONOME DES OUTILS REQUIS :
-   - Si le sujet concerne une marque ou entreprise : brandLogo = true, brandDomain = "domaine.com".
-   - Si le sujet concerne une ville, région ou localisation géographique : map = true, mapQuery = "Ville, Pays", mapStyle = "dark" (défaut cinématique) | "satellite" (si le sujet évoque vue aérienne, immobilier, urbanisme, environnement) | "voyager" (si le sujet est lifestyle, voyage, tourisme, élégant) | "light" (si fond vidéo blanc/claire, minimalisme) | "osm" (si style technique, data, open source, brut).
-   - Si le sujet concerne un pays, une nationalité, un événement international, la géopolitique, une comparaison entre nations : flag = true, country = "Nom du pays (ex: France, Japon, Suisse, etc.)".
-
-Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exacte :
+Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
 {
   "title": "Titre percutant de la vidéo",
-  "slug": "2 a 3 mots cles courts representant le sujet (ex: saas_dashboard, rolex_submariner, ferrari_italie)",
+  "slug": "2 a 3 mots cles courts (ex: saas_dashboard, rolex_submariner)",
   "pitch": "Résumé en une phrase",
   "targetDuration": ${(promptDuration || 20.0).toFixed(1)},
   "background": {
-    "type": "black", // "black" | "white" | "solid" | "gradient"
-    "global": "#000000", // Couleur CSS ou dégradé (ex: #000000, #08080a, #ffffff - BANNIR les bleus #0f172a / #0b1329)
-    "textMain": "#ffffff", // #ffffff sur fond sombre, #09090b sur fond clair
-    "textMuted": "#94a3b8" // #94a3b8 sur fond sombre, #475569 sur fond clair
+    "type": "black",
+    "global": "#000000",
+    "textMain": "#ffffff",
+    "textMuted": "#94a3b8"
   },
   "theme": {
     "primaryColor": "#000000",
@@ -608,397 +761,120 @@ Tu dois répondre UNIQUEMENT par un objet JSON valide avec cette structure exact
     "fontTitle": "Outfit",
     "fontBody": "Inter"
   },
-  "narration": "Texte complet de la voix off narrative en français, dynamique et captivant (environ 30 à 45 mots pour 15s)",
+  "narration": "Texte complet de la voix off narrative en français",
   "toolsNeeded": {
     "voiceTts": true,
     "brandLogo": false,
     "brandDomain": "",
     "map": false,
     "mapQuery": "",
-    "mapStyle": "dark", // "dark" | "voyager" | "light" | "satellite" | "osm" - choisi selon l'ambiance vidéo
+    "mapStyle": "dark",
     "flag": false,
-    "country": "",
-    "coverrBroll": false,
-    "coverrQuery": ""
+    "country": ""
   },
   "scenes": [
     {
       "id": 1,
-      "title": "Nom de la scène",
-      "concept": "Idée visuelle originale adaptée au sujet",
+      "timeStart": 0.0,
+      "timeEnd": 5.0,
       "headline": "TITRE PRINCIPAL",
-      "headlineAccent": "MOT-CLÉ ACCENTUÉ",
-      "subtitle": "Phrase secondaire d'accompagnement",
-      "background": "" // Optionnel: fond CSS spécifique pour cette scène si différent du global
+      "headlineAccent": "MOT-CLÉ ACCENT",
+      "subtitle": "Sous-titre d'accompagnement",
+      "voiceLine": "Texte dit par la voix off pendant cette tranche horaire",
+      "concept": "Concept visuel fort"
     }
   ]
 }`;
 
-    const userPromptText = `PROJET VIDÉO À CRÉER :
-- Brief / Sujet : "${prompt}"
-- Format demandé : ${format} (${width}x${height})
-- Durée ciblée : ${promptDuration ? promptDuration + ' secondes (demandée explicitement dans le brief)' : '15 à 20 secondes'}
-- Audio souhaité : ${audioSetup} (Voix: ${hasVoice ? 'OUI' : 'NON'}, Musique: ${hasMusic ? 'OUI' : 'NON'})
-- Sous-titres demandés : ${showSubtitles ? 'OUI' : 'NON'}
-- Style sélectionné : ${payload.template || payload.style || 'Libre (sans template)'}
-- Chaîne associée : ${channelId || 'Aucune (vidéo autonome)'}
-- Fond de base imposé : ${payload.backgroundType || 'black'}
-
-- ASSETS UPLOADÉS PAR L'UTILISATEUR LIÉS À CETTE VIDÉO :
-${userUploadedAssets.length > 0 ? JSON.stringify(userUploadedAssets.map(u => ({ category: u.category, name: u.name, url: u.url })), null, 2) : "Aucun asset externe fourni (créer une vidéo 100% vectorielle Canvas 2D/SVG ou 3D sans inventer de faux fichiers images !)"}
+        const userPromptText = `PROJET VIDÉO À STRUCTURER :
+- Brief : "${prompt}"
+- Format : ${format} (${width}x${height})
+- Durée ciblée : ${promptDuration ? promptDuration + ' secondes' : '15 à 20 secondes'}
+- Audio : ${audioSetup}
+- Style : ${chosenTemplate || 'Libre'}
+- Chaîne : ${channelId || 'Aucune'}
 
 ${hasCustomScript ? `
-- SCRIPT HORODATÉ OBLIGATOIRE FOURNI PAR L'UTILISATEUR :
+SCRIPT HORODATÉ FOURNI PAR L'UTILISATEUR :
 """
 ${customScript}
 """
-CONSIGNES STRICTES SUR LE SCRIPT HORODATÉ :
-1. Tu DOIS découper les scènes dans "scenes" pour qu'elles correspondent EXACTEMENT aux tranches horaires et aux concepts visuels du script horodaté.
-2. Pour le champ "narration", rassemble fidèlement toutes les répliques voix du script sans en inventer de nouvelles.
-3. Si des marques, clubs de foot ou pays sont mentionnés dans le script, active les outils correspondants dans "toolsNeeded".
-` : ''}
+Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de temps et paroles du script !
+` : ''}`;
 
-Conçois le plan narratif, la direction artistique et détermine les outils externes nécessaires (logos, drapeaux, cartes). Réponds UNIQUEMENT en JSON.`;
-
-    let plan = null;
-    try {
-        plan = await callGeminiAPI(systemPrompt, userPromptText, 0.7);
-        onProgress('step_prompt', 'Plan narratif validé par Gemini !', 25, `Plan généré : "${plan.title}" (${plan.scenes?.length || 3} scènes, fond : ${plan.background?.type || 'libre'})`, 'success');
-    } catch (geminiError) {
-        console.warn("[Gemini API Fallback] Erreur appel Gemini direct :", geminiError.message);
-        onProgress('step_prompt', 'Génération du plan narratif en mode résilient...', 25, `Gemini fallback: ${geminiError.message}`, 'warning');
-
-        let fallbackNarration = `${prompt}. Découvrez cette histoire fascinante en quelques secondes.`;
-        if (hasCustomScript) {
-            const voiceLines = customScript
-                .split('\n')
-                .filter(l => /^(?:voix|voice|narrateur)\s*:/i.test(l.trim()))
-                .map(l => l.replace(/^(?:voix|voice|narrateur)\s*:\s*/i, '').trim());
-            if (voiceLines.length > 0) {
-                fallbackNarration = voiceLines.join(' ');
+        try {
+            plan = await callGeminiAPI(systemPrompt, userPromptText, 0.7);
+        } catch (geminiError) {
+            console.warn("[Plan Gen Fallback]:", geminiError.message);
+            let fallbackNarration = `${prompt}. Découvrez cette histoire fascinante en quelques secondes.`;
+            if (hasCustomScript) {
+                const voiceLines = customScript.split('\n')
+                    .filter(l => /^(?:voix|voice|narrateur)\s*:/i.test(l.trim()))
+                    .map(l => l.replace(/^(?:voix|voice|narrateur)\s*:\s*/i, '').trim());
+                if (voiceLines.length > 0) fallbackNarration = voiceLines.join(' ');
             }
-        }
 
-        plan = {
-            title: prompt.slice(0, 45) || baseRawName,
-            slug: baseRawName,
-            pitch: prompt || 'Composition vidéo dynamique',
-            targetDuration: promptDuration || 20.0,
-            background: {
-                type: payload.backgroundType || 'black',
-                global: '#000000',
-                textMain: '#ffffff',
-                textMuted: '#94a3b8'
-            },
-            theme: {
-                primaryColor: '#000000',
-                secondaryColor: '#121217',
-                accentColor: '#f59e0b',
-                fontTitle: 'Outfit',
-                fontBody: 'Inter'
-            },
-            narration: fallbackNarration,
-            toolsNeeded: {
-                voiceTts: hasVoice,
-                brandLogo: /logo|marque|apple|nike|tesla|google|meta|amazon|rolex/i.test(prompt),
-                brandDomain: /nike/i.test(prompt) ? 'nike.com' : (/rolex/i.test(prompt) ? 'rolex.com' : (/apple/i.test(prompt) ? 'apple.com' : '')),
-                map: /carte|map|pays|ville|paris|tokyo|france/i.test(prompt),
-                mapQuery: 'Paris, France',
-                flag: /suisse|france|japon|etats-unis|usa|bresil|allemagne|chine/i.test(prompt),
-                country: 'France',
-                coverrBroll: false,
-                coverrQuery: ''
-            },
-            scenes: [
-                {
-                    id: 1,
-                    title: "L'Accroche",
-                    concept: "Typographie monumentale et choc initial",
-                    headline: "DÉCOUVREZ L'HISTOIRE",
-                    headlineAccent: "L'HISTOIRE",
-                    subtitle: "Ce que personne n'avait anticipé"
+            plan = {
+                title: prompt.slice(0, 45) || baseRawName,
+                slug: baseRawName,
+                pitch: prompt || 'Composition vidéo dynamique',
+                targetDuration: promptDuration || 20.0,
+                background: { type: payload.backgroundType || 'black', global: '#000000', textMain: '#ffffff', textMuted: '#94a3b8' },
+                theme: { primaryColor: '#000000', secondaryColor: '#121217', accentColor: '#f59e0b', fontTitle: 'Outfit', fontBody: 'Inter' },
+                narration: fallbackNarration,
+                toolsNeeded: {
+                    voiceTts: hasVoice,
+                    brandLogo: /logo|marque|apple|nike|tesla|google|meta|amazon|rolex/i.test(prompt),
+                    brandDomain: /nike/i.test(prompt) ? 'nike.com' : (/rolex/i.test(prompt) ? 'rolex.com' : (/apple/i.test(prompt) ? 'apple.com' : '')),
+                    map: /carte|map|pays|ville|paris|tokyo|france/i.test(prompt),
+                    mapQuery: 'Paris, France',
+                    flag: /suisse|france|japon|etats-unis|usa|bresil|allemagne|chine/i.test(prompt),
+                    country: 'France'
                 },
-                {
-                    id: 2,
-                    title: "Le Cœur du Sujet",
-                    concept: "Infographie et mise en lumière des données",
-                    headline: "L'IMPACT FONDAMENTAL",
-                    headlineAccent: "FONDAMENTAL",
-                    subtitle: "Une transformation radicale"
-                },
-                {
-                    id: 3,
-                    title: "La Révélation Finale",
-                    concept: "Conclusion cinématique centrée",
-                    headline: "LE FUTUR COMMENCE",
-                    headlineAccent: "MAINTENANT",
-                    subtitle: "La conclusion incontournable"
-                }
-            ]
-        };
-    }
-
-    // Affinage du nom de fichier avec le slug court de Gemini si non imposé par l'utilisateur
-    if (!payload.fileName && plan && plan.slug) {
-        const geminiSlug = extractCleanSlug(plan.slug, 3);
-        if (geminiSlug && geminiSlug !== 'video' && geminiSlug !== baseRawName) {
-            const oldFilePath = finalFilePath;
-            baseRawName = geminiSlug;
-            finalFileName = `${baseRawName}${suffix}.html`;
-            finalFilePath = path.join(videosTargetDir, finalFileName);
-            relVideoPath = isChannel
-                ? `03_Chaines/${channelId}/${finalFileName}`
-                : `04_Videos/${finalFileName}`;
-            if (fs.existsSync(oldFilePath) && oldFilePath !== finalFilePath) {
-                try { fs.unlinkSync(oldFilePath); } catch (e) { }
-            }
+                scenes: [
+                    { id: 1, timeStart: 0.0, timeEnd: 6.0, headline: "DÉCOUVREZ L'HISTOIRE", headlineAccent: "L'HISTOIRE", subtitle: "Ce que personne n'avait anticipé", voiceLine: fallbackNarration.slice(0, 60), concept: "Accroche typographique" },
+                    { id: 2, timeStart: 6.0, timeEnd: 12.0, headline: "L'IMPACT FONDAMENTAL", headlineAccent: "FONDAMENTAL", subtitle: "Une transformation radicale", voiceLine: fallbackNarration.slice(60, 120), concept: "Infographie et données" },
+                    { id: 3, timeStart: 12.0, timeEnd: 18.0, headline: "LE FUTUR COMMENCE", headlineAccent: "MAINTENANT", subtitle: "La conclusion incontournable", voiceLine: fallbackNarration.slice(120), concept: "Conclusion centrée" }
+                ]
+            };
         }
-    }
 
-    // Heuristiques proactives pour s'assurer qu'aucun outil nécessaire n'est oublié
-    const normPrompt = prompt.toLowerCase();
-
-    // 3. ÉTAPE : BRAND KIT DE LA CHAÎNE (Si rattachée)
-    if (isChannel) {
-        onProgress('step_brandkit', 'Application du Brand Kit de la chaîne...', 32, `Application des couleurs et polices de la chaîne "${channelId}"`, 'info');
-        try {
-            const channelsFile = path.join(ROOT_DIR, '07_Scripts', 'channels.json');
-            if (fs.existsSync(channelsFile)) {
-                const channelsData = JSON.parse(fs.readFileSync(channelsFile, 'utf8'));
-                const list = Array.isArray(channelsData) ? channelsData : (channelsData.channels || []);
-                const myChan = list.find(c => c.id === channelId);
-                if (myChan) {
-                    const primary = myChan.colorPrimary || myChan.brandKit?.colorPrimary;
-                    const fontTitle = myChan.fontPrimary || myChan.brandKit?.fontTitle;
-                    if (primary) plan.theme.accentColor = primary;
-                    if (fontTitle) plan.theme.fontTitle = fontTitle;
-                }
-            }
-        } catch (e) { }
-    }
-
-    // 4. ÉTAPE : OUTILS EXTERNES (CAPTURE WEB, LOGOS, DRAPEAUX, CARTES)
-    // 4.0 DÉTECTION DE SITES WEB & CAPTURE D'ÉCRAN HD (07_Scripts/record_web.cjs)
-    let downloadedWebCapturePath = '';
-    let detectedUrl = null;
-    let detectedDomain = null;
-    const urlMatch = prompt.match(/https?:\/\/[^\s\)\],;]+/i);
-    if (urlMatch) {
-        detectedUrl = urlMatch[0];
-        try {
-            detectedDomain = new URL(detectedUrl).hostname.replace(/^www\./, '').toLowerCase();
-        } catch (e) { }
-    } else {
-        const domainMatch = prompt.match(/\b([a-zA-Z0-9-]+\.(?:com|io|fr|org|net|co|ai|dev|app|tech|me))\b/i);
-        if (domainMatch) {
-            detectedDomain = domainMatch[1].toLowerCase();
-            detectedUrl = `https://${detectedDomain}`;
+        // Si l'utilisateur avait fourni un script horodaté rigoureux, forcer les scènes découpées
+        if (parsedScriptScenes.length > 0 && plan && Array.isArray(plan.scenes)) {
+            plan.scenes = parsedScriptScenes.map((ps, idx) => {
+                const existing = plan.scenes[idx] || {};
+                return {
+                    id: ps.id,
+                    timeStart: ps.timeStart,
+                    timeEnd: ps.timeEnd,
+                    duration: ps.duration,
+                    headline: existing.headline || ps.visualConcept.slice(0, 35) || `SCÈNE ${ps.id}`,
+                    headlineAccent: existing.headlineAccent || '',
+                    subtitle: existing.subtitle || ps.visualConcept,
+                    voiceLine: ps.voiceLine,
+                    concept: ps.visualConcept || existing.concept || ''
+                };
+            });
         }
+
+        checkpoint.plan = plan;
+        saveCheckpoint(checkpointPath, checkpoint);
+        logAndSaveStep('step_init', 'Plan narratif validé avec succès !', 22, `Plan validé : "${plan.title}" (${plan.scenes.length} scènes découpées)`, 'success');
     }
 
-    if (detectedUrl) {
-        onProgress('step_web_record', `Capture d'écran HD du site (${detectedUrl})...`, 35, `07_Scripts/record_web.cjs : capture en cours de ${detectedUrl}...`, 'info');
-        try {
-            const webSlug = extractCleanSlug(detectedDomain || 'website', 2);
-            const webImgName = `web_${webSlug}${suffix}.png`;
-            const webImgDir = isChannel ? path.join(ROOT_DIR, '01_Assets', 'Images', channelId) : path.join(ROOT_DIR, '01_Assets', 'Images');
-            ensureDir(webImgDir);
-            const webImgFull = path.join(webImgDir, webImgName);
-            const recordScript = path.join(ROOT_DIR, '07_Scripts', 'record_web.cjs');
-            // Fix Windows paths: convert backslashes to forward slashes for execAsync template literals
-            const safeRecordScript = recordScript.replace(/\\/g, '/');
-            const safeWebImgFull = webImgFull.replace(/\\/g, '/');
-            await execAsync(`node "${safeRecordScript}" --url "${detectedUrl}" --mode image --out "${safeWebImgFull}"`, 35000);
-            if (fs.existsSync(webImgFull)) {
-                downloadedWebCapturePath = isChannel ? `${assetPrefix}/Images/${channelId}/${webImgName}` : `${assetPrefix}/Images/${webImgName}`;
-                onProgress('step_web_record', 'Capture HD du site web prête !', 37, `Capture enregistrée : ${downloadedWebCapturePath}`, 'success');
-            }
-        } catch (webErr) {
-            console.warn("Erreur record_web :", webErr.message);
-        }
-    }
-
-    // 4.1 LOGOS DE MARQUES & SITES WEB (07_Scripts/brandfetch.cjs)
-    let downloadedLogoPath = '';
-    let brandDomain = plan.toolsNeeded?.brandDomain || detectedDomain;
-    if (!brandDomain) {
-        const brandDict = {
-            'rolex': 'rolex.com', 'nike': 'nike.com', 'apple': 'apple.com', 'tesla': 'tesla.com',
-            'google': 'google.com', 'amazon': 'amazon.com', 'meta': 'meta.com', 'microsoft': 'microsoft.com',
-            'spotify': 'spotify.com', 'netflix': 'netflix.com', 'lego': 'lego.com', 'adidas': 'adidas.com',
-            'porsche': 'porsche.com', 'ferrari': 'ferrari.com', 'bmw': 'bmw.com', 'audi': 'audi.com'
-        };
-        for (const [k, v] of Object.entries(brandDict)) {
-            if (new RegExp(`\\b${k}\\b`, 'i').test(normPrompt)) { brandDomain = v; break; }
-        }
-    }
-
-    if (brandDomain) {
-        onProgress('step_logo', `Téléchargement du logo officiel pour ${brandDomain}...`, 38, `07_Scripts/brandfetch.cjs : récupération du logo ${brandDomain}...`, 'info');
-        try {
-            const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs');
-            // Fix Windows paths: convert backslashes to forward slashes for execAsync template literals
-            const safeBrandScript = brandScript.replace(/\\/g, '/');
-            await execAsync(`node "${safeBrandScript}" ${brandDomain}`, 15000);
-            const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/, '').toLowerCase().replace(/[\s_]/g, '-');
-            const cleanDomain = brandDomain.replace(/\./g, '_');
-
-            // Chercher SVG ou Favicon PNG haute résolution
-            const candidates = [
-                path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
-                path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.png`),
-                path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDomain}_favicon.png`),
-                path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_favicon.png`)
-            ];
-            for (const cand of candidates) {
-                if (fs.existsSync(cand)) {
-                    downloadedLogoPath = `${assetPrefix}/Logos/${path.basename(cand)}`;
-                    onProgress('step_logo', 'Logo récupéré avec succès !', 42, `Logo officiel trouvé : ${downloadedLogoPath}`, 'success');
-                    break;
-                }
-            }
-        } catch (e) {
-            console.warn("Erreur brandfetch:", e.message);
-        }
-    }
-
-    // 4.1 BIS LOGOS OFFICIELS DE CLUBS DE FOOTBALL (07_Scripts/fetch_football_logo.cjs)
-    const downloadedFootballLogos = [];
-    try {
-        const { fetchFootballLogo } = require('./fetch_football_logo.cjs');
-        const footballClubs = [
-            'real madrid', 'manchester city', 'bayern munich', 'barcelona', 'barça',
-            'inter', 'inter milan', 'milan', 'ac milan', 'psg', 'arsenal', 'liverpool',
-            'chelsea', 'juventus', 'dortmund', 'atletico madrid', 'atletico', 'tottenham'
-        ];
-        const fullPromptAndScript = (normPrompt + ' ' + (customScript || '').toLowerCase());
-        for (const clubName of footballClubs) {
-            if (fullPromptAndScript.includes(clubName)) {
-                try {
-                    const fbRes = await fetchFootballLogo(clubName);
-                    if (fbRes && fbRes.localPath && fs.existsSync(path.join(ROOT_DIR, fbRes.localPath))) {
-                        const clubSlug = path.basename(fbRes.localPath);
-                        downloadedFootballLogos.push({
-                            name: clubName,
-                            path: `${assetPrefix}/Logos/Football/${clubSlug}`
-                        });
-                        onProgress('step_logo', `Blason officiel récupéré : ${clubName}`, 43, `07_Scripts/fetch_football_logo.cjs : ${clubSlug}`, 'info');
-                    }
-                } catch (e) { }
-            }
-        }
-    } catch (e) { }
-
-    // 4.2 DRAPEAUX NATIONAUX & SYMBOLES
-    let downloadedFlagPath = '';
-    let flagTarget = plan.toolsNeeded?.country || plan.toolsNeeded?.flagCountry;
-    if (!flagTarget) {
-        const flagKeywords = [
-            'france', 'français', 'japon', 'japan', 'usa', 'états-unis', 'suisse', 'switzerland',
-            'allemagne', 'germany', 'brésil', 'brazil', 'chine', 'china', 'italie', 'italy',
-            'espagne', 'spain', 'royaume-uni', 'angleterre', 'canada', 'maroc', 'algérie', 'sénégal'
-        ];
-        for (const fk of flagKeywords) {
-            if (new RegExp(`\\b${fk}\\b`, 'i').test(normPrompt)) { flagTarget = fk; break; }
-        }
-    }
-
-    if (flagTarget) {
-        onProgress('step_flag', `Téléchargement du drapeau pour "${flagTarget}"...`, 45, `07_Scripts/fetch_flag.cjs : récupération du drapeau SVG...`, 'info');
-        try {
-            const flagRes = await fetchFlag(flagTarget);
-            if (flagRes && (flagRes.svgPath || flagRes.pngPath)) {
-                downloadedFlagPath = `${assetPrefix}/Flags/${path.basename(flagRes.svgPath)}`;
-                onProgress('step_flag', 'Drapeau récupéré avec succès !', 48, `Drapeau (${flagRes.code}) prêt : ${flagRes.relSvgPath}`, 'success');
-            }
-        } catch (e) {
-            console.warn("Erreur fetch_flag:", e.message);
-        }
-    }
-
-    // 4.3 CARTES GÉOGRAPHIQUES
-    let downloadedMapPath = '';
-    let mapQuery = plan.toolsNeeded?.mapQuery;
-    let mapStyle = plan.toolsNeeded?.mapStyle || 'dark';
-    if (!mapQuery && /carte|map|satellite|géographie|pays|territoire|capitale|ville/i.test(normPrompt)) {
-        mapQuery = flagTarget || prompt.split(/[,:.]/)[0];
-    }
-
-    if (mapQuery) {
-        onProgress('step_map', 'Génération de la carte géographique haute résolution...', 50, `07_Scripts/fetch_map.cjs : carte pour "${mapQuery}" (style: ${mapStyle})...`, 'info');
-        try {
-            const mapOut = path.join(ROOT_DIR, '01_Assets', 'Maps', `map_${sanitizeFilename(mapQuery)}${suffix}.png`);
-            ensureDir(path.dirname(mapOut));
-            const mapScript = path.join(ROOT_DIR, '07_Scripts', 'fetch_map.cjs');
-            // FIX: Convertir les chemins Windows en forward slashes pour éviter l'échappement dans template literal
-            const safeMapScript = mapScript.replace(/\\/g, '/');
-            const safeMapOut = mapOut.replace(/\\/g, '/');
-            await execAsync(`node "${safeMapScript}" --query "${mapQuery}" --style "${mapStyle}" --out "${safeMapOut}"`, 25000);
-            if (fs.existsSync(mapOut)) {
-                downloadedMapPath = `${assetPrefix}/Maps/${path.basename(mapOut)}`;
-                onProgress('step_map', 'Carte satellite prête !', 54, `Carte enregistrée : 01_Assets/Maps/${path.basename(mapOut)}`, 'success');
-            }
-        } catch (e) {
-            console.warn("Erreur fetch_map:", e.message);
-        }
-    }
-
-    // 4.4 DÉTOURAGE FOND VERT (CHROMA KEY) DES IMAGES & VIDÉOS DU PROJET
-    let processedChromaAssets = [];
-    try {
-        const { removeGreenScreen } = require('./chroma_key.cjs');
-        const userImagesList = Array.isArray(payload.images) ? payload.images : [];
-        for (const imgItem of userImagesList) {
-            const imgName = typeof imgItem === 'string' ? imgItem : (imgItem.name || '');
-            if (/green|vert|fond_vert|chroma/i.test(imgName) || /detour|fond vert|chroma/i.test(normPrompt)) {
-                const rawImgPath = isChannel
-                    ? path.join(ROOT_DIR, '01_Assets', 'Images', channelId, imgName)
-                    : path.join(ROOT_DIR, '01_Assets', 'Images', imgName);
-
-                if (fs.existsSync(rawImgPath)) {
-                    onProgress('step_chroma', `Détourage fond vert de "${imgName}"...`, 56, `07_Scripts/chroma_key.cjs : suppression du fond vert...`, 'info');
-                    const parsed = path.parse(rawImgPath);
-                    const outChroma = path.join(parsed.dir, `${parsed.name}_detoure.png`);
-                    await removeGreenScreen(rawImgPath, outChroma);
-                    if (fs.existsSync(outChroma)) {
-                        const relChroma = isChannel
-                            ? `${assetPrefix}/Images/${channelId}/${path.basename(outChroma)}`
-                            : `${assetPrefix}/Images/${path.basename(outChroma)}`;
-                        processedChromaAssets.push(relChroma);
-                        onProgress('step_chroma', 'Sujet fond vert détouré avec succès !', 57, `Sujet transparent prêt : ${relChroma}`, 'success');
-                    }
-                }
-            }
-        }
-    } catch (chromaErr) {
-        console.warn("Erreur pipeline chroma key :", chromaErr.message);
-    }
-
-    // 4.5 VIDÉOS DE STOCK B-ROLL (COVERR)
-    let downloadedCoverrVideo = '';
-    if (plan.toolsNeeded?.coverrBroll && plan.toolsNeeded?.coverrQuery) {
-        try {
-            const { searchAndDownloadCoverrVideo } = require('./coverr.cjs');
-            const coverrDir = path.join(ROOT_DIR, '01_Assets', 'Videos');
-            ensureDir(coverrDir);
-            const coverrOut = path.join(coverrDir, `broll_${extractCleanSlug(plan.toolsNeeded.coverrQuery, 2)}${suffix}.mp4`);
-            const brollRes = await searchAndDownloadCoverrVideo(plan.toolsNeeded.coverrQuery, coverrOut);
-            if (brollRes && fs.existsSync(coverrOut)) {
-                downloadedCoverrVideo = `${assetPrefix}/Videos/${path.basename(coverrOut)}`;
-                onProgress('step_coverr', 'Vidéo stock B-roll téléchargée !', 57, `B-roll prêt : ${downloadedCoverrVideo}`, 'success');
-            }
-        } catch (coverrErr) {
-            console.warn("Erreur téléchargement Coverr :", coverrErr.message);
-        }
-    }
-
-    // 5. ÉTAPE : SYNTHÈSE VOCALE (VOICE TTS ELEVENLABS) + MESURE PRÉCISE FFmpeg
+    // =========================================================================
+    // ÉTAPE 2 : GESTION DE LA VOIX OFF & CALAGE TIMELINE
+    // =========================================================================
     let generatedVoiceRelPath = '';
-    let voiceDurationSeconds = plan.targetDuration || 15.0;
+    let voiceDurationSeconds = plan.targetDuration || 18.0;
 
     if (hasVoice) {
-        if (payload.hasUserVoice && payload.voiceover) {
-            onProgress('step_voice_user', 'Indexation de la voix off fournie...', 58, `Utilisation de la voix off fournie : ${payload.voiceover}`, 'info');
+        if (checkpoint.voice && checkpoint.voice.done && checkpoint.voice.path && fs.existsSync(path.resolve(ROOT_DIR, checkpoint.voice.path))) {
+            generatedVoiceRelPath = checkpoint.voice.path;
+            voiceDurationSeconds = checkpoint.voice.duration || 18.0;
+            logAndSaveStep('step_voice', 'Voix off déjà existante (Reprise)', 38, `[Reprise] Voix off réutilisée : ${generatedVoiceRelPath} (${voiceDurationSeconds.toFixed(1)}s)`, 'success');
+        } else if (payload.hasUserVoice && payload.voiceover) {
+            logAndSaveStep('step_voice', 'Indexation de la voix off fournie...', 28, `Utilisation du fichier audio fourni : ${payload.voiceover}`, 'info');
             generatedVoiceRelPath = isChannel
                 ? `${assetPrefix}/Voix_Off/${channelId}/${payload.voiceover}`
                 : `${assetPrefix}/Voix_Off/${payload.voiceover}`;
@@ -1006,12 +882,13 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             const fullVoicePath = path.join(ROOT_DIR, isChannel ? `01_Assets/Voix_Off/${channelId}/${payload.voiceover}` : `01_Assets/Voix_Off/${payload.voiceover}`);
             const exactDur = await getAudioDuration(fullVoicePath);
             if (exactDur) voiceDurationSeconds = exactDur;
+            checkpoint.voice = { done: true, path: generatedVoiceRelPath, duration: voiceDurationSeconds };
+            saveCheckpoint(checkpointPath, checkpoint);
+            logAndSaveStep('step_voice', 'Voix off fournie indexée et mesurée !', 38, `Durée mesurée : ${voiceDurationSeconds.toFixed(1)}s`, 'success');
         } else {
-            onProgress('step_voice_tts', 'Synthèse vocale IA ElevenLabs...', 58, `07_Scripts/generate_voice.cjs : synthèse de la narration ("${(plan.narration || '').slice(0, 35)}...")`, 'info');
+            logAndSaveStep('step_voice', 'Synthèse vocale IA ElevenLabs...', 28, `07_Scripts/generate_voice.cjs : génération de la narration vocale...`, 'info');
             try {
-                const voiceDir = isChannel
-                    ? path.join(ROOT_DIR, '01_Assets', 'Voix_Off', channelId)
-                    : path.join(ROOT_DIR, '01_Assets', 'Voix_Off');
+                const voiceDir = isChannel ? path.join(ROOT_DIR, '01_Assets', 'Voix_Off', channelId) : path.join(ROOT_DIR, '01_Assets', 'Voix_Off');
                 ensureDir(voiceDir);
                 const voiceFile = `narration_${baseRawName}${suffix}.mp3`;
                 const fullVoicePath = path.join(voiceDir, voiceFile);
@@ -1027,7 +904,6 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                         ? `${assetPrefix}/Voix_Off/${channelId}/${voiceFile}`
                         : `${assetPrefix}/Voix_Off/${voiceFile}`;
 
-                    // Mesure exacte de la durée via FFmpeg
                     const exactDur = await getAudioDuration(fullVoicePath);
                     if (exactDur && exactDur > 2.0) {
                         voiceDurationSeconds = exactDur;
@@ -1035,19 +911,28 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
                         const wordsCount = (plan.narration || '').split(/\s+/).length;
                         voiceDurationSeconds = Math.max(8.0, Math.round((wordsCount / 2.5) * 10) / 10);
                     }
-                    onProgress('step_voice_tts', 'Voix off générée et mesurée !', 65, `Voix générée : ${voiceFile} (${voiceDurationSeconds.toFixed(1)}s)`, 'success');
+                    checkpoint.voice = { done: true, path: generatedVoiceRelPath, duration: voiceDurationSeconds };
+                    saveCheckpoint(checkpointPath, checkpoint);
+                    logAndSaveStep('step_voice', 'Voix off générée et mesurée avec succès !', 38, `Voix générée : ${voiceFile} (${voiceDurationSeconds.toFixed(1)}s)`, 'success');
                 }
             } catch (voiceErr) {
                 console.warn("[Voice TTS Warning] :", voiceErr.message);
-                onProgress('step_voice_tts', 'Voix off prête en mode résilient.', 65, `Voix synthétisée en mode résilient.`, 'warning');
+                logAndSaveStep('step_voice', 'Voix off synthétisée en mode résilient.', 38, `Mode résilient : ${voiceErr.message}`, 'warning');
             }
         }
     }
 
-    // 6. ÉTAPE : MUSIQUE D'AMBIANCE
+    // Durée totale calibrée
+    let totalVideoDuration = hasVoice
+        ? Math.max(8.0, Math.ceil(voiceDurationSeconds + 1.0))
+        : (promptDuration || plan.targetDuration || 20.0);
+
+    checkpoint.totalVideoDuration = totalVideoDuration;
+    saveCheckpoint(checkpointPath, checkpoint);
+
+    // Musique d'ambiance
     let musicRelPath = '';
     if (hasMusic) {
-        onProgress('step_music', 'Mixage de la musique d\'ambiance et ducking...', 70, `Mixage musical : piste d'ambiance avec fondu sonore`, 'info');
         const defaultMusicFile = path.join(ROOT_DIR, '01_Assets', 'Musiques', 'Fresh___Funky.mp3');
         if (payload.music) {
             musicRelPath = isChannel ? `${assetPrefix}/Musiques/${channelId}/${payload.music}` : `${assetPrefix}/Musiques/${payload.music}`;
@@ -1056,26 +941,278 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         }
     }
 
-    // Durée totale calculée avec précision (en tenant compte de la voix ou de la durée du brief)
-    let totalVideoDuration = 20.0;
-    if (hasVoice) {
-        totalVideoDuration = Math.max(8.0, Math.ceil(voiceDurationSeconds + 1.0));
+    // =========================================================================
+    // ÉTAPE 3 : GESTION DES ASSETS & TÉLÉCHARGEMENTS
+    // =========================================================================
+    let downloadedLogoPath = '';
+    let downloadedFlagPath = '';
+    let downloadedMapPath = '';
+    let downloadedWebCapturePath = '';
+    const downloadedFootballLogos = [];
+
+    if (checkpoint.assets && checkpoint.assets.done) {
+        downloadedLogoPath = checkpoint.assets.downloaded?.logo || '';
+        downloadedFlagPath = checkpoint.assets.downloaded?.flag || '';
+        downloadedMapPath = checkpoint.assets.downloaded?.map || '';
+        downloadedWebCapturePath = checkpoint.assets.downloaded?.web || '';
+        logAndSaveStep('step_assets', 'Assets déjà indexés (Reprise)', 50, `[Reprise] Médias et logos déjà disponibles.`, 'info');
     } else {
-        totalVideoDuration = promptDuration || plan.targetDuration || 20.0;
+        logAndSaveStep('step_assets', 'Vérification et récupération des assets nécessaires...', 42, `Inspection des logos, cartes géographiques et drapeaux...`, 'info');
+
+        // Capture Web
+        let detectedUrl = null;
+        let detectedDomain = null;
+        const urlMatch = prompt.match(/https?:\/\/[^\s\)\],;]+/i);
+        if (urlMatch) {
+            detectedUrl = urlMatch[0];
+            try { detectedDomain = new URL(detectedUrl).hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { }
+        } else {
+            const domainMatch = prompt.match(/\b([a-zA-Z0-9-]+\.(?:com|io|fr|org|net|co|ai|dev|app|tech|me))\b/i);
+            if (domainMatch) {
+                detectedDomain = domainMatch[1].toLowerCase();
+                detectedUrl = `https://${detectedDomain}`;
+            }
+        }
+
+        if (detectedUrl) {
+            try {
+                const webSlug = extractCleanSlug(detectedDomain || 'website', 2);
+                const webImgName = `web_${webSlug}${suffix}.png`;
+                const webImgDir = isChannel ? path.join(ROOT_DIR, '01_Assets', 'Images', channelId) : path.join(ROOT_DIR, '01_Assets', 'Images');
+                ensureDir(webImgDir);
+                const webImgFull = path.join(webImgDir, webImgName);
+                if (!fs.existsSync(webImgFull)) {
+                    const recordScript = path.join(ROOT_DIR, '07_Scripts', 'record_web.cjs').replace(/\\/g, '/');
+                    const safeWebImgFull = webImgFull.replace(/\\/g, '/');
+                    await execAsync(`node "${recordScript}" --url "${detectedUrl}" --mode image --out "${safeWebImgFull}"`, 35000);
+                }
+                if (fs.existsSync(webImgFull)) {
+                    downloadedWebCapturePath = isChannel ? `${assetPrefix}/Images/${channelId}/${webImgName}` : `${assetPrefix}/Images/${webImgName}`;
+                    logAndSaveStep('step_assets', 'Capture HD du site web prête !', 44, `Capture enregistrée : ${downloadedWebCapturePath}`, 'success');
+                }
+            } catch (webErr) {
+                console.warn("Erreur record_web :", webErr.message);
+            }
+        }
+
+        // Logos de marques
+        let brandDomain = plan.toolsNeeded?.brandDomain || detectedDomain;
+        if (!brandDomain) {
+            const brandDict = {
+                'rolex': 'rolex.com', 'nike': 'nike.com', 'apple': 'apple.com', 'tesla': 'tesla.com',
+                'google': 'google.com', 'amazon': 'amazon.com', 'meta': 'meta.com', 'microsoft': 'microsoft.com',
+                'spotify': 'spotify.com', 'netflix': 'netflix.com', 'adidas': 'adidas.com', 'bmw': 'bmw.com', 'audi': 'audi.com'
+            };
+            for (const [k, v] of Object.entries(brandDict)) {
+                if (new RegExp(`\\b${k}\\b`, 'i').test(normPromptPre)) { brandDomain = v; break; }
+            }
+        }
+
+        if (brandDomain) {
+            try {
+                const brandScript = path.join(ROOT_DIR, '07_Scripts', 'brandfetch.cjs').replace(/\\/g, '/');
+                await execAsync(`node "${brandScript}" ${brandDomain}`, 15000);
+                const slug = brandDomain.replace(/\.com$|\.net$|\.org$|\.io$/, '').toLowerCase().replace(/[\s_]/g, '-');
+                const cleanDomain = brandDomain.replace(/\./g, '_');
+
+                const candidates = [
+                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.svg`),
+                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}.png`),
+                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${cleanDomain}_favicon.png`),
+                    path.join(ROOT_DIR, '01_Assets', 'Logos', `${slug}_favicon.png`)
+                ];
+                for (const cand of candidates) {
+                    if (fs.existsSync(cand)) {
+                        downloadedLogoPath = `${assetPrefix}/Logos/${path.basename(cand)}`;
+                        logAndSaveStep('step_assets', 'Logo officiel récupéré !', 46, `Logo officiel : ${downloadedLogoPath}`, 'success');
+                        break;
+                    }
+                }
+            } catch (e) {
+                console.warn("Erreur brandfetch:", e.message);
+            }
+        }
+
+        // Blasons de Football
+        try {
+            const { fetchFootballLogo } = require('./fetch_football_logo.cjs');
+            const footballClubs = ['real madrid', 'manchester city', 'bayern munich', 'barcelona', 'barça', 'inter', 'ac milan', 'psg', 'arsenal', 'liverpool', 'chelsea', 'juventus', 'dortmund'];
+            const fullPromptAndScript = (normPromptPre + ' ' + (customScript || '').toLowerCase());
+            for (const clubName of footballClubs) {
+                if (fullPromptAndScript.includes(clubName)) {
+                    try {
+                        const fbRes = await fetchFootballLogo(clubName);
+                        if (fbRes && fbRes.localPath && fs.existsSync(path.join(ROOT_DIR, fbRes.localPath))) {
+                            const clubSlug = path.basename(fbRes.localPath);
+                            downloadedFootballLogos.push({ name: clubName, path: `${assetPrefix}/Logos/Football/${clubSlug}` });
+                        }
+                    } catch (e) { }
+                }
+            }
+        } catch (e) { }
+
+        // Drapeaux
+        let flagTarget = plan.toolsNeeded?.country;
+        if (!flagTarget) {
+            const flagKeywords = ['france', 'japon', 'japan', 'usa', 'états-unis', 'suisse', 'switzerland', 'allemagne', 'germany', 'brésil', 'italie', 'espagne', 'canada', 'maroc', 'sénégal'];
+            for (const fk of flagKeywords) {
+                if (new RegExp(`\\b${fk}\\b`, 'i').test(normPromptPre)) { flagTarget = fk; break; }
+            }
+        }
+        if (flagTarget) {
+            try {
+                const flagRes = await fetchFlag(flagTarget);
+                if (flagRes && (flagRes.svgPath || flagRes.pngPath)) {
+                    downloadedFlagPath = `${assetPrefix}/Flags/${path.basename(flagRes.svgPath || flagRes.pngPath)}`;
+                    logAndSaveStep('step_assets', 'Drapeau officiel prêt !', 48, `Drapeau : ${downloadedFlagPath}`, 'success');
+                }
+            } catch (e) { }
+        }
+
+        // Cartes
+        let mapQuery = plan.toolsNeeded?.mapQuery;
+        let mapStyle = plan.toolsNeeded?.mapStyle || 'dark';
+        if (!mapQuery && /carte|map|satellite|géographie|pays|territoire|capitale|ville/i.test(normPromptPre)) {
+            mapQuery = flagTarget || prompt.split(/[,:.]/)[0];
+        }
+        if (mapQuery) {
+            try {
+                const mapOut = path.join(ROOT_DIR, '01_Assets', 'Maps', `map_${sanitizeFilename(mapQuery)}${suffix}.png`);
+                ensureDir(path.dirname(mapOut));
+                if (!fs.existsSync(mapOut)) {
+                    const safeMapScript = path.join(ROOT_DIR, '07_Scripts', 'fetch_map.cjs').replace(/\\/g, '/');
+                    const safeMapOut = mapOut.replace(/\\/g, '/');
+                    await execAsync(`node "${safeMapScript}" --query "${mapQuery}" --style "${mapStyle}" --out "${safeMapOut}"`, 25000);
+                }
+                if (fs.existsSync(mapOut)) {
+                    downloadedMapPath = `${assetPrefix}/Maps/${path.basename(mapOut)}`;
+                    logAndSaveStep('step_assets', 'Carte géographique prête !', 50, `Carte satellite : ${downloadedMapPath}`, 'success');
+                }
+            } catch (e) { }
+        }
+
+        checkpoint.assets = {
+            done: true,
+            downloaded: {
+                logo: downloadedLogoPath,
+                flag: downloadedFlagPath,
+                map: downloadedMapPath,
+                web: downloadedWebCapturePath,
+                footballLogos: downloadedFootballLogos
+            }
+        };
+        saveCheckpoint(checkpointPath, checkpoint);
     }
 
-    // 7. ÉTAPE : SOUS-TITRES DYNAMIQUES HAUTE PRÉCISION (2 STYLES EXCLUSIFS)
+    // Liste des assets formatée pour les prompts des scènes
+    const availableAssetsList = [];
+    if (downloadedWebCapturePath) availableAssetsList.push(`- Capture HD du site : "${downloadedWebCapturePath}"`);
+    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel : "${downloadedLogoPath}"`);
+    if (downloadedFlagPath) availableAssetsList.push(`- Drapeau national : "${downloadedFlagPath}"`);
+    if (downloadedMapPath) availableAssetsList.push(`- Carte géographique : "${downloadedMapPath}"`);
+    downloadedFootballLogos.forEach(fb => availableAssetsList.push(`- Blason club "${fb.name}" : "${fb.path}"`));
+    userUploadedAssets.forEach(u => availableAssetsList.push(`- Asset utilisateur [${u.category}] : "${u.url}"`));
+
+    // Couleurs & Design
+    const userBgType = payload.backgroundType;
+    const isAiDecidedBg = (!userBgType || userBgType === 'auto' || userBgType === 'ai');
+    let baseBg = isAiDecidedBg ? (plan.background?.global || '#000000') : (userBgType === 'white' ? '#ffffff' : (userBgType === 'solid' ? (payload.backgroundColor || '#111827') : '#000000'));
+    const isLight = isColorLight(baseBg);
+    const mainTextColor = isLight ? '#09090b' : '#ffffff';
+    const mutedTextColor = isLight ? '#475569' : '#94a3b8';
+    const cardBgColor = isLight ? '#f8fafc' : '#0d1117';
+    const cardBorderColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.12)';
+    const accentColor = plan.theme?.accentColor || '#f59e0b';
+    const fontTitle = plan.theme?.fontTitle || 'Outfit';
+    const fontBody = plan.theme?.fontBody || 'Inter';
+
+    // =========================================================================
+    // ÉTAPE 4 : DÉCOUPAGE ET GÉNÉRATION SCÈNE PAR SCÈNE (AVEC REPRISE)
+    // =========================================================================
+    checkpoint.scenes = Array.isArray(checkpoint.scenes) ? checkpoint.scenes : [];
+    const totalScenes = plan.scenes && plan.scenes.length ? plan.scenes.length : 3;
+
+    // Calibrer les timecodes de chaque scène sur la durée totale réelle
+    const sceneSlice = totalVideoDuration / totalScenes;
+    plan.scenes.forEach((sc, idx) => {
+        if (sc.timeStart === undefined || sc.timeStart === null) {
+            sc.timeStart = Math.round(idx * sceneSlice * 10) / 10;
+        }
+        if (sc.timeEnd === undefined || sc.timeEnd === null) {
+            sc.timeEnd = Math.round((idx + 1) * sceneSlice * 10) / 10;
+        }
+    });
+
+    for (let sIdx = 0; sIdx < totalScenes; sIdx++) {
+        const scNum = sIdx + 1;
+        const currentScPlan = plan.scenes[sIdx];
+        const scenePercent = Math.min(92, Math.round(52 + (sIdx / totalScenes) * 38));
+
+        if (checkpoint.scenes[sIdx] && checkpoint.scenes[sIdx].done) {
+            logAndSaveStep('step_scenes', `Scène ${scNum}/${totalScenes} déjà prête (Reprise)`, scenePercent, `[Reprise] Scène ${scNum} validée : "${currentScPlan.headline || ''}"`, 'info');
+            continue;
+        }
+
+        logAndSaveStep('step_scenes', `Génération de la scène ${scNum}/${totalScenes}...`, scenePercent, `Conception motion design de la scène ${scNum} [${currentScPlan.timeStart}s -> ${currentScPlan.timeEnd}s] calée sur la voix off...`, 'info');
+
+        let sceneCode = null;
+        try {
+            sceneCode = await generateSceneCodeWithGemini({
+                sceneIndex: scNum,
+                totalScenes,
+                scenePlan: currentScPlan,
+                theme: plan.theme,
+                baseBg,
+                format,
+                width,
+                height,
+                accentColor,
+                availableAssetsList,
+                skillsDirectives,
+                templateDirectives
+            });
+        } catch (scErr) {
+            console.warn(`[Scene ${scNum} Fallback] :`, scErr.message);
+            sceneCode = buildFallbackScene(scNum, totalScenes, currentScPlan, format, accentColor, availableAssetsList);
+        }
+
+        if (!sceneCode || !sceneCode.htmlContent) {
+            sceneCode = buildFallbackScene(scNum, totalScenes, currentScPlan, format, accentColor, availableAssetsList);
+        }
+
+        // Sanitisation
+        let safeSceneHtml = (sceneCode.htmlContent || '').replace(/style=(["'])(.*?)\1/gi, (match, quote, styleStr) => {
+            return `style=${quote}${styleStr.replace(/!important/gi, '')}${quote}`;
+        });
+        let safeSceneCss = (sceneCode.customCss || '').replace(/!important/gi, '');
+
+        checkpoint.scenes[sIdx] = {
+            id: scNum,
+            timeStart: currentScPlan.timeStart,
+            timeEnd: currentScPlan.timeEnd,
+            headline: currentScPlan.headline,
+            htmlContent: safeSceneHtml,
+            customCss: safeSceneCss,
+            gsapTimelineCode: sceneCode.gsapTimelineCode || '',
+            done: true
+        };
+
+        saveCheckpoint(checkpointPath, checkpoint);
+        logAndSaveStep('step_scenes', `Scène ${scNum}/${totalScenes} générée avec succès !`, scenePercent + 2, `✓ Scène ${scNum} intégrée et synchronisée sur les paroles de la voix off.`, 'success');
+    }
+
+    // =========================================================================
+    // ÉTAPE 5 : SOUS-TITRES DYNAMIQUES MOT-À-MOT & FINALISATION
+    // =========================================================================
+    logAndSaveStep('step_final', 'Synchronisation des sous-titres et assemblage final...', 93, `Calcul de la synchronisation mot-à-mot et écriture du fichier vidéo...`, 'info');
+
     let subtitleCues = [];
     if (showSubtitles) {
-        const subChosenStyle = (payload.subtitleType === 'type-standard') ? 'type-standard' : 'type-wordbyword';
-        onProgress('step_subtitles', 'Découpage et synchronisation des sous-titres...', 75, `Synchronisation vocale dynamique (style : ${subChosenStyle})`, 'info');
-
-        const rawText = plan.narration || `${prompt}. Composition générée par VibeEditor.`;
+        const rawText = plan.narration || `${prompt}. Composition créée avec AutoFrame.`;
         const speechStart = 0.35;
         const speechEnd = Math.max(speechStart + 1.2, voiceDurationSeconds - 0.25);
         const availableDuration = speechEnd - speechStart;
 
-        // Découpage intelligent en phrases/segments par ponctuation ou groupes de 3-5 mots
         const sentences = rawText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [rawText];
         const allSegments = [];
 
@@ -1083,25 +1220,21 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             const trimmed = sent.trim();
             if (!trimmed) return;
             const words = trimmed.split(/\s+/).filter(Boolean);
-            
-            // Si la phrase fait moins de 5 mots, on la garde entière
             if (words.length <= 5) {
                 allSegments.push(words);
             } else {
-                // Découpage en blocs de 3 à 4 mots max
                 let idx = 0;
                 while (idx < words.length) {
                     const remaining = words.length - idx;
                     let chunkSize = 4;
-                    if (remaining === 5) chunkSize = 3; // évite d'avoir un mot isolé à la fin
+                    if (remaining === 5) chunkSize = 3;
                     allSegments.push(words.slice(idx, idx + chunkSize));
                     idx += chunkSize;
                 }
             }
         });
 
-        // Calcul des poids temporels par NOMBRE DE CARACTÈRES (les mots courts passent vite, les longs durent plus)
-        const charWeight = (w) => Math.max(w.length, 2); // minimum 2 pour les mots très courts
+        const charWeight = (w) => Math.max(w.length, 2);
         const totalChars = allSegments.reduce((acc, seg) => acc + seg.reduce((a, w) => a + charWeight(w), 0), 0);
         let currentSec = speechStart;
 
@@ -1113,18 +1246,13 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
             const groupEnd = Math.round((currentSec + groupDuration) * 100) / 100;
 
             let runningWordTime = groupStart;
-
-            const wordsWithTiming = groupWords.map((w, i) => {
+            const wordsWithTiming = groupWords.map(w => {
                 const wRatio = charWeight(w) / groupChars;
                 const wDur = groupDuration * wRatio;
                 const wStart = Math.round(runningWordTime * 100) / 100;
                 const wEnd = Math.round((runningWordTime + wDur) * 100) / 100;
                 runningWordTime += wDur;
-                return {
-                    word: w,
-                    start: wStart,
-                    end: wEnd
-                };
+                return { word: w, start: wStart, end: wEnd };
             });
 
             subtitleCues.push({
@@ -1138,47 +1266,7 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
         });
     }
 
-    // 8. ÉTAPE : GESTION TEMPLATE vs CRÉATION LIBRE PAR L'IA (GÉNÉRATION DYNAMIQUE UNIFIÉE PAR GEMINI)
-    onProgress('step_gsap_code', 'Génération dynamique du code (HTML, CSS, GSAP) par Gemini...', 85, isUsingTemplate ? `L'IA adapte l'archétype "${chosenTemplate}" au brief utilisateur...` : `L'IA conçoit une architecture visuelle sur-mesure pour "${prompt.slice(0, 30)}..."`, 'info');
-
-    // Paramétrage flexible du fond (Blanc, Noir, Couleur unie, Dégradé)
-    const userBgType = payload.backgroundType;
-    const isAiDecidedBg = (!userBgType || userBgType === 'auto' || userBgType === 'ai');
-    const bgPlan = plan.background || {};
-    let baseBg = bgPlan.global || plan.theme?.primaryColor || '#000000';
-    if (isAiDecidedBg) {
-        baseBg = bgPlan.global || '#000000';
-    } else if (userBgType === 'white') {
-        baseBg = '#ffffff';
-    } else if (userBgType === 'black') {
-        baseBg = '#000000';
-    } else if (userBgType === 'solid') {
-        baseBg = payload.backgroundColor || '#111827';
-    } else if (userBgType === 'gradient') {
-        baseBg = payload.backgroundGradient || 'radial-gradient(ellipse at 50% 20%, #1c1d29 0%, #06070a 100%)';
-    } else if (bgPlan.type === 'white') {
-        baseBg = '#ffffff';
-    } else if (bgPlan.type === 'black') {
-        baseBg = '#000000';
-    }
-
-    // Neutraliser les bleus ardoise/navy indésirables non demandés seulement si l'utilisateur n'a pas explicitement choisi un fond uni ou dégradé
-    if (isAiDecidedBg || userBgType === 'black') {
-        if (typeof baseBg === 'string' && /#0f172a|#1e293b|#0b1329|#090d16|#071228/i.test(baseBg) && !/bleu|blue|cyan|navy/i.test(prompt)) {
-            baseBg = '#000000';
-        }
-    }
-
-    const isLight = isColorLight(baseBg);
-    const mainTextColor = isLight ? '#09090b' : '#ffffff';
-    const mutedTextColor = isLight ? '#475569' : '#94a3b8';
-    const cardBgColor = isLight ? '#f8fafc' : '#0d1117';
-    const cardBorderColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.12)';
-    const accentColor = plan.theme.accentColor || '#f59e0b';
-    const fontTitle = plan.theme.fontTitle || 'Outfit';
-    const fontBody = plan.theme.fontBody || 'Inter';
-
-    // Configuration des sous-titres
+    // Configuration des styles de sous-titres
     const subPos = payload.subtitlePosition || 'bottom';
     let subPosCss = 'bottom: 70px;';
     if (subPos === 'top') subPosCss = 'top: 80px;';
@@ -1193,403 +1281,15 @@ Conçois le plan narratif, la direction artistique et détermine les outils exte
     const subGlow = Boolean(payload.subtitleGlow);
     const subType = payload.subtitleType || 'type-wordbyword';
 
-    const subBgStyle = subBg ? `background: ${subBgColor};` : 'background: transparent;';
-    const subGlowStyle = subGlow ? `text-shadow: 0 0 16px ${subAccentColor};` : '';
+    const subBgStyle = subBg ? `background: ${subBgColor};`: 'background: transparent;';
+    const subGlowStyle = subGlow ? `text-shadow: 0 0 16px ${subAccentColor};`: '';
 
-    // Liste textuelle des assets disponibles pour le prompt
-    const availableAssetsList = [];
+    // Rassemblement du code de toutes les scènes générées
+    const allScenesHtml = checkpoint.scenes.map(s => s.htmlContent).join('\n');
+    const allScenesCss = checkpoint.scenes.map(s => s.customCss).join('\n');
+    const allScenesGsap = checkpoint.scenes.map(s => s.gsapTimelineCode).join('\n');
 
-    // 1. Assets uploadés par l'utilisateur (liés prioritairement à cette vidéo)
-    const formattedUserAssets = userUploadedAssets.map(a => {
-        let relPath = a.url || '';
-        if (relPath.startsWith('/01_Assets/')) {
-            relPath = `${assetPrefix}/${relPath.replace(/^\/01_Assets\//, '')}`;
-        } else if (relPath.startsWith('01_Assets/')) {
-            relPath = `${assetPrefix}/${relPath.replace(/^01_Assets\//, '')}`;
-        } else if (!relPath.startsWith('http') && !relPath.startsWith('.')) {
-            relPath = `${assetPrefix}/Images/${a.name || relPath}`;
-        }
-        return {
-            name: a.name,
-            category: a.category || 'image',
-            path: relPath
-        };
-    });
-
-    if (formattedUserAssets.length > 0) {
-        availableAssetsList.push(`- ASSETS IMPORTÉS PAR L'UTILISATEUR (OBLIGATOIREMENT ASSOCIÉS À CETTE VIDÉO ET À INTÉGRER EN PRIORITÉ) :`);
-        formattedUserAssets.forEach(u => {
-            availableAssetsList.push(`  * [${u.category.toUpperCase()}] "${u.name}" -> Chemin HTML relatif : "${u.path}"`);
-        });
-    }
-
-    if (downloadedFootballLogos && downloadedFootballLogos.length > 0) {
-        availableAssetsList.push(`- BLASONS OFFICIELS DE FOOTBALL RÉCUPÉRÉS PAR LE PIPELINE (07_Scripts/fetch_football_logo.cjs) :`);
-        downloadedFootballLogos.forEach(fb => {
-            availableAssetsList.push(`  * Blason officiel "${fb.name}" -> Chemin HTML : "${fb.path}"`);
-        });
-    }
-
-    if (downloadedWebCapturePath) availableAssetsList.push(`- Capture d'écran HD du site/produit : "${downloadedWebCapturePath}" (à intégrer dans l'UI ou comme visuel principal)`);
-    if (downloadedLogoPath) availableAssetsList.push(`- Logo officiel de marque : "${downloadedLogoPath}" (format SVG vectoriel ou PNG haute résolution)`);
-    if (downloadedFlagPath) availableAssetsList.push(`- Drapeau national officiel : "${downloadedFlagPath}" (format SVG vectoriel)`);
-    if (downloadedMapPath) availableAssetsList.push(`- Carte géographique satellite : "${downloadedMapPath}" (format PNG HD)`);
-    if (processedChromaAssets && processedChromaAssets.length > 0) availableAssetsList.push(`- Sujets détourés (sans fond vert, 100% transparents) : ${JSON.stringify(processedChromaAssets)}`);
-    if (downloadedCoverrVideo) availableAssetsList.push(`- Vidéo de fond B-roll cinéma : "${downloadedCoverrVideo}"`);
-    if ((!formattedUserAssets || formattedUserAssets.length === 0) && payload.images && payload.images.length > 0) {
-        availableAssetsList.push(`- Images supplémentaires : ${JSON.stringify(payload.images)}`);
-    }
-
-    // Instructions spécifiques de style selon le template choisi
-    let templateInstructions = '';
-    if (isUsingTemplate) {
-        templateInstructions = `
-7. RÈGLE MAÎTRESSE DE STYLE / TEMPLATE SÉLECTIONNÉ : "${chosenTemplate}"
-L'utilisateur a explicitement sélectionné l'archétype visuel "${chosenTemplate}". Tu DOIS incarner ce style tout au long de la composition :
-`;
-        if (/saas/i.test(chosenTemplate)) {
-            templateInstructions += `
-- STYLE SAAS MOTION DESIGN (Product Tour, Logiciel, Interface interactive) :
-  * FOND OBLIGATOIRE : NOIR PUR (#000000) ou NOIR OBSIDIENNE (#08080a) neutre. INTERDICTION FORMELLE DE METTRE UN FOND BLEU OU ARDOISE (#0f172a, #1e293b) !
-  * SCÈNE 1 (Accroche Produit Immédiate dès t=0.0s) :
-    - NE LAISSE JAMAIS LA SCÈNE 1 VIDE OU RÉDUITE À UN SIMPLE TEXTE FLOTTANT !
-    - Dans le CSS : #scene_1 a { opacity: 1; visibility: visible; display: flex; } (JAMAIS de '!important' pour permettre à GSAP de le masquer proprement).
-    - La Scène 1 doit IMMÉDIATEMENT afficher la fenêtre d'application (.saas-window) avec sa barre macOS (.saas-header avec 3 dots .red, .yellow, .green) et l'aperçu réel du produit (${downloadedWebCapturePath || 'mockup de dashboard'}) au centre, surmonté du badge officiel et du titre d'accroche !
-  * SCÈNE 2 (Fonctionnalités & Données en Action) :
-    - Zoom de caméra GSAP sur l'interface (scale: 1.25), cartes flottantes de synchronisation, graphiques analytiques animés, compteurs de données.
-  * SCÈNE 3 (Conversion & CTA) :
-    - Révélation du logo officiel ("${downloadedLogoPath || ''}"), métrique de satisfaction/uptime et bouton CTA percutant avec pulsation subtile.
-`;
-        } else if (/vox|explainer|2d/i.test(chosenTemplate)) {
-            templateInstructions += `
-- STYLE EXPLAINER 2D / STORY VOX :
-  * Infographies vectorielles SVG claires, schémas conceptuels, flèches animées avec strokeDashoffset.
-  * Découpages typographiques et mise en valeur pédagogique rythmée.
-`;
-        } else if (/ego/i.test(chosenTemplate)) {
-            templateInstructions += `
-- STYLE EGO LITE (Kinetic Typography Ultra-Punchy) :
-  * Typographie monumentale dynamique, mots qui percutent l'écran avec du scale rapide et de l'inertie (back.out).
-  * Transitions franches, rythme stroboscopique élégant et accents colorés ultra-contrastés.
-`;
-        } else if (/top_10|tier_list/i.test(chosenTemplate)) {
-            templateInstructions += `
-- STYLE CLASSEMENT / PODIUM / TIER LIST :
-  * Numérotation géante, badges hiérarchiques (S, A, B, C ou 03, 02, 01), entrée dynamique des items en cascade.
-`;
-        } else {
-            templateInstructions += `
-- Respecte l'esprit visuel du template "${chosenTemplate}" tout en assurant une animation continue, dynamique et captivante de chaque seconde de la vidéo.
-`;
-        }
-    } else {
-        templateInstructions = `
-7. CRÉATION LIBRE (SANS TEMPLATE FIGÉ) :
-Conçois une composition visuelle originale et sur-mesure, avec des graphismes SVG adaptés au sujet et une scénographie unique.
-`;
-    }
-    // Invite pour la génération de code créatif par Gemini
-    const codeGenSystemPrompt = `Tu es le Directeur Artistique et Développeur Créatif GSAP #1 au monde pour les vidéos virales et cinématiques (VibeEditor).
-Tu dois concevoir et coder en direct une composition vidéo originale de calibre professionnel.
-
-${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS (00_Skills/) :\n${skillsDirectives}\n` : ''}
-
-DIRECTIVES CRÉATIVES ET TECHNIQUES ABSOLUES :
-1. LIBERTÉ ET MAÎTRISE SCÉNOGRAPHIQUE DU FOND :
-   ${isAiDecidedBg ? `- OPTION "DÉCISION IA" ACTIVÉE : L'utilisateur te délègue entièrement le choix des fonds et de la scénographie ! Conçois des fonds riches, dramatiques et cinématiques adaptés à chaque scène : radial spotlight dynamique, fond noir obsidienne texturé, ou variations scéniques (.scene-container#scene_1, #scene_2...). Fais vivre la scène avec un éclairage organique !` : `- Fond global suggéré : ${baseBg} (${isLight ? 'Ambiance claire' : 'Ambiance sombre'}).`}
-   - Tu peux soit appliquer ce fond global à #stage, SOIT attribuer des fonds uniques à chaque conteneur de scène (ex: .scene-container#scene_1 { background: ... }, .scene-container#scene_2 { background: ... }) pour rythmer le voyage visuel du spectateur !
-   - Le fond peut être noir, blanc, couleur unie adaptée au thème (bordeaux, navy, forêt, terracotta...) ou dégradé élégant (linear-gradient, radial spotlight).
-   - Veille impérativement au contraste du texte (texte clair sur fond sombre, texte sombre sur fond clair) et à la lisibilité 100% nette.
-   - BANNISSEMENT ABSOLU du fond cliché IA (la grille 1px avec halo vert/cyan répétitif).
-   - BANNISSEMENT ABSOLU du fond espace avec étoiles, galaxies ou nébuleuses (ne l'utiliser QUE si le thème est expressément l'astronomie ou demandé texto par l'utilisateur).
-
-2. CHARTE HARMONIQUE 60-30-10 :
-   - 60% : Fond dominant.
-   - 30% : Surfaces, cartes, bordures et texte secondaire.
-   - 10% : UNE SEULE couleur d'accent vive signature : ${accentColor}.
-
-3. ORIGINALITÉ & DIRECTION ARTISTIQUE SUR-MESURE (ZÉRO POWERPOINT) :
-   - Crée des graphismes et animations SVG vectorielles riches, uniques et adaptées au sujet.
-   - RÈGLE CRITIQUE D'ANCRAGE SVG / 2D (AIGUILLES, ROUES, HORLOGES) : Dans GSAP, svgOrigin opère TOUJOURS dans les coordonnées globales du viewBox SVG ! Tu dois impérativement utiliser les coordonnées réelles du centre du cadran : svgOrigin: "\${cx} \${cy}" (ex: svgOrigin: "180 180" si le cadran est centré à 180, 180). INTERDICTION FORMELLE ET ABSOLUE d'écrire svgOrigin: "0 0", car cela fait voltiger l'aiguille hors du cadran !
-   - BANNISSEMENT TOTAL DU STYLE POWERPOINT :
-     * INTERDICTION de mettre une barre de progression de lecture en haut de l'écran.
-     * INTERDICTION de coller des badges, timecodes, faux indicateurs HUD ou textes dans les 4 coins de l'écran (ex: "TEMPO 120", "1080p 60fps", "VIBE ENGINE", etc.).
-     * INTERDICTION de titrages scolaires (aucun [ Étape 01 ], [ Chapitre 1 ], ni de conteneur .tag-pill artificiel).
-     * Les bordures et coins de l'écran doivent rester 100% épurés et respirer.
-   - Typographie cinétique stable sans reflow : balises <span class="title-line"> avec display:block et white-space:nowrap.
-   - Centrage absolu de la scène de conclusion finale : position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%).
-
-4. ASSETS DISPONIBLES À INTÉGRER :
-${availableAssetsList.join('\n') || '- Aucun asset externe particulier, utilise du pur motion design vectoriel SVG.'}
-   - INTERDICTION FORMELLE D'INVENTER DES CHEMINS OU DES FICHIERS IMAGES FICTIFS (ex: '01.jpg', 'gpu.png', 'image1.jpg').
-   - SI UN FICHIER N'EST PAS EXPLICITEMENT PRÉSENT DANS LA LISTE 'ASSETS DISPONIBLES' CI-DESSUS, NE METS AUCUNE BALISE <img> ! Conçois impérativement les éléments en PUR MOTION DESIGN VECTORIEL SVG (dessine le produit, le chip, le HUD technologique, les jauges, graphiques, cartes et icônes directement en SVG soigné avec gradients et animations GSAP).
-   - RÈGLE DU SOCLE / CARTOUCHE POUR PERSONNAGES & JOUEURS :
-     * AUCUNE DÉFORMATION : object-fit: contain (ou cover sans déformation de ratio). Ne JAMAIS compresser ou étirer l'image.
-     * Si l'image d'un personnage, joueur ou invité a le bas coupé (torse ou taille nette), tu DOIS obligatoirement insérer un socle ou un card acrylique élégant à sa base pour cacher la coupure, et y loger son nom, club/titre et statistiques clés !
-   - Si des logos de football ou de marque sont disponibles, affiche-les nettement aux côtés des sujets correspondants.
-   - Si une capture d'écran web est disponible, insère-la dans l'interface ou au cœur de la scène avec mockup soigné.
-   - Si un logo est disponible, affiche-le avec élégance (max-height 90-110px).
-   - Si un drapeau est disponible, intègre-le (badge national circulaire ou rectangulaire stylisé, en-tête de scène, ou élément graphique).
-   - Si une carte est disponible, intègre-la avec un cadrage harmonieux (border-radius 16px).
-   - Si un clip vidéo B-roll est disponible, intègre-le avec : <video src="..." data-start="T_DEBUT" data-end="T_FIN" data-duration="DUREE" muted loop playsinline preload="auto"></video>. ATTRIBUTS data-start ET data-end STRICTEMENT OBLIGATOIRES pour la synchronisation automatique 60 FPS du Studio ! Ne JAMAIS appeler video.play() ou video.pause() dans le script GSAP. BANNISSEMENT ABSOLU de tout badge factice « LIVE BROADCAST ».
-
-5. CHORÉGRAPHIE GSAP & SYNCHRONISATION ABSOLUE DU SCRIPT HORODATÉ :
-   - La vidéo dure exactement ${totalVideoDuration.toFixed(1)} secondes.
-   - Il y a ${plan.scenes.length} scènes à animer sur la timeline GSAP 'tl' (qui est déjà initialisée).
-   - SYNCHRONISATION DU SCRIPT HORODATÉ :
-     * Chaque tranche de temps du script horodaté de l'utilisateur définit exactement quand chaque élément et chaque scène s'anime.
-     * Ce qui est dit dans la voix off et ce qui est affiché à l'écran DOIVENT se produire en même temps, sans retard ni saut d'étape.
-   - Scène 1 : 0s -> ${(totalVideoDuration / plan.scenes.length).toFixed(1)}s
-   - Scène 2 : ${(totalVideoDuration / plan.scenes.length).toFixed(1)}s -> ${(2 * totalVideoDuration / plan.scenes.length).toFixed(1)}s
-   - Scène 3 : ${(2 * totalVideoDuration / plan.scenes.length).toFixed(1)}s -> ${totalVideoDuration.toFixed(1)}s
-   - MOUVEMENT ET VIE CONTINUE : Ne laisse JAMAIS une scène devenir statique ou figée après son animation d'entrée ! Chaque scène doit vivre tout au long de sa durée avec des mouvements subtils (pulsation de lueur, rotation continue d'aiguilles avec ease: 'none', progression de jauges de données, ou flottement lent).
-   - ISOLATION STRICTE DES SCÈNES (ZÉRO SUPERPOSITION) :
-     * Chaque scène doit être totalement masquée avant d'afficher la suivante.
-     * Pour passer de Scène 1 à Scène 2 :
-       tl.to('#scene_1', { opacity: 0, duration: 0.4 }, timeCut - 0.4)
-         .set('#scene_1', { display: 'none', visibility: 'hidden' }, timeCut)
-         .set('#scene_2', { display: 'flex', opacity: 0, visibility: 'visible' }, timeCut)
-         .to('#scene_2', { opacity: 1, duration: 0.4 }, timeCut);
-     * De cette façon, AUCUN élément de la scène précédente ne déborde ni ne reste visible derrière les scènes suivantes !
-
-6. RÈGLE MAÎTRESSE : IMPACT VISUEL IMMÉDIAT DÈS LA PREMIÈRE FRAME (t = 0.0s) :
-   - INTERDICTION FORMELLE DE LAISSER UN ÉCRAN VIDE AU DÉMARRAGE !
-   - Dans le CSS : #scene_1 est visible par défaut { opacity: 1; visibility: visible; display: flex; } (NE JAMAIS METTRE '!important').
-   - Les autres scènes (#scene_2, #scene_3) sont masquées par défaut { opacity: 0; visibility: hidden; display: none; }.
-   - Dans GSAP à t=0 : initialise explicitement tl.set('#scene_1', { display: 'flex', opacity: 1, visibility: 'visible' }, 0).set(['#scene_2', '#scene_3'], { display: 'none', opacity: 0, visibility: 'hidden' }, 0);
-   - À t = 0.0s (première frame), le spectateur doit IMMÉDIATEMENT voir du contenu fort, riche et accrocheur :
-     * Le décor, les conteneurs ou les graphismes de la scène 1 doivent occuper l'espace visuel immédiatement.
-     * BANNIR les animations lentes de fondu depuis 0 (pas de opacity: 0 ou scale: 0 qui laisse l'écran noir ou désert pendant 1 seconde).
-   - BANNISSEMENT ABSOLU DES FONDS BLEU ARDOISE / NAVY (#0f172a, #1e293b). Fond par défaut : Noir Pur (#000000) ou Noir Obsidienne (#08080a).
-
-${templateInstructions}
-
-Tu dois répondre UNIQUEMENT par un objet JSON valide avec 3 champs :
-{
-  "htmlContent": "Code HTML complet des scènes à insérer dans <div id='cameraRig'>. Doit contenir <div class='scene-container' id='scene_1'>...</div>, etc., avec tous les SVG, cartes, textes, logos, drapeaux.",
-  "customCss": "Règles CSS complètes pour styliser les éléments de htmlContent (fonds de scènes, SVG, conteneurs, typographie, ombres portées...).",
-  "gsapTimelineCode": "Code JavaScript GSAP animant 'tl' pour séquencer les scènes et leurs éléments (tl.set, tl.from, tl.to, tl.fromTo). Ne redéclare PAS 'const tl', 'tl' existe déjà."
-}`;
-
-    const codeGenUserPrompt = `Génère le code HTML, CSS et GSAP sur-mesure pour :
-Sujet : "${prompt}"
-Format : ${format} (${width}x${height})
-Fond : ${isAiDecidedBg ? 'Décision IA (Liberté scénographique totale adaptée au sujet)' : `${baseBg} (${userBgType || 'fixé'})`}
-Couleur d'accent : ${accentColor}
-Durée totale : ${totalVideoDuration.toFixed(1)}s
-${isUsingTemplate ? `Style / Template imposé : "${chosenTemplate}"` : 'Style : Libre (sans template)'}
-Assets disponibles :
-${availableAssetsList.join('\n') || '- Aucun asset particulier, génère des graphismes vectoriels SVG complets.'}
-
-Scènes prévues :
-${plan.scenes.map((s, i) => `${i + 1}. Titre: "${s.headline}", Accent: "${s.headlineAccent || ''}", Sous-titre: "${s.subtitle}", Concept: "${s.concept || ''}"${s.background ? `, Fond scène: "${s.background}"` : ''}`).join('\n')}
-${hasCustomScript ? `
-SCRIPT HORODATÉ DE L'UTILISATEUR (À RESPECTER STRICTEMENT POUR LE DÉCOUPAGE TEMPOREL ET LES ANIMATIONS) :
-"""
-${customScript}
-"""
-Veille à ce que les animations, transitions et affichages textuels respectent les tranches de temps spécifiées dans le script horodaté !
-` : ''}
-
-Crée une composition visuelle remarquable avec de vrais éléments graphiques SVG thématiques. Réponds UNIQUEMENT en JSON.`;
-
-    let generatedCode = null;
-    try {
-        onProgress('step_gsap_code', 'Gemini génère le code HTML, CSS et GSAP...', 88, `Génération du motion design et du code vectoriel...`, 'info');
-        generatedCode = await callGeminiAPI(codeGenSystemPrompt, codeGenUserPrompt, 0.7);
-    } catch (codeErr) {
-        console.warn("[Code Gen Fallback] Erreur génération Gemini:", codeErr.message);
-    }
-
-    // Fallback résilient si l'API n'a pas répondu
-    if (!generatedCode || !generatedCode.htmlContent || !generatedCode.gsapTimelineCode) {
-        const scDur = (totalVideoDuration / 3).toFixed(1);
-        generatedCode = {
-            htmlContent: `
-                <!-- SCÈNE 1 : ACCROCHE -->
-                <div class="scene-container" id="scene_1">
-                    <h1 class="hero-title">
-                        <span class="title-line">${plan.scenes[0]?.headline || plan.title}</span>
-                    </h1>
-                    <p class="hero-subline">${plan.scenes[0]?.subtitle || plan.pitch}</p>
-                    ${downloadedLogoPath ? `<img src="${downloadedLogoPath}" class="brand-logo-hero" alt="Logo">` : ''}
-                    ${downloadedFlagPath ? `<img src="${downloadedFlagPath}" class="flag-badge-hero" alt="Drapeau">` : ''}
-                    ${!downloadedLogoPath && !downloadedFlagPath ? `
-                    <div class="svg-badge">
-                        <svg viewBox="0 0 100 100" width="90" height="90">
-                            <circle cx="50" cy="50" r="44" stroke="${accentColor}" stroke-width="4" fill="none" stroke-dasharray="8 6"/>
-                            <path d="M35 50 L47 62 L67 38" stroke="${accentColor}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                        </svg>
-                    </div>` : ''}
-                </div>
-
-                <!-- SCÈNE 2 : CŒUR & INFOGRAPHIE -->
-                <div class="scene-container" id="scene_2">
-                    ${downloadedMapPath ? `<img src="${downloadedMapPath}" class="map-preview" alt="Map">` : ''}
-                    <div class="custom-data-card">
-                        <h2 class="card-headline">${plan.scenes[1]?.headline || 'L\'IMPACT CLÉ'}</h2>
-                        <div class="accent-metric">${plan.scenes[1]?.headlineAccent || 'RÉVÉLATION'}</div>
-                        <p class="hero-subline" style="margin-top:12px;">${plan.scenes[1]?.subtitle || ''}</p>
-                    </div>
-                </div>
-
-                <!-- SCÈNE 3 : CONCLUSION CENTRÉE -->
-                <div class="scene-container" id="scene_3">
-                    <div class="conclusion-box">
-                        <h2 class="hero-title">
-                            <span class="title-line">${plan.scenes[2]?.headline || 'LE FUTUR'}</span>
-                            <span class="title-line" style="color:${accentColor};">${plan.scenes[2]?.headlineAccent || 'MAINTENANT'}</span>
-                        </h2>
-                        <p class="hero-subline">${plan.scenes[2]?.subtitle || 'Prenez l\'avantage dès aujourd\'hui.'}</p>
-                    </div>
-                </div>`,
-            customCss: `
-                .scene-container {
-                    position: absolute;
-                    inset: 0;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 60px;
-                    opacity: 0;
-                    pointer-events: none;
-                }
-                .hero-title {
-                    font-family: var(--font-title);
-                    font-size: ${format === '9:16' ? '4.0rem' : '4.8rem'};
-                    font-weight: 900;
-                    text-transform: uppercase;
-                    letter-spacing: -0.02em;
-                    line-height: 1.05;
-                    text-align: center;
-                    margin-bottom: 20px;
-                }
-                .title-line { display: block; white-space: nowrap; }
-                .hero-subline {
-                    font-size: 1.5rem;
-                    color: var(--text-muted);
-                    max-width: 820px;
-                    text-align: center;
-                    line-height: 1.4;
-                }
-                .brand-logo-hero {
-                    max-height: 90px;
-                    margin-top: 30px;
-                    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
-                }
-                .flag-badge-hero {
-                    width: 120px;
-                    height: auto;
-                    margin-top: 25px;
-                    border-radius: 8px;
-                    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-                }
-                .svg-badge { margin-top: 35px; }
-                .custom-data-card {
-                    background: var(--card-bg);
-                    border: 1px solid var(--card-border);
-                    border-radius: 20px;
-                    padding: 40px 60px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-                }
-                .card-headline {
-                    font-family: var(--font-title);
-                    font-size: 2.2rem;
-                    font-weight: 800;
-                    margin-bottom: 8px;
-                }
-                .accent-metric {
-                    font-size: 3.8rem;
-                    font-weight: 900;
-                    color: var(--accent);
-                }
-                .map-preview {
-                    width: 75%;
-                    max-height: 440px;
-                    object-fit: cover;
-                    border-radius: 16px;
-                    margin-bottom: 24px;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-                }
-                .conclusion-box {
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    transform: translate(-50%, -50%);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    width: 90%;
-                    max-width: 900px;
-                }`,
-            gsapTimelineCode: `
-                const sc1 = document.getElementById('scene_1');
-                const sc2 = document.getElementById('scene_2');
-                const sc3 = document.getElementById('scene_3');
-
-                // Scène 1 (0 -> ${scDur}s)
-                tl.set(sc1, { opacity: 1, pointerEvents: 'auto' }, 0);
-                tl.from(sc1.querySelector('.hero-title'), { y: 60, opacity: 0, duration: 0.9, ease: 'power3.out' }, 0.2);
-                tl.from(sc1.querySelector('.hero-subline'), { y: 25, opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.5);
-                tl.to(sc1, { opacity: 0, y: -40, duration: 0.5, ease: 'power2.in' }, ${scDur - 0.5});
-
-                // Scène 2 (${scDur} -> ${2 * scDur}s)
-                tl.set(sc2, { opacity: 1, pointerEvents: 'auto' }, ${scDur});
-                tl.from(sc2.querySelector('.custom-data-card'), { scale: 0.88, opacity: 0, y: 40, duration: 0.8, ease: 'back.out(1.4)' }, ${parseFloat(scDur) + 0.2});
-                tl.to(sc2, { opacity: 0, scale: 0.95, duration: 0.5, ease: 'power2.in' }, ${2 * scDur - 0.5});
-
-                // Scène 3 (${2 * scDur} -> ${totalVideoDuration.toFixed(1)}s)
-                tl.set(sc3, { opacity: 1, pointerEvents: 'auto' }, ${2 * scDur});
-                tl.from(sc3.querySelector('.conclusion-box'), { scale: 0.9, opacity: 0, duration: 0.9, ease: 'power3.out' }, ${2 * parseFloat(scDur) + 0.2});
-                `
-        };
-    }
-
-    // --- SANITISATION & SÉCURISATION DU CODE GÉNÉRÉ PAR L'IA ---
-    let safeCustomCss = (generatedCode.customCss || '').replace(/!important/gi, '');
-    // Retirer les déclarations de style orphelines sans sélecteur en début de CSS
-    const firstBraceIdx = safeCustomCss.indexOf('{');
-    if (firstBraceIdx > -1) {
-        const beforeBrace = safeCustomCss.slice(0, firstBraceIdx);
-        if (beforeBrace.includes(':') && beforeBrace.includes(';')) {
-            const lastSemi = beforeBrace.lastIndexOf(';');
-            safeCustomCss = safeCustomCss.slice(lastSemi + 1).trim();
-        }
-    }
-
-    let safeHtmlContent = (generatedCode.htmlContent || '').replace(/style=(["'])(.*?)\1/gi, (match, quote, styleStr) => {
-        return `style=${quote}${styleStr.replace(/!important/gi, '')}${quote}`;
-    });
-
-    // Détection et neutralisation des balises <img> pointant vers des fichiers inexistants (ex: 01.jpg halluciné)
-    safeHtmlContent = safeHtmlContent.replace(/<img[^>]+src=(["'])(.*?)\1[^>]*>/gi, (imgTag, quote, src) => {
-        let cleanSrc = src.trim();
-        let diskPath = null;
-        if (cleanSrc.startsWith('../')) {
-            diskPath = path.resolve(videosTargetDir, cleanSrc);
-        } else if (cleanSrc.startsWith('01_Assets') || cleanSrc.startsWith('/01_Assets')) {
-            diskPath = path.resolve(ROOT_DIR, cleanSrc.replace(/^\//, ''));
-        } else {
-            diskPath = path.resolve(videosTargetDir, cleanSrc);
-        }
-
-        if (fs.existsSync(diskPath)) {
-            return imgTag;
-        }
-
-        console.warn(`[Asset Shield] Remplacement d'une image inexistante hallucinée : ${src}`);
-        return `<div class="vector-hud-card" style="width:100%; height:100%; min-height:200px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:20px;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${accentColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px; filter:drop-shadow(0 0 8px ${accentColor});"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                <span style="font-family:sans-serif; font-size:13px; font-weight:700; color:${accentColor}; text-transform:uppercase; letter-spacing:0.1em;">Visuel Vectoriel</span>
-            </div>`;
-    });
-
-    // Assemblage du fichier HTML complet
-    finalHtml = `<!DOCTYPE html>
+    const finalHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -1629,7 +1329,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             color: var(--text-main);
         }
 
-        /* CADRE MAÎTRE DU STAGE (FOND DYNAMIQUE GLOBAL) */
+        /* CADRE MAÎTRE DU STAGE */
         #stage {
             width: ${width}px;
             height: ${height}px;
@@ -1641,7 +1341,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             background: var(--bg-base);
         }
 
-        /* CAMÉRA GLOBALE AVEC CONTINUOUS MOTION (Travelling lent continu) */
+        /* CAMÉRA GLOBALE (Travelling continu) */
         #cameraRig {
             position: absolute;
             inset: 0;
@@ -1650,7 +1350,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             transform-origin: center center;
         }
 
-        /* SOUS-TITRES DYNAMIQUES ULTRA-RÉACTIFS (HORMOZI STYLE) */
+        /* SOUS-TITRES DYNAMIQUES (Style Hormozi) */
         #subtitlesTrack {
             position: absolute;
             left: 50%;
@@ -1680,7 +1380,7 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             display: inline-block;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
             opacity: 0;
-            transition: opacity 0.04s ease-out; /* Affichage instantané sans latence */
+            transition: opacity 0.04s ease-out;
         }
 
         .sub-word {
@@ -1690,47 +1390,48 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
             font-size: 1em;
             transform: none !important;
             transition: color 0.08s ease;
-            will-change: color;
         }
 
         .sub-word.active-word {
             color: ${subAccentColor} !important;
-            transform: none !important;
-            font-size: 1em;
             font-weight: 800;
         }
 
-        .sub-word.highlight-word {
-            color: ${subAccentColor} !important;
-            transform: none !important;
-            font-size: 1em;
-            font-weight: 800;
+        /* STRUCTURE DES SCÈNES */
+        .scene-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            display: none;
+            pointer-events: none;
+        }
+        #scene_1 {
+            opacity: 1;
+            visibility: visible;
+            display: flex;
+            pointer-events: auto;
         }
 
-        /* STYLES STRUCTURELS OBLIGATOIRES (Isolation et Accroche Scène 1 immédiate dès t=0.0s SANS !important) */
-        .scene-container { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; display: none; pointer-events: none; }
-        #scene_1 { opacity: 1; visibility: visible; display: flex; pointer-events: auto; }
-
-        /* STYLES GÉNÉRÉS PAR L'IA */
-        ${safeCustomCss}
+        /* STYLES DE TOUTES LES SCÈNES */
+        ${allScenesCss}
     </style>
 </head>
 <body>
 
     <div id="stage" data-duration="${totalVideoDuration.toFixed(1)}" data-fps="30" data-width="${width}" data-height="${height}">
         
-        <!-- RIG DE CAMÉRA AVEC LES SCÈNES GÉNÉRÉES PAR L'IA -->
         <div id="cameraRig">
-            ${safeHtmlContent}
+            ${allScenesHtml}
         </div>
 
-        <!-- TRACK DES SOUS-TITRES DYNAMIQUES -->
         ${showSubtitles ? `
         <div id="subtitlesTrack">
             <div class="subtitle-box" id="subtitleBox"></div>
         </div>` : ''}
 
-        <!-- PISTES AUDIO NATIVES -->
         ${generatedVoiceRelPath ? `<audio id="voiceTrack" src="${generatedVoiceRelPath}" preload="auto"></audio>` : ''}
         ${musicRelPath ? `<audio id="musicTrack" src="${musicRelPath}" preload="auto" loop></audio>` : ''}
 
@@ -1777,8 +1478,8 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
                     id: ${sc.id || i + 1},
                     image: "${downloadedWebCapturePath || downloadedLogoPath || ''}",
                     label: "${(sc.headline || '').replace(/"/g, '\\"')}",
-                    start: ${Math.round((i * totalVideoDuration / (plan.scenes.length || 3)) * 10) / 10},
-                    end: ${Math.round(((i + 1) * totalVideoDuration / (plan.scenes.length || 3)) * 10) / 10},
+                    start: ${sc.timeStart !== undefined ? sc.timeStart : Math.round((i * totalVideoDuration / (plan.scenes.length || 3)) * 10) / 10},
+                    end: ${sc.timeEnd !== undefined ? sc.timeEnd : Math.round(((i + 1) * totalVideoDuration / (plan.scenes.length || 3)) * 10) / 10},
                     title: "${(sc.headline || '').replace(/"/g, '\\"')}",
                     subtitle: "${(sc.subtitle || '').replace(/"/g, '\\"')}"
                 }`).join(',\n                ')}
@@ -1793,7 +1494,6 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
         const musicAudio = document.getElementById('musicTrack');
         const subtitleBox = document.getElementById('subtitleBox');
 
-        // Moteur de redimensionnement universel (garde translate(-50%, -50%))
         function handleResize() {
             if (isIframeMode) return;
             const vw = window.innerWidth;
@@ -1804,139 +1504,135 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
         window.addEventListener('resize', handleResize);
         handleResize();
 
-        // Timeline Maître GSAP
         const tl = gsap.timeline({ paused: isIframeMode });
         window.tl = tl;
 
-        // 1. Continuous Camera Motion (Travelling continu)
+        // Continuous Camera Motion
         tl.to(cameraRig, { scale: 1.05, duration: ${totalVideoDuration.toFixed(1)}, ease: "none" }, 0);
 
-        // 2. Animations GSAP générées par l'IA
+        // Animations GSAP des scènes
         try {
-            ${generatedCode.gsapTimelineCode || ''}
+            ${allScenesGsap}
         } catch(e) {
-            console.error("Erreur exécution GSAP IA :", e);
+            console.error("Erreur GSAP :", e);
         }
 
-        // 3. Moteur de Sous-titres Ultra-Réactif (2 Styles : Basique ou Mot-à-mot Coloré)
+        // Moteur de sous-titres
         const cues = VIDEO_CONFIG.subtitles || [];
         const isWordByWord = ('${subType}' === 'type-wordbyword');
 
         if (subtitleBox && cues.length > 0) {
             cues.forEach(cue => {
-                // Affichage du groupe de mots
                 tl.call(() => {
                     renderSubtitleGroup(cue);
                 }, null, cue.start);
 
-                // Disparition en fin de groupe
-                tl.call(() => {
-                    if (subtitleBox) subtitleBox.style.opacity = '0';
-                }, null, cue.end);
-
-                // Animation mot-à-mot coloré : passage de la couleur au mot suivant au fil de l'audio
-                if (isWordByWord && cue.words) {
-                    cue.words.forEach((w, wIdx) => {
+                if (isWordByWord && cue.words && cue.words.length > 0) {
+                    cue.words.forEach(w => {
                         tl.call(() => {
-                            highlightWord(wIdx);
+                            highlightWord(w.word);
                         }, null, w.start);
                     });
                 }
+
+                tl.call(() => {
+                    hideSubtitleGroup();
+                }, null, cue.end);
             });
         }
 
         function renderSubtitleGroup(cue) {
             if (!subtitleBox) return;
-            const words = cue.words || [];
-            if (isWordByWord && words.length > 0) {
-                // Le premier mot est directement coloré dès l'apparition
-                subtitleBox.innerHTML = words.map((w, idx) => '<span class="sub-word ' + (idx === 0 ? 'active-word' : '') + '" id="sub_word_' + idx + '">' + w.word + '</span>').join(' ');
-            } else {
-                // Style basique : texte uni phrase par phrase
-                subtitleBox.innerHTML = '<span class="sub-word">' + cue.text + '</span>';
+            if (!isWordByWord) {
+                subtitleBox.textContent = cue.text;
+                subtitleBox.style.opacity = '1';
+                return;
             }
+            subtitleBox.innerHTML = '';
+            (cue.words || []).forEach(wObj => {
+                const sp = document.createElement('span');
+                sp.className = 'sub-word';
+                sp.dataset.word = wObj.word;
+                sp.textContent = wObj.word + ' ';
+                subtitleBox.appendChild(sp);
+            });
             subtitleBox.style.opacity = '1';
         }
 
-        function highlightWord(idx) {
+        function highlightWord(wordText) {
             if (!subtitleBox || !isWordByWord) return;
-            const all = subtitleBox.querySelectorAll('.sub-word');
-            for (let i = 0; i < all.length; i++) {
-                if (i === idx) {
-                    all[i].classList.add('active-word');
-                } else {
-                    all[i].classList.remove('active-word');
+            const spans = subtitleBox.querySelectorAll('.sub-word');
+            spans.forEach(sp => {
+                if (sp.dataset.word === wordText) {
+                    sp.classList.add('active-word');
                 }
+            });
+        }
+
+        function hideSubtitleGroup() {
+            if (subtitleBox) subtitleBox.style.opacity = '0';
+        }
+
+        // Synchronisation audio
+        let audioContext = null;
+        let isAudioPlaying = false;
+
+        function initAudioContext() {
+            if (!audioContext) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) audioContext = new AudioCtx();
+            }
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
             }
         }
 
-        // 4. Synchronisation Audio Studio Haute Fidélité (100% Fluide sans saccades)
-        let isVoiceStarting = false;
-        let isMusicStarting = false;
-
-        window.syncAudioTimeline = function(time, isPlaying) {
-            if (voiceAudio) {
+        window.syncAudioTimeline = function(timeInSeconds, isPlaying) {
+            initAudioContext();
+            if (voiceAudio && voiceAudio.src) {
                 if (isPlaying) {
-                    if (voiceAudio.paused && !voiceAudio.ended && !isVoiceStarting) {
-                        isVoiceStarting = true;
-                        if (Math.abs(voiceAudio.currentTime - time) > 0.3) {
-                            voiceAudio.currentTime = time;
-                        }
-                        voiceAudio.play().then(() => {
-                            isVoiceStarting = false;
-                        }).catch(() => {
-                            isVoiceStarting = false;
-                        });
-                    } else if (!voiceAudio.paused) {
-                        // Tolérance fluide durant la lecture continue : ne JAMAIS micro-seeker si écart < 0.8s
-                        if (Math.abs(voiceAudio.currentTime - time) > 0.8) {
-                            voiceAudio.currentTime = time;
-                        }
+                    if (timeInSeconds < voiceAudio.duration) {
+                        voiceAudio.currentTime = timeInSeconds;
+                        voiceAudio.play().catch(() => {});
+                    } else {
+                        voiceAudio.pause();
                     }
                 } else {
-                    isVoiceStarting = false;
-                    if (!voiceAudio.paused) voiceAudio.pause();
-                    voiceAudio.currentTime = time;
+                    voiceAudio.pause();
+                    voiceAudio.currentTime = timeInSeconds;
                 }
             }
-            if (musicAudio) {
-                const targetMusicTime = time % (musicAudio.duration || 30);
+
+            if (musicAudio && musicAudio.src) {
+                musicAudio.volume = VIDEO_CONFIG.audio.musicVolume || 0.15;
                 if (isPlaying) {
-                    if (musicAudio.paused && !musicAudio.ended && !isMusicStarting) {
-                        isMusicStarting = true;
-                        musicAudio.currentTime = targetMusicTime;
-                        musicAudio.volume = 0.15;
-                        musicAudio.play().then(() => {
-                            isMusicStarting = false;
-                        }).catch(() => {
-                            isMusicStarting = false;
-                        });
-                    } else if (!musicAudio.paused) {
-                        if (Math.abs(musicAudio.currentTime - targetMusicTime) > 1.5) {
-                            musicAudio.currentTime = targetMusicTime;
-                        }
-                    }
+                    musicAudio.currentTime = timeInSeconds % (musicAudio.duration || 100);
+                    musicAudio.play().catch(() => {});
                 } else {
-                    isMusicStarting = false;
-                    if (!musicAudio.paused) musicAudio.pause();
-                    musicAudio.currentTime = targetMusicTime;
+                    musicAudio.pause();
+                    musicAudio.currentTime = timeInSeconds % (musicAudio.duration || 100);
                 }
             }
         };
 
-        // Lancement audio fluide en mode standalone au clic utilisateur (politique autoplay navigateur)
+        function startStandaloneAudio() {
+            if (isIframeMode) return;
+            initAudioContext();
+            if (voiceAudio) voiceAudio.play().catch(() => {});
+            if (musicAudio) {
+                musicAudio.volume = VIDEO_CONFIG.audio.musicVolume || 0.15;
+                musicAudio.play().catch(() => {});
+            }
+        }
+
         if (!isIframeMode) {
-            const startStandaloneAudio = () => {
-                if (voiceAudio && voiceAudio.paused) {
-                    voiceAudio.currentTime = tl.time();
-                    voiceAudio.play().catch(() => {});
+            window.addEventListener('click', () => {
+                initAudioContext();
+                if (tl.paused()) {
+                    tl.play();
+                    startStandaloneAudio();
                 }
-                if (musicAudio && musicAudio.paused) {
-                    musicAudio.volume = 0.15;
-                    musicAudio.play().catch(() => {});
-                }
-            };
-            document.body.addEventListener('click', startStandaloneAudio, { once: true });
+            }, { once: true });
             startStandaloneAudio();
         }
 
@@ -1961,11 +1657,13 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
 </body>
 </html>`;
 
-    // 10. ENREGISTREMENT SUR DISQUE & TERMINAISON (Aucun découpage loose dans 05_Scenes/ pour les vidéos simples)
-    onProgress('step_disk_save', 'Enregistrement physique dans l\'arborescence...', 97, `Écriture dans ${relVideoPath}`, 'info');
     fs.writeFileSync(finalFilePath, finalHtml, 'utf8');
 
-    onProgress('step_studio_ready', 'Composition 100% prête pour le Studio !', 100, `Vidéo prête ! Transition vers le Studio...`, 'success');
+    checkpoint.status = 'completed';
+    checkpoint.progress = 100;
+    saveCheckpoint(checkpointPath, checkpoint);
+
+    logAndSaveStep('step_final', 'Composition 100% prête pour le Studio !', 100, `✓ Vidéo finalisée : ${relVideoPath}. Accès au Studio prêt.`, 'success');
 
     return {
         success: true,
@@ -1978,5 +1676,8 @@ Crée une composition visuelle remarquable avec de vrais éléments graphiques S
 }
 
 module.exports = {
-    runAiVideoPipeline
+    runAiVideoPipeline,
+    parseTimestampedScript,
+    getCheckpointPath,
+    loadCheckpoint
 };

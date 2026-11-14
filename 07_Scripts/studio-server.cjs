@@ -1504,6 +1504,104 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // 5d bis. API pour reprendre une création de vidéo interrompue (/api/create-video-resume)
+    if (cleanUrl === '/api/create-video-resume' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const videoTarget = data.video;
+                if (!videoTarget) {
+                    res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                    return res.end(JSON.stringify({ error: "Chemin vidéo manquant pour la reprise" }));
+                }
+
+                const fullDisk = path.resolve(ROOT_DIR, videoTarget);
+                const checkpointPath = fullDisk.replace(/\.html$/i, '') + '.checkpoint.json';
+                let resumePayload = { ...data, resume: true, targetVideo: videoTarget };
+
+                if (fs.existsSync(checkpointPath)) {
+                    try {
+                        const cp = JSON.parse(fs.readFileSync(checkpointPath, 'utf8'));
+                        if (cp.payload) {
+                            resumePayload = { ...cp.payload, ...data, resume: true, targetVideo: videoTarget };
+                        }
+                    } catch (e) {
+                        console.warn("[Resume API] Erreur lecture checkpoint:", e.message);
+                    }
+                }
+
+                const jobId = `job_resume_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+                const jobState = {
+                    id: jobId,
+                    status: 'processing',
+                    currentStep: 'step_resume',
+                    phaseLabel: 'Reprise séquentielle de la création...',
+                    progress: 25,
+                    steps: [],
+                    logs: [
+                        { time: new Date().toTimeString().split(' ')[0], text: `[REPRISE] Reprise du pipeline séquentiel pour : ${videoTarget}`, type: 'info' }
+                    ],
+                    videoUrl: videoTarget,
+                    fileName: path.basename(videoTarget),
+                    channelId: data.channelId || resumePayload.channelId || null,
+                    format: resumePayload.format || '16:9',
+                    duration: resumePayload.duration || 20,
+                    error: null
+                };
+                activeCreationJobs.set(jobId, jobState);
+
+                // Lancement asynchrone du pipeline avec reprise
+                (async () => {
+                    try {
+                        const result = await runAiVideoPipeline(resumePayload, (stepId, phaseLabel, percent, logMsg, logType, extraData) => {
+                            jobState.currentStep = stepId;
+                            jobState.phaseLabel = phaseLabel;
+                            jobState.progress = percent;
+                            if (extraData && extraData.steps && Array.isArray(extraData.steps)) {
+                                jobState.steps = extraData.steps;
+                            }
+                            jobState.logs.push({
+                                time: new Date().toTimeString().split(' ')[0],
+                                text: logMsg,
+                                type: logType || 'info'
+                            });
+                        });
+
+                        jobState.status = 'completed';
+                        jobState.progress = 100;
+                        jobState.phaseLabel = 'Vidéo prête à être montée !';
+                        jobState.videoUrl = result.videoUrl;
+                        jobState.fileName = result.fileName;
+                        jobState.logs.push({
+                            time: new Date().toTimeString().split(' ')[0],
+                            text: `✓ Processus 100% finalisé après reprise ! Accès au Studio prêt : ${result.videoUrl}`,
+                            type: 'success'
+                        });
+                    } catch (pipelineErr) {
+                        console.error('[AiVideoPipeline Resume Error]:', pipelineErr);
+                        jobState.status = 'error';
+                        jobState.error = pipelineErr.message;
+                        jobState.logs.push({
+                            time: new Date().toTimeString().split(' ')[0],
+                            text: `❌ Erreur lors de la reprise : ${pipelineErr.message}`,
+                            type: 'error'
+                        });
+                    }
+                })();
+
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, jobId }));
+            } catch (err) {
+                console.error('Erreur create-video-resume :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
     // 5e. API pour suivre le statut et les logs en direct de la génération vidéo (/api/creation-status?jobId=...)
     if (req.url.startsWith('/api/creation-status') && req.method === 'GET') {
         const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
@@ -1530,18 +1628,45 @@ const server = http.createServer(async (req, res) => {
             if (videoParam) {
                 const fullDisk = path.resolve(ROOT_DIR, videoParam);
                 diskExists = fs.existsSync(fullDisk);
-            }
+                if (diskExists) {
+                    let fileStatus = 'completed';
+                    try {
+                        const content = fs.readFileSync(fullDisk, 'utf8');
+                        const statusMatch = content.match(/status:\s*["']([^"']+)["']/i);
+                        if (statusMatch) fileStatus = statusMatch[1];
+                    } catch (e) { }
 
-            if (diskExists) {
-                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
-                return res.end(JSON.stringify({ 
-                    success: true, 
-                    status: 'completed', 
-                    progress: 100, 
-                    phaseLabel: 'Vidéo prête',
-                    videoUrl: resolvedUrl,
-                    logs: [{ time: new Date().toTimeString().split(' ')[0], text: '✓ Vidéo prête sur le disque.', type: 'success' }]
-                }));
+                    const checkpointPath = fullDisk.replace(/\.html$/i, '') + '.checkpoint.json';
+                    let checkpoint = null;
+                    if (fs.existsSync(checkpointPath)) {
+                        try { checkpoint = JSON.parse(fs.readFileSync(checkpointPath, 'utf8')); } catch (e) { }
+                    }
+
+                    if (fileStatus === 'processing' || (checkpoint && checkpoint.status === 'processing')) {
+                        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                        return res.end(JSON.stringify({ 
+                            success: true, 
+                            status: 'interrupted', 
+                            canResume: true,
+                            currentStep: checkpoint?.currentStep || 'step_init',
+                            progress: checkpoint?.progress || 35, 
+                            phaseLabel: checkpoint?.phaseLabel || 'Création interrompue — Reprise possible',
+                            steps: checkpoint?.steps || [],
+                            videoUrl: resolvedUrl,
+                            logs: checkpoint?.logs || [{ time: new Date().toTimeString().split(' ')[0], text: 'Création en attente de reprise. Cliquez sur "Reprendre la génération".', type: 'warning' }]
+                        }));
+                    } else {
+                        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
+                        return res.end(JSON.stringify({ 
+                            success: true, 
+                            status: 'completed', 
+                            progress: 100, 
+                            phaseLabel: 'Vidéo prête',
+                            videoUrl: resolvedUrl,
+                            logs: [{ time: new Date().toTimeString().split(' ')[0], text: '✓ Vidéo prête sur le disque.', type: 'success' }]
+                        }));
+                    }
+                }
             } else {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 
