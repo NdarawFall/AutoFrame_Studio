@@ -167,7 +167,7 @@ const STORAGE_KEY_CHANNELS = 'vibeeditor_channels_data';
             if (tagPrim) {
                 tagPrim.textContent = fPrim;
                 tagPrim.style.fontFamily = `"${fPrim}", sans-serif`;
-                tagPrim.style.color = cPrim;
+                tagPrim.style.color = '#ff3344';
             }
 
             const tagSec = document.getElementById('tagFontSecondary');
@@ -180,7 +180,7 @@ const STORAGE_KEY_CHANNELS = 'vibeeditor_channels_data';
             if (tagAcc) {
                 tagAcc.textContent = fAcc;
                 tagAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`;
-                tagAcc.style.color = cSec;
+                tagAcc.style.color = '#ff3344';
             }
 
             // Specimens

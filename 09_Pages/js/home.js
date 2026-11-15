@@ -1629,6 +1629,22 @@
                 if (typeof win.fitStage === 'function') win.fitStage();
 
                 // Détection dynamique du format réel de la scène (16:9 vs 9:16)
+                if (doc && doc.body) {
+                    doc.body.style.margin = '0';
+                    doc.body.style.padding = '0';
+                    doc.body.style.overflow = 'hidden';
+                }
+                if (canvas) {
+                    canvas.style.maxWidth = '100%';
+                    canvas.style.maxHeight = '100%';
+                    canvas.style.objectFit = 'contain';
+                }
+                if (stage && (stage.style.width === '1920px' || stage.getAttribute('width') === '1920')) {
+                    stage.style.maxWidth = '100%';
+                    stage.style.maxHeight = '100%';
+                    stage.style.width = '100%';
+                    stage.style.height = '100%';
+                }
                 const stage = doc.getElementById('stage') || doc.querySelector('.stage') || doc.body;
                 const canvas = doc.getElementById('mainCanvas') || doc.querySelector('canvas');
                 const stageW = parseInt(stage?.style?.width || stage?.getAttribute('width') || canvas?.getAttribute('width') || '0', 10);
@@ -4821,31 +4837,30 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const fPrim = (document.getElementById('editChannelFontPrimary')?.value || 'Montserrat').trim();
             const fSec = (document.getElementById('editChannelFontSecondary')?.value || 'Inter').trim();
             const fAcc = (document.getElementById('editChannelFontAccent')?.value || 'Caveat').trim();
-            const cPrim = document.getElementById('editChannelColorPrimary')?.value || '#ffffff';
-            const cSec = document.getElementById('editChannelColorSecondary')?.value || '#dc2626';
 
-            // Badges / Tags des polices
+            // Badges / Tags des polices — TOUS HARMONISÉS EN ROUGE VIF
             const tagPrim = document.getElementById('tagChannelFontPrimary');
             if (tagPrim) {
                 tagPrim.textContent = fPrim;
                 tagPrim.style.fontFamily = `"${fPrim}", sans-serif`;
-                tagPrim.style.color = cPrim;
+                tagPrim.style.color = '#ff3344';
             }
 
             const tagSec = document.getElementById('tagChannelFontSecondary');
             if (tagSec) {
                 tagSec.textContent = fSec;
                 tagSec.style.fontFamily = `"${fSec}", sans-serif`;
+                tagSec.style.color = '#ff3344';
             }
 
             const tagAcc = document.getElementById('tagChannelFontAccent');
             if (tagAcc) {
                 tagAcc.textContent = fAcc;
                 tagAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`;
-                tagAcc.style.color = cSec;
+                tagAcc.style.color = '#ff3344';
             }
 
-            // Spécimens d'aperçu textuel en direct
+            // Spécimens d'aperçu textuel en direct — TOUS HARMONISÉS EN ROUGE VIF
             const spPrim = document.getElementById('specimenChannelFontPrimary');
             if (spPrim) {
                 spPrim.style.fontFamily = `"${fPrim}", sans-serif`;
@@ -4857,6 +4872,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 spSec.style.fontFamily = `"${fSec}", sans-serif`;
                 spSec.style.color = '#ff3344';
             }
+
             const spAcc = document.getElementById('specimenChannelFontAccent');
             if (spAcc) {
                 spAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`;
