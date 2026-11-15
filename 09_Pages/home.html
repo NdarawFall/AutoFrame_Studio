@@ -1985,6 +1985,180 @@
         }
 
         /* LIGHTBOX IMAGE (CADRAGE COMPLET SANS COUPURE) */
+        
+        /* --- STYLES MODAUX & CHAMPS DE FORMULAIRE (AUCUN FOND BLANC) --- */
+        .modal-dialog input, .modal-dialog select, .modal-dialog textarea,
+        .channel-settings-input, .channel-settings-select, .channel-settings-textarea {
+            background: #14161f !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            font-family: inherit !important;
+            font-size: 13px !important;
+            padding: 10px 12px !important;
+            outline: none !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+        }
+
+        .modal-dialog input:focus, .modal-dialog select:focus, .modal-dialog textarea:focus,
+        .channel-settings-input:focus, .channel-settings-select:focus, .channel-settings-textarea:focus {
+            border-color: rgba(255, 255, 255, 0.45) !important;
+            background: #1a1c26 !important;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .modal-dialog select option {
+            background: #14161f;
+            color: #ffffff;
+        }
+
+        /* BOUTONS DES MODAUX DE QUALITÉ LOGICIEL */
+        .btn-modal-cancel {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            color: #e4e4e7 !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .btn-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .btn-modal-submit {
+            background: #ffffff !important;
+            border: 1px solid #ffffff !important;
+            color: #000000 !important;
+            padding: 10px 24px !important;
+            border-radius: 8px !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.18) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .btn-modal-submit:hover {
+            background: #e4e4e7 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.28) !important;
+        }
+
+        /* BRAND KIT COLOR PICKER CONTROLS */
+        .channel-color-control-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #14161f;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 8px;
+            padding: 6px 10px;
+            transition: border-color 0.2s ease;
+        }
+
+        .channel-color-control-box:focus-within {
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .channel-color-picker-input {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            padding: 0;
+            background: none;
+            flex-shrink: 0;
+        }
+
+        .channel-color-picker-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .channel-color-picker-input::-webkit-color-swatch {
+            border: none;
+            border-radius: 5px;
+        }
+
+        .channel-color-hex-text {
+            background: transparent !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            outline: none !important;
+            width: 100% !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+
+        /* RECHERCHE DANS LE DROPDOWN DE CHAÎNES & LIMITATION À 4 CHAÎNES AVEC SCROLL */
+        .picker-search-container {
+            padding: 10px 10px 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .picker-search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #181920;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            padding: 7px 10px;
+            transition: all 0.2s ease;
+        }
+
+        .picker-search-bar:focus-within {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: #1e2028;
+        }
+
+        .picker-search-bar input {
+            width: 100%;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .picker-search-bar input::placeholder {
+            color: #71717a;
+        }
+
+        .picker-dropdown-list {
+            max-height: 236px !important; /* Limite stricte à 4 chaines avec défilement */
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 6px !important;
+        }
+
+        .picker-dropdown-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .picker-dropdown-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
         /* GRAND MODAL PLAYER VIDÉO IMMERSIF */
         .video-player-modal-dialog {
             background: #090a10;
@@ -7503,9 +7677,14 @@
                         </button>
 
                         <div class="channel-picker-dropdown" id="channelPickerDropdown">
-                            <div class="picker-dropdown-header">
-                                <span>Rattacher à une chaîne ou indépendant :</span>
+                            <!-- CHAMP DE RECHERCHE DANS LE BOUTON (TOUS RÉSEAUX) -->
+                            <div class="picker-search-container" onclick="event.stopPropagation()">
+                                <div class="picker-search-bar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px; color: #71717a; flex-shrink: 0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" id="channelPickerSearchInput" placeholder="Rechercher une chaîne..." oninput="handleChannelPickerSearch(this.value)">
+                                </div>
                             </div>
+                            <!-- LISTE RESTREINTE À 4 CHAÎNES AVEC SCROLL -->
                             <div class="picker-dropdown-list" id="pickerDropdownList">
                                 <!-- Rempli dynamiquement en JS -->
                             </div>
@@ -10226,7 +10405,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         }
 
         // =====================================================================
-        // C. GRAND PLAYER VIDÉO IMMERSIF (MP4 NATIF & COMPOSITIONS HTML)
+        // C. GRAND PLAYER VIDÉO IMMERSIF (COMMUNICATION DIRECTE AVEC COMPOSITIONS)
         // =====================================================================
         let compositionTimer = null;
         let compositionDurationSec = 15;
@@ -10234,6 +10413,47 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         let isCompositionPlaying = false;
         let isCompositionMuted = false;
         let currentCompositionSrc = '';
+
+        function hookIframePlayback(iframeEl) {
+            try {
+                const win = iframeEl.contentWindow;
+                const doc = iframeEl.contentDocument;
+                if (!win || !doc) return;
+
+                // Masquer les footers internes dupliqués
+                const internalFooter = doc.getElementById('pageFooter');
+                if (internalFooter) internalFooter.style.display = 'none';
+                const viewport = doc.getElementById('viewport');
+                if (viewport) {
+                    viewport.style.height = '100%';
+                    viewport.style.width = '100%';
+                }
+                if (typeof win.fitStage === 'function') win.fitStage();
+
+                // Détecter la vraie durée
+                if (typeof win.DURATION === 'number' && win.DURATION > 0) {
+                    compositionDurationSec = win.DURATION;
+                } else if (win.__timeline && typeof win.__timeline.duration === 'number') {
+                    compositionDurationSec = win.__timeline.duration;
+                }
+
+                // Démarrer la lecture de la composition
+                isCompositionPlaying = true;
+                updateCompositionPlayBtnState();
+                updateCompositionTimeDisplay();
+
+                if (typeof win.play === 'function') {
+                    win.play();
+                } else if (win.__timeline && typeof win.__timeline.play === 'function') {
+                    win.__timeline.play();
+                } else {
+                    const stage = doc.getElementById('stage') || doc.body;
+                    if (stage) stage.click();
+                }
+            } catch (e) {
+                console.log('Hook composition info:', e);
+            }
+        }
 
         function openGrandVideoPlayer(videoPath, title, format, duration) {
             const overlay = document.getElementById('videoPlayerModalOverlay');
@@ -10259,7 +10479,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             const isHtml = resolvedPath.toLowerCase().endsWith('.html');
 
             if (isHtml) {
-                // Mode Composition HTML dynamique avec vraie barre de lecture
+                // Mode Composition HTML dynamique avec vraie synchronisation
                 if (videoEl) {
                     videoEl.pause();
                     videoEl.src = '';
@@ -10283,8 +10503,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 }
 
                 currentCompositionSrc = resolvedPath;
-                if (iframeEl) iframeEl.src = resolvedPath;
-
+                
                 let durSec = 15;
                 if (typeof duration === 'number') {
                     durSec = duration;
@@ -10303,14 +10522,30 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 updateCompositionPlayBtnState();
                 updateCompositionTimeDisplay();
 
+                if (iframeEl) {
+                    iframeEl.onload = () => hookIframePlayback(iframeEl);
+                    iframeEl.src = resolvedPath;
+                }
+
+                // Horloge de contrôle et synchronisation avec la timeline de la composition
                 compositionTimer = setInterval(() => {
                     if (isCompositionPlaying) {
-                        compositionCurrentSec += 0.2;
+                        try {
+                            const win = iframeEl.contentWindow;
+                            if (win && typeof win.currentTime === 'number') {
+                                compositionCurrentSec = win.currentTime;
+                            } else if (win && typeof win.playbackTime === 'number') {
+                                compositionCurrentSec = win.playbackTime;
+                            } else {
+                                compositionCurrentSec += 0.2;
+                            }
+                        } catch(e) {
+                            compositionCurrentSec += 0.2;
+                        }
+
                         if (compositionCurrentSec >= compositionDurationSec) {
                             compositionCurrentSec = 0;
-                            if (iframeEl && currentCompositionSrc) {
-                                iframeEl.src = currentCompositionSrc;
-                            }
+                            restartCompositionPlayback();
                         }
                         updateCompositionTimeDisplay();
                     }
@@ -10335,6 +10570,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     }
                     videoEl.style.display = 'block';
                     videoEl.src = resolvedPath;
+                    videoEl.currentTime = 0;
                     videoEl.load();
                     videoEl.play().catch(e => console.log('Autoplay standard info:', e));
                 }
@@ -10359,6 +10595,11 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 videoEl.src = '';
             }
             if (iframeEl) {
+                try {
+                    const win = iframeEl.contentWindow;
+                    if (win && win.pause) win.pause();
+                    else if (win && win.__timeline && win.__timeline.pause) win.__timeline.pause();
+                } catch(e) {}
                 iframeEl.src = 'about:blank';
             }
             overlay.classList.remove('open');
@@ -10367,6 +10608,21 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         function toggleCompositionPlayback() {
             isCompositionPlaying = !isCompositionPlaying;
             updateCompositionPlayBtnState();
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            if (iframeEl) {
+                try {
+                    const win = iframeEl.contentWindow;
+                    if (win) {
+                        if (isCompositionPlaying) {
+                            if (typeof win.play === 'function') win.play();
+                            else if (win.__timeline && typeof win.__timeline.play === 'function') win.__timeline.play();
+                        } else {
+                            if (typeof win.pause === 'function') win.pause();
+                            else if (win.__timeline && typeof win.__timeline.pause === 'function') win.__timeline.pause();
+                        }
+                    }
+                } catch(e) {}
+            }
         }
 
         function updateCompositionPlayBtnState() {
@@ -10388,8 +10644,19 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             updateCompositionPlayBtnState();
             updateCompositionTimeDisplay();
             const iframeEl = document.getElementById('grandPlayerIframeEl');
-            if (iframeEl && currentCompositionSrc) {
-                iframeEl.src = currentCompositionSrc;
+            if (iframeEl) {
+                try {
+                    const win = iframeEl.contentWindow;
+                    if (win) {
+                        if (win.__timeline && typeof win.__timeline.seek === 'function') win.__timeline.seek(0);
+                        else if (typeof win.seekTo === 'function') win.seekTo(0);
+                        else if (typeof win.renderAt === 'function') win.renderAt(0);
+                        if (typeof win.play === 'function') win.play();
+                        else if (win.__timeline && typeof win.__timeline.play === 'function') win.__timeline.play();
+                        return;
+                    }
+                } catch(e) {}
+                if (currentCompositionSrc) iframeEl.src = currentCompositionSrc;
             }
         }
 
@@ -10401,6 +10668,20 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             const ratio = clickX / rect.width;
             compositionCurrentSec = ratio * compositionDurationSec;
             updateCompositionTimeDisplay();
+
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            if (iframeEl) {
+                try {
+                    const win = iframeEl.contentWindow;
+                    if (win) {
+                        if (win.__timeline && typeof win.__timeline.seek === 'function') win.__timeline.seek(compositionCurrentSec);
+                        else if (typeof win.seekTo === 'function') win.seekTo(compositionCurrentSec);
+                        else if (typeof win.renderAt === 'function') win.renderAt(compositionCurrentSec);
+                        else if (typeof win.seek === 'function') win.seek(compositionCurrentSec);
+                        else if (typeof win.renderFrame === 'function') win.renderFrame(compositionCurrentSec);
+                    }
+                } catch(e) {}
+            }
         }
 
         function updateCompositionTimeDisplay() {
@@ -10587,56 +10868,82 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             }
         }
 
-        function renderCustomChannelPicker() {
+        let channelPickerSearchQuery = '';
+
+        function handleChannelPickerSearch(query) {
+            channelPickerSearchQuery = (query || '').trim().toLowerCase();
+            renderCustomChannelPicker(channelPickerSearchQuery);
+        }
+
+        function renderCustomChannelPicker(searchQuery = '') {
             const listEl = document.getElementById('pickerDropdownList');
             if (!listEl) return;
 
-            let html = `
-                <div class="picker-dropdown-item ${!currentCreationChannel ? 'active' : ''}" onclick="selectCreationChannel(null)">
-                    <div class="picker-item-avatar" style="background: #1f2028;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    </div>
-                    <div class="picker-item-info">
-                        <div class="picker-item-title">Sans Chaîne (Indépendant)</div>
-                        <div class="picker-item-badges">
-                            <span style="font-size: 10px; color: var(--text-muted);">Générique / Multi-plateformes</span>
-                        </div>
-                    </div>
-                    ${!currentCreationChannel ? '<span style="color:#ffffff; font-weight:700;">✓</span>' : ''}
-                </div>
-            `;
+            let html = '';
 
-            channelsCache.forEach(c => {
-                const isSelected = currentCreationChannel && currentCreationChannel.id === c.id;
-                const avatarStyle = c.avatar ? `background-image: url('../${c.avatar.replace(/^\.\.\//, '')}');` : '';
-                const fallbackInitial = c.name ? c.name.charAt(0).toUpperCase() : 'C';
-
-                let badgeBg = '#FF0000';
-                let badgeIcon = 'YouTube';
-                if (c.platform === 'Instagram') {
-                    badgeBg = 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)';
-                    badgeIcon = 'Instagram';
-                } else if (c.platform === 'TikTok') {
-                    badgeBg = '#000000';
-                    badgeIcon = 'TikTok';
-                }
-
+            // Option sans chaîne toujours accessible si pertinent
+            if (!searchQuery || 'sans chaine independant'.includes(searchQuery)) {
                 html += `
-                    <div class="picker-dropdown-item ${isSelected ? 'active' : ''}" onclick="selectCreationChannel('${c.id}')">
-                        <div class="picker-item-avatar" style="${avatarStyle}">
-                            ${!c.avatar ? fallbackInitial : ''}
+                    <div class="picker-dropdown-item ${!currentCreationChannel ? 'active' : ''}" onclick="selectCreationChannel(null)">
+                        <div class="picker-item-avatar" style="background: #1f2028;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         </div>
                         <div class="picker-item-info">
-                            <div class="picker-item-title">${escapeHtml(c.name)}</div>
+                            <div class="picker-item-title">Sans Chaîne (Indépendant)</div>
                             <div class="picker-item-badges">
-                                <span style="font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: ${badgeBg}; color: #ffffff; font-weight: 700;">${badgeIcon}</span>
-                                <span style="font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: #d4d4d8;">${c.format || '16:9'}</span>
+                                <span style="font-size: 10px; color: var(--text-muted);">Générique / Multi-plateformes</span>
                             </div>
                         </div>
-                        ${isSelected ? '<span style="color:#ffffff; font-weight:700;">✓</span>' : ''}
+                        ${!currentCreationChannel ? '<span style="color:#ffffff; font-weight:700;">✓</span>' : ''}
                     </div>
                 `;
+            }
+
+            // Filtrage par nom de chaîne peu importe le réseau
+            const filteredChannels = channelsCache.filter(c => {
+                if (!searchQuery) return true;
+                return (c.name || '').toLowerCase().includes(searchQuery) || (c.platform || '').toLowerCase().includes(searchQuery);
             });
+
+            if (filteredChannels.length === 0 && searchQuery) {
+                html += `
+                    <div style="padding: 18px 12px; text-align: center; color: var(--text-muted); font-size: 12px;">
+                        Aucune chaîne trouvée pour "${escapeHtml(searchQuery)}"
+                    </div>
+                `;
+            } else {
+                filteredChannels.forEach(c => {
+                    const isSelected = currentCreationChannel && currentCreationChannel.id === c.id;
+                    const avatarStyle = c.avatar ? `background-image: url('../${c.avatar.replace(/^\.\.\//, '')}');` : '';
+                    const fallbackInitial = c.name ? c.name.charAt(0).toUpperCase() : 'C';
+
+                    let badgeBg = '#FF0000';
+                    let badgeIcon = 'YouTube';
+                    if (c.platform === 'Instagram') {
+                        badgeBg = 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)';
+                        badgeIcon = 'Instagram';
+                    } else if (c.platform === 'TikTok') {
+                        badgeBg = '#000000';
+                        badgeIcon = 'TikTok';
+                    }
+
+                    html += `
+                        <div class="picker-dropdown-item ${isSelected ? 'active' : ''}" onclick="selectCreationChannel('${c.id}')">
+                            <div class="picker-item-avatar" style="${avatarStyle}">
+                                ${!c.avatar ? fallbackInitial : ''}
+                            </div>
+                            <div class="picker-item-info">
+                                <div class="picker-item-title">${escapeHtml(c.name)}</div>
+                                <div class="picker-item-badges">
+                                    <span style="font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: ${badgeBg}; color: #ffffff; font-weight: 700;">${badgeIcon}</span>
+                                    <span style="font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: #d4d4d8;">${c.format || '16:9'}</span>
+                                </div>
+                            </div>
+                            ${isSelected ? '<span style="color:#ffffff; font-weight:700;">✓</span>' : ''}
+                        </div>
+                    `;
+                });
+            }
 
             listEl.innerHTML = html;
         }
@@ -10645,9 +10952,17 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('channelPickerDropdown');
             const trigger = document.getElementById('channelPickerTrigger');
-            if (dropdown && trigger) {
-                dropdown.classList.toggle('open');
-                trigger.classList.toggle('open');
+            if (!dropdown || !trigger) return;
+            const isOpen = dropdown.classList.toggle('open');
+            trigger.classList.toggle('open', isOpen);
+            if (isOpen) {
+                const searchInput = document.getElementById('channelPickerSearchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                    channelPickerSearchQuery = '';
+                    renderCustomChannelPicker('');
+                    setTimeout(() => searchInput.focus(), 60);
+                }
             }
         }
 
@@ -12901,7 +13216,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
-        // --- MODAL PARAMÈTRES DE LA CHAÎNE ---
+        // --- MODAL PARAMÈTRES ET BRAND KIT DE LA CHAÎNE ---
         function openChannelSettingsModal(channelId) {
             const channel = channelsCache.find(c => c.id === channelId);
             if (!channel) return;
@@ -12911,6 +13226,26 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             document.getElementById('editChannelPlatformInput').value = channel.platform || 'YouTube';
             document.getElementById('editChannelFormatInput').value = channel.format || '16:9';
             document.getElementById('editChannelDescInput').value = channel.description || '';
+
+            // Brand Kit : 2 Couleurs officielles
+            const colPri = (channel.colorPrimary || '#ffffff').trim();
+            const colSec = (channel.colorSecondary || '#dc2626').trim();
+            const elPri = document.getElementById('editChannelColorPrimary');
+            const elPriHex = document.getElementById('editChannelColorPrimaryHex');
+            const elSec = document.getElementById('editChannelColorSecondary');
+            const elSecHex = document.getElementById('editChannelColorSecondaryHex');
+            if (elPri) elPri.value = colPri.startsWith('#') ? colPri : '#' + colPri;
+            if (elPriHex) elPriHex.value = (elPri ? elPri.value : colPri).toUpperCase();
+            if (elSec) elSec.value = colSec.startsWith('#') ? colSec : '#' + colSec;
+            if (elSecHex) elSecHex.value = (elSec ? elSec.value : colSec).toUpperCase();
+
+            // Brand Kit : 3 Polices de la chaîne
+            const elFontPri = document.getElementById('editChannelFontPrimary');
+            const elFontSec = document.getElementById('editChannelFontSecondary');
+            const elFontAcc = document.getElementById('editChannelFontAccent');
+            if (elFontPri) elFontPri.value = channel.fontPrimary || 'Montserrat';
+            if (elFontSec) elFontSec.value = channel.fontSecondary || 'Inter';
+            if (elFontAcc) elFontAcc.value = channel.fontAccent || 'Caveat';
 
             const avatarPreview = document.getElementById('editChannelAvatarPreview');
             const fallback = document.getElementById('editChannelAvatarFallback');
@@ -12931,20 +13266,22 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             document.getElementById('channelSettingsModal').classList.remove('open');
         }
 
+        let editChannelAvatarBase64 = null;
         function handleEditChannelAvatarSelected(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(evt) {
+                editChannelAvatarBase64 = evt.target.result;
                 const preview = document.getElementById('editChannelAvatarPreview');
                 const fallback = document.getElementById('editChannelAvatarFallback');
-                preview.style.backgroundImage = `url('${evt.target.result}')`;
+                preview.style.backgroundImage = `url('${editChannelAvatarBase64}')`;
                 fallback.style.display = 'none';
             };
             reader.readAsDataURL(file);
         }
 
-        function saveChannelSettingsModal() {
+        async function saveChannelSettingsModal() {
             const id = document.getElementById('editChannelId').value;
             const name = document.getElementById('editChannelNameInput').value.trim();
             const platform = document.getElementById('editChannelPlatformInput').value;
@@ -12952,7 +13289,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const desc = document.getElementById('editChannelDescInput').value.trim();
 
             if (!name) {
-                alert('Veuillez saisir un nom pour la chaîne.');
+                showToast('Veuillez saisir un nom pour la chaîne.', '⚠️');
                 return;
             }
 
@@ -12962,10 +13299,37 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 channel.platform = platform;
                 channel.format = format;
                 channel.description = desc;
+
+                // Sauvegarde 2 couleurs
+                const elPri = document.getElementById('editChannelColorPrimary');
+                const elSec = document.getElementById('editChannelColorSecondary');
+                if (elPri) channel.colorPrimary = elPri.value;
+                if (elSec) channel.colorSecondary = elSec.value;
+
+                // Sauvegarde 3 fonts
+                const elFontPri = document.getElementById('editChannelFontPrimary');
+                const elFontSec = document.getElementById('editChannelFontSecondary');
+                const elFontAcc = document.getElementById('editChannelFontAccent');
+                if (elFontPri) channel.fontPrimary = elFontPri.value;
+                if (elFontSec) channel.fontSecondary = elFontSec.value;
+                if (elFontAcc) channel.fontAccent = elFontAcc.value;
+
+                if (editChannelAvatarBase64) {
+                    channel.avatar = editChannelAvatarBase64;
+                    editChannelAvatarBase64 = null;
+                }
+
+                try {
+                    await fetch('/api/channels/update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(channel)
+                    });
+                } catch (e) {}
             }
 
             closeChannelSettingsModal();
-            showToast('Paramètres de la chaîne enregistrés');
+            showToast('Paramètres et Brand Kit enregistrés avec succès !');
 
             // Mettre à jour l'affichage
             if (currentDetailChannelId === id) {
@@ -14362,61 +14726,139 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
     
 
 
-    <!-- MODAL : PARAMÈTRES ET BRAND KIT DE LA CHAÎNE (CENTRALISÉ) -->
+    <!-- MODAL : PARAMÈTRES ET BRAND KIT COMPLET DE LA CHAÎNE (GRAND FORMAT 760px) -->
     <div class="modal-overlay" id="channelSettingsModal" onclick="handleModalOutsideClick(event, 'channelSettingsModal')">
-        <div class="modal-dialog" style="max-width: 540px;">
-            <div class="modal-header">
-                <h3>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 18px; height: 18px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span>Paramètres de la Chaîne</span>
+        <div class="modal-dialog" style="max-width: 760px; width: 92vw; background: #0c0d12; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; box-shadow: 0 24px 70px rgba(0,0,0,0.92);">
+            <div class="modal-header" style="padding: 16px 22px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <h3 style="font-size: 16px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 19px; height: 19px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Paramètres & Brand Kit de la Chaîne</span>
                 </h3>
                 <button type="button" class="btn-modal-close" onclick="closeChannelSettingsModal()">✕</button>
             </div>
-            <div class="modal-body">
+            
+            <div class="modal-body" style="padding: 22px; display: flex; flex-direction: column; gap: 18px; max-height: 78vh; overflow-y: auto;">
                 <input type="hidden" id="editChannelId">
                 
-                <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 8px;">
-                    <div class="channel-avatar-circle" id="editChannelAvatarPreview" style="width: 52px; height: 52px; cursor: pointer; flex-shrink: 0;" onclick="document.getElementById('editChannelAvatarFileInput').click()" title="Changer l'avatar">
-                        <span id="editChannelAvatarFallback">C</span>
+                <!-- 1. IDENTITÉ & AVATAR -->
+                <div style="display: flex; align-items: center; gap: 18px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;">
+                    <div class="channel-avatar-circle" id="editChannelAvatarPreview" style="width: 58px; height: 58px; cursor: pointer; flex-shrink: 0;" onclick="document.getElementById('editChannelAvatarFileInput').click()" title="Changer l'avatar">
+                        <span id="editChannelAvatarFallback" style="font-size: 20px;">C</span>
                     </div>
                     <input type="file" id="editChannelAvatarFileInput" accept="image/*" style="display: none;" onchange="handleEditChannelAvatarSelected(event)">
                     <div>
-                        <button type="button" class="btn-new-channel" onclick="document.getElementById('editChannelAvatarFileInput').click()" style="padding: 5px 12px; font-size: 11.5px;">Changer l'avatar / logo</button>
-                        <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 3px;">Formats acceptés : PNG, JPG, WebP</div>
+                        <button type="button" class="btn-new-channel" onclick="document.getElementById('editChannelAvatarFileInput').click()" style="padding: 6px 14px; font-size: 12px; font-weight: 600;">Changer l'avatar / logo</button>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Formats recommandés : PNG transparent ou JPG carré (512×512px).</div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="form-label">Nom de la Chaîne</label>
-                    <input type="text" id="editChannelNameInput" class="form-input-text" placeholder="Ex: Dr Klavius, Greatest Eleven...">
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <!-- NOM & PLATEFORME -->
+                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 14px;">
                     <div>
-                        <label class="form-label">Plateforme</label>
-                        <select id="editChannelPlatformInput" class="form-select">
+                        <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 6px; display: block;">Nom de la Chaîne</label>
+                        <input type="text" id="editChannelNameInput" class="channel-settings-input" placeholder="Ex: Dr Klavius, Greatest Eleven...">
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 6px; display: block;">Plateforme</label>
+                        <select id="editChannelPlatformInput" class="channel-settings-select">
                             <option value="YouTube">YouTube</option>
                             <option value="Instagram">Instagram</option>
                             <option value="TikTok">TikTok</option>
                         </select>
                     </div>
+                </div>
 
-                    <div>
-                        <label class="form-label">Format Vidéo par Défaut</label>
-                        <select id="editChannelFormatInput" class="form-select">
-                            <option value="16:9">16:9 — Paysage Horizontal (1920×1080)</option>
-                            <option value="9:16">9:16 — Portrait Vertical (1080×1920)</option>
-                            <option value="1:1">1:1 — Carré Standard (1080×1080)</option>
-                        </select>
+                <!-- FORMAT VIDÉO PAR DÉFAUT -->
+                <div>
+                    <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 6px; display: block;">Format Vidéo par Défaut</label>
+                    <select id="editChannelFormatInput" class="channel-settings-select">
+                        <option value="16:9">16:9 — Paysage Horizontal (1920×1080 - YouTube / Desktop)</option>
+                        <option value="9:16">9:16 — Portrait Vertical (1080×1920 - Shorts / Reels / TikTok)</option>
+                        <option value="1:1">1:1 — Carré Standard (1080×1080 - Instagram Feed)</option>
+                    </select>
+                </div>
+
+                <!-- SLOGAN / UNIVERS -->
+                <div>
+                    <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 6px; display: block;">Slogan & Univers de la Chaîne</label>
+                    <textarea id="editChannelDescInput" class="channel-settings-textarea" style="min-height: 65px;" placeholder="Thématiques, tonalité, univers narratif et directives de marque..."></textarea>
+                </div>
+
+                <!-- 2. COULEURS DE LA MARQUE (LES 2 COULEURS OFFICIELLES) -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #ffffff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; color: #a1a1aa;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10"></path></svg>
+                        <span>Couleurs Officielles de la Marque (2 couleurs)</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div>
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Couleur Principale (Primaire)</label>
+                            <div class="channel-color-control-box">
+                                <input type="color" id="editChannelColorPrimary" class="channel-color-picker-input" oninput="document.getElementById('editChannelColorPrimaryHex').value = this.value.toUpperCase()">
+                                <input type="text" id="editChannelColorPrimaryHex" class="channel-color-hex-text" maxlength="7" oninput="if(this.value.length===7) document.getElementById('editChannelColorPrimary').value = this.value">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Couleur Secondaire</label>
+                            <div class="channel-color-control-box">
+                                <input type="color" id="editChannelColorSecondary" class="channel-color-picker-input" oninput="document.getElementById('editChannelColorSecondaryHex').value = this.value.toUpperCase()">
+                                <input type="text" id="editChannelColorSecondaryHex" class="channel-color-hex-text" maxlength="7" oninput="if(this.value.length===7) document.getElementById('editChannelColorSecondary').value = this.value">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="form-label">Slogan / Description de la Chaîne</label>
-                    <textarea id="editChannelDescInput" class="form-textarea" style="min-height: 75px;" placeholder="Univers, thématiques et directives de marque..."></textarea>
+                <!-- 3. TYPOGRAPHIES OFFICIELLES (LES 3 FONTS DE LA CHAÎNE) -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #ffffff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; color: #a1a1aa;"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                        <span>Typographies de la Chaîne (3 polices)</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Titres (Primaire)</label>
+                            <select id="editChannelFontPrimary" class="channel-settings-select">
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Bebas Neue">Bebas Neue</option>
+                                <option value="Outfit">Outfit</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="JetBrains Mono">JetBrains Mono</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Corps (Secondaire)</label>
+                            <select id="editChannelFontSecondary" class="channel-settings-select">
+                                <option value="Inter">Inter</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                                <option value="Outfit">Outfit</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Accent / Script</label>
+                            <select id="editChannelFontAccent" class="channel-settings-select">
+                                <option value="Caveat">Caveat</option>
+                                <option value="Dancing Script">Dancing Script</option>
+                                <option value="Patrick Hand">Patrick Hand</option>
+                                <option value="JetBrains Mono">JetBrains Mono</option>
+                                <option value="Inter">Inter</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
+
             </div>
-            <div class="modal-footer">
+
+            <div class="modal-footer" style="padding: 14px 22px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3);">
                 <button type="button" class="btn-modal-cancel" onclick="closeChannelSettingsModal()">Annuler</button>
                 <button type="button" class="btn-modal-submit" onclick="saveChannelSettingsModal()">Enregistrer les modifications</button>
             </div>
