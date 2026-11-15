@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Montserrat:wght@700;800;900&family=Outfit:wght@600;700;800&family=Patrick+Hand&family=Poppins:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/channel_settings.css">
+    <link rel="stylesheet" href="css/channel_settings.css?v=2">
 </head>
 <body>
 
@@ -97,17 +97,17 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label class="form-label">Couleur Primaire (Accroches & Titres)</label>
-                    <div class="color-control-wrap">
-                        <input type="color" id="nativeColorPrimary" class="color-box-native" oninput="syncColorInput('nativeColorPrimary', 'hexColorPrimary')">
-                        <input type="text" id="hexColorPrimary" class="color-hex-input" maxlength="7" oninput="syncHexInput('hexColorPrimary', 'nativeColorPrimary')">
+                    <div class="color-control-wrap" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 10px !important; background: #14161f !important; border: 1px solid rgba(255, 255, 255, 0.16) !important; border-radius: 8px !important; padding: 6px 12px !important; height: 44px !important; box-sizing: border-box !important; width: 100% !important;">
+                        <input type="color" id="nativeColorPrimary" class="color-box-native" style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 32px !important; border-radius: 6px !important; border: 1px solid rgba(255, 255, 255, 0.25) !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; background: none !important; flex: 0 0 32px !important; flex-shrink: 0 !important; box-sizing: border-box !important;" oninput="syncColorInput('nativeColorPrimary', 'hexColorPrimary')">
+                        <input type="text" id="hexColorPrimary" class="color-hex-input" maxlength="7" style="display: block !important; flex: 1 1 auto !important; width: 110px !important; min-width: 80px !important; background: transparent !important; border: none !important; color: #ffffff !important; font-family: 'JetBrains Mono', monospace !important; font-size: 13px !important; font-weight: 700 !important; outline: none !important; padding: 4px 6px !important; margin: 0 !important; box-shadow: none !important; user-select: text !important; letter-spacing: 0.5px !important;" oninput="syncHexInput('hexColorPrimary', 'nativeColorPrimary')">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Couleur Secondaire (Accents & Highlights)</label>
-                    <div class="color-control-wrap">
-                        <input type="color" id="nativeColorSecondary" class="color-box-native" oninput="syncColorInput('nativeColorSecondary', 'hexColorSecondary')">
-                        <input type="text" id="hexColorSecondary" class="color-hex-input" maxlength="7" oninput="syncHexInput('hexColorSecondary', 'nativeColorSecondary')">
+                    <div class="color-control-wrap" style="display: flex !important; flex-direction: row !important; align-items: center !important; gap: 10px !important; background: #14161f !important; border: 1px solid rgba(255, 255, 255, 0.16) !important; border-radius: 8px !important; padding: 6px 12px !important; height: 44px !important; box-sizing: border-box !important; width: 100% !important;">
+                        <input type="color" id="nativeColorSecondary" class="color-box-native" style="width: 32px !important; min-width: 32px !important; max-width: 32px !important; height: 32px !important; border-radius: 6px !important; border: 1px solid rgba(255, 255, 255, 0.25) !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important; background: none !important; flex: 0 0 32px !important; flex-shrink: 0 !important; box-sizing: border-box !important;" oninput="syncColorInput('nativeColorSecondary', 'hexColorSecondary')">
+                        <input type="text" id="hexColorSecondary" class="color-hex-input" maxlength="7" style="display: block !important; flex: 1 1 auto !important; width: 110px !important; min-width: 80px !important; background: transparent !important; border: none !important; color: #ffffff !important; font-family: 'JetBrains Mono', monospace !important; font-size: 13px !important; font-weight: 700 !important; outline: none !important; padding: 4px 6px !important; margin: 0 !important; box-shadow: none !important; user-select: text !important; letter-spacing: 0.5px !important;" oninput="syncHexInput('hexColorSecondary', 'nativeColorSecondary')">
                     </div>
                 </div>
             </div>
