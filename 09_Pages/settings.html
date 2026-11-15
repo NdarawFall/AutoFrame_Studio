@@ -1496,9 +1496,9 @@
                     if (data.agents.claude && data.agents.claude.installed) {
                         if (badgeClaude) {
                             badgeClaude.className = 'agent-status-badge detected';
-                            badgeClaude.innerHTML = '🟢 Connecté & Prêt';
+                            badgeClaude.innerHTML = '🔵 Détecté (À tester)';
                         }
-                        if (textClaude) textClaude.textContent = data.agents.claude.version || 'Claude Code CLI';
+                        if (textClaude) textClaude.textContent = (data.agents.claude.version || 'Claude Code CLI') + ' • Cliquez sur ⚡ Tester ci-dessous';
                     } else {
                         if (badgeClaude) {
                             badgeClaude.className = 'agent-status-badge not-detected';
@@ -1511,10 +1511,10 @@
                     if (data.agents.agy && data.agents.agy.installed) {
                         if (badgeAgy) {
                             badgeAgy.className = 'agent-status-badge detected';
-                            badgeAgy.innerHTML = '🟢 Connecté & Prêt';
+                            badgeAgy.innerHTML = '🔵 Détecté (À tester)';
                         }
                         const v = data.agents.agy.version || 'Antigravity CLI';
-                        if (textAgy) textAgy.textContent = v.startsWith('Antigravity') ? v : `Antigravity ${v}`;
+                        if (textAgy) textAgy.textContent = (v.startsWith('Antigravity') ? v : `Antigravity ${v}`) + ' • Démarrage agent (~25-30s)';
                     } else {
                         if (badgeAgy) {
                             badgeAgy.className = 'agent-status-badge not-detected';
@@ -1588,10 +1588,10 @@
                     `;
                 } else if (item.id === 'claude_cli') {
                     const isInst = detectedAgents.claude && detectedAgents.claude.installed;
-                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#34d399' : '#94a3b8'};">${isInst ? 'CLI Local Actif' : 'Non détecté'}</span>`;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#38bdf8' : '#94a3b8'};">${isInst ? 'CLI Détecté' : 'Non détecté'}</span>`;
                 } else if (item.id === 'agy_cli') {
                     const isInst = detectedAgents.agy && detectedAgents.agy.installed;
-                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#34d399' : '#94a3b8'};">${isInst ? 'CLI Local Actif' : 'Non détecté'}</span>`;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#38bdf8' : '#94a3b8'};">${isInst ? 'CLI Détecté' : 'Non détecté'}</span>`;
                 }
 
                 card.innerHTML = `
@@ -1650,7 +1650,7 @@
             const isLocalAgent = providerId === 'agy_cli' || providerId === 'claude_cli';
             if (btnEl) {
                 btnEl.disabled = true;
-                btnEl.innerHTML = isLocalAgent ? '<span>⏳ En cours (CLI)...</span>' : '<span>Test...</span>';
+                btnEl.innerHTML = isLocalAgent ? '<span>⏳ CLI (~25s)...</span>' : '<span>Test...</span>';
             }
 
             try {
@@ -1664,10 +1664,24 @@
                 if (data.success) {
                     if (typeof showToast === 'function') showToast(`${item.name || providerId} : Connexion réussie (${data.latencyMs}ms) !`);
                     if (btnEl) btnEl.innerHTML = `<span style="color:#34d399;">✓ ${data.latencyMs}ms</span>`;
+                    if (providerId === 'claude_cli') {
+                        const badge = document.getElementById('badgeClaudeStatus');
+                        if (badge) { badge.className = 'agent-status-badge detected'; badge.innerHTML = '🟢 Opérationnel'; }
+                    } else if (providerId === 'agy_cli') {
+                        const badge = document.getElementById('badgeAgyStatus');
+                        if (badge) { badge.className = 'agent-status-badge detected'; badge.innerHTML = '🟢 Opérationnel'; }
+                    }
                 } else {
                     const errStr = data.error || 'Erreur inconnue';
+                    if (providerId === 'claude_cli') {
+                        const badge = document.getElementById('badgeClaudeStatus');
+                        if (badge) { badge.className = 'agent-status-badge not-detected'; badge.innerHTML = '🔴 Échec test'; }
+                    } else if (providerId === 'agy_cli') {
+                        const badge = document.getElementById('badgeAgyStatus');
+                        if (badge) { badge.className = 'agent-status-badge not-detected'; badge.innerHTML = '🔴 Échec test'; }
+                    }
                     if (errStr.includes('401') || errStr.toLowerCase().includes('unauthorized')) {
-                        if (typeof showToast === 'function') showToast(`${item.name || providerId} : Session non authentifiée (401). Connectez-vous avec \`claude\` dans votre terminal.`, 'error');
+                        if (typeof showToast === 'function') showToast(`${item.name || providerId} : Session ou clé non autorisée (401).`, 'error');
                         if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Auth requise (401)</span>';
                     } else {
                         if (typeof showToast === 'function') showToast(`${item.name || providerId} : Échec (${errStr.slice(0, 100)})`, 'error');

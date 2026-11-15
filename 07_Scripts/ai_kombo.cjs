@@ -396,42 +396,66 @@ async function callClaudeCliProvider(systemPrompt, userPrompt) {
     const combinedPrompt = `${systemPrompt}\n\nIMPORTANT: Tu dois STRICTEMENT retourner un JSON valide sans aucun formatage Markdown ni texte conversationnel autour.\n\nDemande utilisateur:\n${userPrompt}`;
 
     return new Promise((resolve, reject) => {
+        let isDone = false;
+        const finish = (err, res) => {
+            if (isDone) return;
+            isDone = true;
+            clearTimeout(timer);
+            try { child.kill(); } catch (e) {}
+            if (err) reject(err);
+            else resolve(res);
+        };
+
         const child = spawn('cmd.exe', ['/c', claudeBin, '--bare', '--tools', '""', '-p', combinedPrompt], {
             windowsHide: true,
-            stdio: ['ignore', 'pipe', 'pipe']
+            stdio: ['pipe', 'pipe', 'pipe']
         });
+
+        // Fermer immédiatement stdin pour éviter que Claude n'attende 3s
+        try { child.stdin.end(); } catch (e) {}
 
         let stdout = '';
         let stderr = '';
 
-        child.stdout.on('data', d => { stdout += d.toString(); });
-        child.stderr.on('data', d => { stderr += d.toString(); });
+        const checkStreamErrors = (chunkStr) => {
+            if (chunkStr.includes('unauthorized client detected') || chunkStr.includes('unauthorized_client_error') || chunkStr.includes('UNAUTHENTICATED')) {
+                finish(new Error("Passerelle agentrouter.org : Client non autorisé (401). Votre clé proxy est rejetée."));
+            }
+        };
+
+        child.stdout.on('data', d => {
+            const str = d.toString();
+            stdout += str;
+            checkStreamErrors(str);
+        });
+        child.stderr.on('data', d => {
+            const str = d.toString();
+            stderr += str;
+            checkStreamErrors(str);
+        });
 
         const timer = setTimeout(() => {
-            child.kill();
-            reject(new Error("Timeout (35s) dépassé pour Claude Code CLI"));
+            finish(new Error("Timeout (35s) dépassé pour Claude Code CLI."));
         }, 35000);
 
         child.on('close', code => {
-            clearTimeout(timer);
             const combined = (stdout || '') + '\n' + (stderr || '');
             if (combined.includes('unauthorized') || combined.includes('401') || combined.includes('UNAUTHENTICATED')) {
-                return reject(new Error("Claude Code CLI: Session expirée ou client non autorisé (401). Ouvrez un terminal et tapez `claude` pour vous reconnecter."));
+                return finish(new Error("Claude Code CLI: Session expirée ou client non autorisé (401 sur agentrouter.org)."));
             }
             if (code !== 0 && !stdout) {
-                return reject(new Error(`Claude Code CLI code ${code}: ${(stderr || 'Erreur exécution').slice(0, 200)}`));
+                return finish(new Error(`Claude Code CLI code ${code}: ${(stderr || 'Erreur exécution').slice(0, 200)}`));
             }
             try {
                 const parsed = cleanAndParseJson(stdout || stderr);
-                resolve(parsed);
+                finish(null, parsed);
             } catch (pe) {
-                reject(new Error(`Claude Code CLI n'a pas renvoyé de JSON valide: ${pe.message}. Sortie: ${(stdout || stderr).slice(0, 150)}`));
+                finish(new Error(`Claude Code CLI n'a pas renvoyé de JSON valide: ${pe.message}. Sortie: ${(stdout || stderr).slice(0, 150)}`));
             }
         });
 
         child.on('error', err => {
-            clearTimeout(timer);
-            reject(new Error(`Erreur lancement Claude Code CLI (${claudeBin}): ${err.message}`));
+            finish(new Error(`Erreur lancement Claude Code CLI (${claudeBin}): ${err.message}`));
         });
     });
 }
