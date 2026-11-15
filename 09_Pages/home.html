@@ -1985,6 +1985,152 @@
         }
 
         /* LIGHTBOX IMAGE (CADRAGE COMPLET SANS COUPURE) */
+        /* GRAND MODAL PLAYER VIDÉO IMMERSIF */
+        .video-player-modal-dialog {
+            background: #090a10;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            width: 92vw;
+            max-width: 1180px;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.96), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .video-player-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            background: #11131a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .video-player-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .video-player-format-pill {
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e4e4e7;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .video-player-heading {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 550px;
+        }
+
+        .video-player-screen-wrap {
+            flex: 1;
+            min-height: 520px;
+            max-height: calc(92vh - 65px);
+            background: #030408;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 16px 24px;
+            overflow: hidden;
+        }
+
+        /* Barre de contrôle Player Vidéo pour Compositions */
+        .composition-player-bar {
+            width: 100%;
+            max-width: 1040px;
+            margin-top: 14px;
+            background: rgba(18, 20, 28, 0.92);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 10;
+        }
+
+        .player-btn {
+            background: transparent;
+            border: none;
+            color: #d4d4d8;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .player-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .player-scrubber-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            transition: height 0.15s ease;
+        }
+        .player-scrubber-track:hover {
+            height: 8px;
+        }
+
+        .player-scrubber-progress {
+            height: 100%;
+            background: #ffffff;
+            border-radius: 3px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0%;
+            pointer-events: none;
+        }
+
+        .player-scrubber-handle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.7);
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .player-time-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #a1a1aa;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .lightbox-modal-dialog {
             background: #0a0a0c;
             border: 1px solid var(--border-strong);
@@ -6050,19 +6196,6 @@
     <!-- ANTI-FLASH SPA ROUTING : Active immédiatement la vue mémorisée avant le rendu graphique -->
     <script>
 
-        function getPosterForVideo(item) {
-            const fn = (item.file || item.name || item.title || item.videoPath || item.path || '').toLowerCase();
-            if (fn.includes('stickman') || fn.includes('growkaz')) return '../01_Assets/Images/growkaz_stickman_concept.jpg';
-            if (fn.includes('saas') || fn.includes('claude_fable')) return '../01_Assets/Images/styles/template_saas_motion_design.jpg';
-            if (fn.includes('ascii') || fn.includes('terminal') || fn.includes('marvid')) return '../01_Assets/Images/marvidflow/marvid_dashboard.png';
-            if (fn.includes('typography') || fn.includes('hyperframes') || fn.includes('commercial') || fn.includes('motion_design')) return '../01_Assets/Images/Design_Tips_Frames/01_typography.png';
-            if (fn.includes('eye_tracking') || fn.includes('focus')) return '../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png';
-            if (fn.includes('pill') || fn.includes('ask_anything')) return '../01_Assets/Images/ref_ask_anything_pill.jpg';
-            if (fn.includes('football') || fn.includes('top10') || fn.includes('ballon')) return '../01_Assets/Images/styles/template_top_10.jpg';
-            if (fn.includes('design_tips') || fn.includes('17_design')) return '../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png';
-            return '../01_Assets/Images/styles/template_2d_explainer.jpg';
-        }
-
 
         (function() {
             try {
@@ -8560,21 +8693,71 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         </div>
     </div>
 
-    <!-- 9. GRAND MODAL PLAYER VIDÉO (PROJETS DASHBOARD & ASSETS VIDÉO) -->
+    <!-- 9. GRAND MODAL PLAYER VIDÉO IMMERSIF (MP4 & COMPOSITIONS HTML) -->
     <div class="modal-overlay" id="videoPlayerModalOverlay" onclick="handleModalOutsideClick(event, 'videoPlayerModalOverlay')">
-        <div class="lightbox-modal-dialog" style="max-width: 1000px;">
-            <div class="modal-header">
-                <h3 id="grandPlayerTitle">Lecteur Vidéo</h3>
+        <div class="video-player-modal-dialog">
+            <div class="video-player-modal-header">
+                <div class="video-player-title-box">
+                    <span class="video-player-format-pill" id="grandPlayerFormatPill">16:9</span>
+                    <h3 id="grandPlayerTitle" class="video-player-heading">Aperçu Vidéo</h3>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <a id="grandPlayerStudioLink" href="studio.html" class="btn-card-action" style="background: #ffffff; color: #000000; font-weight: 700; border-color: #ffffff;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px;"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
-                        <span>Éditer dans le Studio</span>
+                    <!-- Bouton Aller dans le Studio (texte corrigé !) -->
+                    <a id="grandPlayerStudioLink" href="studio.html" class="btn-card-action" style="background: #ffffff; color: #000000; font-weight: 700; border-color: #ffffff; padding: 7px 14px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
+                        <span>Aller dans le Studio</span>
                     </a>
                     <button type="button" class="btn-modal-close" onclick="closeGrandVideoPlayer()">✕</button>
                 </div>
             </div>
-            <div style="background: #000000; display: flex; align-items: center; justify-content: center; min-height: 400px;">
-                <video id="grandPlayerVideoEl" controls autoplay playsinline style="max-width: 100%; max-height: 75vh; outline: none;"></video>
+            <div class="video-player-screen-wrap" id="grandPlayerContainer">
+                <!-- Lecteur natif MP4 / WebM -->
+                <video id="grandPlayerVideoEl" controls autoplay playsinline style="display: none; width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 68vh; object-fit: contain; outline: none; background: #000; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.85);"></video>
+
+                <!-- Lecteur Compositions HTML dynamiques avec Vraie Barre Player -->
+                <div id="grandPlayerIframeWrapper" style="display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                    <div id="grandPlayerIframeViewport" style="width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 64vh; background: #000; border-radius: 8px; overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;">
+                        <iframe id="grandPlayerIframeEl" src="about:blank" style="width: 100%; height: 100%; border: none; display: block; background: #000;"></iframe>
+                    </div>
+
+                    <!-- VRAIE BARRE DE CONTRÔLE PLAYER COMPLÈTE -->
+                    <div class="composition-player-bar" id="compositionPlayerBar">
+                        <!-- Play / Pause -->
+                        <button type="button" class="player-btn" id="playerPlayPauseBtn" onclick="toggleCompositionPlayback()" title="Lecture / Pause">
+                            <svg id="playerPlayIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <svg id="playerPauseIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px; display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                        </button>
+
+                        <!-- Restart -->
+                        <button type="button" class="player-btn" onclick="restartCompositionPlayback()" title="Recommencer depuis le début">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                        </button>
+
+                        <!-- Timeline Scrubber -->
+                        <div class="player-scrubber-track" id="playerScrubberTrack" onclick="seekCompositionPlayback(event)">
+                            <div class="player-scrubber-progress" id="playerScrubberProgress" style="width: 0%;"></div>
+                            <div class="player-scrubber-handle" id="playerScrubberHandle" style="left: 0%;"></div>
+                        </div>
+
+                        <!-- Timecode numérique 00:00 / 00:15 -->
+                        <div class="player-time-display">
+                            <span id="playerCurrentTime">00:00</span>
+                            <span style="opacity: 0.5;">/</span>
+                            <span id="playerTotalTime">00:15</span>
+                        </div>
+
+                        <!-- Volume / Mute -->
+                        <button type="button" class="player-btn" id="playerVolumeBtn" onclick="toggleCompositionVolume()" title="Couper / Rétablir le son">
+                            <svg id="playerVolumeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            <svg id="playerMuteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                        </button>
+
+                        <!-- Fullscreen -->
+                        <button type="button" class="player-btn" onclick="togglePlayerFullscreen()" title="Plein écran">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -8765,7 +8948,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '15s', 
                         videoPath: '../04_Videos/top10_football_15s.html', 
-                        poster: '../01_Assets/Images/styles/template_top_10.jpg',
                         date: 'Hier', 
                         resolution: '1080×1920', 
                         category: 'reseaux', 
@@ -8780,7 +8962,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '15s', 
                         videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
-                        poster: '../01_Assets/Images/growkaz_stickman_concept.jpg',
                         date: 'Aujourd\'hui', 
                         resolution: '1080×1920', 
                         category: 'clients', 
@@ -8793,13 +8974,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '38s', 
                         videoPath: '../04_Videos/claude_fable_5_2_30s_saas_commercial.html', 
-                        poster: '../01_Assets/Images/styles/template_saas_motion_design.jpg',
                         date: '13 nov. 2026', 
                         resolution: '1920×1080', 
-                        category: 'reseaux', 
-                        platform: 'YouTube',
-                        channelId: 'ch_1793911244535',
-                        channelName: 'Dr Klavius',
+                        category: 'standalone', 
+                        platform: null,
+                        channelId: null,
+                        channelName: null,
+                        client: null,
                         timestamp: 1731500000000
                     },
                     { 
@@ -8808,7 +8989,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '15s', 
                         videoPath: '../04_Videos/video_ascii_crt_terminal_15s.html', 
-                        poster: '../01_Assets/Images/marvidflow/marvid_dashboard.png',
                         date: '13 nov. 2026', 
                         resolution: '1080×1920', 
                         category: 'reseaux', 
@@ -8823,7 +9003,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '25s', 
                         videoPath: '../04_Videos/hyperframes_25s_motion_design_composition.html', 
-                        poster: '../01_Assets/Images/Design_Tips_Frames/01_typography.png',
                         date: '13 nov. 2026', 
                         resolution: '1920×1080', 
                         category: 'clients', 
@@ -8836,7 +9015,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '20s', 
                         videoPath: '../04_Videos/eye_tracking_20s.html', 
-                        poster: '../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png',
                         date: '06 nov. 2026', 
                         resolution: '1080×1920', 
                         category: 'reseaux', 
@@ -8851,13 +9029,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '05s', 
                         videoPath: '../04_Videos/design_ask_anything_pill_5s.html', 
-                        poster: '../01_Assets/Images/ref_ask_anything_pill.jpg',
                         date: '05 nov. 2026', 
                         resolution: '1080×1920', 
-                        category: 'reseaux', 
-                        platform: 'YouTube',
-                        channelId: 'ch_1793911184121',
-                        channelName: 'Greatest Eleven',
+                        category: 'standalone', 
+                        platform: null,
+                        channelId: null,
+                        channelName: null,
+                        client: null,
                         timestamp: 1730800000000
                     },
                     { 
@@ -8866,7 +9044,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '01:24', 
                         videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
-                        poster: '../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png',
                         date: '04 nov. 2026', 
                         resolution: '1920×1080', 
                         category: 'reseaux', 
@@ -8878,9 +9055,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 ];
             }
 
-            // Normalisation de toute vidéo reçue de l'API /api/files
+            // Normalisation de toute vidéo (aucun poster artificiel inventé)
             allVideosList = allVideosList.map((v, i) => {
-                const poster = v.poster || getPosterForVideo(v);
                 let title = v.title;
                 if (!title) {
                     title = (v.file || v.name || 'Projet Vidéo ' + (i + 1)).replace('.html', '').replace('.mp4', '').replace(/_/g, ' ');
@@ -8890,7 +9066,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     ...v,
                     id: v.id || ('vid_' + i),
                     title,
-                    poster,
                     videoPath,
                     duration: typeof v.duration === 'number' ? Math.round(v.duration) + 's' : (v.duration || '15s'),
                     format: v.format || '16:9',
@@ -9050,6 +9225,49 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             renderDashboardProjects();
         }
 
+                // Rendu authentique d'une card vidéo : 
+        // - Si vidéo native (.mp4/.webm) : frame extrait nativement à 0.5s par le navigateur sans capture manuelle
+        // - Si composition HTML ou sans frame direct : affichage studio moderne épuré sans faux visuels inventés
+        function renderVideoCardHtml(v) {
+            const isVideoFile = v.videoPath && (v.videoPath.endsWith('.mp4') || v.videoPath.endsWith('.webm') || v.videoPath.endsWith('.mov'));
+            const durationBadge = v.duration || '15s';
+            const formatBadge = v.format || '16:9';
+            const dateBadge = v.date || 'Récemment';
+
+            let thumbContent = '';
+            if (isVideoFile) {
+                // Vrai frame tiré directement de la vidéo nativement par le navigateur
+                thumbContent = `<video src="${v.videoPath}#t=0.5" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>`;
+            } else {
+                // Composition HTML ou projet studio : design épuré, pro, sans fausse image aléatoire
+                thumbContent = `
+                    <div style="width:100%; height:100%; background: radial-gradient(circle at 50% 35%, #181d28 0%, #0c0f16 70%, #06070a 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+                        <div style="position: absolute; inset:0; opacity:0.04; background-image: linear-gradient(rgba(255,255,255,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.25) 1px, transparent 1px); background-size: 18px 18px;"></div>
+                        <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; backdrop-filter: blur(8px);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; color: #d4d4d8; margin-left: 2px;"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg>
+                        </div>
+                        <span style="font-size: 10.5px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.8px; font-family: 'JetBrains Mono', monospace;">${formatBadge}</span>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}', '${formatBadge}', '${durationBadge}')" title="Regarder ${escapeHtml(v.title)}">
+                    <div class="project-thumb">
+                        ${thumbContent}
+                        <div class="project-card-overlay"></div>
+                        <div class="project-card-footer">
+                            <div class="project-card-info-wrap">
+                                <div class="project-card-title">${escapeHtml(v.title)}</div>
+                                <div class="project-card-meta">${dateBadge} • ${formatBadge}</div>
+                            </div>
+                            <span class="project-duration-badge">${durationBadge}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderDashboardProjects() {
             const grid = document.getElementById('dashboardProjectsGrid');
             if (!grid) return;
@@ -9078,23 +9296,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 return;
             }
 
-            // Cards avec miniature image instantanée haute résolution (aucun écran noir),
-            // dégradé noir doux en bas, badge de durée en bas à droite, et ouverture directe du lecteur.
-            grid.innerHTML = filtered.map(v => `
-                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Regarder ${escapeHtml(v.title)}">
-                    <div class="project-thumb">
-                        <img src="${v.poster || getPosterForVideo(v)}" alt="${escapeHtml(v.title)}" class="project-thumb-img" onerror="this.src='../01_Assets/Images/styles/template_2d_explainer.jpg'">
-                        <div class="project-card-overlay"></div>
-                        <div class="project-card-footer">
-                            <div class="project-card-info-wrap">
-                                <div class="project-card-title">${escapeHtml(v.title)}</div>
-                                <div class="project-card-meta">${v.date || 'Récemment'} • ${v.format || '16:9'}</div>
-                            </div>
-                            <span class="project-duration-badge">${v.duration || '15s'}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = filtered.map(v => renderVideoCardHtml(v)).join('');
         }
 
         function handleReseauFilterChange(sel) {
@@ -9135,7 +9337,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             const elTk = document.getElementById('pillCountTikTok');
             if (elTk) elTk.textContent = countTikTok;
             const elSt = document.getElementById('pillCountStandalone');
-            if (elSt) elSt.textContent = '2';
+            const countStandalone = allVideosList.filter(v => (!v.channelId || v.channelId === '') && (!v.client || v.client === '')).length; if (elSt) elSt.textContent = countStandalone;
 
             const grid = document.getElementById('channelsListGrid');
 
@@ -9144,14 +9346,30 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             if (currentPlatformFilter === 'all') {
                 list = channelsCache;
             } else if (currentPlatformFilter === 'standalone') {
-                grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-secondary); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 32px; height: 32px; margin-bottom: 8px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        <h4 style="color:#ffffff; margin-bottom: 4px;">Vidéos indépendantes hors-chaîne</h4>
-                        <p style="font-size: 12px; color: var(--text-muted);">Vidéos créées directement dans le Studio sans rattachement de chaîne.</p>
-                        <button type="button" class="btn-primary-action" onclick="openCreateVideoView()" style="margin-top: 12px; display: inline-flex;">Créer une Vidéo Indépendante</button>
-                    </div>
-                `;
+                // Vidéos sans chaîne et qui ne sont pas des vidéos clients
+                const standaloneVideos = allVideosList.filter(v => (!v.channelId || v.channelId === '') && (!v.client || v.client === ''));
+                
+                if (standaloneVideos.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; padding: 48px; text-align: center; color: var(--text-muted); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 36px; height: 36px; margin-bottom: 8px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <h4 style="color:#ffffff; margin-bottom: 4px;">Aucune vidéo indépendante pour le moment</h4>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Créez une vidéo générique sans chaîne ni client associé.</p>
+                            <button type="button" class="btn-primary-action" onclick="openCreateVideoView(null)" style="display: inline-flex;">+ Créer une Vidéo Indépendante</button>
+                        </div>
+                    `;
+                } else {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <h3 style="font-size: 15px; font-weight: 700; color: #ffffff;">Vidéos indépendantes hors chaîne</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">${standaloneVideos.length} vidéo${standaloneVideos.length > 1 ? 's' : ''} créée${standaloneVideos.length > 1 ? 's' : ''} sans chaîne et hors montage client.</p>
+                            </div>
+                            <button type="button" class="btn-create-video-head" onclick="openCreateVideoView(null)">+ Créer une Vidéo sans chaîne</button>
+                        </div>
+                        ${standaloneVideos.map(v => renderVideoCardHtml(v)).join('')}
+                    `;
+                }
                 return;
             } else {
                 list = channelsCache.filter(c => c.platform === currentPlatformFilter);
@@ -9861,7 +10079,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             } else if (type === 'Audios') {
                 openAssetAudioModal(url, name, subfolder);
             } else if (type === 'Videos') {
-                openGrandVideoPlayer(url, name);
+                openGrandVideoPlayer(url, name, '16:9', '15s');
             } else {
                 showToast(`Asset: ${name}`);
             }
@@ -9870,7 +10088,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         function previewClientFile(url, name) {
             const ext = name.split('.').pop().toLowerCase();
             if (['mp4', 'mov', 'webm'].includes(ext)) {
-                openGrandVideoPlayer(url, name);
+                openGrandVideoPlayer(url, name, '16:9', '15s');
             } else if (['mp3', 'wav', 'm4a', 'ogg'].includes(ext)) {
                 openAssetAudioModal(url, name, 'Client');
             } else if (['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(ext)) {
@@ -10007,48 +10225,119 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
         }
 
-        // C. GRAND PLAYER VIDÉO
-        function openGrandVideoPlayer(videoPath, title) {
+        // =====================================================================
+        // C. GRAND PLAYER VIDÉO IMMERSIF (MP4 NATIF & COMPOSITIONS HTML)
+        // =====================================================================
+        let compositionTimer = null;
+        let compositionDurationSec = 15;
+        let compositionCurrentSec = 0;
+        let isCompositionPlaying = false;
+        let isCompositionMuted = false;
+        let currentCompositionSrc = '';
+
+        function openGrandVideoPlayer(videoPath, title, format, duration) {
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
-            let iframeEl = document.getElementById('grandPlayerIframeEl');
-            const container = document.getElementById('grandPlayerContainer') || videoEl.parentElement;
+            const iframeWrapper = document.getElementById('grandPlayerIframeWrapper');
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            const viewport = document.getElementById('grandPlayerIframeViewport');
             
             document.getElementById('grandPlayerTitle').textContent = title || 'Aperçu Vidéo';
+            const pillEl = document.getElementById('grandPlayerFormatPill');
+            if (pillEl) pillEl.textContent = format || '16:9';
 
             let resolvedPath = (videoPath || '').trim();
             if (!resolvedPath.startsWith('http') && !resolvedPath.startsWith('../') && !resolvedPath.startsWith('/') && !resolvedPath.startsWith('file:')) {
                 resolvedPath = '../' + resolvedPath;
             }
 
-            if (resolvedPath.endsWith('.html')) {
-                // Composition HTML dynamique (GSAP / Web animations)
-                videoEl.pause();
-                videoEl.style.display = 'none';
-                videoEl.src = '';
+            if (compositionTimer) {
+                clearInterval(compositionTimer);
+                compositionTimer = null;
+            }
 
-                if (!iframeEl) {
-                    iframeEl = document.createElement('iframe');
-                    iframeEl.id = 'grandPlayerIframeEl';
-                    iframeEl.style.width = '100%';
-                    iframeEl.style.height = '100%';
-                    iframeEl.style.border = 'none';
-                    iframeEl.style.borderRadius = '8px';
-                    iframeEl.style.background = '#000000';
-                    container.appendChild(iframeEl);
+            const isHtml = resolvedPath.toLowerCase().endsWith('.html');
+
+            if (isHtml) {
+                // Mode Composition HTML dynamique avec vraie barre de lecture
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.src = '';
+                    videoEl.style.display = 'none';
                 }
-                iframeEl.style.display = 'block';
-                iframeEl.src = resolvedPath;
+
+                if (iframeWrapper) iframeWrapper.style.display = 'flex';
+                
+                const fmt = (format || '16:9').trim();
+                if (viewport) {
+                    if (fmt === '9:16') {
+                        viewport.style.aspectRatio = '9 / 16';
+                        viewport.style.maxWidth = '360px';
+                    } else if (fmt === '1:1') {
+                        viewport.style.aspectRatio = '1 / 1';
+                        viewport.style.maxWidth = '520px';
+                    } else {
+                        viewport.style.aspectRatio = '16 / 9';
+                        viewport.style.maxWidth = '1040px';
+                    }
+                }
+
+                currentCompositionSrc = resolvedPath;
+                if (iframeEl) iframeEl.src = resolvedPath;
+
+                let durSec = 15;
+                if (typeof duration === 'number') {
+                    durSec = duration;
+                } else if (typeof duration === 'string') {
+                    if (duration.includes(':')) {
+                        const parts = duration.split(':');
+                        durSec = (parseInt(parts[0], 10) || 0) * 60 + (parseInt(parts[1], 10) || 0);
+                    } else {
+                        const parsed = parseInt(duration.replace(/[^\d]/g, ''), 10);
+                        if (!isNaN(parsed) && parsed > 0) durSec = parsed;
+                    }
+                }
+                compositionDurationSec = durSec;
+                compositionCurrentSec = 0;
+                isCompositionPlaying = true;
+                updateCompositionPlayBtnState();
+                updateCompositionTimeDisplay();
+
+                compositionTimer = setInterval(() => {
+                    if (isCompositionPlaying) {
+                        compositionCurrentSec += 0.2;
+                        if (compositionCurrentSec >= compositionDurationSec) {
+                            compositionCurrentSec = 0;
+                            if (iframeEl && currentCompositionSrc) {
+                                iframeEl.src = currentCompositionSrc;
+                            }
+                        }
+                        updateCompositionTimeDisplay();
+                    }
+                }, 200);
+
             } else {
-                // Fichier Vidéo Standard MP4 / WebM
-                if (iframeEl) {
-                    iframeEl.src = 'about:blank';
-                    iframeEl.style.display = 'none';
+                // Mode Fichier Vidéo Standard MP4 / WebM
+                if (iframeWrapper) iframeWrapper.style.display = 'none';
+                if (iframeEl) iframeEl.src = 'about:blank';
+
+                if (videoEl) {
+                    const fmt = (format || '16:9').trim();
+                    if (fmt === '9:16') {
+                        videoEl.style.aspectRatio = '9 / 16';
+                        videoEl.style.maxWidth = '360px';
+                    } else if (fmt === '1:1') {
+                        videoEl.style.aspectRatio = '1 / 1';
+                        videoEl.style.maxWidth = '520px';
+                    } else {
+                        videoEl.style.aspectRatio = '16 / 9';
+                        videoEl.style.maxWidth = '1040px';
+                    }
+                    videoEl.style.display = 'block';
+                    videoEl.src = resolvedPath;
+                    videoEl.load();
+                    videoEl.play().catch(e => console.log('Autoplay standard info:', e));
                 }
-                videoEl.style.display = 'block';
-                videoEl.src = resolvedPath;
-                videoEl.load();
-                videoEl.play().catch(e => console.log('Autoplay standard info:', e));
             }
 
             overlay.classList.add('open');
@@ -10058,15 +10347,97 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
             const iframeEl = document.getElementById('grandPlayerIframeEl');
+
+            if (compositionTimer) {
+                clearInterval(compositionTimer);
+                compositionTimer = null;
+            }
+            isCompositionPlaying = false;
+
             if (videoEl) {
                 videoEl.pause();
                 videoEl.src = '';
             }
             if (iframeEl) {
                 iframeEl.src = 'about:blank';
-                iframeEl.style.display = 'none';
             }
             overlay.classList.remove('open');
+        }
+
+        function toggleCompositionPlayback() {
+            isCompositionPlaying = !isCompositionPlaying;
+            updateCompositionPlayBtnState();
+        }
+
+        function updateCompositionPlayBtnState() {
+            const playIcon = document.getElementById('playerPlayIcon');
+            const pauseIcon = document.getElementById('playerPauseIcon');
+            if (!playIcon || !pauseIcon) return;
+            if (isCompositionPlaying) {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        }
+
+        function restartCompositionPlayback() {
+            compositionCurrentSec = 0;
+            isCompositionPlaying = true;
+            updateCompositionPlayBtnState();
+            updateCompositionTimeDisplay();
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            if (iframeEl && currentCompositionSrc) {
+                iframeEl.src = currentCompositionSrc;
+            }
+        }
+
+        function seekCompositionPlayback(e) {
+            const track = document.getElementById('playerScrubberTrack');
+            if (!track) return;
+            const rect = track.getBoundingClientRect();
+            const clickX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            const ratio = clickX / rect.width;
+            compositionCurrentSec = ratio * compositionDurationSec;
+            updateCompositionTimeDisplay();
+        }
+
+        function updateCompositionTimeDisplay() {
+            const curEl = document.getElementById('playerCurrentTime');
+            const totEl = document.getElementById('playerTotalTime');
+            const prog = document.getElementById('playerScrubberProgress');
+            const handle = document.getElementById('playerScrubberHandle');
+            if (curEl) curEl.textContent = formatTime(compositionCurrentSec);
+            if (totEl) totEl.textContent = formatTime(compositionDurationSec);
+            const pct = Math.min(100, (compositionCurrentSec / (compositionDurationSec || 1)) * 100);
+            if (prog) prog.style.width = pct + '%';
+            if (handle) handle.style.left = pct + '%';
+        }
+
+        function toggleCompositionVolume() {
+            isCompositionMuted = !isCompositionMuted;
+            const volIcon = document.getElementById('playerVolumeIcon');
+            const muteIcon = document.getElementById('playerMuteIcon');
+            if (volIcon) volIcon.style.display = isCompositionMuted ? 'none' : 'block';
+            if (muteIcon) muteIcon.style.display = isCompositionMuted ? 'block' : 'none';
+            try {
+                const iframeEl = document.getElementById('grandPlayerIframeEl');
+                if (iframeEl && iframeEl.contentWindow) {
+                    const audios = iframeEl.contentDocument ? iframeEl.contentDocument.querySelectorAll('audio') : [];
+                    audios.forEach(a => a.muted = isCompositionMuted);
+                }
+            } catch (err) {}
+        }
+
+        function togglePlayerFullscreen() {
+            const container = document.getElementById('grandPlayerContainer');
+            if (!container) return;
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen().catch(err => console.log(err));
+            }
         }
 
         // D. MODAL UPLOAD D'ASSET AVEC CHOIX DU DOSSIER
@@ -12509,21 +12880,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     </div>
                 `;
             } else {
-                grid.innerHTML = channelVideos.map(v => `
-                    <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Regarder ${escapeHtml(v.title)}">
-                        <div class="project-thumb">
-                            <img src="${v.poster || '../01_Assets/Images/styles/template_top_10.jpg'}" alt="${escapeHtml(v.title)}" class="project-thumb-img">
-                            <div class="project-card-overlay"></div>
-                            <div class="project-card-footer">
-                                <div class="project-card-info-wrap">
-                                    <div class="project-card-title">${escapeHtml(v.title)}</div>
-                                    <div class="project-card-meta">${v.date || 'Récemment'} • ${v.format || '16:9'}</div>
-                                </div>
-                                <span class="project-duration-badge">${v.duration || '15s'}</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                grid.innerHTML = channelVideos.map(v => renderVideoCardHtml(v)).join('');
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
