@@ -5204,9 +5204,866 @@
             transform: scale(1.05);
         }
 
+
+/* --- STYLES COMPLETS PARAMETRES.HTML --- */
+
+        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        
+
+        /* --- TOP NAVIGATION BAR --- */
+        header.top-nav {
+            height: 56px;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+                
+
+        .brand-badge, a.brand-badge, a.brand-badge:link, a.brand-badge:visited {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .brand-badge .brand-name {
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-badge .brand-version {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #9ca3af;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(140, 140, 140, 0.28);
+            border-radius: 4px;
+            line-height: 1.2;
+            letter-spacing: 0.4px;
+        }
+
+        .btn-icon-home {
+            padding: 7px 9px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        .nav-btn.btn-create-video {
+            background: #dc2626;
+            color: #ffffff !important;
+            border-color: #ef4444;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+        }
+
+        .nav-btn.btn-create-video:hover {
+            background: #b91c1c;
+            border-color: #f87171;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
+        }
+
+        /* --- LAYOUT AVEC SIDEBAR SANS FOND (PURE TEXTE) --- */
+        .settings-layout {
+            max-width: 1560px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 28px 80px 28px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 16px;
+            }
+        }
+
+        /* SIDEBAR SANS FOND */
+        aside.settings-sidebar {
+            background: transparent;
+            border: none;
+            position: sticky;
+            top: 76px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding-left: 4px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            list-style: none;
+        }
+
+        .sidebar-link {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .sidebar-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(3px);
+        }
+
+        .sidebar-link.active {
+            color: #ffffff;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 3px;
+            background: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* --- CONTENT MAIN COLUMN --- */
+        main.settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+        }
+
+        .page-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* --- SECTIONS CARDS --- */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-margin-top: 80px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .card-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .form-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-label a {
+            color: var(--text-muted);
+            text-decoration: underline;
+            font-size: 10px;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .form-label a:hover {
+            color: #ffffff;
+        }
+
+        .form-input, .form-select {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            transition: var(--transition-smooth);
+            font-family: inherit;
+        }
+
+        .form-input[type="password"] {
+            letter-spacing: 2px;
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: #ffffff;
+            background: var(--bg-hover);
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* INPUT PASSWORD WITH TOGGLE */
+        .input-password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-password-wrapper input {
+            width: 100%;
+            padding-right: 42px;
+        }
+
+        .btn-toggle-eye {
+            position: absolute;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-toggle-eye:hover {
+            color: #ffffff;
+        }
+
+        /* ACTIONS BAR */
+        .actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .btn-primary {
+            background: #ff3344;
+            color: #ffffff;
+            border: 1px solid #ff3344;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 18px rgba(255, 51, 68, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: #e62234;
+            border-color: #e62234;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px rgba(255, 51, 68, 0.55);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #111111;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: var(--transition-smooth);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        svg.icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+    
+        /* --- COMPOSANT SÉLECTEUR DE VOIX MODERNE AVEC RECHERCHE ET DRAPEAUX --- */
+        .modern-voice-picker {
+            position: relative;
+            width: 100%;
+        }
+        .voice-picker-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-sm);
+            padding: 9px 14px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            min-height: 44px;
+        }
+        .voice-picker-trigger:hover, .voice-picker-trigger.active {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .voice-trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-flag-img {
+            width: 22px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .voice-trigger-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-trigger-badge {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .voice-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #0d121c;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        .voice-dropdown-menu.open {
+            display: flex;
+            animation: dropdownFade 0.15s ease-out;
+        }
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .voice-search-box {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voice-search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            outline: none;
+        }
+        .voice-search-input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+        }
+        .voice-items-list {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .voice-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .voice-item-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .voice-item-row.selected {
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid rgba(0, 240, 255, 0.35);
+        }
+        .voice-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        .voice-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+        .voice-item-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-item-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-inline-preview {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-inline-preview:hover {
+            background: #00f0ff;
+            color: #000000;
+            border-color: #00f0ff;
+            transform: scale(1.08);
+        }
+
+    
+        /* --- STYLES KOMBO IA & DÉTECTEUR D'AGENTS LOCAUX --- */
+        .agent-detector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+            margin-top: 10px;
+        }
+        .agent-card {
+            background: #0f1013;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .agent-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            background: #14161b;
+        }
+        .agent-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .agent-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .agent-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .agent-status-badge.detected {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #34d399;
+        }
+        .agent-status-badge.not-detected {
+            background: rgba(100, 116, 139, 0.12);
+            border-color: rgba(100, 116, 139, 0.25);
+            color: #94a3b8;
+        }
+        .agent-card-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* --- LISTE ORDONNÉE DU KOMBO IA --- */
+        .kombo-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .kombo-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .kombo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .kombo-item-card {
+            background: #111317;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            row-gap: 12px;
+            column-gap: 16px;
+            transition: all 0.2s ease;
+        }
+        .kombo-item-card.is-active {
+            border-color: rgba(59, 130, 246, 0.35);
+            background: rgba(59, 130, 246, 0.04);
+        }
+        .kombo-item-card.is-disabled {
+            opacity: 0.55;
+            filter: grayscale(0.6);
+        }
+        .kombo-left-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1 1 260px;
+            min-width: 220px;
+            flex-wrap: wrap;
+        }
+        .kombo-priority-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #1c1e24;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            white-space: nowrap;
+        }
+        .kombo-item-card.is-primary .kombo-priority-tag {
+            background: rgba(37, 99, 235, 0.25);
+            border-color: #3b82f6;
+            color: #60a5fa;
+        }
+        .kombo-name-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 140px;
+        }
+        .kombo-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+        .kombo-right-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex: 1 1 360px;
+        }
+        .kombo-model-select {
+            background: #090a0d;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            outline: none;
+            flex: 1 1 260px;
+            min-width: 220px;
+            max-width: 100%;
+        }
+        .kombo-order-btn {
+            background: #1c1e24;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .kombo-order-btn:hover:not(:disabled) {
+            background: #282c35;
+            border-color: #ffffff;
+        }
+        .kombo-order-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+        .kombo-test-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #0f1013;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+        }
+
+    
 </style>
     <!-- ANTI-FLASH SPA ROUTING : Active immédiatement la vue mémorisée avant le rendu graphique -->
     <script>
+
+        function getPosterForVideo(item) {
+            const fn = (item.file || item.name || item.title || item.videoPath || item.path || '').toLowerCase();
+            if (fn.includes('stickman') || fn.includes('growkaz')) return '../01_Assets/Images/growkaz_stickman_concept.jpg';
+            if (fn.includes('saas') || fn.includes('claude_fable')) return '../01_Assets/Images/styles/template_saas_motion_design.jpg';
+            if (fn.includes('ascii') || fn.includes('terminal') || fn.includes('marvid')) return '../01_Assets/Images/marvidflow/marvid_dashboard.png';
+            if (fn.includes('typography') || fn.includes('hyperframes') || fn.includes('commercial') || fn.includes('motion_design')) return '../01_Assets/Images/Design_Tips_Frames/01_typography.png';
+            if (fn.includes('eye_tracking') || fn.includes('focus')) return '../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png';
+            if (fn.includes('pill') || fn.includes('ask_anything')) return '../01_Assets/Images/ref_ask_anything_pill.jpg';
+            if (fn.includes('football') || fn.includes('top10') || fn.includes('ballon')) return '../01_Assets/Images/styles/template_top_10.jpg';
+            if (fn.includes('design_tips') || fn.includes('17_design')) return '../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png';
+            return '../01_Assets/Images/styles/template_2d_explainer.jpg';
+        }
+
+
         (function() {
             try {
                 var hash = window.location.hash ? window.location.hash.replace('#', '') : '';
@@ -5939,82 +6796,548 @@
             <!-- VUE 5 : PARAMÈTRES LOGICIEL DANS LE HOMEPAGE              -->
             <!-- ========================================================= -->
             <section id="viewSettings" class="view-panel">
-                <div class="view-header-row">
+                <div class="view-header-row" style="margin-bottom: 24px;">
                     <div class="view-title-wrap">
                         <h2>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                            <span>Paramètres du Logiciel</span>
+                            <span>Configuration & Paramètres</span>
                         </h2>
-                        <p>Configuration des moteurs IA, clés API et préférences d'exportation vidéo.</p>
+                        <p>Configurez vos clés API externes, modèles IA, proxies locaux (9router), constructeur du Kombo IA et moteurs de rendu.</p>
                     </div>
 
-                    <button type="button" class="btn-primary-action" onclick="saveSettings()">
-                        <span>Enregistrer les Paramètres</span>
-                    </button>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
-                    <!-- FORMATS & RESOLUTION -->
-                    <div class="category-panel">
-                        <span class="category-title">Formats & Résolution par défaut</span>
-                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 6px;">
-                            <div>
-                                <label class="form-label">Format par défaut</label>
-                                <select class="form-select" id="settingsDefaultFormat">
-                                    <option value="16:9" selected>16:9 Paysage (1920 × 1080) — YouTube</option>
-                                    <option value="9:16">9:16 Vertical (1080 × 1920) — Shorts, TikTok, Reels</option>
-                                    <option value="1:1">1:1 Carré (1080 × 1080) — Instagram Post</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="form-label">Fréquence d'images (FPS)</label>
-                                <select class="form-select" id="settingsFps">
-                                    <option value="30" selected>30 FPS (Standard Web)</option>
-                                    <option value="60">60 FPS (Ultra Fluide)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MOTEURS IA LOCAUX & CLOUD -->
-                    <div class="category-panel">
-                        <span class="category-title">Moteurs IA & Décision</span>
-                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 6px;">
-                            <div>
-                                <label class="form-label">Moteur actif</label>
-                                <select class="form-select" id="settingsAiEngine">
-                                    <option value="kombo" selected>KOMBO IA (Orchestration multi-agents)</option>
-                                    <option value="claude">Claude Code (Anthropic / 9router)</option>
-                                    <option value="gemini">Gemini Flash / Pro (Google)</option>
-                                    <option value="antigravity">Antigravity 2.0 (DeepMind)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="form-label">Proxy Local / Routeur IA</label>
-                                <input type="text" class="form-input-text" id="settingsAiProxy" value="http://localhost:9000 (9router)">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CLÉS API EXTERNES -->
-                    <div class="category-panel" style="grid-column: 1 / -1;">
-                        <span class="category-title">Clés d'API Externes</span>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 8px;">
-                            <div>
-                                <label class="form-label">ElevenLabs API Key</label>
-                                <input type="password" class="form-input-text" id="keyElevenlabs" placeholder="sk_...">
-                            </div>
-                            <div>
-                                <label class="form-label">HeyGen API Key</label>
-                                <input type="password" class="form-input-text" id="keyHeygen" placeholder="Token HeyGen...">
-                            </div>
-                            <div>
-                                <label class="form-label">OpenRouter API Key</label>
-                                <input type="password" class="form-input-text" id="keyOpenrouter" placeholder="sk-or-v1-...">
-                            </div>
-                        </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button type="button" class="btn-create-video-head" onclick="saveSettings()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>Sauvegarder les Paramètres</span>
+                        </button>
                     </div>
                 </div>
+
+                <div class="settings-layout">
+
+        <!-- SIDEBAR A GAUCHE : SANS FOND, PURE TYPOGRAPHIE -->
+        <aside class="settings-sidebar">
+            <div class="sidebar-title">Navigation</div>
+            <nav class="sidebar-nav">
+                <a href="#sec-general" class="sidebar-link active" onclick="activateNav(this)">
+                    <span>Général & Format</span>
+                </a>
+                <a href="#sec-voice" class="sidebar-link" onclick="activateNav(this)">
+                    <span>Voix Off & Kombo IA</span>
+                </a>
+                <a href="#sec-api" class="sidebar-link" onclick="activateNav(this)">
+                    <span>Clés API</span>
+                </a>
+                <a href="#sec-render" class="sidebar-link" onclick="activateNav(this)">
+                    <span>Moteur de Rendu</span>
+                </a>
+
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="settings-content">
+            
+            <div class="page-header">
+                <h1 class="page-title">Configuration</h1>
+            </div>
+
+            <!-- 1. FORMAT & AFFICHAGE -->
+            <section class="card" id="sec-general">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        <span>Format & Résolution d'Affichage</span>
+                    </div>
+                    <span class="card-badge">Système</span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label class="form-label">Format par Défaut</label>
+                        <select class="form-select" id="prefFormat">
+                            <option value="16:9" selected>16:9 — Paysage (1920 × 1080 - YouTube / Desktop)</option>
+                            <option value="9:16">9:16 — Portrait (1080 × 1920 - TikTok / Reels / Shorts)</option>
+                            <option value="1:1">1:1 — Carré (1080 × 1080 - Instagram Post)</option>
+                            <option value="4:5">4:5 — Portrait (1080 × 1350 - Instagram Feed)</option>
+                            <option value="21:9">21:9 — Ultra-Large (2560 × 1080 - Cinématique)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Fréquence d'Images (FPS)</label>
+                        <select class="form-select" id="prefFps">
+                            <option value="30" selected>30 FPS (Standard Vidéo Web / YouTube)</option>
+                            <option value="60">60 FPS (Ultra-Fluide)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row" style="grid-column: 1 / -1;">
+                        <label class="form-label">Style de Montage / Template par Défaut</label>
+                        <select class="form-select" id="prefTemplate">
+                            <option value="none" selected>Sans template (Génération libre)</option>
+                            <option value="Story_vox_style">Story Vox Style (Infographies 2D & Motion Design)</option>
+                            <option value="Saas_Motion_Design">SaaS Motion Design (Présentation produit, UI & Features)</option>
+                            <option value="Stikman_history">Stickman History (Storytelling & Zooms Ken Burns)</option>
+                            <option value="Iman_Gadzhi_Style">Iman Gadzhi Style (Documentaire sombre & Haute finance)</option>
+                            <option value="trash_style">Trash Style (Punk edit, chaos & collages)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. VOIX OFF (ELEVENLABS & HEYGEN) & MODÈLE IA -->
+            <section class="card" id="sec-voice" style="border-color: rgba(255, 51, 68, 0.35); box-shadow: 0 4px 20px rgba(255, 51, 68, 0.08);">
+                <div class="card-header">
+                    <div class="card-title" style="color: #ffffff;">
+                        <svg class="icon" viewBox="0 0 24 24" style="color: #ff3344;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        <span>Voix Off & Modèles IA</span>
+                    </div>
+                    <span class="card-badge" style="background: rgba(255, 51, 68, 0.15); border-color: rgba(255, 51, 68, 0.35); color: #ff7b8a;">Configuration</span>
+                </div>
+
+                <div class="form-grid">
+
+                    <!-- CHOIX DU MOTEUR VOCAL PAR DÉFAUT -->
+                    <div class="form-row" style="grid-column: 1 / -1;">
+                        <label class="form-label">
+                            <span style="font-weight: 600; font-size: 13px;">Moteur Vocal par Défaut</span>
+                        </label>
+                        <select class="form-select" id="prefTtsEngine">
+                            <option value="elevenlabs" selected>ElevenLabs — Voix Off Ultra-Réalistes & Expressives (Recommandé)</option>
+                            <option value="heygen">HeyGen — Voice Turbo & Avatars Parlants</option>
+                        </select>
+                    </div>
+
+                    <!-- JAUGE ET NOMBRE DE CRÉDITS RESTANTS ELEVENLABS -->
+                    <div class="form-row" style="grid-column: 1 / -1;">
+                        <div id="elevenlabsUsageBox" style="display: none; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 6px; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                <span style="font-size: 12px; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 6px;">
+                                    <svg class="icon" style="width: 14px; height: 14px; stroke: #10b981;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    <span>Crédits ElevenLabs Restants :</span>
+                                </span>
+                                <span id="elevenlabsCreditsBadge" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #10b981;">
+                                    Calcul en cours...
+                                </span>
+                            </div>
+                            <div style="width: 100%; height: 7px; background: rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden;">
+                                <div id="elevenlabsProgressBar" style="width: 0%; height: 100%; background: #10b981; border-radius: 4px; transition: width 0.5s ease;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; gap: 6px;">
+                                <span id="elevenlabsTierText">Formule : Chargement...</span>
+                                <span id="elevenlabsResetText">Renouvellement mensuel</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SÉLECTEUR DE VOIX DYNAMIQUE ELEVENLABS -->
+                    <div class="form-row" style="grid-column: 1 / -1;">
+                        <label class="form-label">
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs" style="width: 16px; height: 16px; border-radius: 3px;">
+                                <span>Voix par Défaut ElevenLabs</span>
+                            </span>
+                            <button type="button" onclick="loadVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
+                                <span>Actualiser</span>
+                                <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            </button>
+                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <select class="form-select" id="elevenlabsVoiceId" style="flex: 1; min-width: 240px;" onchange="onVoiceSelected()">
+                                <option value="21m00Tcm4TlvDq8ikWAM">Chargement des voix ElevenLabs...</option>
+                            </select>
+                            <button type="button" id="btnPreviewVoice" onclick="playVoicePreview()" class="btn-secondary" style="padding: 10px 14px; font-size: 12px; display: none; align-items: center; gap: 6px;" title="Écouter un court extrait de cette voix">
+                                <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span>Écouter</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MODÈLE ELEVENLABS -->
+                    <div class="form-row" style="grid-column: 1 / -1;">
+                        <label class="form-label">Modèle ElevenLabs</label>
+                        <select class="form-select" id="elevenlabsModelId">
+                            <option value="eleven_multilingual_v2" selected>eleven_multilingual_v2 (Recommandé — Toutes langues & émotions réalistes)</option>
+                            <option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (Ultra-rapide, faible latence)</option>
+                        </select>
+                    </div>
+
+                    <!-- SÉLECTEUR DE VOIX HEYGEN -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                        <label class="form-label">
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px;">
+                                <span>Voix par Défaut HeyGen</span>
+                            </span>
+                            <button type="button" onclick="loadHeyGenVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
+                                <span>Actualiser</span>
+                                <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            </button>
+                        </label>
+                        <div class="modern-voice-picker" id="settingsPickerContainerHeygen">
+                            <input type="hidden" id="heygenVoiceId" value="">
+                            <div class="voice-picker-trigger" id="settingsTriggerHeygen" onclick="toggleSettingsVoiceDropdown('settingsDropdownHeygen')">
+                                <div class="voice-trigger-left">
+                                    <img class="voice-flag-img" id="settingsFlagHeygenSelected" src="https://flagcdn.com/fr.svg" alt="Flag">
+                                    <span class="voice-trigger-name" id="settingsNameHeygenSelected">Saisissez votre clé HeyGen pour charger les voix...</span>
+                                    <span class="voice-trigger-badge" id="settingsBadgeHeygenSelected">HeyGen</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button type="button" id="btnPreviewHeyGenVoice" onclick="event.stopPropagation(); playHeyGenVoicePreview()" class="btn-secondary" style="padding: 6px 12px; font-size: 11.5px; display: none; align-items: center; gap: 5px;" title="Écouter cette voix">
+                                        <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        <span>Écouter</span>
+                                    </button>
+                                    <svg class="collapse-chevron" style="width:16px; height:16px; stroke:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+
+                            <div class="voice-dropdown-menu" id="settingsDropdownHeygen">
+                                <div class="voice-search-box">
+                                    <svg class="icon" style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" class="voice-search-input" id="settingsSearchHeygenInput" placeholder="Rechercher une voix HeyGen..." oninput="filterSettingsVoices('heygen')">
+                                </div>
+                                <div class="voice-items-list" id="settingsListHeygenItems"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODÈLE GEMINI PRÉFÉRÉ -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                        <label class="form-label">
+                            <span style="display:flex; align-items:center; gap:6px;">
+                                <svg class="icon" style="width:15px; height:15px; color:#ff3344;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                <span>Modèle Gemini Préféré</span>
+                            </span>
+                        </label>
+                        <select class="form-select" id="prefGeminiModel" onchange="handleGeminiModelChange(this.value)">
+                            <optgroup label="Modèles Gratuits (Sans abonnement - Clé standard Google)">
+                                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite — Gratuit (Ultra-rapide & Stable)</option>
+                                <option value="gemini-3.5-flash">gemini-3.5-flash — Gratuit (Flash polyvalent)</option>
+                                <option value="gemini-flash-latest">gemini-flash-latest — Gratuit (Alias stable Flash)</option>
+                                <option value="gemini-3.7-flash">gemini-3.7-flash — Gratuit (Raisonnement hybride Flash)</option>
+                                <option value="gemini-3.8-flash">gemini-3.8-flash — Gratuit (Dernière révision Flash)</option>
+                            </optgroup>
+                            <optgroup label="Autre">
+                                <option value="custom">Autre modèle personnalisé (saisie libre)...</option>
+                            </optgroup>
+                        </select>
+                        <div id="customGeminiModelWrapper" style="display: none; margin-top: 8px;">
+                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-2.5-flash">
+                        </div>
+                    </div>
+
+                    
+                    <!-- ============================================================= -->
+                    <!-- AGENTS IA LOCAUX & CONSTRUCTEUR DU KOMBO IA                   -->
+                    <!-- ============================================================= -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                        
+                        <!-- HEADER KOMBO & AGENTS -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
+                            <label class="form-label" style="margin-bottom: 0;">
+                                <span style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color:#ffffff;">
+                                    <svg class="icon" style="width:16px; height:16px; color:#3b82f6;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    <span>Kombo IA & Détecteur d'Agents Locaux</span>
+                                </span>
+                            </label>
+                            <button type="button" class="btn-secondary" onclick="detectLocalAiAgentsUi(true)" style="padding: 6px 12px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px;">
+                                <svg class="icon" viewBox="0 0 24 24" style="width:12px; height:12px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                                <span>Détecter mes agents locaux</span>
+                            </button>
+                        </div>
+
+                        <!-- CARTES DE DÉTECTION AGENTS LOCAUX -->
+                        <div class="agent-detector-grid">
+                            
+                            <!-- CARTE CLAUDE CODE CLI -->
+                            <div class="agent-card" id="agentCardClaude">
+                                <div class="agent-card-top">
+                                    <div class="agent-card-title">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:#f97316;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                        <span>Claude Code CLI</span>
+                                    </div>
+                                    <span class="agent-status-badge" id="badgeClaudeStatus">Vérification...</span>
+                                </div>
+                                <div class="agent-card-action">
+                                    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionClaudeText">claude</span>
+                                    <button type="button" class="btn-secondary" onclick="testProviderQuick('claude_cli', this)" style="padding: 4px 10px; font-size: 11px;">
+                                        <span>Tester</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CARTE ANTIGRAVITY CLI -->
+                            <div class="agent-card" id="agentCardAgy">
+                                <div class="agent-card-top">
+                                    <div class="agent-card-title">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:#38bdf8;"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                        <span>Antigravity CLI (agy)</span>
+                                    </div>
+                                    <span class="agent-status-badge" id="badgeAgyStatus">Vérification...</span>
+                                </div>
+                                <div class="agent-card-action">
+                                    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionAgyText">agy</span>
+                                    <button type="button" class="btn-secondary" onclick="testProviderQuick('agy_cli', this)" style="padding: 4px 10px; font-size: 11px;">
+                                        <span>Tester</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- CONSTRUCTEUR DE KOMBO IA (ORDRE DE PRIORITÉ) -->
+                        <div class="kombo-container">
+                            <div class="kombo-header-row">
+                                <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                                    <span>Ordre de Priorité du Kombo (de A à Z)</span>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button type="button" class="btn-secondary" id="btnTestEntireKombo" onclick="testEntireKomboChain()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                        <span>Tester le Kombo complet</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CONTENEUR DES CARTES ORDONNÉES DU KOMBO -->
+                            <div class="kombo-list" id="komboListWrapper">
+                                <!-- Injecté dynamiquement par renderKomboListUI() -->
+                            </div>
+                            
+                            <!-- BOX DES RÉSULTATS DU TEST KOMBO -->
+                            <div id="komboTestResultsBox" style="display: none; margin-top: 14px; padding: 12px 14px; background: #08090b; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 12px; font-family: 'JetBrains Mono', monospace;">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- TESTEUR DE VOIX DIRECT -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding: 14px; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.12);">
+                        <label class="form-label" style="margin-bottom: 6px;">
+                            <span>Tester la Voix en Direct</span>
+                            <span id="testVoiceStatus" style="font-size: 11px; font-weight: 500; color: var(--text-secondary);">Prêt</span>
+                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input class="form-input" type="text" id="testVoiceText" style="flex: 1; min-width: 250px;" value="Bonjour, voici la voix off ultra réaliste générée pour vos vidéos.">
+                            <button type="button" class="btn-primary" id="btnTestVoice" onclick="runVoiceTest()" style="padding: 9px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 8px;">
+                                <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span>Générer</span>
+                            </button>
+                        </div>
+                        <audio id="audioPreview" controls style="width: 100%; margin-top: 10px; display: none; height: 36px;"></audio>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. CLÉS API GÉNÉRALES & MÉDIAS -->
+            <section class="card" id="sec-api">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1-1l-3 3m-3 7l-4 4a2.828 2.828 0 1 1-4-4l4-4m1.414-1.414l2.828-2.828a2 2 0 0 1 2.828 0l2.828 2.828a2 2 0 0 1 0 2.828l-2.828 2.828"></path></svg>
+                        <span>Clés API</span>
+                    </div>
+                    <span class="card-badge" id="apiStatusBadge">Sécurisé Local</span>
+                </div>
+
+                <div class="form-grid">
+
+                    <!-- GOOGLE AI STUDIO (GEMINI) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Google AI Studio (Gemini)</span>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyGoogle" placeholder="AIzaSy...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyGoogle', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- GROQ CLOUD AI (INFÉRENCE ULTRA-RAPIDE) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Groq Cloud (Llama 3.3 Ultra-Rapide)</span>
+                            <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">Obtenir une clé gratuite ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyGroq" placeholder="gsk_..." oninput="handleGroqKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyGroq', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- OPENROUTER (MODÈLES GRATUITS NVIDIA & MULTI-IA) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>OpenRouter (Modèles Gratuits Nvidia & Multi-IA)</span>
+                            <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyOpenrouter" placeholder="sk-or-v1-..." oninput="handleOpenRouterKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyOpenrouter', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ELEVENLABS API (VOIX OFF ULTRA-RÉALISTES) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span><img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">Clé API ElevenLabs</span>
+                            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyElevenlabs" placeholder="sk_..." oninput="handleApiKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyElevenlabs', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <div id="elevenlabsKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
+                    </div>
+
+                    <!-- HEYGEN API (VOICE TURBO & TTS) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span><img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">Clé API HeyGen</span>
+                            <a href="https://app.heygen.com/settings?nav=API" target="_blank" rel="noreferrer">Obtenir une clé HeyGen ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyHeygen" placeholder="Votre clé API HeyGen..." oninput="handleHeyGenKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyHeygen', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <div id="heygenKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
+                    </div>
+
+                    <!-- PIXABAY (IMAGES, VECTEURS & B-ROLL) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Pixabay API (B-Roll Gratuit)</span>
+                            <a href="https://pixabay.com/api/docs/" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyPixabay" placeholder="Ex: 48921820-a612df13...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyPixabay', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- COVERR (VIDÉOS STOCK CINÉMA HD / 4K & B-ROLL) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Coverr.co API (Stock Vidéos HD/4K)</span>
+                            <a href="https://coverr.co/developers" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyCoverr" placeholder="cov_...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyCoverr', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <div id="coverrKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
+                    </div>
+
+                    <!-- BRANDFETCH (LOGOS VECTORIELS & COULEURS DE MARQUES) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Brandfetch API (Logos SVG)</span>
+                            <a href="https://brandfetch.com/developers" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyBrandfetch" placeholder="Ex: idJq_k...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyBrandfetch', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DÉTOURAGE IA (CLIPDROP / REMOVE.BG) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Détourage IA (Clipdrop / Remove.bg)</span>
+                            <a href="https://clipdrop.co/apis" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyBgRemove" placeholder="clipdrop_... ou remove_bg_...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyBgRemove', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SKETCHFAB API TOKEN (MODÈLES 3D RÉALISTES) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Sketchfab Token (Modèles 3D)</span>
+                            <a href="https://sketchfab.com/settings/password" target="_blank" rel="noreferrer">Obtenir un token ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeySketchfab" placeholder="API Token Sketchfab...">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeySketchfab', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+                
+                    <!-- BOUTON TEST UNIFIÉ DE TOUTES LES CLÉS -->
+                    <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+                        <button type="button" class="btn-secondary" id="btnTestAllApis" onclick="testAllApiKeys()" style="background: #1a1a2e; border: 1.5px solid #7c3aed; color: #a78bfa; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; gap: 8px; display: inline-flex; align-items: center; cursor: pointer; transition: var(--transition-smooth);">
+                            <span>🔑</span> Tester toutes les clés API
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. RENDU & EXPORT MP4 -->
+            <section class="card" id="sec-render">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        <span>Moteur de Rendu Vidéo & Export</span>
+                    </div>
+                    <span class="card-badge">FFmpeg</span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label class="form-label">Qualité d'Export MP4</label>
+                        <select class="form-select" id="prefQuality">
+                            <option value="high" selected>Haute Qualité (CRF 18 — Rendu optimal)</option>
+                            <option value="medium">Équilibré (CRF 23 — Fichiers plus légers)</option>
+                            <option value="ultra">Ultra / Master (CRF 14 — Qualité studio maximale)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Moteur Graphique</label>
+                        <input class="form-input" type="text" value="Puppeteer (Chromium Headless) + FFmpeg" readonly style="color: var(--text-secondary);">
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- ACTIONS -->
+            <div class="actions-row" style="justify-content: flex-end;">
+                <button class="btn-primary" onclick="saveSettings()">Enregistrer les Paramètres</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Paramètres enregistrés avec succès !</span>
+    </div>
+
+    
             </section>
 
         
@@ -7367,6 +8690,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             if (viewName === 'dashboard') renderDashboardProjects();
             if (viewName === 'reseaux') renderChannelsView();
             if (viewName === 'create_video') renderCustomChannelPicker();
+            if (viewName === 'settings') { if (typeof detectLocalAiAgentsUi === 'function') detectLocalAiAgentsUi(); if (typeof renderKomboListUI === 'function') renderKomboListUI(); }
             if (viewName === 'clients') renderClientsView();
             if (viewName === 'assets') renderAssetsView();
         }
@@ -7432,6 +8756,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 console.warn('API /api/files non joignable, fallback statique', e);
             }
 
+            
             if (allVideosList.length === 0) {
                 allVideosList = [
                     { 
@@ -7439,7 +8764,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'Top 10 Buts Football 15s', 
                         format: '9:16', 
                         duration: '15s', 
-                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        videoPath: '../04_Videos/top10_football_15s.html', 
                         poster: '../01_Assets/Images/styles/template_top_10.jpg',
                         date: 'Hier', 
                         resolution: '1080×1920', 
@@ -7454,7 +8779,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'GrowKaz Stickman Motion 15s', 
                         format: '9:16', 
                         duration: '15s', 
-                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
                         poster: '../01_Assets/Images/growkaz_stickman_concept.jpg',
                         date: 'Aujourd\'hui', 
                         resolution: '1080×1920', 
@@ -7467,7 +8792,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'Claude Fable SaaS Commercial 30s', 
                         format: '16:9', 
                         duration: '38s', 
-                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        videoPath: '../04_Videos/claude_fable_5_2_30s_saas_commercial.html', 
                         poster: '../01_Assets/Images/styles/template_saas_motion_design.jpg',
                         date: '13 nov. 2026', 
                         resolution: '1920×1080', 
@@ -7482,7 +8807,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'ASCII CRT Retro Terminal 15s', 
                         format: '9:16', 
                         duration: '15s', 
-                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        videoPath: '../04_Videos/video_ascii_crt_terminal_15s.html', 
                         poster: '../01_Assets/Images/marvidflow/marvid_dashboard.png',
                         date: '13 nov. 2026', 
                         resolution: '1080×1920', 
@@ -7497,7 +8822,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'Motion Design Commercial 25s', 
                         format: '16:9', 
                         duration: '25s', 
-                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        videoPath: '../04_Videos/hyperframes_25s_motion_design_composition.html', 
                         poster: '../01_Assets/Images/Design_Tips_Frames/01_typography.png',
                         date: '13 nov. 2026', 
                         resolution: '1920×1080', 
@@ -7510,7 +8835,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         title: 'Eye Tracking Focus Effect 20s', 
                         format: '9:16', 
                         duration: '20s', 
-                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        videoPath: '../04_Videos/eye_tracking_20s.html', 
                         poster: '../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png',
                         date: '06 nov. 2026', 
                         resolution: '1080×1920', 
@@ -7519,11 +8844,61 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         channelId: 'ch_1794092386560',
                         channelName: 'Le Secrets Des Geeks',
                         timestamp: 1730900000000
+                    },
+                    { 
+                        id: 'v7', 
+                        title: 'Design Ask Anything Pill 5s', 
+                        format: '9:16', 
+                        duration: '05s', 
+                        videoPath: '../04_Videos/design_ask_anything_pill_5s.html', 
+                        poster: '../01_Assets/Images/ref_ask_anything_pill.jpg',
+                        date: '05 nov. 2026', 
+                        resolution: '1080×1920', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1793911184121',
+                        channelName: 'Greatest Eleven',
+                        timestamp: 1730800000000
+                    },
+                    { 
+                        id: 'v8', 
+                        title: '17 Design Tips for Video Editors', 
+                        format: '16:9', 
+                        duration: '01:24', 
+                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        poster: '../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png',
+                        date: '04 nov. 2026', 
+                        resolution: '1920×1080', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1793911244535',
+                        channelName: 'Dr Klavius',
+                        timestamp: 1730700000000
                     }
                 ];
             }
 
-            // D. Assets globaux
+            // Normalisation de toute vidéo reçue de l'API /api/files
+            allVideosList = allVideosList.map((v, i) => {
+                const poster = v.poster || getPosterForVideo(v);
+                let title = v.title;
+                if (!title) {
+                    title = (v.file || v.name || 'Projet Vidéo ' + (i + 1)).replace('.html', '').replace('.mp4', '').replace(/_/g, ' ');
+                }
+                const videoPath = v.videoPath || v.path || (v.file ? `../04_Videos/${v.file}` : '../01_Assets/Videos/17_design_tips_for_video_editors.mp4');
+                return {
+                    ...v,
+                    id: v.id || ('vid_' + i),
+                    title,
+                    poster,
+                    videoPath,
+                    duration: typeof v.duration === 'number' ? Math.round(v.duration) + 's' : (v.duration || '15s'),
+                    format: v.format || '16:9',
+                    date: v.date || 'Récemment',
+                    timestamp: v.timestamp || (Date.now() - i * 86400000)
+                };
+            });
+// D. Assets globaux
             try {
                 const res = await fetch('/api/assets-catalog');
                 if (res.ok) {
@@ -7534,23 +8909,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 console.warn('API /api/assets-catalog non joignable', e);
             }
 
+            // Catalogue exhaustif et complet des 238 assets réels de 01_Assets
+            const FULL_EMBEDDED_CATALOG = [{"name":"antiquecamera.glb","type":"Other","subfolder":"3D","size":"16.7 MB","bytes":17540348,"url":"../01_Assets/3D/antiquecamera.glb"},{"name":"bench_vice_01.bin","type":"Other","subfolder":"3D","size":"128.3 KB","bytes":131404,"url":"../01_Assets/3D/bench_vice_01.bin"},{"name":"bench_vice_01.gltf","type":"Other","subfolder":"3D","size":"12.9 KB","bytes":13222,"url":"../01_Assets/3D/bench_vice_01.gltf"},{"name":"chairdamaskpurplegold.glb","type":"Other","subfolder":"3D","size":"1.9 MB","bytes":2028924,"url":"../01_Assets/3D/chairdamaskpurplegold.glb"},{"name":"bench_vice_01_arm_1k.jpg","type":"Images","subfolder":"3D/textures","size":"687.7 KB","bytes":704241,"url":"../01_Assets/3D/textures/bench_vice_01_arm_1k.jpg"},{"name":"bench_vice_01_diff_1k.jpg","type":"Images","subfolder":"3D/textures","size":"707.5 KB","bytes":724482,"url":"../01_Assets/3D/textures/bench_vice_01_diff_1k.jpg"},{"name":"bench_vice_01_nor_gl_1k.jpg","type":"Images","subfolder":"3D/textures","size":"846.0 KB","bytes":866287,"url":"../01_Assets/3D/textures/bench_vice_01_nor_gl_1k.jpg"},{"name":"art_ecriture.svg","type":"Vectors","subfolder":"handwriting","size":"112.0 KB","bytes":114685,"url":"../01_Assets/handwriting/art_ecriture.svg"},{"name":"sous_titre.svg","type":"Vectors","subfolder":"handwriting","size":"115.4 KB","bytes":118177,"url":"../01_Assets/handwriting/sous_titre.svg"},{"name":"sous_titre_motion.svg","type":"Vectors","subfolder":"handwriting","size":"229.1 KB","bytes":234563,"url":"../01_Assets/handwriting/sous_titre_motion.svg"},{"name":"tegaki.svg","type":"Vectors","subfolder":"handwriting","size":"42.7 KB","bytes":43768,"url":"../01_Assets/handwriting/tegaki.svg"},{"name":"titre_art.svg","type":"Vectors","subfolder":"handwriting","size":"115.7 KB","bytes":118467,"url":"../01_Assets/handwriting/titre_art.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Icones","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Icones/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Icones","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Icones/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Icones","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Icones/autoframe_robot_logo.png"},{"name":"closedhand_100189.svg","type":"Vectors","subfolder":"Icones","size":"4.6 KB","bytes":4665,"url":"../01_Assets/Icones/closedhand_100189.svg"},{"name":"openhand_100161.svg","type":"Vectors","subfolder":"Icones","size":"6.0 KB","bytes":6191,"url":"../01_Assets/Icones/openhand_100161.svg"},{"name":"pointinghand_100160.svg","type":"Vectors","subfolder":"Icones","size":"5.1 KB","bytes":5256,"url":"../01_Assets/Icones/pointinghand_100160.svg"},{"name":"cristiano-ronaldo.png","type":"Images","subfolder":"Illustrations/Players","size":"274.5 KB","bytes":281066,"url":"../01_Assets/Illustrations/Players/cristiano-ronaldo.png"},{"name":"daniel-carvajal.png","type":"Images","subfolder":"Illustrations/Players","size":"233.6 KB","bytes":239226,"url":"../01_Assets/Illustrations/Players/daniel-carvajal.png"},{"name":"erling-haaland.png","type":"Images","subfolder":"Illustrations/Players","size":"222.8 KB","bytes":228173,"url":"../01_Assets/Illustrations/Players/erling-haaland.png"},{"name":"harry-kane.png","type":"Images","subfolder":"Illustrations/Players","size":"248.3 KB","bytes":254301,"url":"../01_Assets/Illustrations/Players/harry-kane.png"},{"name":"jay-rodriguez.png","type":"Images","subfolder":"Illustrations/Players","size":"448.1 KB","bytes":458831,"url":"../01_Assets/Illustrations/Players/jay-rodriguez.png"},{"name":"jude-bellingham.png","type":"Images","subfolder":"Illustrations/Players","size":"466.2 KB","bytes":477402,"url":"../01_Assets/Illustrations/Players/jude-bellingham.png"},{"name":"kevin-de-bruyne.png","type":"Images","subfolder":"Illustrations/Players","size":"229.0 KB","bytes":234538,"url":"../01_Assets/Illustrations/Players/kevin-de-bruyne.png"},{"name":"kylian-mbappe.png","type":"Images","subfolder":"Illustrations/Players","size":"498.8 KB","bytes":510721,"url":"../01_Assets/Illustrations/Players/kylian-mbappe.png"},{"name":"lamine-yamal.png","type":"Images","subfolder":"Illustrations/Players","size":"223.1 KB","bytes":228427,"url":"../01_Assets/Illustrations/Players/lamine-yamal.png"},{"name":"lautaro-martinez.png","type":"Images","subfolder":"Illustrations/Players","size":"223.6 KB","bytes":228941,"url":"../01_Assets/Illustrations/Players/lautaro-martinez.png"},{"name":"lionel-messi.png","type":"Images","subfolder":"Illustrations/Players","size":"297.0 KB","bytes":304086,"url":"../01_Assets/Illustrations/Players/lionel-messi.png"},{"name":"mohamed-salah.png","type":"Images","subfolder":"Illustrations/Players","size":"185.5 KB","bytes":189966,"url":"../01_Assets/Illustrations/Players/mohamed-salah.png"},{"name":"neymar.png","type":"Images","subfolder":"Illustrations/Players","size":"175.4 KB","bytes":179574,"url":"../01_Assets/Illustrations/Players/neymar.png"},{"name":"phil-foden.png","type":"Images","subfolder":"Illustrations/Players","size":"223.9 KB","bytes":229290,"url":"../01_Assets/Illustrations/Players/phil-foden.png"},{"name":"rodri.png","type":"Images","subfolder":"Illustrations/Players","size":"278.2 KB","bytes":284832,"url":"../01_Assets/Illustrations/Players/rodri.png"},{"name":"rodrigo-lima.png","type":"Images","subfolder":"Illustrations/Players","size":"157.7 KB","bytes":161471,"url":"../01_Assets/Illustrations/Players/rodrigo-lima.png"},{"name":"toni-kroos.png","type":"Images","subfolder":"Illustrations/Players","size":"231.2 KB","bytes":236704,"url":"../01_Assets/Illustrations/Players/toni-kroos.png"},{"name":"vinicius-junior.png","type":"Images","subfolder":"Illustrations/Players","size":"471.0 KB","bytes":482314,"url":"../01_Assets/Illustrations/Players/vinicius-junior.png"},{"name":"ai_energy_orb.b64","type":"Other","subfolder":"Images","size":"32.1 KB","bytes":32888,"url":"../01_Assets/Images/ai_energy_orb.b64"},{"name":"ai_energy_orb.png","type":"Images","subfolder":"Images","size":"24.1 KB","bytes":24665,"url":"../01_Assets/Images/ai_energy_orb.png"},{"name":"aurora_scene_1.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1648364,"url":"../01_Assets/Images/aurora_scene_1.png"},{"name":"aurora_scene_2.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655236,"url":"../01_Assets/Images/aurora_scene_2.png"},{"name":"aurora_scene_3.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1702878,"url":"../01_Assets/Images/aurora_scene_3.png"},{"name":"aurora_scene_4.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1646567,"url":"../01_Assets/Images/aurora_scene_4.png"},{"name":"aurora_scene_5.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1674398,"url":"../01_Assets/Images/aurora_scene_5.png"},{"name":"aurora_scene_6.png","type":"Images","subfolder":"Images","size":"1.6 MB","bytes":1655921,"url":"../01_Assets/Images/aurora_scene_6.png"},{"name":"avatar_homepage_man.png","type":"Images","subfolder":"Images","size":"283.4 KB","bytes":290204,"url":"../01_Assets/Images/avatar_homepage_man.png"},{"name":"avatar_homepage_woman.png","type":"Images","subfolder":"Images","size":"269.5 KB","bytes":276010,"url":"../01_Assets/Images/avatar_homepage_woman.png"},{"name":"bg_demo_aurora_orange.png","type":"Images","subfolder":"Images","size":"1.3 MB","bytes":1380204,"url":"../01_Assets/Images/bg_demo_aurora_orange.png"},{"name":"bg_demo_grid_violet.png","type":"Images","subfolder":"Images","size":"164.8 KB","bytes":168724,"url":"../01_Assets/Images/bg_demo_grid_violet.png"},{"name":"avatar_ch_1793063435322.png","type":"Images","subfolder":"Images/channels","size":"1.7 MB","bytes":1749387,"url":"../01_Assets/Images/channels/avatar_ch_1793063435322.png"},{"name":"avatar_ch_1793102190223.jpg","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1240746,"url":"../01_Assets/Images/channels/avatar_ch_1793102190223.jpg"},{"name":"avatar_ch_1793911184121.jpg","type":"Images","subfolder":"Images/channels","size":"644.6 KB","bytes":660053,"url":"../01_Assets/Images/channels/avatar_ch_1793911184121.jpg"},{"name":"avatar_ch_1793911244535.png","type":"Images","subfolder":"Images/channels","size":"1.2 MB","bytes":1254067,"url":"../01_Assets/Images/channels/avatar_ch_1793911244535.png"},{"name":"avatar_ch_1793911298459.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1793911298459.png"},{"name":"avatar_ch_1794092386560.png","type":"Images","subfolder":"Images/channels","size":"17.1 KB","bytes":17553,"url":"../01_Assets/Images/channels/avatar_ch_1794092386560.png"},{"name":"01_typography.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"468.2 KB","bytes":479405,"url":"../01_Assets/Images/Design_Tips_Frames/01_typography.png"},{"name":"02_placement.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"273.0 KB","bytes":279519,"url":"../01_Assets/Images/Design_Tips_Frames/02_placement.png"},{"name":"03_balance.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"161.0 KB","bytes":164875,"url":"../01_Assets/Images/Design_Tips_Frames/03_balance.png"},{"name":"04_contrast.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"162.8 KB","bytes":166719,"url":"../01_Assets/Images/Design_Tips_Frames/04_contrast.png"},{"name":"05_color_theory.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"369.9 KB","bytes":378755,"url":"../01_Assets/Images/Design_Tips_Frames/05_color_theory.png"},{"name":"06_branding_rules.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"336.7 KB","bytes":344792,"url":"../01_Assets/Images/Design_Tips_Frames/06_branding_rules.png"},{"name":"07_script_design.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"248.0 KB","bytes":253980,"url":"../01_Assets/Images/Design_Tips_Frames/07_script_design.png"},{"name":"08_horizontal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"173.4 KB","bytes":177599,"url":"../01_Assets/Images/Design_Tips_Frames/08_horizontal_designs.png"},{"name":"09_vertical_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"267.9 KB","bytes":274361,"url":"../01_Assets/Images/Design_Tips_Frames/09_vertical_designs.png"},{"name":"10_diagonal_designs.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"190.8 KB","bytes":195384,"url":"../01_Assets/Images/Design_Tips_Frames/10_diagonal_designs.png"},{"name":"11_steal_like_artist.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"638.6 KB","bytes":653973,"url":"../01_Assets/Images/Design_Tips_Frames/11_steal_like_artist.png"},{"name":"12_inspiration_board.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"141.7 KB","bytes":145132,"url":"../01_Assets/Images/Design_Tips_Frames/12_inspiration_board.png"},{"name":"13_breakdown_inspiration.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"383.6 KB","bytes":392854,"url":"../01_Assets/Images/Design_Tips_Frames/13_breakdown_inspiration.png"},{"name":"14_plan_edit.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"444.1 KB","bytes":454750,"url":"../01_Assets/Images/Design_Tips_Frames/14_plan_edit.png"},{"name":"15_short_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"299.7 KB","bytes":306862,"url":"../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png"},{"name":"16_long_form_animation.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"177.6 KB","bytes":181892,"url":"../01_Assets/Images/Design_Tips_Frames/16_long_form_animation.png"},{"name":"17_vertical_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.7 KB","bytes":298651,"url":"../01_Assets/Images/Design_Tips_Frames/17_vertical_animations.png"},{"name":"18_horizontal_animations.png","type":"Images","subfolder":"Images/Design_Tips_Frames","size":"291.8 KB","bytes":298814,"url":"../01_Assets/Images/Design_Tips_Frames/18_horizontal_animations.png"},{"name":"growkaw_bg.b64","type":"Other","subfolder":"Images","size":"993.7 KB","bytes":1017560,"url":"../01_Assets/Images/growkaw_bg.b64"},{"name":"growkaw_bg.jpg","type":"Images","subfolder":"Images","size":"745.3 KB","bytes":763169,"url":"../01_Assets/Images/growkaw_bg.jpg"},{"name":"growkaz_stickman_concept.jpg","type":"Images","subfolder":"Images","size":"545.0 KB","bytes":558109,"url":"../01_Assets/Images/growkaz_stickman_concept.jpg"},{"name":"branding.json","type":"Other","subfolder":"Images/marvidflow","size":"1.3 KB","bytes":1346,"url":"../01_Assets/Images/marvidflow/branding.json"},{"name":"dashboard_scroll.png","type":"Images","subfolder":"Images/marvidflow","size":"487.9 KB","bytes":499656,"url":"../01_Assets/Images/marvidflow/dashboard_scroll.png"},{"name":"features_scroll.png","type":"Images","subfolder":"Images/marvidflow","size":"444.0 KB","bytes":454606,"url":"../01_Assets/Images/marvidflow/features_scroll.png"},{"name":"hero_full.png","type":"Images","subfolder":"Images/marvidflow","size":"969.8 KB","bytes":993108,"url":"../01_Assets/Images/marvidflow/hero_full.png"},{"name":"marvid_dashboard.png","type":"Images","subfolder":"Images/marvidflow","size":"580.1 KB","bytes":594028,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.png"},{"name":"marvid_dashboard.webp","type":"Images","subfolder":"Images/marvidflow","size":"38.2 KB","bytes":39094,"url":"../01_Assets/Images/marvidflow/marvid_dashboard.webp"},{"name":"marvid_hero_clean.png","type":"Images","subfolder":"Images/marvidflow","size":"2.2 MB","bytes":2340972,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.png"},{"name":"marvid_hero_clean.webp","type":"Images","subfolder":"Images/marvidflow","size":"68.5 KB","bytes":70114,"url":"../01_Assets/Images/marvidflow/marvid_hero_clean.webp"},{"name":"marvid_pipeline.png","type":"Images","subfolder":"Images/marvidflow","size":"499.6 KB","bytes":511626,"url":"../01_Assets/Images/marvidflow/marvid_pipeline.png"},{"name":"ref_ask_anything_pill.jpg","type":"Images","subfolder":"Images","size":"12.7 KB","bytes":13024,"url":"../01_Assets/Images/ref_ask_anything_pill.jpg"},{"name":"ref_music_player.jpg","type":"Images","subfolder":"Images","size":"37.1 KB","bytes":37972,"url":"../01_Assets/Images/ref_music_player.jpg"},{"name":"ref_travel_carousel.jpg","type":"Images","subfolder":"Images","size":"33.8 KB","bytes":34586,"url":"../01_Assets/Images/ref_travel_carousel.jpg"},{"name":"sienna_avatar.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_avatar.b64"},{"name":"sienna_face.b64","type":"Other","subfolder":"Images","size":"909.0 KB","bytes":930792,"url":"../01_Assets/Images/sienna_face.b64"},{"name":"sienna_face.jpg","type":"Images","subfolder":"Images","size":"8.7 KB","bytes":8877,"url":"../01_Assets/Images/sienna_face.jpg"},{"name":"sienna_photo.jpg","type":"Images","subfolder":"Images","size":"15.9 KB","bytes":16294,"url":"../01_Assets/Images/sienna_photo.jpg"},{"name":"sienna_small_avatar.jpg","type":"Images","subfolder":"Images","size":"0.4 KB","bytes":397,"url":"../01_Assets/Images/sienna_small_avatar.jpg"},{"name":"style_none.jpg","type":"Images","subfolder":"Images/styles","size":"38.9 KB","bytes":39872,"url":"../01_Assets/Images/styles/style_none.jpg"},{"name":"template_2d_explainer.jpg","type":"Images","subfolder":"Images/styles","size":"149.1 KB","bytes":152679,"url":"../01_Assets/Images/styles/template_2d_explainer.jpg"},{"name":"template_ego_lite.jpg","type":"Images","subfolder":"Images/styles","size":"187.0 KB","bytes":191477,"url":"../01_Assets/Images/styles/template_ego_lite.jpg"},{"name":"template_faceless_brand.jpg","type":"Images","subfolder":"Images/styles","size":"147.1 KB","bytes":150599,"url":"../01_Assets/Images/styles/template_faceless_brand.jpg"},{"name":"template_iman_gadzhi_style.jpg","type":"Images","subfolder":"Images/styles","size":"101.2 KB","bytes":103657,"url":"../01_Assets/Images/styles/template_iman_gadzhi_style.jpg"},{"name":"template_saas_motion_design.jpg","type":"Images","subfolder":"Images/styles","size":"160.5 KB","bytes":164371,"url":"../01_Assets/Images/styles/template_saas_motion_design.jpg"},{"name":"template_stikman_history.jpg","type":"Images","subfolder":"Images/styles","size":"185.6 KB","bytes":190061,"url":"../01_Assets/Images/styles/template_stikman_history.jpg"},{"name":"template_story_vox_style.jpg","type":"Images","subfolder":"Images/styles","size":"224.7 KB","bytes":230127,"url":"../01_Assets/Images/styles/template_story_vox_style.jpg"},{"name":"template_tier_list.jpg","type":"Images","subfolder":"Images/styles","size":"148.0 KB","bytes":151597,"url":"../01_Assets/Images/styles/template_tier_list.jpg"},{"name":"template_top_10.jpg","type":"Images","subfolder":"Images/styles","size":"314.0 KB","bytes":321527,"url":"../01_Assets/Images/styles/template_top_10.jpg"},{"name":"template_trash_style.jpg","type":"Images","subfolder":"Images/styles","size":"213.5 KB","bytes":218603,"url":"../01_Assets/Images/styles/template_trash_style.jpg"},{"name":"template_tutoriel.jpg","type":"Images","subfolder":"Images/styles","size":"161.6 KB","bytes":165452,"url":"../01_Assets/Images/styles/template_tutoriel.jpg"},{"name":"terence_card_clean_bg.jpg","type":"Images","subfolder":"Images","size":"13.7 KB","bytes":14041,"url":"../01_Assets/Images/terence_card_clean_bg.jpg"},{"name":"terence_card_perfect_580.jpg","type":"Images","subfolder":"Images","size":"31.4 KB","bytes":32184,"url":"../01_Assets/Images/terence_card_perfect_580.jpg"},{"name":"terence_card_smart.jpg","type":"Images","subfolder":"Images","size":"15.3 KB","bytes":15667,"url":"../01_Assets/Images/terence_card_smart.jpg"},{"name":"terence_face_clean.jpg","type":"Images","subfolder":"Images","size":"6.2 KB","bytes":6321,"url":"../01_Assets/Images/terence_face_clean.jpg"},{"name":"terence_howard_artwork.jpg","type":"Images","subfolder":"Images","size":"14.8 KB","bytes":15170,"url":"../01_Assets/Images/terence_howard_artwork.jpg"},{"name":"terence_howard_avatar.jpg","type":"Images","subfolder":"Images","size":"1.2 KB","bytes":1192,"url":"../01_Assets/Images/terence_howard_avatar.jpg"},{"name":"terence_photo_pure.jpg","type":"Images","subfolder":"Images","size":"6.7 KB","bytes":6891,"url":"../01_Assets/Images/terence_photo_pure.jpg"},{"name":"terence_portrait_clean.jpg","type":"Images","subfolder":"Images","size":"8.9 KB","bytes":9137,"url":"../01_Assets/Images/terence_portrait_clean.jpg"},{"name":"travel_card_dubai.jpg","type":"Images","subfolder":"Images","size":"7.6 KB","bytes":7784,"url":"../01_Assets/Images/travel_card_dubai.jpg"},{"name":"travel_card_indonesia.jpg","type":"Images","subfolder":"Images","size":"8.0 KB","bytes":8178,"url":"../01_Assets/Images/travel_card_indonesia.jpg"},{"name":"travel_card_turkey.jpg","type":"Images","subfolder":"Images","size":"6.4 KB","bytes":6565,"url":"../01_Assets/Images/travel_card_turkey.jpg"},{"name":"travel_card_vietnam.jpg","type":"Images","subfolder":"Images","size":"7.5 KB","bytes":7650,"url":"../01_Assets/Images/travel_card_vietnam.jpg"},{"name":"travel_photo_dubai.jpg","type":"Images","subfolder":"Images","size":"5.3 KB","bytes":5413,"url":"../01_Assets/Images/travel_photo_dubai.jpg"},{"name":"travel_photo_indonesia.jpg","type":"Images","subfolder":"Images","size":"5.7 KB","bytes":5828,"url":"../01_Assets/Images/travel_photo_indonesia.jpg"},{"name":"travel_photo_turkey.jpg","type":"Images","subfolder":"Images","size":"4.5 KB","bytes":4616,"url":"../01_Assets/Images/travel_photo_turkey.jpg"},{"name":"travel_photo_vietnam.jpg","type":"Images","subfolder":"Images","size":"5.5 KB","bytes":5628,"url":"../01_Assets/Images/travel_photo_vietnam.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.jpg","type":"Images","subfolder":"Images","size":"63.8 KB","bytes":65324,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.jpg"},{"name":"youtube_thumb_dQw4w9WgXcQ.webp","type":"Images","subfolder":"Images","size":"27.9 KB","bytes":28620,"url":"../01_Assets/Images/youtube_thumb_dQw4w9WgXcQ.webp"},{"name":"gsap.min.js","type":"Other","subfolder":"Libs","size":"70.5 KB","bytes":72214,"url":"../01_Assets/Libs/gsap.min.js"},{"name":"three.min.js","type":"Other","subfolder":"Libs","size":"589.3 KB","bytes":603445,"url":"../01_Assets/Libs/three.min.js"},{"name":"airsenegal_brandfetch.json","type":"Other","subfolder":"Logos","size":"5.3 KB","bytes":5476,"url":"../01_Assets/Logos/airsenegal_brandfetch.json"},{"name":"airsenegal_emblem.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1690,"url":"../01_Assets/Logos/airsenegal_emblem.svg"},{"name":"airsenegal_icon.jpeg","type":"Images","subfolder":"Logos","size":"7.5 KB","bytes":7727,"url":"../01_Assets/Logos/airsenegal_icon.jpeg"},{"name":"airsenegal_logo.png","type":"Images","subfolder":"Logos","size":"18.5 KB","bytes":18956,"url":"../01_Assets/Logos/airsenegal_logo.png"},{"name":"anthropic.svg","type":"Vectors","subfolder":"Logos","size":"1.5 KB","bytes":1568,"url":"../01_Assets/Logos/anthropic.svg"},{"name":"apple.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":755,"url":"../01_Assets/Logos/apple.svg"},{"name":"autoframe_robot.svg","type":"Vectors","subfolder":"Logos","size":"1.3 KB","bytes":1350,"url":"../01_Assets/Logos/autoframe_robot.svg"},{"name":"autoframe_robot_logo.jpg","type":"Images","subfolder":"Logos","size":"492.9 KB","bytes":504689,"url":"../01_Assets/Logos/autoframe_robot_logo.jpg"},{"name":"autoframe_robot_logo.png","type":"Images","subfolder":"Logos","size":"47.0 KB","bytes":48168,"url":"../01_Assets/Logos/autoframe_robot_logo.png"},{"name":"chatgpt_com_favicon.png","type":"Images","subfolder":"Logos","size":"3.0 KB","bytes":3026,"url":"../01_Assets/Logos/chatgpt_com_favicon.png"},{"name":"claude_symbol.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol.svg"},{"name":"claude_symbol_white.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1705,"url":"../01_Assets/Logos/claude_symbol_white.svg"},{"name":"dakar2026_logo.svg","type":"Vectors","subfolder":"Logos","size":"2.4 KB","bytes":2476,"url":"../01_Assets/Logos/dakar2026_logo.svg"},{"name":"dakar_2026_official_logo.png","type":"Images","subfolder":"Logos","size":"135.6 KB","bytes":138824,"url":"../01_Assets/Logos/dakar_2026_official_logo.png"},{"name":"dakar_2026_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"183.4 KB","bytes":187780,"url":"../01_Assets/Logos/dakar_2026_official_logo.svg"},{"name":"deepseek.svg","type":"Vectors","subfolder":"Logos","size":"6.3 KB","bytes":6476,"url":"../01_Assets/Logos/deepseek.svg"},{"name":"egypt.svg","type":"Vectors","subfolder":"Logos","size":"18.0 KB","bytes":18440,"url":"../01_Assets/Logos/egypt.svg"},{"name":"elevenlabs.svg","type":"Vectors","subfolder":"Logos","size":"2.2 KB","bytes":2218,"url":"../01_Assets/Logos/elevenlabs.svg"},{"name":"elevenlabs_symbol.svg","type":"Vectors","subfolder":"Logos","size":"0.4 KB","bytes":404,"url":"../01_Assets/Logos/elevenlabs_symbol.svg"},{"name":"ferrari_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.1 KB","bytes":1145,"url":"../01_Assets/Logos/ferrari_com_favicon.png"},{"name":"al-hilal.png","type":"Images","subfolder":"Logos/Football","size":"11.4 KB","bytes":11680,"url":"../01_Assets/Logos/Football/al-hilal.png"},{"name":"al-nassr.png","type":"Images","subfolder":"Logos/Football","size":"42.4 KB","bytes":43409,"url":"../01_Assets/Logos/Football/al-nassr.png"},{"name":"arsenal.png","type":"Images","subfolder":"Logos/Football","size":"39.5 KB","bytes":40478,"url":"../01_Assets/Logos/Football/arsenal.png"},{"name":"atletico-madrid.png","type":"Images","subfolder":"Logos/Football","size":"19.2 KB","bytes":19709,"url":"../01_Assets/Logos/Football/atletico-madrid.png"},{"name":"barcelona.png","type":"Images","subfolder":"Logos/Football","size":"39.3 KB","bytes":40257,"url":"../01_Assets/Logos/Football/barcelona.png"},{"name":"bayern-munchen.png","type":"Images","subfolder":"Logos/Football","size":"47.4 KB","bytes":48573,"url":"../01_Assets/Logos/Football/bayern-munchen.png"},{"name":"borussia-dortmund.png","type":"Images","subfolder":"Logos/Football","size":"48.6 KB","bytes":49769,"url":"../01_Assets/Logos/Football/borussia-dortmund.png"},{"name":"inter-miami-cf.png","type":"Images","subfolder":"Logos/Football","size":"44.6 KB","bytes":45700,"url":"../01_Assets/Logos/Football/inter-miami-cf.png"},{"name":"inter.png","type":"Images","subfolder":"Logos/Football","size":"26.4 KB","bytes":27006,"url":"../01_Assets/Logos/Football/inter.png"},{"name":"liverpool.png","type":"Images","subfolder":"Logos/Football","size":"29.4 KB","bytes":30067,"url":"../01_Assets/Logos/Football/liverpool.png"},{"name":"manchester-city.png","type":"Images","subfolder":"Logos/Football","size":"49.1 KB","bytes":50279,"url":"../01_Assets/Logos/Football/manchester-city.png"},{"name":"milan.png","type":"Images","subfolder":"Logos/Football","size":"33.5 KB","bytes":34324,"url":"../01_Assets/Logos/Football/milan.png"},{"name":"paris-saint-germain.png","type":"Images","subfolder":"Logos/Football","size":"39.8 KB","bytes":40791,"url":"../01_Assets/Logos/Football/paris-saint-germain.png"},{"name":"real-madrid.png","type":"Images","subfolder":"Logos/Football","size":"70.7 KB","bytes":72347,"url":"../01_Assets/Logos/Football/real-madrid.png"},{"name":"heygen.svg","type":"Vectors","subfolder":"Logos","size":"47.9 KB","bytes":49093,"url":"../01_Assets/Logos/heygen.svg"},{"name":"heygen_com_favicon.png","type":"Images","subfolder":"Logos","size":"3.3 KB","bytes":3362,"url":"../01_Assets/Logos/heygen_com_favicon.png"},{"name":"heygen_symbol.svg","type":"Vectors","subfolder":"Logos","size":"41.3 KB","bytes":42246,"url":"../01_Assets/Logos/heygen_symbol.svg"},{"name":"instagram.svg","type":"Vectors","subfolder":"Logos","size":"0.7 KB","bytes":688,"url":"../01_Assets/Logos/instagram.svg"},{"name":"joj_official_logo.svg","type":"Vectors","subfolder":"Logos","size":"0.0 KB","bytes":0,"url":"../01_Assets/Logos/joj_official_logo.svg"},{"name":"marvidflow_com_favicon.png","type":"Images","subfolder":"Logos","size":"0.8 KB","bytes":870,"url":"../01_Assets/Logos/marvidflow_com_favicon.png"},{"name":"morocco.svg","type":"Vectors","subfolder":"Logos","size":"0.3 KB","bytes":264,"url":"../01_Assets/Logos/morocco.svg"},{"name":"nigeria.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":201,"url":"../01_Assets/Logos/nigeria.svg"},{"name":"nike_com_favicon.png","type":"Images","subfolder":"Logos","size":"1.4 KB","bytes":1463,"url":"../01_Assets/Logos/nike_com_favicon.png"},{"name":"nvidia.svg","type":"Vectors","subfolder":"Logos","size":"1.7 KB","bytes":1753,"url":"../01_Assets/Logos/nvidia.svg"},{"name":"olympic_rings.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":522,"url":"../01_Assets/Logos/olympic_rings.svg"},{"name":"openai.svg","type":"Vectors","subfolder":"Logos","size":"3.0 KB","bytes":3072,"url":"../01_Assets/Logos/openai.svg"},{"name":"senegal.svg","type":"Vectors","subfolder":"Logos","size":"0.2 KB","bytes":255,"url":"../01_Assets/Logos/senegal.svg"},{"name":"tiktok.svg","type":"Vectors","subfolder":"Logos","size":"0.9 KB","bytes":960,"url":"../01_Assets/Logos/tiktok.svg"},{"name":"youtube.svg","type":"Vectors","subfolder":"Logos","size":"0.5 KB","bytes":498,"url":"../01_Assets/Logos/youtube.svg"},{"name":"dakar_satellite.png","type":"Images","subfolder":"Maps","size":"1.4 MB","bytes":1484532,"url":"../01_Assets/Maps/dakar_satellite.png"},{"name":"paris_style_osm.png","type":"Images","subfolder":"Maps","size":"3.1 MB","bytes":3227031,"url":"../01_Assets/Maps/paris_style_osm.png"},{"name":"paris_style_satellite.png","type":"Images","subfolder":"Maps","size":"4.4 MB","bytes":4634650,"url":"../01_Assets/Maps/paris_style_satellite.png"},{"name":"tokyo_sat.png","type":"Images","subfolder":"Maps","size":"4.1 MB","bytes":4276932,"url":"../01_Assets/Maps/tokyo_sat.png"},{"name":"Carefree.mp3","type":"Audios","subfolder":"Musiques","size":"6.3 MB","bytes":6566713,"url":"../01_Assets/Musiques/Carefree.mp3"},{"name":"chatgpt_ad_60s_music.wav","type":"Audios","subfolder":"Musiques","size":"10.1 MB","bytes":10584044,"url":"../01_Assets/Musiques/chatgpt_ad_60s_music.wav"},{"name":"Cool_Rock.mp3","type":"Audios","subfolder":"Musiques","size":"3.2 MB","bytes":3351095,"url":"../01_Assets/Musiques/Cool_Rock.mp3"},{"name":"Heartwarming.mp3","type":"Audios","subfolder":"Musiques","size":"2.8 MB","bytes":2971312,"url":"../01_Assets/Musiques/Heartwarming.mp3"},{"name":"Hitman.mp3","type":"Audios","subfolder":"Musiques","size":"7.7 MB","bytes":8035387,"url":"../01_Assets/Musiques/Hitman.mp3"},{"name":"Modern_Jazz_Samba.mp3","type":"Audios","subfolder":"Musiques","size":"5.8 MB","bytes":6070802,"url":"../01_Assets/Musiques/Modern_Jazz_Samba.mp3"},{"name":"Sneaky_Snitch.mp3","type":"Audios","subfolder":"Musiques","size":"5.2 MB","bytes":5466943,"url":"../01_Assets/Musiques/Sneaky_Snitch.mp3"},{"name":"Take_a_Chance.mp3","type":"Audios","subfolder":"Musiques","size":"1.4 MB","bytes":1494334,"url":"../01_Assets/Musiques/Take_a_Chance.mp3"},{"name":"Wallpaper.mp3","type":"Audios","subfolder":"Musiques","size":"8.4 MB","bytes":8804339,"url":"../01_Assets/Musiques/Wallpaper.mp3"},{"name":"avatar_1794100251831.png","type":"Images","subfolder":"Profiles","size":"0.1 KB","bytes":77,"url":"../01_Assets/Profiles/avatar_1794100251831.png"},{"name":"profile.json","type":"Other","subfolder":"Profiles","size":"0.2 KB","bytes":176,"url":"../01_Assets/Profiles/profile.json"},{"name":"520025088242792374.jpg","type":"Images","subfolder":"References","size":"34.0 KB","bytes":34822,"url":"../01_Assets/References/520025088242792374.jpg"},{"name":"678143656457756602.jpg","type":"Images","subfolder":"References","size":"25.6 KB","bytes":26165,"url":"../01_Assets/References/678143656457756602.jpg"},{"name":"806285139576294015.jpg","type":"Images","subfolder":"References","size":"25.7 KB","bytes":26339,"url":"../01_Assets/References/806285139576294015.jpg"},{"name":"AI assistant motion by Robin Holesinsky on Muzli.jpg","type":"Images","subfolder":"References","size":"18.6 KB","bytes":19050,"url":"../01_Assets/References/AI assistant motion by Robin Holesinsky on Muzli.jpg"},{"name":"Apple Card is Here.jpg","type":"Images","subfolder":"References","size":"12.3 KB","bytes":12558,"url":"../01_Assets/References/Apple Card is Here.jpg"},{"name":"card_design.jpg","type":"Images","subfolder":"References","size":"22.3 KB","bytes":22883,"url":"../01_Assets/References/card_design.jpg"},{"name":"design_1.jpg","type":"Images","subfolder":"References","size":"36.1 KB","bytes":36922,"url":"../01_Assets/References/design_1.jpg"},{"name":"Instagram (1).jpg","type":"Images","subfolder":"References","size":"11.1 KB","bytes":11397,"url":"../01_Assets/References/Instagram (1).jpg"},{"name":"Instagram.jpg","type":"Images","subfolder":"References","size":"29.7 KB","bytes":30378,"url":"../01_Assets/References/Instagram.jpg"},{"name":"motion_graphic.jpg","type":"Images","subfolder":"References","size":"20.7 KB","bytes":21212,"url":"../01_Assets/References/motion_graphic.jpg"},{"name":"téléchargement (1).jpg","type":"Images","subfolder":"References","size":"34.9 KB","bytes":35757,"url":"../01_Assets/References/téléchargement (1).jpg"},{"name":"téléchargement (2).jpg","type":"Images","subfolder":"References","size":"12.5 KB","bytes":12768,"url":"../01_Assets/References/téléchargement (2).jpg"},{"name":"téléchargement.jpg","type":"Images","subfolder":"References","size":"18.4 KB","bytes":18848,"url":"../01_Assets/References/téléchargement.jpg"},{"name":"ui_design.jpg","type":"Images","subfolder":"References","size":"20.0 KB","bytes":20455,"url":"../01_Assets/References/ui_design.jpg"},{"name":"target1_2x_publish.jpg","type":"Images","subfolder":"References/user_targets","size":"45.7 KB","bytes":46821,"url":"../01_Assets/References/user_targets/target1_2x_publish.jpg"},{"name":"target2_16pct.jpg","type":"Images","subfolder":"References/user_targets","size":"16.3 KB","bytes":16715,"url":"../01_Assets/References/user_targets/target2_16pct.jpg"},{"name":"target3_wallet.jpg","type":"Images","subfolder":"References/user_targets","size":"38.7 KB","bytes":39630,"url":"../01_Assets/References/user_targets/target3_wallet.jpg"},{"name":"click_bolt.wav","type":"Audios","subfolder":"SFX","size":"5.7 KB","bytes":5804,"url":"../01_Assets/SFX/click_bolt.wav"},{"name":"ding_fact.wav","type":"Audios","subfolder":"SFX","size":"150.0 KB","bytes":153644,"url":"../01_Assets/SFX/ding_fact.wav"},{"name":"heartbeat_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/heartbeat_life.mp3"},{"name":"heartbeat_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/heartbeat_life.wav"},{"name":"rumble_depressurization.wav","type":"Audios","subfolder":"SFX","size":"140.7 KB","bytes":144044,"url":"../01_Assets/SFX/rumble_depressurization.wav"},{"name":"thump_door.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/thump_door.wav"},{"name":"whoosh_life.mp3","type":"Audios","subfolder":"SFX","size":"9.6 KB","bytes":9837,"url":"../01_Assets/SFX/whoosh_life.mp3"},{"name":"whoosh_life.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_life.wav"},{"name":"whoosh_transition.wav","type":"Audios","subfolder":"SFX","size":"32.9 KB","bytes":33644,"url":"../01_Assets/SFX/whoosh_transition.wav"},{"name":"17_design_tips_for_video_editors.mp4","type":"Videos","subfolder":"Videos","size":"23.5 MB","bytes":24632614,"url":"../01_Assets/Videos/17_design_tips_for_video_editors.mp4"},{"name":"marvid_scroll.mp4","type":"Videos","subfolder":"Videos","size":"2.4 MB","bytes":2477140,"url":"../01_Assets/Videos/marvid_scroll.mp4"},{"name":"motion_design_example.mp4","type":"Videos","subfolder":"Videos","size":"664.9 KB","bytes":680827,"url":"../01_Assets/Videos/motion_design_example.mp4"},{"name":"apple_iphone17pro_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"393.7 KB","bytes":403134,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.mp3"},{"name":"apple_iphone17pro_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.8 MB","bytes":2890466,"url":"../01_Assets/Voix_Off/apple_iphone17pro_tanguy.wav"},{"name":"ascii_crt_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1009.8 KB","bytes":1034024,"url":"../01_Assets/Voix_Off/ascii_crt_video_15s.wav"},{"name":"aura_app_tanguy.mp3","type":"Audios","subfolder":"Voix_Off","size":"554.7 KB","bytes":568050,"url":"../01_Assets/Voix_Off/aura_app_tanguy.mp3"},{"name":"aura_app_tanguy.wav","type":"Audios","subfolder":"Voix_Off","size":"2.0 MB","bytes":2082476,"url":"../01_Assets/Voix_Off/aura_app_tanguy.wav"},{"name":"ballon_dor_official_calm.wav","type":"Audios","subfolder":"Voix_Off","size":"1.9 MB","bytes":1946858,"url":"../01_Assets/Voix_Off/ballon_dor_official_calm.wav"},{"name":"football_mara_explainer.mp3","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1198751,"url":"../01_Assets/Voix_Off/football_mara_explainer.mp3"},{"name":"football_mara_explainer.wav","type":"Audios","subfolder":"Voix_Off","size":"4.2 MB","bytes":4399090,"url":"../01_Assets/Voix_Off/football_mara_explainer.wav"},{"name":"growkaw_motivation_solange.wav","type":"Audios","subfolder":"Voix_Off","size":"998.8 KB","bytes":1022760,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange.wav"},{"name":"growkaw_motivation_solange_20s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1567978,"url":"../01_Assets/Voix_Off/growkaw_motivation_solange_20s.wav"},{"name":"growkaz_video_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1090794,"url":"../01_Assets/Voix_Off/growkaz_video_15s.wav"},{"name":"marvidflow_voice.mp3","type":"Audios","subfolder":"Voix_Off","size":"291.9 KB","bytes":298883,"url":"../01_Assets/Voix_Off/marvidflow_voice.mp3"},{"name":"objectifs_mara-4921.wav","type":"Audios","subfolder":"Voix_Off","size":"2.9 MB","bytes":3023982,"url":"../01_Assets/Voix_Off/objectifs_mara-4921.wav"},{"name":"top10_football_15s.wav","type":"Audios","subfolder":"Voix_Off","size":"598.8 KB","bytes":613160,"url":"../01_Assets/Voix_Off/top10_football_15s.wav"},{"name":"top10_football_full_14s.wav","type":"Audios","subfolder":"Voix_Off","size":"906.8 KB","bytes":928552,"url":"../01_Assets/Voix_Off/top10_football_full_14s.wav"},{"name":"top10_official_2024.wav","type":"Audios","subfolder":"Voix_Off","size":"1.5 MB","bytes":1559786,"url":"../01_Assets/Voix_Off/top10_official_2024.wav"},{"name":"ww2_mara_summary.mp3","type":"Audios","subfolder":"Voix_Off","size":"471.8 KB","bytes":483094,"url":"../01_Assets/Voix_Off/ww2_mara_summary.mp3"},{"name":"ww2_mara_summary.wav","type":"Audios","subfolder":"Voix_Off","size":"3.0 MB","bytes":3198062,"url":"../01_Assets/Voix_Off/ww2_mara_summary.wav"},{"name":"_temp_1793996767311.wav","type":"Audios","subfolder":"Voix_Off","size":"1.0 MB","bytes":1097198,"url":"../01_Assets/Voix_Off/_temp_1793996767311.wav"},{"name":"_temp_1794009979487.wav","type":"Audios","subfolder":"Voix_Off","size":"1.1 MB","bytes":1160368,"url":"../01_Assets/Voix_Off/_temp_1794009979487.wav"},{"name":"_temp_1794017362810.wav","type":"Audios","subfolder":"Voix_Off","size":"582.0 KB","bytes":595996,"url":"../01_Assets/Voix_Off/_temp_1794017362810.wav"}];
+
             if (assetsCatalogList.length === 0) {
-                assetsCatalogList = [
-                    { name: '17_design_tips_for_video_editors.mp4', type: 'Videos', subfolder: 'Videos', size: '24.6 MB', url: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4' },
-                    { name: 'marvid_scroll.mp4', type: 'Videos', subfolder: 'Videos', size: '2.4 MB', url: '../01_Assets/Videos/marvid_scroll.mp4' },
-                    { name: 'cristiano-ronaldo.png', type: 'Images', subfolder: 'Illustrations', size: '274 KB', url: '../01_Assets/Illustrations/Players/cristiano-ronaldo.png' },
-                    { name: 'kylian-mbappe.png', type: 'Images', subfolder: 'Illustrations', size: '498 KB', url: '../01_Assets/Illustrations/Players/kylian-mbappe.png' },
-                    { name: 'lionel-messi.png', type: 'Images', subfolder: 'Illustrations', size: '297 KB', url: '../01_Assets/Illustrations/Players/lionel-messi.png' },
-                    { name: 'autoframe_robot.svg', type: 'Vectors', subfolder: 'Icones', size: '1.3 KB', url: '../01_Assets/Icones/autoframe_robot.svg' },
-                    { name: 'sous_titre_motion.svg', type: 'Vectors', subfolder: 'handwriting', size: '229 KB', url: '../01_Assets/handwriting/sous_titre_motion.svg' },
-                    { name: 'Carefree.mp3', type: 'Audios', subfolder: 'Musiques', size: '6.3 MB', url: '../01_Assets/Musiques/Carefree.mp3' },
-                    { name: 'Cool_Rock.mp3', type: 'Audios', subfolder: 'Musiques', size: '3.2 MB', url: '../01_Assets/Musiques/Cool_Rock.mp3' },
-                    { name: 'Wallpaper.mp3', type: 'Audios', subfolder: 'Musiques', size: '8.4 MB', url: '../01_Assets/Musiques/Wallpaper.mp3' },
-                    { name: 'Heartwarming.mp3', type: 'Audios', subfolder: 'Musiques', size: '2.8 MB', url: '../01_Assets/Musiques/Heartwarming.mp3' },
-                    { name: 'Sneaky_Snitch.mp3', type: 'Audios', subfolder: 'Musiques', size: '5.2 MB', url: '../01_Assets/Musiques/Sneaky_Snitch.mp3' },
-                    { name: 'ding_fact.wav', type: 'Audios', subfolder: 'SFX', size: '150 KB', url: '../01_Assets/SFX/ding_fact.wav' },
-                    { name: 'whoosh_transition.wav', type: 'Audios', subfolder: 'SFX', size: '33 KB', url: '../01_Assets/SFX/whoosh_transition.wav' }
-                ];
+                assetsCatalogList = FULL_EMBEDDED_CATALOG;
+            } else if (assetsCatalogList.length < FULL_EMBEDDED_CATALOG.length) {
+                assetsCatalogList = FULL_EMBEDDED_CATALOG;
             }
 
             // Mise à jour des compteurs sidebar
@@ -7718,7 +9083,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             grid.innerHTML = filtered.map(v => `
                 <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Regarder ${escapeHtml(v.title)}">
                     <div class="project-thumb">
-                        <img src="${v.poster || '../01_Assets/Images/styles/template_top_10.jpg'}" alt="${escapeHtml(v.title)}" class="project-thumb-img" onerror="this.src='../01_Assets/Images/styles/template_2d_explainer.jpg'">
+                        <img src="${v.poster || getPosterForVideo(v)}" alt="${escapeHtml(v.title)}" class="project-thumb-img" onerror="this.src='../01_Assets/Images/styles/template_2d_explainer.jpg'">
                         <div class="project-card-overlay"></div>
                         <div class="project-card-footer">
                             <div class="project-card-info-wrap">
@@ -8388,7 +9753,18 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         function toggleClientScriptBlock(checked) {
             const wrapper = document.getElementById('clientScriptCollapsibleWrapper');
             if (wrapper) {
-                wrapper.style.display = checked ? 'block' : 'none';
+                if (checked) {
+                    wrapper.style.display = 'block';
+                    void wrapper.offsetHeight;
+                    wrapper.classList.add('open');
+                } else {
+                    wrapper.classList.remove('open');
+                    setTimeout(() => {
+                        if (!wrapper.classList.contains('open')) {
+                            wrapper.style.display = 'none';
+                        }
+                    }, 400);
+                }
             }
         }
 
@@ -8635,16 +10011,61 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         function openGrandVideoPlayer(videoPath, title) {
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
+            let iframeEl = document.getElementById('grandPlayerIframeEl');
+            const container = document.getElementById('grandPlayerContainer') || videoEl.parentElement;
+            
             document.getElementById('grandPlayerTitle').textContent = title || 'Aperçu Vidéo';
-            videoEl.src = videoPath;
+
+            let resolvedPath = (videoPath || '').trim();
+            if (!resolvedPath.startsWith('http') && !resolvedPath.startsWith('../') && !resolvedPath.startsWith('/') && !resolvedPath.startsWith('file:')) {
+                resolvedPath = '../' + resolvedPath;
+            }
+
+            if (resolvedPath.endsWith('.html')) {
+                // Composition HTML dynamique (GSAP / Web animations)
+                videoEl.pause();
+                videoEl.style.display = 'none';
+                videoEl.src = '';
+
+                if (!iframeEl) {
+                    iframeEl = document.createElement('iframe');
+                    iframeEl.id = 'grandPlayerIframeEl';
+                    iframeEl.style.width = '100%';
+                    iframeEl.style.height = '100%';
+                    iframeEl.style.border = 'none';
+                    iframeEl.style.borderRadius = '8px';
+                    iframeEl.style.background = '#000000';
+                    container.appendChild(iframeEl);
+                }
+                iframeEl.style.display = 'block';
+                iframeEl.src = resolvedPath;
+            } else {
+                // Fichier Vidéo Standard MP4 / WebM
+                if (iframeEl) {
+                    iframeEl.src = 'about:blank';
+                    iframeEl.style.display = 'none';
+                }
+                videoEl.style.display = 'block';
+                videoEl.src = resolvedPath;
+                videoEl.load();
+                videoEl.play().catch(e => console.log('Autoplay standard info:', e));
+            }
+
             overlay.classList.add('open');
-            videoEl.play().catch(() => {});
         }
 
         function closeGrandVideoPlayer() {
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
-            videoEl.pause();
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.src = '';
+            }
+            if (iframeEl) {
+                iframeEl.src = 'about:blank';
+                iframeEl.style.display = 'none';
+            }
             overlay.classList.remove('open');
         }
 
@@ -11195,6 +12616,1353 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
             renderChannelsView();
         }
+
+
+/* --- LOGIQUE JS COMPLETE PARAMETRES.HTML --- */
+
+        const PREF_KEY_TTS_ENGINE = 'vibeeditor_pref_tts_engine';
+        const PREF_KEY_FORMAT = 'vibeeditor_pref_format';
+        const PREF_KEY_FPS = 'vibeeditor_pref_fps';
+        const PREF_KEY_QUALITY = 'vibeeditor_pref_quality';
+        const PREF_KEY_TEMPLATE = 'vibeeditor_pref_template';
+        const PREF_KEY_SUBTITLE_STYLE = 'vibeeditor_pref_subtitle_style';
+        const API_KEY_GOOGLE = 'vibeeditor_api_google';
+
+        const PREF_KEY_GEMINI_MODEL = 'vibeeditor_pref_gemini_model';
+
+        function handleGeminiModelChange(val) {
+            const wrap = document.getElementById('customGeminiModelWrapper');
+            if (wrap) wrap.style.display = (val === 'custom') ? 'block' : 'none';
+        }
+
+        function setGeminiModelUI(modelName) {
+            const sel = document.getElementById('prefGeminiModel');
+            const wrap = document.getElementById('customGeminiModelWrapper');
+            const customInput = document.getElementById('customGeminiModel');
+            if (!sel) return;
+            const clean = (modelName || 'gemini-3.5-flash-lite').trim();
+            const exists = Array.from(sel.options).some(o => o.value === clean);
+            if (exists) {
+                sel.value = clean;
+                if (wrap) wrap.style.display = 'none';
+            } else {
+                sel.value = 'custom';
+                if (wrap) wrap.style.display = 'block';
+                if (customInput) customInput.value = clean;
+            }
+        }
+
+        const API_KEY_ELEVENLABS = 'vibeeditor_api_elevenlabs';
+        const ELEVENLABS_VOICE_ID = 'vibeeditor_elevenlabs_voice_id';
+        const ELEVENLABS_MODEL_ID = 'vibeeditor_elevenlabs_model_id';
+        const API_KEY_PIXABAY = 'vibeeditor_api_pixabay';
+        const API_KEY_COVERR = 'vibeeditor_api_coverr';
+        const API_KEY_BRANDFETCH = 'vibeeditor_api_brandfetch';
+        const API_KEY_BG_REMOVE = 'vibeeditor_api_bg_remove';
+        const API_KEY_SKETCHFAB = 'vibeeditor_api_sketchfab';
+        const API_KEY_HEYGEN = 'vibeeditor_api_heygen';
+        const HEYGEN_VOICE_ID = 'vibeeditor_heygen_voice_id';
+
+        // Caches et états
+        let voicesCache = {};
+        let heygenVoicesCache = {};
+        let settingsHeygenRawList = [];
+        let keyChangeTimeout = null;
+        let heygenKeyChangeTimeout = null;
+        let previewAudioInstance = null;
+
+        
+        // =========================================================================
+        // GESTION DU KOMBO IA & DÉTECTION DES AGENTS LOCAUX
+        // =========================================================================
+        const API_KEY_GROQ = 'vibeeditor_api_key_groq';
+        const API_KEY_OPENROUTER = 'vibeeditor_api_key_openrouter';
+
+        let detectedAgents = { claude: { installed: false }, agy: { installed: false } };
+
+        let defaultKomboOrder = [
+            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Llama 3.3', model: 'llama-3.3-70b-versatile', enabled: true },
+            { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
+            { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
+            { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
+        ];
+
+        let currentKomboOrder = [...defaultKomboOrder];
+
+        async function detectLocalAiAgentsUi(showToastMsg = false) {
+            const badgeClaude = document.getElementById('badgeClaudeStatus');
+            const badgeAgy = document.getElementById('badgeAgyStatus');
+            const textClaude = document.getElementById('versionClaudeText');
+            const textAgy = document.getElementById('versionAgyText');
+
+            if (badgeClaude) badgeClaude.textContent = 'Détection...';
+            if (badgeAgy) badgeAgy.textContent = 'Détection...';
+
+            try {
+                const res = await fetch('/api/ai/detect');
+                if (!res.ok) {
+                    throw new Error(`Serveur HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                if (data.success && data.agents) {
+                    detectedAgents = data.agents;
+
+                    // Mise à jour Claude Code
+                    if (data.agents.claude && data.agents.claude.installed) {
+                        if (badgeClaude) {
+                            badgeClaude.className = 'agent-status-badge detected';
+                            badgeClaude.innerHTML = '🔵 Détecté (À tester)';
+                        }
+                        if (textClaude) textClaude.textContent = (data.agents.claude.version || 'Claude Code CLI') + ' • Cliquez sur ⚡ Tester ci-dessous';
+                    } else {
+                        if (badgeClaude) {
+                            badgeClaude.className = 'agent-status-badge not-detected';
+                            badgeClaude.innerHTML = '⚪ Non détecté';
+                        }
+                        if (textClaude) textClaude.textContent = 'Non installé dans le PATH';
+                    }
+
+                    // Mise à jour Antigravity
+                    if (data.agents.agy && data.agents.agy.installed) {
+                        if (badgeAgy) {
+                            badgeAgy.className = 'agent-status-badge detected';
+                            badgeAgy.innerHTML = '🔵 Détecté (À tester)';
+                        }
+                        const v = data.agents.agy.version || 'Antigravity CLI';
+                        if (textAgy) textAgy.textContent = (v.startsWith('Antigravity') ? v : `Antigravity ${v}`) + ' • Démarrage agent (~25-30s)';
+                    } else {
+                        if (badgeAgy) {
+                            badgeAgy.className = 'agent-status-badge not-detected';
+                            badgeAgy.innerHTML = '⚪ Non détecté';
+                        }
+                        if (textAgy) textAgy.textContent = 'Non installé dans le PATH';
+                    }
+
+                    renderKomboListUI();
+
+                    if (showToastMsg && typeof showToast === 'function') {
+                        const foundCount = (data.agents.claude.installed ? 1 : 0) + (data.agents.agy.installed ? 1 : 0);
+                        showToast(`${foundCount} agent(s) local/locaux détecté(s) !`);
+                    }
+                }
+            } catch (err) {
+                console.warn('Détection agents locaux non disponible:', err.message);
+                if (badgeClaude) {
+                    badgeClaude.className = 'agent-status-badge not-detected';
+                    badgeClaude.innerHTML = '⚠️ Redémarrer serveur';
+                }
+                if (textClaude) textClaude.textContent = 'Redémarrez le terminal serveur (node 07_Scripts/studio-server.cjs)';
+                if (badgeAgy) {
+                    badgeAgy.className = 'agent-status-badge not-detected';
+                    badgeAgy.innerHTML = '⚠️ Redémarrer serveur';
+                }
+                if (textAgy) textAgy.textContent = 'Pour charger les nouvelles routes API';
+            }
+        }
+
+        function renderKomboListUI() {
+            const wrapper = document.getElementById('komboListWrapper');
+            if (!wrapper) return;
+
+            wrapper.innerHTML = '';
+
+            currentKomboOrder.forEach((item, index) => {
+                const card = document.createElement('div');
+                const isPrimary = index === 0;
+                card.className = `kombo-item-card ${item.enabled ? 'is-active' : 'is-disabled'} ${isPrimary ? 'is-primary' : ''}`;
+
+                const priorityLabel = isPrimary 
+                    ? '1️⃣ Prioritaire (Par défaut)' 
+                    : `${index + 1}️⃣ Secours ${index}`;
+
+                let modelSelectHtml = '';
+                if (item.id === 'gemini') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Gemini">
+                            <option value="gemini-3.5-flash-lite" ${item.model === 'gemini-3.5-flash-lite' ? 'selected' : ''}>gemini-3.5-flash-lite (Gratuit standard)</option>
+                            <option value="gemini-3.5-flash" ${item.model === 'gemini-3.5-flash' ? 'selected' : ''}>gemini-3.5-flash</option>
+                            <option value="gemini-flash-latest" ${item.model === 'gemini-flash-latest' ? 'selected' : ''}>gemini-flash-latest</option>
+                            <option value="gemini-3.7-flash" ${item.model === 'gemini-3.7-flash' ? 'selected' : ''}>gemini-3.7-flash</option>
+                        </select>
+                    `;
+                } else if (item.id === 'groq') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
+                            <option value="llama-3.3-70b-versatile" ${item.model === 'llama-3.3-70b-versatile' ? 'selected' : ''}>llama-3.3-70b-versatile</option>
+                            <option value="llama-3.1-8b-instant" ${item.model === 'llama-3.1-8b-instant' ? 'selected' : ''}>llama-3.1-8b-instant (Ultra-rapide)</option>
+                            <option value="mixtral-8x7b-32768" ${item.model === 'mixtral-8x7b-32768' ? 'selected' : ''}>mixtral-8x7b-32768</option>
+                        </select>
+                    `;
+                } else if (item.id === 'openrouter') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle OpenRouter">
+                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning - Testé OK)</option>
+                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat - Testé OK)</option>
+                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash - Testé OK)</option>
+                        </select>
+                    `;
+                } else if (item.id === 'claude_cli') {
+                    const isInst = detectedAgents.claude && detectedAgents.claude.installed;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#38bdf8' : '#94a3b8'};">${isInst ? 'CLI Détecté' : 'Non détecté'}</span>`;
+                } else if (item.id === 'agy_cli') {
+                    const isInst = detectedAgents.agy && detectedAgents.agy.installed;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#38bdf8' : '#94a3b8'};">${isInst ? 'CLI Détecté' : 'Non détecté'}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="kombo-left-group">
+                        <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleKomboItem(${index})" style="accent-color: #3b82f6; width: 16px; height: 16px; cursor: pointer;" title="Activer / Désactiver ce modèle dans le Kombo">
+                        <span class="kombo-priority-tag">${priorityLabel}</span>
+                        <div class="kombo-name-block">
+                            <span class="kombo-name">${item.name}</span>
+                        </div>
+                    </div>
+                    <div class="kombo-right-group">
+                        ${modelSelectHtml}
+                        <button type="button" class="kombo-order-btn" onclick="moveKomboItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Monter la priorité d'un cran (vers le haut)">
+                            ▲
+                        </button>
+                        <button type="button" class="kombo-order-btn" onclick="moveKomboItem(${index}, 1)" ${index === currentKomboOrder.length - 1 ? 'disabled' : ''} title="Descendre la priorité d'un cran (vers le bas)">
+                            ▼
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="testProviderQuick('${item.id}', this)" style="padding: 5px 10px; font-size: 11px; white-space: nowrap;">
+                            <span>⚡ Tester</span>
+                        </button>
+                    </div>
+                `;
+
+                wrapper.appendChild(card);
+            });
+        }
+
+        function moveKomboItem(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= currentKomboOrder.length) return;
+            const temp = currentKomboOrder[index];
+            currentKomboOrder[index] = currentKomboOrder[newIndex];
+            currentKomboOrder[newIndex] = temp;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            renderKomboListUI();
+        }
+
+        function toggleKomboItem(index) {
+            currentKomboOrder[index].enabled = !currentKomboOrder[index].enabled;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            renderKomboListUI();
+        }
+
+        function onKomboModelChanged(index, newModel) {
+            currentKomboOrder[index].model = newModel;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            if (currentKomboOrder[index].id === 'gemini') {
+                const sel = document.getElementById('prefGeminiModel');
+                if (sel) sel.value = newModel;
+            }
+        }
+
+        async function testProviderQuick(providerId, btnEl) {
+            const origHtml = btnEl ? btnEl.innerHTML : '';
+            const isLocalAgent = providerId === 'agy_cli' || providerId === 'claude_cli';
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl.innerHTML = isLocalAgent ? '<span>⏳ CLI (~25s)...</span>' : '<span>Test...</span>';
+            }
+
+            try {
+                const item = currentKomboOrder.find(k => k.id === providerId) || { model: '' };
+                const res = await fetch('/api/ai/test-provider', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ provider: providerId, model: item.model })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (typeof showToast === 'function') showToast(`${item.name || providerId} : Connexion réussie (${data.latencyMs}ms) !`);
+                    if (btnEl) btnEl.innerHTML = `<span style="color:#34d399;">✓ ${data.latencyMs}ms</span>`;
+                    if (providerId === 'claude_cli') {
+                        const badge = document.getElementById('badgeClaudeStatus');
+                        if (badge) { badge.className = 'agent-status-badge detected'; badge.innerHTML = '🟢 Opérationnel'; }
+                    } else if (providerId === 'agy_cli') {
+                        const badge = document.getElementById('badgeAgyStatus');
+                        if (badge) { badge.className = 'agent-status-badge detected'; badge.innerHTML = '🟢 Opérationnel'; }
+                    }
+                } else {
+                    const errStr = data.error || 'Erreur inconnue';
+                    if (providerId === 'claude_cli') {
+                        const badge = document.getElementById('badgeClaudeStatus');
+                        if (badge) { badge.className = 'agent-status-badge not-detected'; badge.innerHTML = '🔴 Échec test'; }
+                    } else if (providerId === 'agy_cli') {
+                        const badge = document.getElementById('badgeAgyStatus');
+                        if (badge) { badge.className = 'agent-status-badge not-detected'; badge.innerHTML = '🔴 Échec test'; }
+                    }
+                    if (errStr.includes('401') || errStr.toLowerCase().includes('unauthorized')) {
+                        if (typeof showToast === 'function') showToast(`${item.name || providerId} : Session ou clé non autorisée (401).`, 'error');
+                        if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Auth requise (401)</span>';
+                    } else {
+                        if (typeof showToast === 'function') showToast(`${item.name || providerId} : Échec (${errStr.slice(0, 100)})`, 'error');
+                        if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Échec</span>';
+                    }
+                }
+            } catch (e) {
+                if (typeof showToast === 'function') showToast(`Erreur test ${providerId}: ${e.message}`, 'error');
+                if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Erreur</span>';
+            } finally {
+                setTimeout(() => {
+                    if (btnEl) {
+                        btnEl.disabled = false;
+                        btnEl.innerHTML = origHtml;
+                    }
+                }, 4000);
+            }
+        }
+
+        async function testEntireKomboChain() {
+            const btn = document.getElementById('btnTestEntireKombo');
+            const box = document.getElementById('komboTestResultsBox');
+            if (btn) btn.disabled = true;
+            if (box) {
+                box.style.display = 'block';
+                box.innerHTML = '<div style="color:#60a5fa;">⚡ Lancement du test séquentiel du Kombo IA...</div>';
+            }
+
+            const activeItems = currentKomboOrder.filter(k => k.enabled);
+
+            for (let i = 0; i < activeItems.length; i++) {
+                const item = activeItems[i];
+                const priorityText = i === 0 ? '1er Prioritaire' : `Secours ${i}`;
+                box.innerHTML += `<div>→ Test de ${item.name} (${item.model})...</div>`;
+
+                try {
+                    const res = await fetch('/api/ai/test-provider', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ provider: item.id, model: item.model })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        box.innerHTML += `<div style="color:#34d399;">  ✓ [${priorityText}] ${item.name} : ${data.latencyMs}ms - Réponse valide reçue</div>`;
+                    } else {
+                        box.innerHTML += `<div style="color:#f87171;">  ✗ [${priorityText}] ${item.name} : ${data.error || 'Erreur'}</div>`;
+                    }
+                } catch (e) {
+                    box.innerHTML += `<div style="color:#f87171;">  ✗ [${priorityText}] ${item.name} : ${e.message}</div>`;
+                }
+            }
+
+            box.innerHTML += '<div style="margin-top:6px; color:#ffffff; font-weight:700;">Test du Kombo terminé.</div>';
+            if (btn) btn.disabled = false;
+        }
+
+        function handleGroqKeyChange() {}
+        function handleOpenRouterKeyChange() {}
+
+        // CHARGEMENT INITIAL (LocalStorage + /api/settings api_config.json)
+        window.addEventListener('load', async () => {
+            // Initialisation synchrone immédiate du Kombo IA
+            try {
+                const savedKombo = localStorage.getItem('autoframe_ai_kombo_order');
+                if (savedKombo) currentKomboOrder = JSON.parse(savedKombo);
+            } catch (e) {}
+            const openrouterItem = currentKomboOrder.find(k => k.id === 'openrouter');
+            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b') || openrouterItem.model.includes('embed') || openrouterItem.model.includes('rerank'))) {
+                openrouterItem.model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+            }
+            const geminiItem = currentKomboOrder.find(k => k.id === 'gemini');
+            if (geminiItem && (geminiItem.model.includes('argon') || geminiItem.model.includes('pro'))) {
+                geminiItem.model = 'gemini-3.5-flash-lite';
+            }
+            renderKomboListUI();
+            detectLocalAiAgentsUi(false);
+            // 1. LocalStorage
+            const savedTtsEngine = localStorage.getItem(PREF_KEY_TTS_ENGINE);
+            if (savedTtsEngine && document.getElementById('prefTtsEngine')) document.getElementById('prefTtsEngine').value = savedTtsEngine;
+            const savedFormat = localStorage.getItem(PREF_KEY_FORMAT);
+            const savedFps = localStorage.getItem(PREF_KEY_FPS);
+            const savedQuality = localStorage.getItem(PREF_KEY_QUALITY);
+            const savedTemplate = localStorage.getItem(PREF_KEY_TEMPLATE);
+            const savedSubtitleStyle = localStorage.getItem(PREF_KEY_SUBTITLE_STYLE);
+            const savedGoogle = localStorage.getItem(API_KEY_GOOGLE);
+
+            let savedGeminiModel = localStorage.getItem(PREF_KEY_GEMINI_MODEL);
+            if (savedGeminiModel && (savedGeminiModel.includes('argon') || savedGeminiModel.includes('pro'))) {
+                savedGeminiModel = 'gemini-3.5-flash-lite';
+                localStorage.setItem(PREF_KEY_GEMINI_MODEL, 'gemini-3.5-flash-lite');
+            }
+            if (savedGeminiModel) setGeminiModelUI(savedGeminiModel);
+
+            const savedElevenlabs = localStorage.getItem(API_KEY_ELEVENLABS);
+            let savedElevenVoice = localStorage.getItem(ELEVENLABS_VOICE_ID);
+            const savedElevenModel = localStorage.getItem(ELEVENLABS_MODEL_ID);
+            const savedPixabay = localStorage.getItem(API_KEY_PIXABAY);
+            const savedCoverr = localStorage.getItem(API_KEY_COVERR);
+            const savedBrandfetch = localStorage.getItem(API_KEY_BRANDFETCH);
+            const savedBgRemove = localStorage.getItem(API_KEY_BG_REMOVE);
+            const savedSketchfab = localStorage.getItem(API_KEY_SKETCHFAB);
+            const savedHeygen = localStorage.getItem(API_KEY_HEYGEN);
+            let savedHeygenVoice = localStorage.getItem(HEYGEN_VOICE_ID);
+
+            if (savedFormat && document.getElementById('prefFormat')) document.getElementById('prefFormat').value = savedFormat;
+            if (savedFps && document.getElementById('prefFps')) document.getElementById('prefFps').value = savedFps;
+            if (savedQuality && document.getElementById('prefQuality')) document.getElementById('prefQuality').value = savedQuality;
+            if (savedTemplate && document.getElementById('prefTemplate')) document.getElementById('prefTemplate').value = savedTemplate;
+            if (savedSubtitleStyle && document.getElementById('prefSubtitleStyle')) document.getElementById('prefSubtitleStyle').value = savedSubtitleStyle;
+            if (savedGoogle && document.getElementById('apiKeyGoogle')) document.getElementById('apiKeyGoogle').value = savedGoogle;
+            if (savedElevenlabs && document.getElementById('apiKeyElevenlabs')) document.getElementById('apiKeyElevenlabs').value = savedElevenlabs;
+            if (savedElevenModel && document.getElementById('elevenlabsModelId')) document.getElementById('elevenlabsModelId').value = savedElevenModel;
+            if (savedPixabay && document.getElementById('apiKeyPixabay')) document.getElementById('apiKeyPixabay').value = savedPixabay;
+            if (savedCoverr && document.getElementById('apiKeyCoverr')) document.getElementById('apiKeyCoverr').value = savedCoverr;
+            if (savedBrandfetch && document.getElementById('apiKeyBrandfetch')) document.getElementById('apiKeyBrandfetch').value = savedBrandfetch;
+            if (savedBgRemove && document.getElementById('apiKeyBgRemove')) document.getElementById('apiKeyBgRemove').value = savedBgRemove;
+            if (savedSketchfab && document.getElementById('apiKeySketchfab')) document.getElementById('apiKeySketchfab').value = savedSketchfab;
+            if (savedHeygen && document.getElementById('apiKeyHeygen')) document.getElementById('apiKeyHeygen').value = savedHeygen;
+
+            // 2. Synchronisation complète depuis le serveur (/api/settings -> api_config.json)
+            let activeElevenKey = savedElevenlabs || '';
+            let activeHeyGenKey = savedHeygen || '';
+
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const cfg = await res.json();
+                    if (cfg.tts_engine && document.getElementById('prefTtsEngine')) {
+                        document.getElementById('prefTtsEngine').value = cfg.tts_engine;
+                        localStorage.setItem(PREF_KEY_TTS_ENGINE, cfg.tts_engine);
+                    }
+                    if (cfg.pref_format && !savedFormat && document.getElementById('prefFormat')) document.getElementById('prefFormat').value = cfg.pref_format;
+                    if (cfg.pref_fps && !savedFps && document.getElementById('prefFps')) document.getElementById('prefFps').value = cfg.pref_fps;
+                    if (cfg.pref_quality && !savedQuality && document.getElementById('prefQuality')) document.getElementById('prefQuality').value = cfg.pref_quality;
+                    if (cfg.pref_template && !savedTemplate && document.getElementById('prefTemplate')) document.getElementById('prefTemplate').value = cfg.pref_template;
+                    if (cfg.pref_subtitle_style && !savedSubtitleStyle && document.getElementById('prefSubtitleStyle')) document.getElementById('prefSubtitleStyle').value = cfg.pref_subtitle_style;
+
+                    
+                    
+                    if (cfg.groq_api_key && document.getElementById('apiKeyGroq')) {
+                        document.getElementById('apiKeyGroq').value = cfg.groq_api_key;
+                        localStorage.setItem(API_KEY_GROQ, cfg.groq_api_key);
+                    }
+                    if (cfg.openrouter_api_key && document.getElementById('apiKeyOpenrouter')) {
+                        document.getElementById('apiKeyOpenrouter').value = cfg.openrouter_api_key;
+                        localStorage.setItem(API_KEY_OPENROUTER, cfg.openrouter_api_key);
+                    }
+                    if (Array.isArray(cfg.ai_kombo_order) && cfg.ai_kombo_order.length > 0) {
+                        currentKomboOrder = cfg.ai_kombo_order;
+                    }
+                    renderKomboListUI();
+                    detectLocalAiAgentsUi(false);
+
+                    if (cfg.gemini_model) {
+                        setGeminiModelUI(cfg.gemini_model);
+                        localStorage.setItem(PREF_KEY_GEMINI_MODEL, cfg.gemini_model);
+                    }
+
+                    if (cfg.google_api_key && document.getElementById('apiKeyGoogle')) {
+                        document.getElementById('apiKeyGoogle').value = cfg.google_api_key;
+                        localStorage.setItem(API_KEY_GOOGLE, cfg.google_api_key);
+                    }
+                    if (cfg.elevenlabs_api_key && document.getElementById('apiKeyElevenlabs')) {
+                        document.getElementById('apiKeyElevenlabs').value = cfg.elevenlabs_api_key;
+                        activeElevenKey = cfg.elevenlabs_api_key;
+                        localStorage.setItem(API_KEY_ELEVENLABS, cfg.elevenlabs_api_key);
+                    }
+                    if (cfg.elevenlabs_voice_id && !savedElevenVoice) {
+                        savedElevenVoice = cfg.elevenlabs_voice_id;
+                    }
+                    if (cfg.elevenlabs_model_id && document.getElementById('elevenlabsModelId')) {
+                        document.getElementById('elevenlabsModelId').value = cfg.elevenlabs_model_id;
+                        localStorage.setItem(ELEVENLABS_MODEL_ID, cfg.elevenlabs_model_id);
+                    }
+                    if (cfg.pixabay_api_key && document.getElementById('apiKeyPixabay')) {
+                        document.getElementById('apiKeyPixabay').value = cfg.pixabay_api_key;
+                        localStorage.setItem(API_KEY_PIXABAY, cfg.pixabay_api_key);
+                    }
+                    if (cfg.coverr_api_key && document.getElementById('apiKeyCoverr')) {
+                        document.getElementById('apiKeyCoverr').value = cfg.coverr_api_key;
+                        localStorage.setItem(API_KEY_COVERR, cfg.coverr_api_key);
+                    }
+                    if (cfg.brandfetch_api_key && document.getElementById('apiKeyBrandfetch')) {
+                        document.getElementById('apiKeyBrandfetch').value = cfg.brandfetch_api_key;
+                        localStorage.setItem(API_KEY_BRANDFETCH, cfg.brandfetch_api_key);
+                    }
+                    if (cfg.bg_remove_api_key && document.getElementById('apiKeyBgRemove')) {
+                        document.getElementById('apiKeyBgRemove').value = cfg.bg_remove_api_key;
+                        localStorage.setItem(API_KEY_BG_REMOVE, cfg.bg_remove_api_key);
+                    }
+                    if (cfg.sketchfab_api_token && document.getElementById('apiKeySketchfab')) {
+                        document.getElementById('apiKeySketchfab').value = cfg.sketchfab_api_token;
+                        localStorage.setItem(API_KEY_SKETCHFAB, cfg.sketchfab_api_token);
+                    }
+                    if (cfg.heygen_api_key && document.getElementById('apiKeyHeygen')) {
+                        document.getElementById('apiKeyHeygen').value = cfg.heygen_api_key;
+                        activeHeyGenKey = cfg.heygen_api_key;
+                        localStorage.setItem(API_KEY_HEYGEN, cfg.heygen_api_key);
+                    }
+                    if (cfg.heygen_voice_id && !savedHeygenVoice) {
+                        savedHeygenVoice = cfg.heygen_voice_id;
+                    }
+                }
+            } catch (e) {
+                console.warn('Impossible de charger /api/settings:', e);
+            }
+
+            // 3. Initialisation ElevenLabs
+            if (activeElevenKey && activeElevenKey.trim()) {
+                await loadVoices(activeElevenKey.trim(), savedElevenVoice);
+                loadElevenLabsSubscription(activeElevenKey.trim());
+            }
+
+            // 4. Initialisation HeyGen
+            if (activeHeyGenKey && activeHeyGenKey.trim()) {
+                loadHeyGenVoicesFromUi(savedHeygenVoice);
+            }
+        });
+
+
+
+        function toggleSettingsVoiceDropdown(id) {
+            const menu = document.getElementById(id);
+            if (!menu) return;
+            const isOpen = menu.classList.contains('open');
+            document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            if (!isOpen) {
+                menu.classList.add('open');
+                const inp = menu.querySelector('.voice-search-input');
+                if (inp) setTimeout(() => inp.focus(), 60);
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.modern-voice-picker')) {
+                document.querySelectorAll('.voice-dropdown-menu').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        function filterSettingsVoices(engine) {
+            if (engine === 'heygen') {
+                const query = (document.getElementById('settingsSearchHeygenInput').value || '').toLowerCase().trim();
+                const filtered = settingsHeygenRawList.filter(v => 
+                    (v.name || '').toLowerCase().includes(query) || 
+                    (v.language || '').toLowerCase().includes(query)
+                );
+                renderSettingsHeygenRows(filtered);
+            }
+        }
+
+        function renderSettingsHeygenRows(list) {
+            const container = document.getElementById('settingsListHeygenItems');
+            const currentSelected = document.getElementById('heygenVoiceId').value;
+            if (!container) return;
+
+            if (!list || list.length === 0) {
+                container.innerHTML = '<div style="padding:14px; text-align:center; color:var(--text-muted); font-size:12px;">Aucune voix trouvée</div>';
+                return;
+            }
+
+            let html = '';
+            list.forEach(v => {
+                const isSel = v.id === currentSelected ? 'selected' : '';
+                const flagUrl = getVoiceFlagUrl(v);
+                html += `
+                    <div class="voice-item-row ${isSel}" onclick="selectSettingsHeygenVoice('${v.id}')">
+                        <div class="voice-item-left">
+                            <img class="voice-flag-img" src="${flagUrl}" alt="Flag">
+                            <div class="voice-item-info">
+                                <span class="voice-item-title">${v.name}</span>
+                                <span class="voice-item-subtitle">${v.language || 'Français'} ${v.gender ? '• ' + v.gender : ''}</span>
+                            </div>
+                        </div>
+                        <div class="voice-item-actions">
+                            ${v.previewUrl ? `<button type="button" class="btn-inline-preview" onclick="event.stopPropagation(); playDirectPreviewSettings('${v.previewUrl}')" title="Écouter un extrait">▶</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function selectSettingsHeygenVoice(voiceId) {
+            const voice = heygenVoicesCache[voiceId];
+            if (!voice) return;
+            document.getElementById('heygenVoiceId').value = voice.id;
+            document.getElementById('settingsNameHeygenSelected').textContent = voice.name;
+            document.getElementById('settingsFlagHeygenSelected').src = getVoiceFlagUrl(voice);
+            document.getElementById('settingsBadgeHeygenSelected').textContent = (voice.language || 'Turbo').toUpperCase();
+            document.getElementById('settingsDropdownHeygen').classList.remove('open');
+            renderSettingsHeygenRows(settingsHeygenRawList);
+
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            if (previewBtn) {
+                previewBtn.style.display = voice.previewUrl ? 'inline-flex' : 'none';
+                previewBtn.dataset.previewUrl = voice.previewUrl || '';
+            }
+        }
+
+        function playDirectPreviewSettings(url) {
+            if (!url) return;
+            let audio = document.getElementById('audioPreview');
+            if (!audio) {
+                audio = new Audio();
+            }
+            audio.src = url;
+            audio.play().catch(e => console.warn('Erreur preview:', e));
+        }
+
+        function onHeyGenVoiceSelected() {
+            const selectEl = document.getElementById('heygenVoiceId');
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            const voiceId = selectEl ? selectEl.value : '';
+            const voice = heygenVoicesCache[voiceId];
+
+            if (previewBtn) {
+                if (voice && voice.previewUrl) {
+                    previewBtn.style.display = 'inline-flex';
+                    previewBtn.dataset.previewUrl = voice.previewUrl;
+                } else {
+                    previewBtn.style.display = 'none';
+                    previewBtn.dataset.previewUrl = '';
+                }
+            }
+        }
+
+        function playHeyGenVoicePreview() {
+            const previewBtn = document.getElementById('btnPreviewHeyGenVoice');
+            const url = previewBtn ? previewBtn.dataset.previewUrl : '';
+            if (!url) return;
+
+            let previewAudio = document.getElementById('audioPreview');
+            if (!previewAudio) {
+                previewAudio = new Audio();
+            }
+            previewAudio.src = url;
+            previewAudio.play().catch(e => console.warn('Preview error:', e));
+        }
+
+        function handleHeyGenKeyChange() {
+            clearTimeout(heygenKeyChangeTimeout);
+            heygenKeyChangeTimeout = setTimeout(() => {
+                const key = document.getElementById('apiKeyHeygen').value.trim();
+                const statusEl = document.getElementById('heygenKeyStatus');
+                if (key) {
+                    loadHeyGenVoicesFromUi();
+                } else {
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <span style="color:var(--text-muted);">Synchronisez vos voix HeyGen officielles et personnalisées.</span>
+                        `;
+                    }
+                }
+            }, 600);
+        }
+
+        async function loadHeyGenVoicesFromUi(voiceToSelect = null) {
+            const keyInput = document.getElementById('apiKeyHeygen');
+            const key = keyInput ? keyInput.value.trim() : '';
+            const statusEl = document.getElementById('heygenKeyStatus');
+            if (statusEl) statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement des voix HeyGen...</span>`;
+
+            try {
+                const url = key ? `/api/heygen/voices?key=${encodeURIComponent(key)}` : '/api/heygen/voices';
+                const res = await fetch(url);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || 'Erreur lors du chargement des voix HeyGen');
+                }
+                const data = await res.json();
+                heygenVoicesCache = {};
+                settingsHeygenRawList = [];
+
+                if (data.frenchVoices) {
+                    data.frenchVoices.forEach(v => {
+                        heygenVoicesCache[v.id] = v;
+                        settingsHeygenRawList.push(v);
+                    });
+                }
+                if (data.englishVoices) {
+                    data.englishVoices.slice(0, 30).forEach(v => {
+                        heygenVoicesCache[v.id] = v;
+                        settingsHeygenRawList.push(v);
+                    });
+                }
+
+                renderSettingsHeygenRows(settingsHeygenRawList);
+
+                const currentSaved = voiceToSelect || localStorage.getItem(HEYGEN_VOICE_ID);
+                const initialVoice = (currentSaved && heygenVoicesCache[currentSaved])
+                    ? currentSaved
+                    : (settingsHeygenRawList.length > 0 ? settingsHeygenRawList[0].id : '');
+
+                if (initialVoice) {
+                    selectSettingsHeygenVoice(initialVoice);
+                }
+                if (statusEl) {
+                    statusEl.innerHTML = `<span style="color:#10b981;">✅ ${data.total} voix HeyGen disponibles (${data.frenchVoices ? data.frenchVoices.length : 0} françaises).</span>`;
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.innerHTML = `<span style="color:#ff4444;">⚠️ ${err.message}</span>`;
+                }
+            }
+        }
+
+        function handleApiKeyChange() {
+            clearTimeout(keyChangeTimeout);
+            keyChangeTimeout = setTimeout(() => {
+                const key = document.getElementById('apiKeyElevenlabs').value.trim();
+                const statusEl = document.getElementById('elevenlabsKeyStatus');
+                if (key) {
+                    loadVoices(key);
+                    loadElevenLabsSubscription(key);
+                } else {
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <span style="color:var(--text-muted);">Saisissez votre clé ElevenLabs pour synchroniser automatiquement vos voix.</span>
+                        `;
+                    }
+                    const usageBox = document.getElementById('elevenlabsUsageBox');
+                    if (usageBox) usageBox.style.display = 'none';
+                }
+            }, 600);
+        }
+
+        async function loadVoicesFromUi() {
+            const key = document.getElementById('apiKeyElevenlabs').value.trim();
+            const statusEl = document.getElementById('elevenlabsKeyStatus');
+            if (!key) {
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#ff4444;">Veuillez renseigner votre clé API ElevenLabs ci-dessus d'abord.</span>
+                    `;
+                }
+                return;
+            }
+            await loadVoices(key);
+            loadElevenLabsSubscription(key);
+        }
+
+        async function loadVoices(key, voiceToSelect = null) {
+            const statusEl = document.getElementById('elevenlabsKeyStatus');
+            const selectEl = document.getElementById('elevenlabsVoiceId');
+            if (statusEl) statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement de vos voix ElevenLabs...</span>`;
+
+            try {
+                let data = null;
+                try {
+                    const res = await fetch(`/api/elevenlabs/voices?key=${encodeURIComponent(key)}`);
+                    if (res.ok) data = await res.json();
+                } catch (e) {}
+
+                if (!data || !data.success) {
+                    const directRes = await fetch('https://api.elevenlabs.io/v1/voices', {
+                        headers: { 'xi-api-key': key }
+                    });
+                    if (!directRes.ok) {
+                        const errTxt = await directRes.text();
+                        throw new Error(`Erreur ElevenLabs (${directRes.status}) : ${errTxt}`);
+                    }
+                    const rawVoices = await directRes.json();
+                    data = {
+                        success: true,
+                        total: rawVoices.voices ? rawVoices.voices.length : 0,
+                        customVoices: (rawVoices.voices || []).filter(v => v.category === 'cloned' || v.category === 'generated'),
+                        defaultVoices: (rawVoices.voices || []).filter(v => v.category !== 'cloned' && v.category !== 'generated')
+                    };
+                }
+
+                voicesCache = {};
+                selectEl.innerHTML = '';
+
+                if (data.customVoices && data.customVoices.length > 0) {
+                    const groupCustom = document.createElement('optgroup');
+                    groupCustom.label = '⭐ Mes Clones & Voix Personnalisées';
+                    data.customVoices.forEach(v => {
+                        voicesCache[v.voice_id] = { id: v.voice_id, name: v.name, previewUrl: v.preview_url };
+                        const opt = document.createElement('option');
+                        opt.value = v.voice_id;
+                        opt.textContent = `${v.name} (Clonée/Custom)`;
+                        groupCustom.appendChild(opt);
+                    });
+                    selectEl.appendChild(groupCustom);
+                }
+
+                if (data.defaultVoices && data.defaultVoices.length > 0) {
+                    const groupDefault = document.createElement('optgroup');
+                    groupDefault.label = '🎙️ Voix Officielles ElevenLabs';
+                    data.defaultVoices.forEach(v => {
+                        voicesCache[v.voice_id] = { id: v.voice_id, name: v.name, previewUrl: v.preview_url };
+                        const opt = document.createElement('option');
+                        opt.value = v.voice_id;
+                        const langInfo = (v.labels && v.labels.accent) ? ` (${v.labels.accent})` : '';
+                        opt.textContent = `${v.name}${langInfo}`;
+                        groupDefault.appendChild(opt);
+                    });
+                    selectEl.appendChild(groupDefault);
+                }
+
+                const currentSaved = voiceToSelect || localStorage.getItem(ELEVENLABS_VOICE_ID);
+                if (currentSaved && voicesCache[currentSaved]) {
+                    selectEl.value = currentSaved;
+                } else if (selectEl.options.length > 0) {
+                    selectEl.selectedIndex = 0;
+                }
+
+                onVoiceSelected();
+
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#10b981;">✅ ${data.total} voix disponibles (${data.customVoices ? data.customVoices.length : 0} personnalisées).</span>
+                    `;
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#ff4444;">❌ ${err.message || 'Impossible de joindre l\\\'API ElevenLabs.'}</span>
+                    `;
+                }
+            }
+        }
+
+        async function loadElevenLabsSubscription(key) {
+            const usageBox = document.getElementById('elevenlabsUsageBox');
+            if (!usageBox) return;
+
+            try {
+                let data = null;
+                (async () => {
+                    try {
+                        const res = await fetch(`/api/elevenlabs/subscription?key=${encodeURIComponent(key)}`);
+                        if (res.ok) data = await res.json();
+                    } catch (e) {}
+
+                    if (!data || !data.success) {
+                        try {
+                            const directRes = await fetch('https://api.elevenlabs.io/v1/user/subscription', {
+                                headers: { 'xi-api-key': key }
+                            });
+                            if (directRes.ok) {
+                                const raw = await directRes.json();
+                                const limit = raw.character_limit || 10000;
+                                const used = raw.character_count || 0;
+                                const rem = Math.max(0, limit - used);
+                                const pct = limit > 0 ? Math.min(100, Math.round((rem / limit) * 100)) : 0;
+                                data = {
+                                    success: true,
+                                    tier: raw.tier || 'Gratuit',
+                                    characterLimit: limit,
+                                    characterCount: used,
+                                    remainingCharacters: rem,
+                                    percentRemaining: pct,
+                                    resetDate: raw.next_character_count_reset_unix ? new Date(raw.next_character_count_reset_unix * 1000).toLocaleDateString('fr-FR') : 'Fin du mois'
+                                };
+                            }
+                        } catch (err) {}
+                    }
+
+                    if (data && data.success) {
+                        usageBox.style.display = 'flex';
+                        const limit = data.characterLimit || 10000;
+                        const remaining = (data.remainingCharacters !== undefined) ? data.remainingCharacters : Math.max(0, limit - (data.characterCount || 0));
+                        const percent = (data.percentRemaining !== undefined) ? data.percentRemaining : ((data.remainingPercentage !== undefined) ? data.remainingPercentage : (limit > 0 ? Math.round((remaining / limit) * 100) : 0));
+                        const tier = data.tier || 'Gratuit';
+                        const resetDate = data.resetDate || (data.nextResetUnix ? new Date(data.nextResetUnix * 1000).toLocaleDateString('fr-FR') : 'Fin du mois');
+
+                        const creditsBadge = document.getElementById('elevenlabsCreditsBadge');
+                        if (creditsBadge) {
+                            creditsBadge.textContent = `${remaining.toLocaleString('fr-FR')} / ${limit.toLocaleString('fr-FR')} car. (${percent}%)`;
+                            creditsBadge.style.color = percent < 15 ? '#ff4444' : (percent < 40 ? '#ffbb00' : '#10b981');
+                        }
+                        const bar = document.getElementById('elevenlabsProgressBar');
+                        if (bar) {
+                            bar.style.width = `${percent}%`;
+                            bar.style.background = percent < 15 ? '#ff4444' : (percent < 40 ? '#ffbb00' : '#10b981');
+                        }
+                        const tierText = document.getElementById('elevenlabsTierText');
+                        if (tierText) {
+                            tierText.textContent = `Formule : ${tier}`;
+                        }
+                        const resetText = document.getElementById('elevenlabsResetText');
+                        if (resetText) {
+                            resetText.textContent = `Renouvellement : ${resetDate}`;
+                        }
+                    }
+                })();
+            } catch (err) {
+                console.error('Erreur chargement quotas ElevenLabs:', err);
+            }
+        }
+        function onVoiceSelected() {
+            const selectEl = document.getElementById('elevenlabsVoiceId');
+            const btnPreview = document.getElementById('btnPreviewVoice');
+            const vId = selectEl.value;
+            const voice = voicesCache[vId];
+
+            if (voice && voice.previewUrl) {
+                btnPreview.style.display = 'inline-flex';
+                btnPreview.dataset.previewUrl = voice.previewUrl;
+            } else {
+                btnPreview.style.display = 'none';
+                btnPreview.dataset.previewUrl = '';
+            }
+        }
+
+        function playVoicePreview() {
+            const btnPreview = document.getElementById('btnPreviewVoice');
+            const url = btnPreview.dataset.previewUrl;
+            if (!url) return;
+
+            if (previewAudioInstance) {
+                previewAudioInstance.pause();
+                previewAudioInstance = null;
+            }
+
+            previewAudioInstance = new Audio(url);
+            btnPreview.innerHTML = `
+                <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                <span>Lecture...</span>
+            `;
+            previewAudioInstance.play().catch(() => {});
+            previewAudioInstance.onended = () => {
+                btnPreview.innerHTML = `
+                    <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span>Écouter</span>
+                `;
+            };
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+            }
+        }
+
+        function activateNav(link) {
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section.card');
+            const atBottom = (window.innerHeight + window.pageYOffset) >= (document.documentElement.scrollHeight - 70);
+
+            if (atBottom) {
+                // Dès que l'utilisateur atteint le bas de page, activer immédiatement la dernière section (Moteur de Rendu)
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#sec-render');
+                });
+                return;
+            }
+
+            // Seuil proportionnel dynamique à 35% de la hauteur écran
+            const threshold = window.scrollY + (window.innerHeight * 0.35);
+            let activeId = 'sec-general';
+            sections.forEach(sec => {
+                if (sec.offsetTop <= threshold) {
+                    activeId = sec.getAttribute('id');
+                }
+            });
+
+            if (activeId) {
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${activeId}`);
+                });
+            }
+        });
+
+        async function saveSettings() {
+            const ttsEngine = document.getElementById('prefTtsEngine') ? document.getElementById('prefTtsEngine').value : 'elevenlabs';
+            localStorage.setItem(PREF_KEY_TTS_ENGINE, ttsEngine);
+            const format = document.getElementById('prefFormat').value;
+            const fps = document.getElementById('prefFps').value;
+            const quality = document.getElementById('prefQuality').value;
+            const template = document.getElementById('prefTemplate').value;
+            const subtitleStyle = document.getElementById('prefSubtitleStyle') ? document.getElementById('prefSubtitleStyle').value : (localStorage.getItem(PREF_KEY_SUBTITLE_STYLE) || 'type-wordbyword');
+            
+            let geminiModel = document.getElementById('prefGeminiModel') ? document.getElementById('prefGeminiModel').value : 'gemini-3.5-flash-lite';
+            if (geminiModel === 'custom') {
+                const customVal = (document.getElementById('customGeminiModel')?.value || '').trim();
+                if (customVal) geminiModel = customVal;
+            }
+            localStorage.setItem(PREF_KEY_GEMINI_MODEL, geminiModel);
+
+            const googleKey = document.getElementById('apiKeyGoogle').value.trim();
+            const elevenlabsKey = document.getElementById('apiKeyElevenlabs').value.trim();
+            const elevenlabsVoice = document.getElementById('elevenlabsVoiceId').value.trim();
+            const elevenlabsModel = document.getElementById('elevenlabsModelId').value.trim();
+            const pixabayKey = document.getElementById('apiKeyPixabay').value.trim();
+            const coverrKey = document.getElementById('apiKeyCoverr') ? document.getElementById('apiKeyCoverr').value.trim() : '';
+            const brandfetchKey = document.getElementById('apiKeyBrandfetch').value.trim();
+            const bgRemoveKey = document.getElementById('apiKeyBgRemove').value.trim();
+            const sketchfabToken = document.getElementById('apiKeySketchfab') ? document.getElementById('apiKeySketchfab').value.trim() : '';
+            const heygenKey = document.getElementById('apiKeyHeygen') ? document.getElementById('apiKeyHeygen').value.trim() : '';
+
+            // LocalStorage
+            localStorage.setItem(PREF_KEY_FORMAT, format);
+            localStorage.setItem(PREF_KEY_FPS, fps);
+            localStorage.setItem(PREF_KEY_QUALITY, quality);
+            localStorage.setItem(PREF_KEY_TEMPLATE, template);
+            localStorage.setItem(PREF_KEY_SUBTITLE_STYLE, subtitleStyle);
+            localStorage.setItem(API_KEY_GOOGLE, googleKey);
+            localStorage.setItem(API_KEY_ELEVENLABS, elevenlabsKey);
+            localStorage.setItem(ELEVENLABS_VOICE_ID, elevenlabsVoice);
+            localStorage.setItem(ELEVENLABS_MODEL_ID, elevenlabsModel);
+            localStorage.setItem(API_KEY_PIXABAY, pixabayKey);
+            localStorage.setItem(API_KEY_COVERR, coverrKey);
+            localStorage.setItem(API_KEY_BRANDFETCH, brandfetchKey);
+            localStorage.setItem(API_KEY_BG_REMOVE, bgRemoveKey);
+            localStorage.setItem(API_KEY_SKETCHFAB, sketchfabToken);
+            localStorage.setItem(API_KEY_HEYGEN, heygenKey);
+            const heygenVoice = document.getElementById('heygenVoiceId') ? document.getElementById('heygenVoiceId').value : '';
+            localStorage.setItem(HEYGEN_VOICE_ID, heygenVoice);
+
+            // Synchronisation avec api_config.json via /api/settings
+            try {
+                await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pref_format: format,
+                        pref_fps: fps,
+                        pref_quality: quality,
+                        pref_template: template,
+                        pref_subtitle_style: subtitleStyle,
+                        tts_engine: ttsEngine,
+                                                
+                        groq_api_key: (document.getElementById('apiKeyGroq')?.value || '').trim(),
+                        openrouter_api_key: (document.getElementById('apiKeyOpenrouter')?.value || '').trim(),
+                        ai_kombo_order: currentKomboOrder,
+                        ai_kombo_enabled: true,
+                        gemini_model: geminiModel,
+                        google_api_key: googleKey,
+                        elevenlabs_api_key: elevenlabsKey,
+                        elevenlabs_voice_id: elevenlabsVoice,
+                        elevenlabs_model_id: elevenlabsModel,
+                        pixabay_api_key: pixabayKey,
+                        coverr_api_key: coverrKey,
+                        brandfetch_api_key: brandfetchKey,
+                        bg_remove_api_key: bgRemoveKey,
+                    sketchfab_api_token: sketchfabToken,
+                        heygen_api_key: heygenKey,
+                        heygen_voice_id: heygenVoice
+                    })
+                });
+            } catch (e) {
+                console.warn('Erreur synchronisation /api/settings:', e);
+            }
+
+            // Si une clé ElevenLabs est renseignée, actualiser les voix
+            if (elevenlabsKey) {
+                loadVoices(elevenlabsKey, elevenlabsVoice);
+            }
+            if (heygenKey) {
+                loadHeyGenVoicesFromUi(heygenVoice);
+            }
+
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        async function testCoverrConnection() {
+            const keyInput = document.getElementById('apiKeyCoverr');
+            const statusEl = document.getElementById('coverrKeyStatus');
+            const key = keyInput ? keyInput.value.trim() : '';
+
+            if (!key) {
+                if (statusEl) {
+                    statusEl.style.display = 'flex';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> <span>Veuillez d'abord saisir une clé API Coverr.</span>`;
+                }
+                return;
+            }
+
+            if (statusEl) {
+                statusEl.style.display = 'flex';
+                statusEl.style.color = 'var(--text-secondary)';
+                statusEl.innerHTML = `<span>⏳ Test de connexion à Coverr.co en cours...</span>`;
+            }
+
+            try {
+                let data = null;
+                const serverOrigin = (window.location.protocol === 'file:') ? 'http://localhost:3000' : '';
+                
+                try {
+                    const res = await fetch(`${serverOrigin}/api/coverr/test`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ key })
+                    });
+                    if (res.ok) {
+                        data = await res.json();
+                    }
+                } catch (e) {
+                    console.warn('Serveur local injoignable pour le test Coverr, bascule en direct:', e);
+                }
+
+                if (!data) {
+                    const directRes = await fetch('https://api.coverr.co/videos?query=nature&page_size=1&urls=true', {
+                        headers: {
+                            'Authorization': `Bearer ${key}`
+                        }
+                    });
+                    if (directRes.status === 401 || directRes.status === 403) {
+                        data = { valid: false, error: 'Clé API Coverr invalide ou non autorisée (401/403).' };
+                    } else if (!directRes.ok) {
+                        const errTxt = await directRes.text();
+                        data = { valid: false, error: `Erreur API Coverr (${directRes.status}): ${errTxt}` };
+                    } else {
+                        const directJson = await directRes.json();
+                        data = { valid: true, totalAvailable: directJson.total || (directJson.hits ? directJson.hits.length : 0) };
+                    }
+                }
+
+                if (data.valid) {
+                    if (statusEl) {
+                        statusEl.style.color = '#10b981';
+                        statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Connexion réussie ! Clé Coverr.co valide (${data.totalAvailable || 0} vidéos accessibles).</span>`;
+                    }
+                    localStorage.setItem(API_KEY_COVERR, key);
+                } else {
+                    if (statusEl) {
+                        statusEl.style.color = '#ef4444';
+                        statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>${data.error || 'Clé Coverr invalide.'}</span>`;
+                    }
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.style.color = '#ef4444';
+                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>Erreur de test : ${err.message}</span>`;
+                }
+            }
+        }
+
+        async function testVoiceGeneration() {
+            const btn = document.getElementById('btnTestVoice');
+            const status = document.getElementById('testVoiceStatus');
+            const audioPreview = document.getElementById('audioPreview');
+            const text = document.getElementById('testVoiceText').value.trim();
+            const apiKey = document.getElementById('apiKeyElevenlabs').value.trim();
+            const voiceId = document.getElementById('elevenlabsVoiceId').value.trim();
+            const modelId = document.getElementById('elevenlabsModelId').value.trim();
+
+            if (!text) {
+                status.innerHTML = `<span style="color:#ff4444;">Veuillez saisir un texte de test</span>`;
+                return;
+            }
+            if (!apiKey) {
+                status.innerHTML = `<span style="color:#ff4444;">Veuillez renseigner votre clé ElevenLabs ci-dessus d'abord.</span>`;
+                return;
+            }
+
+            btn.disabled = true;
+            status.innerHTML = `<span style="color:#ffbb00;">⏳ Synthèse en cours via ElevenLabs...</span>`;
+
+            try {
+                const response = await fetch('/api/tts/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text,
+                        apiKey,
+                        voiceId,
+                        modelId,
+                        filename: `test_voix_${Date.now()}.mp3`
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Erreur lors de la génération');
+                }
+
+                status.innerHTML = `<span style="color:#22c55e;">✅ Voix off générée avec succès (${Math.round(data.sizeBytes / 1024)} Ko) !</span>`;
+                audioPreview.src = data.relativePath + '?t=' + Date.now();
+                audioPreview.style.display = 'block';
+                audioPreview.play().catch(() => {});
+            } catch (err) {
+                status.innerHTML = `<span style="color:#ff4444;">❌ ${err.message}</span>`;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    // ── Test All API Keys ────────────────────────────────────────────────────
+    async function testAllApiKeys() {
+      const btn = document.getElementById('btnTestAllApis');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span>⏳</span> Test en cours...'; }
+
+      const tests = [
+        {
+          label: 'ElevenLabs',
+          fieldId: 'apiKeyElevenlabs',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.elevenlabs.io/v1/voices', {
+              headers: { 'xi-api-key': key }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'HeyGen',
+          fieldId: 'apiKeyHeygen',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.heygen.com/v2/voices', {
+              headers: { 'X-Api-Key': key }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'Google AI',
+          fieldId: 'apiKeyGoogle',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`
+            );
+            return r.ok;
+          }
+        },
+        {
+          label: 'Pixabay',
+          fieldId: 'apiKeyPixabay',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch(
+              `https://pixabay.com/api/?key=${key}&q=nature&per_page=3`
+            );
+            return r.ok;
+          }
+        },
+        {
+          label: 'Coverr',
+          fieldId: 'apiKeyCoverr',
+          test: async (key) => {
+            if (!key) return null;
+            // 1. Essai prioritaire via proxy local (contourne tout blocage CORS)
+            try {
+              const res = await fetch('/api/coverr/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key })
+              });
+              if (res.ok) {
+                const data = await res.json();
+                if (data.valid === true) return true;
+              }
+            } catch (e) {}
+
+            // 2. Fallback direct avec le bon format Authorization: Bearer
+            try {
+              const direct = await fetch('https://api.coverr.co/videos?query=nature&page_size=1&urls=true', {
+                headers: { 'Authorization': `Bearer ${key}` }
+              });
+              return direct.ok;
+            } catch (e) {
+              return false;
+            }
+          }
+        },
+        {
+          label: 'Brandfetch',
+          fieldId: 'apiKeyBrandfetch',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.brandfetch.io/v2/brands/apple.com', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            return r.ok;
+          }
+        },
+        {
+          label: 'BgRemove (Clipdrop)',
+          fieldId: 'apiKeyBgRemove',
+          test: async (key) => {
+            if (!key) return null;
+            try {
+              const fd = new FormData();
+              const r = await fetch('https://clipdrop-api.co/remove-background/v1', {
+                method: 'POST',
+                headers: { 'x-api-key': key },
+                body: fd
+              });
+              return r.status !== 401 && r.status !== 403;
+            } catch { return false; }
+          }
+        },
+        {
+          label: 'Sketchfab',
+          fieldId: 'apiKeySketchfab',
+          test: async (key) => {
+            if (!key) return null;
+            const r = await fetch('https://api.sketchfab.com/v3/me', {
+              headers: { 'Authorization': `Token ${key}` }
+            });
+            return r.ok;
+          }
+        }
+      ];
+
+      // Nettoyage des anciens badges de test
+      document.querySelectorAll('.api-test-badge').forEach(el => el.remove());
+
+      for (const t of tests) {
+        const field = document.getElementById(t.fieldId);
+        if (!field) continue;
+        const key = field.value.trim();
+
+        // Trouver le conteneur du titre du label pour placer l'icône DIRECTEMENT À CÔTÉ DU NOM
+        const formRow = field.closest('.form-row');
+        const labelTitle = formRow ? (formRow.querySelector('.form-label span') || formRow.querySelector('.form-label')) : field.parentElement;
+
+        const badge = document.createElement('span');
+        badge.className = 'api-test-badge';
+        badge.style.cssText = 'margin-left: 8px; font-size: 15px; vertical-align: middle; transition: opacity 0.5s ease; display: inline-flex; align-items: center;';
+        badge.textContent = '⏳';
+        badge.title = `Test en cours pour ${t.label}...`;
+        
+        if (labelTitle) {
+          labelTitle.appendChild(badge);
+        } else {
+          field.parentElement.appendChild(badge);
+        }
+
+        let result = null;
+        try { result = await t.test(key); } catch { result = false; }
+
+        if (result === null) {
+          badge.textContent = '⬜';
+          badge.title = `${t.label} : clé vide`;
+        } else if (result === true) {
+          badge.textContent = '✅';
+          badge.title = `${t.label} : clé valide et fonctionnelle !`;
+          badge.style.color = '#22c55e';
+          // Disparaît au bout de 4 secondes
+          setTimeout(() => {
+            badge.style.opacity = '0';
+            setTimeout(() => badge.remove(), 500);
+          }, 4000);
+        } else {
+          badge.textContent = '❌';
+          badge.title = `${t.label} : échec du test ou clé invalide`;
+          badge.style.color = '#ef4444';
+        }
+
+        await new Promise(r => setTimeout(r, 250));
+      }
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔑</span> Tester toutes les clés API';
+      }
+    }
 
 </script>
 
