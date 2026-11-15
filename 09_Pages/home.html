@@ -13908,10 +13908,15 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
             try {
                 const item = currentKomboOrder.find(k => k.id === providerId) || { model: '' };
+                let currentKey = '';
+                if (providerId === 'groq') currentKey = document.getElementById('apiKeyGroq')?.value || '';
+                else if (providerId === 'gemini') currentKey = document.getElementById('apiKeyGoogle')?.value || '';
+                else if (providerId === 'openrouter') currentKey = document.getElementById('apiKeyOpenrouter')?.value || '';
+
                 const res = await fetch('/api/ai/test-provider', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ provider: providerId, model: item.model })
+                    body: JSON.stringify({ provider: providerId, model: item.model, apiKey: currentKey })
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -13933,7 +13938,10 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                         const badge = document.getElementById('badgeAgyStatus');
                         if (badge) { badge.className = 'agent-status-badge not-detected'; badge.innerHTML = '🔴 Échec test'; }
                     }
-                    if (errStr.includes('401') || errStr.toLowerCase().includes('unauthorized')) {
+                    if (errStr.includes('blocked at the project level')) {
+                        if (typeof showToast === 'function') showToast(`Groq : Modèle bloqué sur console.groq.com (Settings > Project limits)`, 'error');
+                        if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Projet bloqué</span>';
+                    } else if (errStr.includes('401') || errStr.toLowerCase().includes('unauthorized')) {
                         if (typeof showToast === 'function') showToast(`${item.name || providerId} : Session ou clé non autorisée (401).`, 'error');
                         if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Auth requise (401)</span>';
                     } else {
@@ -13991,7 +13999,17 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (btn) btn.disabled = false;
         }
 
-        function handleGroqKeyChange() {}
+        function handleGroqKeyChange() {
+            const el = document.getElementById('apiKeyGroq');
+            if (!el) return;
+            let v = el.value.trim().replace(/['"]/g, '');
+            const second = v.indexOf('gsk_', 4);
+            if (second !== -1) {
+                v = v.slice(0, second).trim();
+                el.value = v;
+                if (typeof showToast === 'function') showToast('Clé Groq dédoublonnée automatiquement');
+            }
+        }
         function handleOpenRouterKeyChange() {}
 
         // CHARGEMENT INITIAL (LocalStorage + /api/settings api_config.json)

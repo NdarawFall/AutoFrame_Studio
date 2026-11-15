@@ -258,9 +258,13 @@ async function callGeminiProvider(systemPrompt, userPrompt, temperature = 0.7, p
 }
 
 // 3b. Groq Cloud API
-async function callGroqProvider(systemPrompt, userPrompt, temperature = 0.7, preferredModel = '') {
+async function callGroqProvider(systemPrompt, userPrompt, temperature = 0.7, preferredModel = '', apiKeyOverride = '') {
     const config = loadApiConfig();
-    const apiKey = (config.groq_api_key || process.env.GROQ_API_KEY || '').trim();
+    let apiKey = (apiKeyOverride || config.groq_api_key || process.env.GROQ_API_KEY || '').trim();
+    const secondGsk = apiKey.indexOf('gsk_', 4);
+    if (secondGsk !== -1) {
+        apiKey = apiKey.slice(0, secondGsk).trim();
+    }
     if (!apiKey) {
         throw new Error("Clé API Groq manquante dans api_config.json");
     }
@@ -616,7 +620,7 @@ async function testSingleProvider(providerId, customConfig = {}) {
         if (providerId === 'gemini') {
             res = await callGeminiProvider(systemPrompt, userPrompt, 0.2, customConfig.model);
         } else if (providerId === 'groq') {
-            res = await callGroqProvider(systemPrompt, userPrompt, 0.2, customConfig.model);
+            res = await callGroqProvider(systemPrompt, userPrompt, 0.2, customConfig.model, customConfig.apiKey);
         } else if (providerId === 'openrouter') {
             res = await callOpenRouterProvider(systemPrompt, userPrompt, 0.2, customConfig.model);
         } else if (providerId === 'claude_cli') {
