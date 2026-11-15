@@ -406,7 +406,15 @@ async function callClaudeCliProvider(systemPrompt, userPrompt) {
             else resolve(res);
         };
 
+        const cleanEnv = { ...process.env };
+        if (cleanEnv.ANTHROPIC_BASE_URL && cleanEnv.ANTHROPIC_BASE_URL.includes('agentrouter.org')) {
+            delete cleanEnv.ANTHROPIC_BASE_URL;
+            delete cleanEnv.ANTHROPIC_API_KEY;
+            delete cleanEnv.ANTHROPIC_MODEL;
+        }
+
         const child = spawn('cmd.exe', ['/c', claudeBin, '--bare', '--tools', '""', '-p', combinedPrompt], {
+            env: cleanEnv,
             windowsHide: true,
             stdio: ['pipe', 'pipe', 'pipe']
         });
