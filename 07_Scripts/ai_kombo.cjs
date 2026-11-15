@@ -14,7 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { execSync, exec } = require('child_process');
+const { execSync, exec, spawn } = require('child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const USER_DATA_DIR = process.env.VIBE_USER_DATA || ROOT_DIR;
@@ -41,40 +41,95 @@ function loadApiConfig() {
 // -----------------------------------------------------------------------------
 // 1. DÉTECTEUR D'AGENTS IA LOCAUX (Claude Code CLI & Antigravity)
 // -----------------------------------------------------------------------------
-function detectLocalAiAgents() {
+function findClaudeBinary() {
+    const candidates = [
+        path.join(process.env.APPDATA || '', 'npm', 'claude.cmd'),
+        path.join(process.env.APPDATA || '', 'npm', 'claude'),
+        path.join(process.env.LOCALAPPDATA || '', 'npm', 'claude.cmd'),
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'claude', 'claude.exe')
+    ];
+    for (const c of candidates) {
+        if (c && fs.existsSync(c)) return c;
+    }
+    try {
+        const out = execSync('where.exe claude', { windowsHide: true, timeout: 1500, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+        const firstLine = out.split(/\r?\n/)[0]?.trim();
+        if (firstLine && fs.existsSync(firstLine)) return firstLine;
+    } catch (e) {}
+    return 'claude';
+}
+
+function findAgyBinary() {
+    const candidates = [
+        path.join(process.env.LOCALAPPDATA || '', 'agy', 'bin', 'agy.EXE'),
+        path.join(process.env.LOCALAPPDATA || '', 'agy', 'bin', 'agy.exe'),
+        path.join(process.env.APPDATA || '', 'agy', 'bin', 'agy.EXE'),
+        path.join(process.env.APPDATA || '', 'agy', 'bin', 'agy.exe')
+    ];
+    for (const c of candidates) {
+        if (c && fs.existsSync(c)) return c;
+    }
+    try {
+        const out = execSync('where.exe agy', { windowsHide: true, timeout: 1500, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+        const firstLine = out.split(/\r?\n/)[0]?.trim();
+        if (firstLine && fs.existsSync(firstLine)) return firstLine;
+    } catch (e) {}
+    return 'agy';
+}
+
+let cachedDetection = null;
+let lastDetectionTime = 0;
+
+function detectLocalAiAgents(forceRefresh = false) {
+    if (!forceRefresh && cachedDetection && (Date.now() - lastDetectionTime < 30000)) {
+        return cachedDetection;
+    }
+
     const results = {
-        claude: { installed: false, version: '', command: 'claude' },
-        agy: { installed: false, version: '', command: 'agy' }
+        claude: { installed: false, version: '', command: 'claude', path: '' },
+        agy: { installed: false, version: '', command: 'agy', path: '' }
     };
 
-    // Test Claude Code CLI
-    try {
-        const out = execSync('claude --version', {
-            stdio: ['pipe', 'pipe', 'pipe'],
-            timeout: 5000,
-            windowsHide: true
-        }).toString().trim();
-        if (out) {
-            results.claude = { installed: true, version: out, command: 'claude' };
+    // 1. Détection Claude Code CLI
+    const claudeBin = findClaudeBinary();
+    const claudeExists = fs.existsSync(claudeBin) || claudeBin === 'claude';
+    if (claudeExists) {
+        results.claude.installed = true;
+        results.claude.path = claudeBin;
+        results.claude.command = claudeBin;
+        try {
+            const v = execSync(`"${claudeBin}" --version`, {
+                timeout: 3000,
+                windowsHide: true,
+                stdio: ['ignore', 'pipe', 'ignore']
+            }).toString().trim();
+            results.claude.version = v || 'Claude Code CLI';
+        } catch (e) {
+            results.claude.version = 'Claude Code CLI (Détecté)';
         }
-    } catch (e) {
-        // Non installé ou introuvable dans le PATH
     }
 
-    // Test Antigravity CLI
-    try {
-        const out = execSync('agy --version', {
-            stdio: ['pipe', 'pipe', 'pipe'],
-            timeout: 7000,
-            windowsHide: true
-        }).toString().trim();
-        if (out) {
-            results.agy = { installed: true, version: out, command: 'agy' };
+    // 2. Détection Antigravity CLI
+    const agyBin = findAgyBinary();
+    const agyExists = fs.existsSync(agyBin) || agyBin === 'agy';
+    if (agyExists) {
+        results.agy.installed = true;
+        results.agy.path = agyBin;
+        results.agy.command = agyBin;
+        try {
+            const v = execSync(`"${agyBin}" --version`, {
+                timeout: 3000,
+                windowsHide: true,
+                stdio: ['ignore', 'pipe', 'ignore']
+            }).toString().trim();
+            results.agy.version = v ? `Antigravity ${v}` : 'Antigravity CLI';
+        } catch (e) {
+            results.agy.version = 'Antigravity CLI (Détecté)';
         }
-    } catch (e) {
-        // Non installé ou introuvable dans le PATH
     }
 
+    cachedDetection = results;
+    lastDetectionTime = Date.now();
     return results;
 }
 
@@ -332,66 +387,100 @@ async function callOpenRouterProvider(systemPrompt, userPrompt, temperature = 0.
 
 // 3d. Claude Code CLI local
 async function callClaudeCliProvider(systemPrompt, userPrompt) {
+    const claudeBin = findClaudeBinary();
     const agents = detectLocalAiAgents();
-    if (!agents.claude.installed) {
+    if (!agents.claude.installed && !fs.existsSync(claudeBin)) {
         throw new Error("Claude Code CLI n'est pas installé sur cet ordinateur");
     }
 
     const combinedPrompt = `${systemPrompt}\n\nIMPORTANT: Tu dois STRICTEMENT retourner un JSON valide sans aucun formatage Markdown ni texte conversationnel autour.\n\nDemande utilisateur:\n${userPrompt}`;
 
-    // Écrire le prompt dans un fichier temporaire pour éviter tout problème d'échappement shell
-    const tmpDir = path.join(USER_DATA_DIR, '07_Scripts', 'temp');
-    if (!fs.existsSync(tmpDir)) {
-        try { fs.mkdirSync(tmpDir, { recursive: true }); } catch (e) {}
-    }
-    const promptFile = path.join(tmpDir, `claude_prompt_${Date.now()}.txt`);
-    fs.writeFileSync(promptFile, combinedPrompt, 'utf8');
-
-    try {
-        return await new Promise((resolve, reject) => {
-            // Exécuter claude -p en lisant le fichier
-            const cmd = `claude -p "${combinedPrompt.replace(/"/g, '\\"').replace(/\n/g, ' ')}"`;
-            exec(cmd, { timeout: 35000, windowsHide: true }, (err, stdout, stderr) => {
-                try { if (fs.existsSync(promptFile)) fs.unlinkSync(promptFile); } catch (e) {}
-
-                if (err && !stdout) {
-                    return reject(new Error(`Claude Code CLI erreur: ${err.message}`));
-                }
-                try {
-                    const parsed = cleanAndParseJson(stdout || stderr);
-                    resolve(parsed);
-                } catch (pe) {
-                    reject(new Error(`Claude Code CLI n'a pas renvoyé de JSON valide: ${pe.message}`));
-                }
-            });
+    return new Promise((resolve, reject) => {
+        const child = spawn('cmd.exe', ['/c', claudeBin, '--bare', '--tools', '""', '-p', combinedPrompt], {
+            windowsHide: true,
+            stdio: ['ignore', 'pipe', 'pipe']
         });
-    } catch (e) {
-        try { if (fs.existsSync(promptFile)) fs.unlinkSync(promptFile); } catch (err) {}
-        throw e;
-    }
+
+        let stdout = '';
+        let stderr = '';
+
+        child.stdout.on('data', d => { stdout += d.toString(); });
+        child.stderr.on('data', d => { stderr += d.toString(); });
+
+        const timer = setTimeout(() => {
+            child.kill();
+            reject(new Error("Timeout (35s) dépassé pour Claude Code CLI"));
+        }, 35000);
+
+        child.on('close', code => {
+            clearTimeout(timer);
+            const combined = (stdout || '') + '\n' + (stderr || '');
+            if (combined.includes('unauthorized') || combined.includes('401') || combined.includes('UNAUTHENTICATED')) {
+                return reject(new Error("Claude Code CLI: Session expirée ou client non autorisé (401). Ouvrez un terminal et tapez `claude` pour vous reconnecter."));
+            }
+            if (code !== 0 && !stdout) {
+                return reject(new Error(`Claude Code CLI code ${code}: ${(stderr || 'Erreur exécution').slice(0, 200)}`));
+            }
+            try {
+                const parsed = cleanAndParseJson(stdout || stderr);
+                resolve(parsed);
+            } catch (pe) {
+                reject(new Error(`Claude Code CLI n'a pas renvoyé de JSON valide: ${pe.message}. Sortie: ${(stdout || stderr).slice(0, 150)}`));
+            }
+        });
+
+        child.on('error', err => {
+            clearTimeout(timer);
+            reject(new Error(`Erreur lancement Claude Code CLI (${claudeBin}): ${err.message}`));
+        });
+    });
 }
 
 // 3e. Antigravity CLI local
 async function callAgyCliProvider(systemPrompt, userPrompt) {
+    const agyBin = findAgyBinary();
     const agents = detectLocalAiAgents();
-    if (!agents.agy.installed) {
+    if (!agents.agy.installed && !fs.existsSync(agyBin)) {
         throw new Error("Antigravity CLI (agy) n'est pas installé sur cet ordinateur");
     }
 
     const combinedPrompt = `${systemPrompt}\n\nIMPORTANT: Tu dois STRICTEMENT retourner un JSON valide sans aucun formatage Markdown ni texte conversationnel autour.\n\nDemande utilisateur:\n${userPrompt}`;
 
     return new Promise((resolve, reject) => {
-        const cmd = `agy -p "${combinedPrompt.replace(/"/g, '\\"').replace(/\n/g, ' ')}"`;
-        exec(cmd, { timeout: 35000, windowsHide: true }, (err, stdout, stderr) => {
-            if (err && !stdout) {
-                return reject(new Error(`Antigravity CLI erreur: ${err.message}`));
+        const args = ['--disable-slash-commands', '--effort', 'low', '-p', combinedPrompt];
+        const child = spawn(agyBin, args, {
+            shell: false,
+            windowsHide: true,
+            stdio: ['ignore', 'pipe', 'pipe']
+        });
+
+        let stdout = '';
+        let stderr = '';
+
+        child.stdout.on('data', d => { stdout += d.toString(); });
+        child.stderr.on('data', d => { stderr += d.toString(); });
+
+        const timer = setTimeout(() => {
+            child.kill();
+            reject(new Error("Timeout (45s) dépassé pour Antigravity CLI"));
+        }, 45000);
+
+        child.on('close', code => {
+            clearTimeout(timer);
+            if (code !== 0 && !stdout) {
+                return reject(new Error(`Antigravity CLI code ${code}: ${(stderr || 'Erreur exécution').slice(0, 200)}`));
             }
             try {
                 const parsed = cleanAndParseJson(stdout || stderr);
                 resolve(parsed);
             } catch (pe) {
-                reject(new Error(`Antigravity CLI n'a pas renvoyé de JSON valide: ${pe.message}`));
+                reject(new Error(`Antigravity CLI n'a pas renvoyé de JSON valide: ${pe.message}. Sortie: ${(stdout || stderr).slice(0, 150)}`));
             }
+        });
+
+        child.on('error', err => {
+            clearTimeout(timer);
+            reject(new Error(`Erreur lancement Antigravity CLI (${agyBin}): ${err.message}`));
         });
     });
 }
