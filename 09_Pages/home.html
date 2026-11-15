@@ -13719,7 +13719,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
         let defaultKomboOrder = [
             { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Qwen 3.8 & Llama', model: 'qwen/qwen3.8-27b', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Qwen 3.8 & GPT-OSS 120B', model: 'qwen/qwen3.8-27b', enabled: true },
             { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
@@ -13827,7 +13827,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
                             <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8 - Testé OK)</option>
-                            <option value="llama-3.1-8b-instant" ${item.model === 'llama-3.1-8b-instant' ? 'selected' : ''}>llama-3.1-8b-instant (Ultra-rapide)</option>
+                            <option value="openai/gpt-oss-120b" ${item.model === 'openai/gpt-oss-120b' ? 'selected' : ''}>openai/gpt-oss-120b (GPT-OSS 120B - Testé OK)</option>
                         </select>
                     `;
                 } else if (item.id === 'openrouter') {
@@ -14022,7 +14022,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 geminiItem.model = 'gemini-3.5-flash-lite';
             }
             const groqItem = list.find(k => k.id === 'groq');
-            if (groqItem && (!groqItem.model || groqItem.model === 'llama-3.3-70b-versatile' || groqItem.model === 'mixtral-8x7b-32768')) {
+            if (groqItem && (!groqItem.model || groqItem.model.includes('llama') || groqItem.model.includes('mixtral'))) {
                 groqItem.model = 'qwen/qwen3.8-27b';
             }
         }
