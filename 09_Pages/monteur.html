@@ -2870,6 +2870,7 @@ Visuel : Découpage rapide sur les clips fournis avec effet sonore whoosh."></te
             const payload = {
                 fileName: autoName,
                 prompt: prompt,
+                preferredAi: localStorage.getItem('vibeeditor_preferred_ai') || 'kombo',
                 format: monteurSelectedFormat || '9:16',
                 useTemplate: false,
                 template: 'none',

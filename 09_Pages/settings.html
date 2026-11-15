@@ -1084,17 +1084,12 @@
                                 <option value="gemini-3.7-flash">gemini-3.7-flash — Gratuit (Raisonnement hybride Flash)</option>
                                 <option value="gemini-3.8-flash">gemini-3.8-flash — Gratuit (Dernière révision Flash)</option>
                             </optgroup>
-                            <optgroup label="Modèles Pro (Abonnements payants)">
-                                <option value="gemini-4-argon">gemini-4-argon — Argon Pro (Modèle de pointe)</option>
-                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview — Pro 3.1</option>
-                                <option value="gemini-pro-latest">gemini-pro-latest — Pro Latest</option>
-                            </optgroup>
                             <optgroup label="Autre">
                                 <option value="custom">Autre modèle personnalisé (saisie libre)...</option>
                             </optgroup>
                         </select>
                         <div id="customGeminiModelWrapper" style="display: none; margin-top: 8px;">
-                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-4-argon">
+                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-2.5-flash">
                         </div>
                     </div>
 
@@ -1267,6 +1262,7 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
+                        <div id="elevenlabsKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
                     </div>
 
                     <!-- HEYGEN API (VOICE TURBO & TTS) -->
@@ -1281,6 +1277,7 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
+                        <div id="heygenKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
                     </div>
 
                     <!-- PIXABAY (IMAGES, VECTEURS & B-ROLL) -->
@@ -1309,6 +1306,7 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
+                        <div id="coverrKeyStatus" style="display:none; font-size:12px; margin-top:4px;"></div>
                     </div>
 
                     <!-- BRANDFETCH (LOGOS VECTORIELS & COULEURS DE MARQUES) -->
@@ -1570,8 +1568,6 @@
                             <option value="gemini-3.5-flash" ${item.model === 'gemini-3.5-flash' ? 'selected' : ''}>gemini-3.5-flash</option>
                             <option value="gemini-flash-latest" ${item.model === 'gemini-flash-latest' ? 'selected' : ''}>gemini-flash-latest</option>
                             <option value="gemini-3.7-flash" ${item.model === 'gemini-3.7-flash' ? 'selected' : ''}>gemini-3.7-flash</option>
-                            <option value="gemini-4-argon" ${item.model === 'gemini-4-argon' ? 'selected' : ''}>gemini-4-argon (Pro)</option>
-                            <option value="gemini-pro-latest" ${item.model === 'gemini-pro-latest' ? 'selected' : ''}>gemini-pro-latest (Pro)</option>
                         </select>
                     `;
                 } else if (item.id === 'groq') {
@@ -1588,9 +1584,6 @@
                             <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning - Testé OK)</option>
                             <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat - Testé OK)</option>
                             <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash - Testé OK)</option>
-                            <option value="nvidia/nemotron-3.5-embed-8b:free" ${item.model === 'nvidia/nemotron-3.5-embed-8b:free' ? 'selected' : ''}>nvidia/nemotron-3.5-embed-8b:free (Embed)</option>
-                            <option value="nvidia/nemotron-3.5-rerank-8b:free" ${item.model === 'nvidia/nemotron-3.5-rerank-8b:free' ? 'selected' : ''}>nvidia/nemotron-3.5-rerank-8b:free (Rerank)</option>
-                            <option value="nvidia/nemotron-3-embed-1b:free" ${item.model === 'nvidia/nemotron-3-embed-1b:free' ? 'selected' : ''}>nvidia/nemotron-3-embed-1b:free (Embed)</option>
                         </select>
                     `;
                 } else if (item.id === 'claude_cli') {
@@ -1607,7 +1600,6 @@
                         <span class="kombo-priority-tag">${priorityLabel}</span>
                         <div class="kombo-name-block">
                             <span class="kombo-name">${item.name}</span>
-                            <span class="kombo-desc">${item.desc}</span>
                         </div>
                     </div>
                     <div class="kombo-right-group">
@@ -1743,8 +1735,12 @@
                 if (savedKombo) currentKomboOrder = JSON.parse(savedKombo);
             } catch (e) {}
             const openrouterItem = currentKomboOrder.find(k => k.id === 'openrouter');
-            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b'))) {
+            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b') || openrouterItem.model.includes('embed') || openrouterItem.model.includes('rerank'))) {
                 openrouterItem.model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+            }
+            const geminiItem = currentKomboOrder.find(k => k.id === 'gemini');
+            if (geminiItem && (geminiItem.model.includes('argon') || geminiItem.model.includes('pro'))) {
+                geminiItem.model = 'gemini-3.5-flash-lite';
             }
             renderKomboListUI();
             detectLocalAiAgentsUi(false);
@@ -1758,7 +1754,11 @@
             const savedSubtitleStyle = localStorage.getItem(PREF_KEY_SUBTITLE_STYLE);
             const savedGoogle = localStorage.getItem(API_KEY_GOOGLE);
 
-            const savedGeminiModel = localStorage.getItem(PREF_KEY_GEMINI_MODEL);
+            let savedGeminiModel = localStorage.getItem(PREF_KEY_GEMINI_MODEL);
+            if (savedGeminiModel && (savedGeminiModel.includes('argon') || savedGeminiModel.includes('pro'))) {
+                savedGeminiModel = 'gemini-3.5-flash-lite';
+                localStorage.setItem(PREF_KEY_GEMINI_MODEL, 'gemini-3.5-flash-lite');
+            }
             if (savedGeminiModel) setGeminiModelUI(savedGeminiModel);
 
             const savedElevenlabs = localStorage.getItem(API_KEY_ELEVENLABS);
@@ -2034,12 +2034,15 @@
             clearTimeout(heygenKeyChangeTimeout);
             heygenKeyChangeTimeout = setTimeout(() => {
                 const key = document.getElementById('apiKeyHeygen').value.trim();
+                const statusEl = document.getElementById('heygenKeyStatus');
                 if (key) {
                     loadHeyGenVoicesFromUi();
                 } else {
-                    document.getElementById('heygenKeyStatus').innerHTML = `
-                        <span style="color:var(--text-muted);">Synchronisez vos voix HeyGen officielles et personnalisées.</span>
-                    `;
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <span style="color:var(--text-muted);">Synchronisez vos voix HeyGen officielles et personnalisées.</span>
+                        `;
+                    }
                 }
             }, 600);
         }
@@ -2098,13 +2101,16 @@
             clearTimeout(keyChangeTimeout);
             keyChangeTimeout = setTimeout(() => {
                 const key = document.getElementById('apiKeyElevenlabs').value.trim();
+                const statusEl = document.getElementById('elevenlabsKeyStatus');
                 if (key) {
                     loadVoices(key);
                     loadElevenLabsSubscription(key);
                 } else {
-                    document.getElementById('elevenlabsKeyStatus').innerHTML = `
-                        <span style="color:var(--text-muted);">Saisissez votre clé ElevenLabs pour synchroniser automatiquement vos voix.</span>
-                    `;
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <span style="color:var(--text-muted);">Saisissez votre clé ElevenLabs pour synchroniser automatiquement vos voix.</span>
+                        `;
+                    }
                     const usageBox = document.getElementById('elevenlabsUsageBox');
                     if (usageBox) usageBox.style.display = 'none';
                 }
@@ -2113,10 +2119,13 @@
 
         async function loadVoicesFromUi() {
             const key = document.getElementById('apiKeyElevenlabs').value.trim();
+            const statusEl = document.getElementById('elevenlabsKeyStatus');
             if (!key) {
-                document.getElementById('elevenlabsKeyStatus').innerHTML = `
-                    <span style="color:#ff4444;">Veuillez renseigner votre clé API ElevenLabs ci-dessus d'abord.</span>
-                `;
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#ff4444;">Veuillez renseigner votre clé API ElevenLabs ci-dessus d'abord.</span>
+                    `;
+                }
                 return;
             }
             await loadVoices(key);
@@ -2126,7 +2135,7 @@
         async function loadVoices(key, voiceToSelect = null) {
             const statusEl = document.getElementById('elevenlabsKeyStatus');
             const selectEl = document.getElementById('elevenlabsVoiceId');
-            statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement de vos voix ElevenLabs...</span>`;
+            if (statusEl) statusEl.innerHTML = `<span style="color:#ffbb00;">⏳ Chargement de vos voix ElevenLabs...</span>`;
 
             try {
                 let data = null;
@@ -2191,13 +2200,17 @@
 
                 onVoiceSelected();
 
-                statusEl.innerHTML = `
-                    <span style="color:#10b981;">✅ ${data.total} voix disponibles (${data.customVoices ? data.customVoices.length : 0} personnalisées).</span>
-                `;
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#10b981;">✅ ${data.total} voix disponibles (${data.customVoices ? data.customVoices.length : 0} personnalisées).</span>
+                    `;
+                }
             } catch (err) {
-                statusEl.innerHTML = `
-                    <span style="color:#ff4444;">❌ ${err.message || 'Impossible de joindre l\\\'API ElevenLabs.'}</span>
-                `;
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span style="color:#ff4444;">❌ ${err.message || 'Impossible de joindre l\\\'API ElevenLabs.'}</span>
+                    `;
+                }
             }
         }
 
@@ -2454,15 +2467,19 @@
             const key = keyInput ? keyInput.value.trim() : '';
 
             if (!key) {
-                statusEl.style.display = 'flex';
-                statusEl.style.color = '#ef4444';
-                statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> <span>Veuillez d'abord saisir une clé API Coverr.</span>`;
+                if (statusEl) {
+                    statusEl.style.display = 'flex';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> <span>Veuillez d'abord saisir une clé API Coverr.</span>`;
+                }
                 return;
             }
 
-            statusEl.style.display = 'flex';
-            statusEl.style.color = 'var(--text-secondary)';
-            statusEl.innerHTML = `<span>⏳ Test de connexion à Coverr.co en cours...</span>`;
+            if (statusEl) {
+                statusEl.style.display = 'flex';
+                statusEl.style.color = 'var(--text-secondary)';
+                statusEl.innerHTML = `<span>⏳ Test de connexion à Coverr.co en cours...</span>`;
+            }
 
             try {
                 let data = null;
@@ -2499,16 +2516,22 @@
                 }
 
                 if (data.valid) {
-                    statusEl.style.color = '#10b981';
-                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Connexion réussie ! Clé Coverr.co valide (${data.totalAvailable || 0} vidéos accessibles).</span>`;
+                    if (statusEl) {
+                        statusEl.style.color = '#10b981';
+                        statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Connexion réussie ! Clé Coverr.co valide (${data.totalAvailable || 0} vidéos accessibles).</span>`;
+                    }
                     localStorage.setItem(API_KEY_COVERR, key);
                 } else {
-                    statusEl.style.color = '#ef4444';
-                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>${data.error || 'Clé Coverr invalide.'}</span>`;
+                    if (statusEl) {
+                        statusEl.style.color = '#ef4444';
+                        statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>${data.error || 'Clé Coverr invalide.'}</span>`;
+                    }
                 }
             } catch (err) {
-                statusEl.style.color = '#ef4444';
-                statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>Erreur de test : ${err.message}</span>`;
+                if (statusEl) {
+                    statusEl.style.color = '#ef4444';
+                    statusEl.innerHTML = `<svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <span>Erreur de test : ${err.message}</span>`;
+                }
             }
         }
 

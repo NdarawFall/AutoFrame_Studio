@@ -145,8 +145,8 @@ function isColorLight(colorStr) {
 // Appel sécurisé à Google Gemini API (Multi-modèles, IPv4 forcé, timeout, retry)
 // Appel IA via le Kombo Multi-Modèles (Gemini, Groq, OpenRouter, Claude Code CLI, Antigravity)
 const { callAiKombo } = require('./ai_kombo.cjs');
-async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7) {
-    return await callAiKombo(systemPrompt, userPrompt, temperature);
+async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7, preferredAi = null) {
+    return await callAiKombo(systemPrompt, userPrompt, temperature, preferredAi);
 }
 
 // Extraction d'un slug court, clair et pertinent (2 à 3 mots clés du sujet)
@@ -373,7 +373,8 @@ async function generateSceneCodeWithGemini({
     accentColor,
     availableAssetsList,
     skillsDirectives,
-    templateDirectives
+    templateDirectives,
+    preferredAi = null
 }) {
     const isFirstScene = (sceneIndex === 1);
     const systemPrompt = `Tu es l'Expert Motion Designer et Développeur GSAP en chef de AutoFrame.
@@ -422,7 +423,7 @@ ${availableAssetsList.join('\n') || '- Générer des éléments vectoriels SVG.'
 
 Réponds UNIQUEMENT en JSON.`;
 
-    const res = await callGeminiAPI(systemPrompt, userPrompt, 0.7);
+    const res = await callGeminiAPI(systemPrompt, userPrompt, 0.7, preferredAi);
     if (res && res.htmlContent && res.gsapTimelineCode) {
         return res;
     }
@@ -440,6 +441,7 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     const channelId = (payload.channelId || payload.channel || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
     const isChannel = Boolean(channelId);
     const format = ['16:9', '9:16', '1:1'].includes(payload.format) ? payload.format : '16:9';
+    const preferredAi = payload.preferredAi || null;
 
     // Détection de durée demandée dans le brief (ex: "20 secondes", "30s", "15 sec")
     let promptDuration = null;
@@ -734,7 +736,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
 ` : ''}`;
 
         try {
-            plan = await callGeminiAPI(systemPrompt, userPromptText, 0.7);
+            plan = await callGeminiAPI(systemPrompt, userPromptText, 0.7, preferredAi);
         } catch (geminiError) {
             console.warn("[Plan Gen Fallback]:", geminiError.message);
             let fallbackNarration = `${prompt}. Découvrez cette histoire fascinante en quelques secondes.`;
@@ -1102,7 +1104,8 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                 accentColor,
                 availableAssetsList,
                 skillsDirectives,
-                templateDirectives
+                templateDirectives,
+                preferredAi
             });
         } catch (scErr) {
             console.warn(`[Scene ${scNum} Fallback] :`, scErr.message);

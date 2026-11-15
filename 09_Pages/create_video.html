@@ -2783,6 +2783,18 @@
                     <span>1. Prompt Général</span>
                 </span>
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <!-- SÉLECTEUR DU MOTEUR IA (Kombo Automatique, Gemini, Claude Code, Antigravity) -->
+                    <div style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.05); padding: 3px 8px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.12);">
+                        <svg class="icon" viewBox="0 0 24 24" style="width: 13px; height: 13px; color: #3b82f6;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <label for="selectAiEngine" style="font-size: 11px; font-weight: 600; color: #a3a3a3; cursor: pointer; white-space: nowrap;">Moteur IA :</label>
+                        <select id="selectAiEngine" class="form-select" onchange="onAiEngineChanged(this.value)" style="padding: 2px 8px; font-size: 11.5px; height: 26px; min-width: 175px; background: transparent; border: none; color: #ffffff; cursor: pointer; font-weight: 600;">
+                            <option value="kombo" style="background:#14161b; color:#ffffff;" selected>⚡ Kombo IA (Automatique)</option>
+                            <option value="gemini" style="background:#14161b; color:#ffffff;">Google Gemini</option>
+                            <option value="claude_cli" style="background:#14161b; color:#ffffff;">Claude Code CLI</option>
+                            <option value="agy_cli" style="background:#14161b; color:#ffffff;">Antigravity CLI (agy)</option>
+                        </select>
+                    </div>
+
                     <span class="folder-badge" style="background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);">Étape 1 / 2</span>
                     <!-- Switch pour activer/désactiver le script horodaté -->
                     <label class="switch-script-container" title="Activer pour renseigner un script scène par scène">
@@ -5489,6 +5501,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
+        function onAiEngineChanged(val) {
+            try {
+                localStorage.setItem('vibeeditor_preferred_ai', val);
+            } catch(e) {}
+        }
+
         function onMontageStyleChange(styleId) {
             selectMontageStyle(styleId);
         }
@@ -5497,6 +5515,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         window.addEventListener('load', async () => {
             initHeaderProfile();
             applyAppInitialDefaults();
+
+            // Restauration du moteur IA préféré
+            const savedAi = localStorage.getItem('vibeeditor_preferred_ai');
+            if (savedAi && document.getElementById('selectAiEngine')) {
+                document.getElementById('selectAiEngine').value = savedAi;
+            }
             // Affichage des cartes de style avec Sans Template ("Libre") sélectionné par défaut
             renderStyleCards(DEFAULT_STYLES);
             renderGradientStopsUI();
@@ -5740,9 +5764,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const voiceFile = assetsState.Voix_Off.length > 0 ? assetsState.Voix_Off[0].name : '';
             const musicFile = assetsState.Musiques.length > 0 ? assetsState.Musiques[0].name : '';
 
+            const preferredAi = document.getElementById('selectAiEngine')?.value || 'kombo';
+
             const payload = {
                 fileName: autoName,
                 prompt,
+                preferredAi,
                 useTemplate,
                 template: currentSelectedStyle,
                 format,

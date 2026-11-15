@@ -488,8 +488,29 @@ async function callAgyCliProvider(systemPrompt, userPrompt) {
 // -----------------------------------------------------------------------------
 // 4. MOTEUR DU KOMBO IA (ORCHESTRATION & BASCULE AUTOMATIQUE)
 // -----------------------------------------------------------------------------
-async function callAiKombo(systemPrompt, userPrompt, temperature = 0.7) {
+async function callAiKombo(systemPrompt, userPrompt, temperature = 0.7, preferredAi = null) {
     const config = loadApiConfig();
+
+    // 0. Si une IA spécifique est demandée par l'utilisateur (ex: 'gemini', 'claude_cli', 'agy_cli')
+    if (preferredAi && preferredAi !== 'kombo' && preferredAi !== 'auto') {
+        const pId = String(preferredAi).toLowerCase().trim();
+        console.log(`[IA Spécifique] Exécution directe demandée pour : ${pId}`);
+        try {
+            if (pId === 'gemini') {
+                return await callGeminiProvider(systemPrompt, userPrompt, temperature, config.gemini_model || 'gemini-3.5-flash-lite');
+            } else if (pId === 'claude_cli' || pId === 'claude') {
+                return await callClaudeCliProvider(systemPrompt, userPrompt);
+            } else if (pId === 'agy_cli' || pId === 'antigravity') {
+                return await callAgyCliProvider(systemPrompt, userPrompt);
+            } else if (pId === 'groq') {
+                return await callGroqProvider(systemPrompt, userPrompt, temperature, config.groq_model || 'llama-3.3-70b-versatile');
+            } else if (pId === 'openrouter') {
+                return await callOpenRouterProvider(systemPrompt, userPrompt, temperature, config.openrouter_model || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free');
+            }
+        } catch (specErr) {
+            console.warn(`[IA Spécifique] Échec direct de ${pId} (${specErr.message}). Bascule automatique sur le Kombo IA de secours...`);
+        }
+    }
 
     // 1. Déterminer l'ordre des modèles du Kombo
     // Par défaut de base : Gemini est sélectionné en priorité 1, avec fallback sur les autres
