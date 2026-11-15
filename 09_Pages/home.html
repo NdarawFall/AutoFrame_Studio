@@ -9093,7 +9093,11 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             localStorage.setItem('autoframe_active_view', viewName);
             window.location.hash = '#' + viewName;
             const earlyStyle = document.getElementById('spaEarlyStyle');
-            if (earlyStyle) earlyStyle.remove();
+            if (earlyStyle && typeof earlyStyle.remove === 'function') {
+                earlyStyle.remove();
+            } else if (earlyStyle && earlyStyle.parentNode) {
+                earlyStyle.parentNode.removeChild(earlyStyle);
+            }
 
             // Mise à jour de la topbar (Noms stricts des sections sans fioritures)
             const viewTitles = {
@@ -12415,7 +12419,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 if (isDisabled) {
                     container.style.opacity = '0.35';
                     container.style.pointerEvents = 'none';
-                    if (audioPreview) audioPreview.pause();
+                    if (audioPreview && typeof audioPreview.pause === 'function') audioPreview.pause();
                 } else {
                     container.style.opacity = '1';
                     container.style.pointerEvents = 'auto';
