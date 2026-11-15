@@ -269,7 +269,7 @@ async function callGroqProvider(systemPrompt, userPrompt, temperature = 0.7, pre
         throw new Error("Clé API Groq manquante dans api_config.json");
     }
 
-    const model = preferredModel || config.groq_model || 'llama-3.3-70b-versatile';
+    const model = preferredModel || config.groq_model || 'qwen/qwen3.8-27b';
 
     const postData = JSON.stringify({
         model: model,
@@ -539,7 +539,7 @@ async function callAiKombo(systemPrompt, userPrompt, temperature = 0.7, preferre
             } else if (pId === 'agy_cli' || pId === 'antigravity') {
                 return await callAgyCliProvider(systemPrompt, userPrompt);
             } else if (pId === 'groq') {
-                return await callGroqProvider(systemPrompt, userPrompt, temperature, config.groq_model || 'llama-3.3-70b-versatile');
+                return await callGroqProvider(systemPrompt, userPrompt, temperature, config.groq_model || 'qwen/qwen3.8-27b');
             } else if (pId === 'openrouter') {
                 return await callOpenRouterProvider(systemPrompt, userPrompt, temperature, config.openrouter_model || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free');
             }
@@ -561,7 +561,7 @@ async function callAiKombo(systemPrompt, userPrompt, temperature = 0.7, preferre
     if (komboList.length === 0) {
         komboList = [
             { id: 'gemini', name: 'Google Gemini', model: config.gemini_model || 'gemini-2.5-flash', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', model: config.groq_model || 'llama-3.3-70b-versatile', enabled: Boolean(config.groq_api_key) },
+            { id: 'groq', name: 'Groq Cloud AI', model: config.groq_model || 'qwen/qwen3.8-27b', enabled: Boolean(config.groq_api_key) },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', model: 'local', enabled: true },
             { id: 'openrouter', name: 'OpenRouter (Modèles gratuits / Nvidia)', model: config.openrouter_model || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: Boolean(config.openrouter_api_key) },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', model: 'local', enabled: true }

@@ -13719,7 +13719,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
         let defaultKomboOrder = [
             { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Llama 3.3', model: 'llama-3.3-70b-versatile', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Qwen 3.8 & Llama', model: 'qwen/qwen3.8-27b', enabled: true },
             { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
@@ -13826,9 +13826,8 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 } else if (item.id === 'groq') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
-                            <option value="llama-3.3-70b-versatile" ${item.model === 'llama-3.3-70b-versatile' ? 'selected' : ''}>llama-3.3-70b-versatile</option>
+                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8 - Testé OK)</option>
                             <option value="llama-3.1-8b-instant" ${item.model === 'llama-3.1-8b-instant' ? 'selected' : ''}>llama-3.1-8b-instant (Ultra-rapide)</option>
-                            <option value="mixtral-8x7b-32768" ${item.model === 'mixtral-8x7b-32768' ? 'selected' : ''}>mixtral-8x7b-32768</option>
                         </select>
                     `;
                 } else if (item.id === 'openrouter') {
@@ -14012,6 +14011,22 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
         function handleOpenRouterKeyChange() {}
 
+        function normalizeKomboModels(list) {
+            if (!Array.isArray(list)) return;
+            const openrouterItem = list.find(k => k.id === 'openrouter');
+            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b') || openrouterItem.model.includes('embed') || openrouterItem.model.includes('rerank'))) {
+                openrouterItem.model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+            }
+            const geminiItem = list.find(k => k.id === 'gemini');
+            if (geminiItem && (geminiItem.model.includes('argon') || geminiItem.model.includes('pro'))) {
+                geminiItem.model = 'gemini-3.5-flash-lite';
+            }
+            const groqItem = list.find(k => k.id === 'groq');
+            if (groqItem && (!groqItem.model || groqItem.model === 'llama-3.3-70b-versatile' || groqItem.model === 'mixtral-8x7b-32768')) {
+                groqItem.model = 'qwen/qwen3.8-27b';
+            }
+        }
+
         // CHARGEMENT INITIAL (LocalStorage + /api/settings api_config.json)
         window.addEventListener('load', async () => {
             // Initialisation synchrone immédiate du Kombo IA
@@ -14019,14 +14034,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 const savedKombo = localStorage.getItem('autoframe_ai_kombo_order');
                 if (savedKombo) currentKomboOrder = JSON.parse(savedKombo);
             } catch (e) {}
-            const openrouterItem = currentKomboOrder.find(k => k.id === 'openrouter');
-            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b') || openrouterItem.model.includes('embed') || openrouterItem.model.includes('rerank'))) {
-                openrouterItem.model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
-            }
-            const geminiItem = currentKomboOrder.find(k => k.id === 'gemini');
-            if (geminiItem && (geminiItem.model.includes('argon') || geminiItem.model.includes('pro'))) {
-                geminiItem.model = 'gemini-3.5-flash-lite';
-            }
+            normalizeKomboModels(currentKomboOrder);
             renderKomboListUI();
             detectLocalAiAgentsUi(false);
             // 1. LocalStorage
@@ -14102,6 +14110,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     }
                     if (Array.isArray(cfg.ai_kombo_order) && cfg.ai_kombo_order.length > 0) {
                         currentKomboOrder = cfg.ai_kombo_order;
+                        normalizeKomboModels(currentKomboOrder);
                     }
                     renderKomboListUI();
                     detectLocalAiAgentsUi(false);

@@ -91,7 +91,7 @@ const DEFAULT_CONFIG = {
     heygen_api_key: "",
     heygen_voice_id: "b11a7dbb250f483eadad9fb253e7d313",
     groq_api_key: "",
-    groq_model: "llama-3.3-70b-versatile",
+    groq_model: "llama-3.1-8b-instant",
     openrouter_api_key: "",
     openrouter_model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
 };

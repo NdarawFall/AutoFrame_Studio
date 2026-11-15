@@ -1493,7 +1493,7 @@
 
         let defaultKomboOrder = [
             { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Llama 3.3', model: 'llama-3.3-70b-versatile', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Llama 3.1 & Qwen', model: 'llama-3.1-8b-instant', enabled: true },
             { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
@@ -1600,9 +1600,8 @@
                 } else if (item.id === 'groq') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
-                            <option value="llama-3.3-70b-versatile" ${item.model === 'llama-3.3-70b-versatile' ? 'selected' : ''}>llama-3.3-70b-versatile</option>
+                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8 - Testé OK)</option>
                             <option value="llama-3.1-8b-instant" ${item.model === 'llama-3.1-8b-instant' ? 'selected' : ''}>llama-3.1-8b-instant (Ultra-rapide)</option>
-                            <option value="mixtral-8x7b-32768" ${item.model === 'mixtral-8x7b-32768' ? 'selected' : ''}>mixtral-8x7b-32768</option>
                         </select>
                     `;
                 } else if (item.id === 'openrouter') {
