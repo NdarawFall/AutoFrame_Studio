@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoFrame V1.0 — Logiciel de Montage & Production Vidéo IA</title>
+    <title>MarvidFlow V1.0 — Logiciel de Montage & Production Vidéo IA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -6451,8 +6451,8 @@
     <!-- TOP APPLICATION BAR -->
     <header class="app-topbar">
         <div class="topbar-left">
-            <a href="#dashboard" class="brand-badge" title="AutoFrame Logiciel Pro">
-                <span class="brand-name">AutoFrame</span>
+            <a href="#dashboard" class="brand-badge" title="MarvidFlow Logiciel Pro">
+                <span class="brand-name">MarvidFlow</span>
                 <span class="brand-version">V1.0</span>
             </a>
             <div class="topbar-active-view-tag">
@@ -8028,7 +8028,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                 <div class="monitor-screen-canvas" id="monitorScreenCanvas">
                                     <div class="monitor-grid-overlay"></div>
                                     <div class="monitor-scene-content" id="monitorSceneContent">
-                                        <span class="mock-stage-badge" id="mockStageBadge">✦ AutoFrame 1.0</span>
+                                        <span class="mock-stage-badge" id="mockStageBadge">✦ MarvidFlow 1.0</span>
                                         <h2 class="mock-stage-headline" id="mockStageHeadline">TITRE DE VOTRE VIDÉO</h2>
                                         <p class="mock-stage-subheadline" id="mockStageSubheadline">Contraste élevé & Lisibilité 60 FPS</p>
                                         <div class="mock-stage-card" id="mockStageCard">
@@ -9064,6 +9064,61 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     <span>Supprimer définitivement</span>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- 9c. MODAL D'AIDE ET SUPPORT -->
+    <div class="modal-overlay" id="helpSupportModal" onclick="handleModalOutsideClick(event, 'helpSupportModal')">
+        <div class="modal-dialog" style="max-width: 500px; background: #0e1017; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 14px; box-shadow: 0 25px 80px rgba(0,0,0,0.9); overflow: hidden;">
+            <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; color: #60a5fa;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 17px; height: 17px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; margin: 0;">Centre d'Aide & Support</h3>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">MarvidFlow • Assistance directe</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-modal-close" onclick="closeHelpSupportModal()">✕</button>
+            </div>
+            
+            <form onsubmit="handleSendSupportEmail(event)" style="margin: 0;">
+                <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                    <p style="font-size: 13px; color: #d4d4d8; line-height: 1.5; margin: 0;">
+                        Une question, une suggestion ou un souci ? Envoyez directement votre message au développeur.
+                    </p>
+
+                    <!-- Contact direct -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; color: #60a5fa;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <span style="font-size: 12.5px; font-weight: 600; color: #ffffff;">pro.ndarawfall@gmail.com</span>
+                        </div>
+                        <button type="button" onclick="navigator.clipboard.writeText('pro.ndarawfall@gmail.com'); showToast('Email copié dans le presse-papier !', '📋')" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #e4e4e7; cursor: pointer;">
+                            Copier
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Sujet</label>
+                        <input type="text" id="helpSupportSubject" class="form-input" placeholder="Ex: Suggestion, question..." required style="width: 100%; box-sizing: border-box;">
+                    </div>
+
+                    <div>
+                        <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Votre message</label>
+                        <textarea id="helpSupportMessage" class="form-input" style="min-height: 90px; width: 100%; box-sizing: border-box; resize: vertical;" placeholder="Décrivez votre demande..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-modal-cancel" onclick="closeHelpSupportModal()">Annuler</button>
+                    <button type="submit" class="btn-modal-submit" style="background: #3b82f6; border-color: #3b82f6; display: inline-flex; align-items: center; gap: 7px; color: #ffffff; font-weight: 700;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        <span>Envoyer par email</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -11331,8 +11386,29 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         });
 
         function openTutorialVideoModal() {
-            // Grand player modal avec tutoriel AutoFrame Studio
-            openGrandVideoPlayer('../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 'Tutoriel AutoFrame Studio — Guide & Prise en main', '16:9', '01:24');
+            // Grand player modal avec tutoriel MarvidFlow Studio
+            openGrandVideoPlayer('../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 'Tutoriel MarvidFlow Studio — Guide & Prise en main', '16:9', '01:24');
+        }
+
+        // --- CENTRE D'AIDE ET SUPPORT DIRECT ---
+        function openHelpSupportModal() {
+            const modal = document.getElementById('helpSupportModal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeHelpSupportModal() {
+            const modal = document.getElementById('helpSupportModal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        function handleSendSupportEmail(e) {
+            if (e) e.preventDefault();
+            const subject = encodeURIComponent((document.getElementById('helpSupportSubject')?.value || 'Support MarvidFlow').trim());
+            const msg = encodeURIComponent((document.getElementById('helpSupportMessage')?.value || '').trim());
+            const mailtoUrl = `mailto:pro.ndarawfall@gmail.com?subject=${subject}&body=${msg}`;
+            window.location.href = mailtoUrl;
+            closeHelpSupportModal();
+            showToast('Ouverture de votre messagerie vers pro.ndarawfall@gmail.com !', '✉️');
         }
 
         function handleGlobalSearch() {
@@ -11652,11 +11728,11 @@ Visuel : Rapprochement vitres de l'avion, fondu lumineux élégant et révélati
         }
 
         // --- GESTION DU MODAL GUIDE IA EXTERNE ---
-        const PROMPT_DOC_TEXT = `Tu es le Scénariste et Directeur Artistique de AutoFrame, un moteur de motion design vidéo 60 FPS basé sur Canvas 2D et GSAP.
+        const PROMPT_DOC_TEXT = `Tu es le Scénariste et Directeur Artistique de MarvidFlow, un moteur de motion design vidéo 60 FPS basé sur Canvas 2D et GSAP.
 Je souhaite créer une vidéo sur le sujet suivant :
 « [INSÉRER LE SUJET DE LA VIDÉO ICI] »
 
-Contraintes techniques de AutoFrame :
+Contraintes techniques de MarvidFlow :
 1. Format : [16:9 horizontal OU 9:16 vertical].
 2. Durée totale : [ex: 15 secondes / 20 secondes / 30 secondes].
 3. Style : [ex: Sport Broadcast, Minimaliste Tech, Growkaw Motivation, SaaS Explainer].
@@ -15404,7 +15480,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             </div>
             <div style="padding: 20px 24px; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
                 <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
-                    AutoFrame dispose de tous les outils nécessaires : <strong style="color: #ffffff;">HeyGen & ElevenLabs</strong> (voix off), <strong style="color: #ffffff;">Brandfetch</strong> (logos officiels), <strong style="color: #ffffff;">FFmpeg & yt-dlp</strong> (B-Roll fluide 60 FPS), <strong style="color: #ffffff;">fetch_map & fetch_flag</strong> (cartes et drapeaux vectoriels).<br>
+                    MarvidFlow dispose de tous les outils nécessaires : <strong style="color: #ffffff;">HeyGen & ElevenLabs</strong> (voix off), <strong style="color: #ffffff;">Brandfetch</strong> (logos officiels), <strong style="color: #ffffff;">FFmpeg & yt-dlp</strong> (B-Roll fluide 60 FPS), <strong style="color: #ffffff;">fetch_map & fetch_flag</strong> (cartes et drapeaux vectoriels).<br>
                     Copiez le prompt ci-dessous dans votre IA préférée (Claude 3.7, Grok 3, ChatGPT ou Gemini) pour obtenir directement un script horodaté conforme aux règles du studio :
                 </p>
                 <div style="position: relative;">

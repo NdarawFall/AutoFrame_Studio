@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paramètres — AutoFrame 1.0</title>
+    <title>Paramètres — MarvidFlow 1.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -875,8 +875,8 @@
             <a href="home.html" class="nav-btn btn-icon-home" title="Accueil" aria-label="Accueil">
                 <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             </a>
-            <a href="home.html" class="brand-badge" title="AutoFrame V1.0">
-                <span class="brand-name">AutoFrame</span>
+            <a href="home.html" class="brand-badge" title="MarvidFlow V1.0">
+                <span class="brand-name">MarvidFlow</span>
                 <span class="brand-version">V1.0</span>
             </a>
         </div>
@@ -1246,11 +1246,11 @@
                         </div>
                     </div>
 
-                    <!-- GROQ CLOUD AI (INFÉRENCE ULTRA-RAPIDE) -->
+                    <!-- GROQ CLOUD -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Groq Cloud (Llama 3.3 Ultra-Rapide)</span>
-                            <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">Obtenir une clé gratuite ↗</a>
+                            <span>Clé API Groq</span>
+                            <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyGroq" placeholder="gsk_..." oninput="handleGroqKeyChange()">
@@ -1260,10 +1260,10 @@
                         </div>
                     </div>
 
-                    <!-- OPENROUTER (MODÈLES GRATUITS NVIDIA & MULTI-IA) -->
+                    <!-- OPENROUTER -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>OpenRouter (Modèles Gratuits Nvidia & Multi-IA)</span>
+                            <span>Clé API OpenRouter</span>
                             <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
@@ -1489,9 +1489,9 @@
         let detectedAgents = { claude: { installed: false }, agy: { installed: false } };
 
         let defaultKomboOrder = [
-            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Qwen 3.8 & GPT-OSS 120B', model: 'qwen/qwen3.8-27b', enabled: true },
-            { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
+            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
+            { id: 'groq', name: 'Groq Cloud', desc: '', model: 'qwen/qwen3.8-27b', enabled: true },
+            { id: 'openrouter', name: 'OpenRouter', desc: '', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
         ];
