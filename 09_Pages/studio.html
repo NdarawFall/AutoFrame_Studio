@@ -1534,7 +1534,6 @@
                         </div>
                     </div>
                 </div>
-                </div>
 
             </div>
 
@@ -1840,7 +1839,7 @@
         let activeVideoPath = '';
         function normalizeVideoPath(p) {
             if (!p) return '';
-            let s = String(p).trim().replace(/^\/+/, '');
+            let s = String(p).trim().replace(/^(\.\.\/|\.\/|\/)+/, '');
             if (!s.includes('/') && !s.startsWith('04_Videos') && !s.startsWith('03_Chaines')) {
                 s = '04_Videos/' + s;
             }
