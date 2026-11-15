@@ -8949,6 +8949,11 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     <h3 id="grandPlayerTitle" class="video-player-heading">Aperçu Vidéo</h3>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
+                    <!-- Bouton Supprimer la vidéo -->
+                    <button type="button" class="btn-card-action btn-delete-player-video" onclick="openDeleteVideoConfirmModal()" style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.28); padding: 7px 13px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.15s ease;" title="Supprimer cette vidéo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Supprimer</span>
+                    </button>
                     <!-- Bouton Aller dans le Studio (texte corrigé !) -->
                     <a id="grandPlayerStudioLink" href="studio.html" class="btn-card-action" style="background: #ffffff; color: #000000; font-weight: 700; border-color: #ffffff; padding: 7px 14px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
@@ -8988,7 +8993,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         </button>
 
                         <!-- Timeline Scrubber -->
-                        <div class="player-scrubber-track" id="playerScrubberTrack" onclick="seekCompositionPlayback(event)">
+                        <div class="player-scrubber-track" id="playerScrubberTrack" onmousedown="startPlayerScrub(event)" onclick="handlePlayerScrub(event)">
                             <div class="player-scrubber-progress" id="playerScrubberProgress" style="width: 0%;"></div>
                             <div class="player-scrubber-handle" id="playerScrubberHandle" style="left: 0%;"></div>
                         </div>
@@ -9012,6 +9017,36 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9b. MODAL DE CONFIRMATION DE SUPPRESSION DE VIDÉO -->
+    <div class="modal-overlay" id="deleteVideoConfirmModal" onclick="handleModalOutsideClick(event, 'deleteVideoConfirmModal')">
+        <div class="modal-dialog" style="max-width: 440px; background: #12141c; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; box-shadow: 0 25px 80px rgba(0,0,0,0.9); overflow: hidden;">
+            <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; color: #f87171;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </div>
+                    <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; margin: 0;">Supprimer la vidéo</h3>
+                </div>
+                <button type="button" class="btn-modal-close" onclick="closeDeleteVideoConfirmModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 20px; color: #d4d4d8; font-size: 13.5px; line-height: 1.5;">
+                <p style="margin-bottom: 12px;">Êtes-vous sûr de vouloir supprimer définitivement cette vidéo de votre dashboard ?</p>
+                <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; color: #a1a1aa; flex-shrink: 0;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span id="deleteVideoConfirmTitle" style="font-weight: 600; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Titre de la vidéo</span>
+                </div>
+                <p style="margin-top: 12px; font-size: 12px; color: #71717a;">Cette action retirera le projet de votre espace de travail et de votre tableau de bord.</p>
+            </div>
+            <div class="modal-footer" style="padding: 14px 20px; background: rgba(0,0,0,0.25); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-modal-cancel" onclick="closeDeleteVideoConfirmModal()" style="padding: 8px 16px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #e4e4e7; font-weight: 600; cursor: pointer;">Annuler</button>
+                <button type="button" class="btn-modal-submit" onclick="executeDeleteCurrentVideo()" style="padding: 8px 18px; border-radius: 8px; background: #ef4444; border: 1px solid #dc2626; color: #ffffff; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Supprimer définitivement</span>
+                </button>
             </div>
         </div>
     </div>
@@ -9307,6 +9342,14 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     lastOpened: v.lastOpened || ts
                 };
             });
+
+            // Filtrer les vidéos supprimées par l'utilisateur
+            try {
+                const deletedList = JSON.parse(localStorage.getItem('autoframe_deleted_videos') || '[]');
+                if (deletedList.length > 0) {
+                    allVideosList = allVideosList.filter(v => !deletedList.includes(v.videoPath) && !deletedList.includes(v.title));
+                }
+            } catch(e) {}
 
             // D. Assets
             if (!assetsCatalogList || assetsCatalogList.length < FULL_EMBEDDED_CATALOG.length) {
@@ -10217,31 +10260,22 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
             if (activeClient.categories && activeClient.categories[cat]) {
                 activeClient.categories[cat] = activeClient.categories[cat].filter(f => f.name !== filename);
+                showToast('Fichier supprimé', '🗑️');
+                renderActiveClientWorkspace();
             }
-            renderActiveClientWorkspace();
-            showToast(`Fichier "${filename}" supprimé`);
         }
 
-        function openCreateClientModal() {
-            document.getElementById('newClientNameInput').value = '';
-            document.getElementById('createClientModal').classList.add('open');
-        }
-
-        function closeCreateClientModal() {
-            document.getElementById('createClientModal').classList.remove('open');
-        }
-
-        let newClientAvatarBase64 = null;
+        let newClientAvatarBase64 = '';
         function handleNewClientAvatarFile(input) {
-            if (!input.files || !input.files[0]) return;
-            const file = input.files[0];
+            const file = input.files && input.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
                 newClientAvatarBase64 = e.target.result;
                 const prev = document.getElementById('newClientAvatarPreview');
                 if (prev) {
-                    prev.innerHTML = '';
                     prev.style.backgroundImage = `url('${newClientAvatarBase64}')`;
+                    prev.textContent = '';
                 }
             };
             reader.readAsDataURL(file);
@@ -10766,9 +10800,18 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             }
         }
 
+        let currentPlayingVideo = null;
+
         function openGrandVideoPlayer(videoPath, title, format, duration) {
             // Enregistrement immédiat de l'heure et de la date de dernière ouverture de cette vidéo
             recordVideoOpened(videoPath, title);
+
+            let resolvedPath = (videoPath || '').trim();
+            if (!resolvedPath.startsWith('http') && !resolvedPath.startsWith('../') && !resolvedPath.startsWith('/') && !resolvedPath.startsWith('file:')) {
+                resolvedPath = '../' + resolvedPath;
+            }
+
+            currentPlayingVideo = { path: resolvedPath, title: title, format: format, duration: duration };
 
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
@@ -10779,11 +10822,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             document.getElementById('grandPlayerTitle').textContent = title || 'Aperçu Vidéo';
             const pillEl = document.getElementById('grandPlayerFormatPill');
             if (pillEl) pillEl.textContent = format || '16:9';
-
-            let resolvedPath = (videoPath || '').trim();
-            if (!resolvedPath.startsWith('http') && !resolvedPath.startsWith('../') && !resolvedPath.startsWith('/') && !resolvedPath.startsWith('file:')) {
-                resolvedPath = '../' + resolvedPath;
-            }
 
             const studioLink = document.getElementById('grandPlayerStudioLink');
             if (studioLink) {
@@ -10998,27 +11036,178 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             }
         }
 
-        function seekCompositionPlayback(e) {
-            const track = document.getElementById('playerScrubberTrack');
-            if (!track) return;
-            const rect = track.getBoundingClientRect();
-            const clickX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-            const ratio = clickX / rect.width;
-            compositionCurrentSec = ratio * compositionDurationSec;
+        let isPlayerScrubbing = false;
+
+        function seekVideoComposition(timeInSeconds) {
+            const time = Math.max(0, Math.min(timeInSeconds, compositionDurationSec || 15));
+            compositionCurrentSec = time;
             updateCompositionTimeDisplay();
 
             const iframeEl = document.getElementById('grandPlayerIframeEl');
+            const videoEl = document.getElementById('grandPlayerVideoEl');
+
+            // 1. Si vidéo native MP4
+            if (videoEl && videoEl.style.display !== 'none') {
+                try { videoEl.currentTime = time; } catch(e) {}
+                return;
+            }
+
+            // 2. Si composition HTML
             if (iframeEl) {
                 try {
                     const win = iframeEl.contentWindow;
-                    if (win) {
-                        if (win.__timeline && typeof win.__timeline.seek === 'function') win.__timeline.seek(compositionCurrentSec);
-                        else if (typeof win.seekTo === 'function') win.seekTo(compositionCurrentSec);
-                        else if (typeof win.renderAt === 'function') win.renderAt(compositionCurrentSec);
-                        else if (typeof win.seek === 'function') win.seek(compositionCurrentSec);
-                        else if (typeof win.renderFrame === 'function') win.renderFrame(compositionCurrentSec);
+                    const doc = iframeEl.contentDocument || win?.document;
+                    if (!win) return;
+
+                    // A. Moteur direct Canvas renderAt / renderFrame
+                    if (typeof win.renderAt === 'function') {
+                        try { win.renderAt(time, isCompositionPlaying); } catch(e) {}
                     }
+                    if (typeof win.renderFrame === 'function') {
+                        try { win.renderFrame(time); } catch(e) {}
+                    }
+                    if (typeof win.seek === 'function') {
+                        try { win.seek(time); } catch(e) {}
+                    }
+
+                    // B. GSAP Timelines
+                    if (win.__timeline && typeof win.__timeline.seek === 'function') {
+                        try { win.__timeline.seek(time, false); } catch(e) {}
+                    }
+                    if (win.tl && typeof win.tl.seek === 'function') {
+                        try { win.tl.seek(time, false); } catch(e) {}
+                    }
+                    if (win.timeline && typeof win.timeline.seek === 'function') {
+                        try { win.timeline.seek(time, false); } catch(e) {}
+                    }
+                    if (win.gsap && win.gsap.globalTimeline) {
+                        try { win.gsap.globalTimeline.time(time); } catch(e) {}
+                    }
+
+                    // C. Timelines indexées (__timelines)
+                    if (win.__timelines) {
+                        try {
+                            Object.values(win.__timelines).forEach(tItem => {
+                                if (tItem && typeof tItem.seek === 'function') tItem.seek(time, false);
+                            });
+                        } catch(e) {}
+                    }
+
+                    // D. Pistes Audio & Vidéo internes
+                    if (doc) {
+                        doc.querySelectorAll('audio, video').forEach(m => {
+                            try {
+                                const mStart = parseFloat(m.dataset.start || '0') || 0;
+                                const mEnd = parseFloat(m.dataset.end || '9999') || 9999;
+                                if (time >= mStart && time <= mEnd) {
+                                    m.currentTime = time - mStart;
+                                } else {
+                                    m.currentTime = 0;
+                                }
+                                if (!isCompositionPlaying) m.pause();
+                            } catch(e) {}
+                        });
+                    }
+
+                    if (typeof win.playbackTime === 'number') win.playbackTime = time;
+                    if (typeof win.currentTime === 'number') win.currentTime = time;
+
                 } catch(e) {}
+            }
+        }
+
+        function handlePlayerScrub(e) {
+            const track = document.getElementById('playerScrubberTrack');
+            if (!track) return;
+            const rect = track.getBoundingClientRect();
+            const posX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            const ratio = posX / rect.width;
+            const targetTime = ratio * (compositionDurationSec || 15);
+            seekVideoComposition(targetTime);
+        }
+
+        function startPlayerScrub(e) {
+            isPlayerScrubbing = true;
+            if (isCompositionPlaying) {
+                toggleCompositionPlayback(); // Met en pause pour un scrub ultra fluide sans sauts
+            }
+            handlePlayerScrub(e);
+        }
+
+        function seekCompositionPlayback(e) {
+            handlePlayerScrub(e);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (isPlayerScrubbing) {
+                handlePlayerScrub(e);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isPlayerScrubbing) {
+                isPlayerScrubbing = false;
+            }
+        });
+
+        // ---------------------------------------------------------------------
+        // MODAL DE CONFIRMATION DE SUPPRESSION DE VIDÉO
+        // ---------------------------------------------------------------------
+        function openDeleteVideoConfirmModal() {
+            if (!currentPlayingVideo) return;
+            const titleEl = document.getElementById('deleteVideoConfirmTitle');
+            if (titleEl) {
+                titleEl.textContent = currentPlayingVideo.title || 'Vidéo';
+            }
+            const modal = document.getElementById('deleteVideoConfirmModal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeDeleteVideoConfirmModal() {
+            const modal = document.getElementById('deleteVideoConfirmModal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        async function executeDeleteCurrentVideo() {
+            if (!currentPlayingVideo) return;
+            const toDelete = currentPlayingVideo;
+            const pathToDelete = toDelete.path;
+            const titleToDelete = toDelete.title;
+
+            // 1. Retirer de la liste locale en mémoire
+            allVideosList = allVideosList.filter(v => {
+                if (v.videoPath && pathToDelete && (v.videoPath === pathToDelete || '../' + v.videoPath === pathToDelete || v.videoPath === '../' + pathToDelete)) return false;
+                if (v.title && titleToDelete && v.title === titleToDelete) return false;
+                return true;
+            });
+
+            // 2. Persister les suppressions dans localStorage
+            try {
+                const deletedList = JSON.parse(localStorage.getItem('autoframe_deleted_videos') || '[]');
+                if (pathToDelete && !deletedList.includes(pathToDelete)) deletedList.push(pathToDelete);
+                if (titleToDelete && !deletedList.includes(titleToDelete)) deletedList.push(titleToDelete);
+                localStorage.setItem('autoframe_deleted_videos', JSON.stringify(deletedList));
+            } catch(e) {}
+
+            // 3. Appel API si disponible
+            try {
+                await fetch('/api/delete-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: pathToDelete, title: titleToDelete })
+                });
+            } catch(e) {}
+
+            // 4. Fermer les modaux et rafraîchir l'interface
+            closeDeleteVideoConfirmModal();
+            closeGrandVideoPlayer();
+            renderDashboardProjects();
+
+            const countEl = document.getElementById('navCounterDashboard');
+            if (countEl) countEl.textContent = allVideosList.length;
+
+            if (typeof showToast === 'function') {
+                showToast(`Vidéo "${titleToDelete}" supprimée avec succès`, '🗑️');
             }
         }
 
