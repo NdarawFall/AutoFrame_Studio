@@ -40,7 +40,7 @@
             user-select: none;
         }
 
-        /* Custom Sleek Dark Scrollbar */
+        /* Custom Dark Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -140,7 +140,6 @@
             box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
         }
 
-        /* Search input center */
         .topbar-center {
             flex: 1;
             max-width: 440px;
@@ -204,7 +203,7 @@
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
         }
 
         .btn-topbar {
@@ -228,20 +227,6 @@
             background: var(--bg-hover);
             color: #ffffff;
             border-color: var(--border-strong);
-        }
-
-        .btn-topbar.btn-primary-action {
-            background: #dc2626;
-            color: #ffffff;
-            border-color: #ef4444;
-            font-weight: 600;
-            box-shadow: 0 2px 10px rgba(220, 38, 38, 0.35);
-        }
-
-        .btn-topbar.btn-primary-action:hover {
-            background: #b91c1c;
-            border-color: #f87171;
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
         }
 
         .btn-icon-topbar {
@@ -309,21 +294,22 @@
         .sidebar-nav-list {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
         .sidebar-nav-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 10px;
+            padding: 9px 12px;
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 500;
             transition: var(--transition);
             cursor: pointer;
+            border: 1px solid transparent;
         }
 
         .sidebar-nav-item:hover {
@@ -335,7 +321,8 @@
             background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
         .sidebar-item-left {
@@ -345,8 +332,8 @@
         }
 
         .sidebar-item-left svg {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             flex-shrink: 0;
             stroke-width: 2;
         }
@@ -391,190 +378,172 @@
             color: var(--text-muted);
         }
 
-        /* --- MAIN WORKSPACE VIEW --- */
+        /* --- MAIN WORKSPACE VIEW (SPA TAB CONTAINERS) --- */
         main.app-main-view {
             flex: 1;
             background: #09090b;
             overflow-y: auto;
+            position: relative;
+        }
+
+        .app-view {
+            display: none;
             padding: 24px 32px 40px 32px;
-            display: flex;
             flex-direction: column;
-            gap: 26px;
+            gap: 24px;
+            min-height: 100%;
         }
 
-        /* --- QUICK START ACTIONS (3 SOFTWARE TILES) --- */
-        .quick-start-section {
+        .app-view.active {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
         }
 
-        .quick-start-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        @media (max-width: 1080px) {
-            .quick-start-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .software-tile {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 18px 20px;
+        /* =====================================================================
+           VUE 1 : DASHBOARD (GROS BOUTON STUDIO + LISTE DES VIDÉOS BIEN TRIÉES)
+           ===================================================================== */
+        
+        /* GROS BOUTON PLEINE LARGEUR STUDIO */
+        .hero-studio-fullwidth-btn {
+            width: 100%;
+            min-height: 94px;
+            background: linear-gradient(135deg, #12131c 0%, #0d0e14 100%);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 18px 26px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: space-between;
-            min-height: 128px;
             text-decoration: none;
+            cursor: pointer;
             transition: var(--transition);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             position: relative;
             overflow: hidden;
         }
 
-        .software-tile:hover {
-            background: var(--bg-card-hover);
+        .hero-studio-fullwidth-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 18% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-studio-fullwidth-btn:hover {
+            border-color: rgba(59, 130, 246, 0.7);
+            background: linear-gradient(135deg, #181926 0%, #10111a 100%);
             transform: translateY(-2px);
-            border-color: var(--border-strong);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        .software-tile.tile-create {
-            border-color: rgba(239, 68, 68, 0.25);
-        }
-        .software-tile.tile-create:hover {
-            border-color: rgba(239, 68, 68, 0.6);
-            box-shadow: 0 10px 28px rgba(220, 38, 38, 0.18);
-        }
-
-        .software-tile.tile-studio {
-            border-color: rgba(59, 130, 246, 0.25);
-        }
-        .software-tile.tile-studio:hover {
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 10px 28px rgba(37, 99, 235, 0.18);
-        }
-
-        .software-tile.tile-monteur {
-            border-color: rgba(168, 85, 247, 0.25);
-        }
-        .software-tile.tile-monteur:hover {
-            border-color: rgba(168, 85, 247, 0.6);
-            box-shadow: 0 10px 28px rgba(147, 51, 234, 0.18);
-        }
-
-        .tile-header {
+        .studio-btn-left {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            gap: 18px;
+            z-index: 1;
         }
 
-        .tile-icon-badge {
-            width: 34px;
-            height: 34px;
-            border-radius: var(--radius-sm);
+        .studio-icon-glow {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.18);
+            border: 1px solid rgba(59, 130, 246, 0.45);
+            color: #60a5fa;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 0 18px rgba(37, 99, 235, 0.3);
+            transition: var(--transition);
         }
 
-        .tile-create .tile-icon-badge {
-            background: rgba(239, 68, 68, 0.12);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .hero-studio-fullwidth-btn:hover .studio-icon-glow {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 0 24px rgba(37, 99, 235, 0.6);
+            transform: scale(1.05);
         }
 
-        .tile-studio .tile-icon-badge {
-            background: rgba(59, 130, 246, 0.12);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+        .studio-icon-glow svg {
+            width: 26px;
+            height: 26px;
         }
 
-        .tile-monteur .tile-icon-badge {
-            background: rgba(168, 85, 247, 0.12);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.3);
+        .studio-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .tile-icon-badge svg {
-            width: 17px;
-            height: 17px;
-            stroke-width: 2.2;
+        .studio-btn-title {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            color: #ffffff;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .tile-tag {
-            font-size: 10px;
+        .studio-btn-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .studio-btn-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 1;
+        }
+
+        .studio-pill-tag {
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 2px 7px;
-            border-radius: 4px;
-        }
-
-        .tile-create .tile-tag {
-            background: rgba(239, 68, 68, 0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        .tile-studio .tile-tag {
-            background: rgba(59, 130, 246, 0.15);
+            letter-spacing: 0.6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(59, 130, 246, 0.18);
             color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .tile-monteur .tile-tag {
-            background: rgba(168, 85, 247, 0.15);
-            color: #d8b4fe;
-            border: 1px solid rgba(168, 85, 247, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.35);
         }
 
-        .tile-title {
-            font-size: 14.5px;
-            font-weight: 700;
+        .studio-arrow-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
             color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .tile-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.45;
-            margin-bottom: 12px;
-        }
-
-        .tile-action-link {
-            font-size: 11.5px;
-            font-weight: 600;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 5px;
-            color: #ffffff;
-            margin-top: auto;
+            justify-content: center;
+            transition: var(--transition);
         }
 
-        .tile-action-link svg {
-            width: 13px;
-            height: 13px;
-            transition: transform 0.15s ease;
+        .hero-studio-fullwidth-btn:hover .studio-arrow-circle {
+            background: #ffffff;
+            color: #000000;
+            transform: translateX(4px);
         }
 
-        .software-tile:hover .tile-action-link svg {
-            transform: translateX(3px);
+        .studio-arrow-circle svg {
+            width: 16px;
+            height: 16px;
         }
 
-        /* --- PROJECTS TOOLBAR & HEADER --- */
+        /* SECTION PROJETS / VIDÉOS DU DASHBOARD */
         .projects-section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 12px;
+            padding-bottom: 14px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
         }
 
         .projects-heading {
@@ -584,7 +553,7 @@
         }
 
         .projects-heading h2 {
-            font-size: 16px;
+            font-size: 16.5px;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -0.2px;
@@ -593,7 +562,7 @@
         .projects-count-pill {
             font-size: 11px;
             font-weight: 600;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--border-subtle);
@@ -603,7 +572,8 @@
         .projects-filters {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .filter-btn {
@@ -628,6 +598,24 @@
             border-color: var(--border-strong);
             color: #ffffff;
             font-weight: 600;
+        }
+
+        .filter-select {
+            height: 28px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: #ffffff;
+            font-size: 11.5px;
+            font-family: inherit;
+            padding: 0 10px;
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .filter-select:hover {
+            border-color: var(--border-strong);
         }
 
         .projects-tools {
@@ -663,7 +651,7 @@
             height: 13px;
         }
 
-        /* --- PROJECTS GRID --- */
+        /* GRILLE DES VIDÉOS */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -688,7 +676,6 @@
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
         }
 
-        /* Project Thumbnail Mock */
         .project-thumb {
             width: 100%;
             height: 140px;
@@ -701,7 +688,6 @@
             border-bottom: 1px solid var(--border-subtle);
         }
 
-        /* Visual canvas mockup lines inside thumb */
         .thumb-pattern {
             position: absolute;
             inset: 0;
@@ -751,10 +737,9 @@
             z-index: 2;
         }
 
-        /* Center Play Icon hover overlay */
         .thumb-play-overlay {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -762,7 +747,7 @@
             align-items: center;
             justify-content: center;
             color: #ffffff;
-            opacity: 0.8;
+            opacity: 0.85;
             transition: var(--transition);
             z-index: 2;
         }
@@ -770,17 +755,16 @@
         .project-card:hover .thumb-play-overlay {
             opacity: 1;
             transform: scale(1.1);
-            background: rgba(220, 38, 38, 0.85);
+            background: rgba(220, 38, 38, 0.9);
             border-color: #ef4444;
         }
 
         .thumb-play-overlay svg {
-            width: 16px;
-            height: 16px;
+            width: 17px;
+            height: 17px;
             margin-left: 2px;
         }
 
-        /* Card Content */
         .project-info {
             padding: 12px 14px;
             display: flex;
@@ -877,7 +861,6 @@
             height: 13px;
         }
 
-        /* Empty state */
         .empty-projects-state {
             grid-column: 1 / -1;
             padding: 40px 20px;
@@ -895,18 +878,542 @@
             display: flex;
         }
 
-        .empty-projects-state svg {
-            width: 36px;
-            height: 36px;
+        /* =====================================================================
+           VUE 2 : MES RÉSEAUX (TRANSPOSITION ESPACE CRÉATEUR)
+           ===================================================================== */
+        .page-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .page-title-group h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .btn-add-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #dc2626;
+            color: #ffffff;
+            border: 1px solid #ef4444;
+            font-weight: 600;
+            font-size: 12.5px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-add-action:hover {
+            background: #b91c1c;
+            border-color: #f87171;
+            transform: translateY(-1px);
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .channel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .channel-card:hover {
+            border-color: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+        }
+
+        .channel-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .channel-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #181822;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .channel-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .channel-platform-tag {
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            width: fit-content;
+            margin-top: 2px;
+        }
+
+        .channel-platform-tag.yt {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .channel-platform-tag.tt {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .channel-platform-tag.ig {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .channel-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* =====================================================================
+           VUE 3 : MONTAGE CLIENTS (TRANSPOSITION ESPACE MONTEUR)
+           ===================================================================== */
+        .clients-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .clients-bar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .clients-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .client-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .client-pill-btn:hover {
+            color: #ffffff;
+            border-color: var(--border-strong);
+            background: var(--bg-hover);
+        }
+
+        .client-pill-btn.active {
+            background: rgba(37, 99, 235, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.4);
+            font-weight: 600;
+        }
+
+        .client-pill-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* CARTE DE CRÉATION VIDÉO DU CLIENT */
+        .monteur-prompt-card {
+            background: #0f1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .monteur-prompt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .monteur-fmt-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-fmt-pill {
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-fmt-pill.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        .monteur-prompt-textarea {
+            width: 100%;
+            height: 72px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+        }
+
+        .monteur-prompt-textarea:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-monteur-generate {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            border: 1px solid #3b82f6;
+            font-weight: 600;
+            font-size: 12.5px;
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-monteur-generate:hover {
+            background: #1d4ed8;
+            border-color: #60a5fa;
+            transform: translateY(-1px);
+        }
+
+        /* 5 CATÉGORIES D'ASSETS CLIENT */
+        .client-assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .client-asset-bucket {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bucket-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bucket-count {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .bucket-dropzone {
+            height: 64px;
+            border: 1px dashed var(--border-subtle);
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .bucket-dropzone:hover {
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-secondary);
+        }
+
+        /* =====================================================================
+           VUE 4 : MÉDIATHÈQUE ASSETS (TRANSPOSITION ASSETS.HTML)
+           ===================================================================== */
+        .assets-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 12px;
+        }
+
+        .asset-cat-btn {
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .asset-cat-btn:hover {
+            background: var(--bg-hover);
+            color: #ffffff;
+        }
+
+        .asset-cat-btn.active {
+            background: var(--bg-elevated);
+            color: #ffffff;
+            border-color: var(--border-strong);
+            font-weight: 600;
+        }
+
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .asset-item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .asset-item-card:hover {
+            border-color: var(--border-strong);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .asset-item-thumb {
+            width: 100%;
+            height: 90px;
+            border-radius: var(--radius-xs);
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             color: var(--text-muted);
         }
 
-        /* --- PREVIEW MODAL --- */
-        .preview-modal-overlay {
+        .asset-item-thumb img, .asset-item-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .asset-item-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .asset-item-meta {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* =====================================================================
+           VUE 5 : PARAMÈTRES (TRANSPOSITION SETTINGS.HTML)
+           ===================================================================== */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+        }
+
+        .settings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .settings-card-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 10px;
+        }
+
+        .settings-form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .settings-form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .settings-form-input, .settings-form-select {
+            width: 100%;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 0 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .settings-form-input:focus, .settings-form-select:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-save-settings {
+            background: #2563eb;
+            color: #ffffff;
+            border: 1px solid #3b82f6;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            width: fit-content;
+            transition: var(--transition);
+        }
+
+        .btn-save-settings:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* --- GRAND MODAL PLAYER VIDÉO --- */
+        .video-player-modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(14px);
             z-index: 1000;
             display: none;
             align-items: center;
@@ -914,64 +1421,73 @@
             padding: 24px;
         }
 
-        .preview-modal-overlay.open {
+        .video-player-modal-overlay.open {
             display: flex;
         }
 
-        .preview-modal-dialog {
+        .video-player-modal-dialog {
             width: 100%;
-            max-width: 900px;
-            height: 85vh;
-            background: #0f0f14;
+            max-width: 980px;
+            height: 86vh;
+            background: #0c0d12;
             border: 1px solid var(--border-strong);
             border-radius: var(--radius-lg);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
         }
 
-        .preview-modal-header {
-            height: 48px;
-            padding: 0 16px;
+        .video-player-modal-header {
+            height: 52px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #14141c;
+            background: #12131a;
             border-bottom: 1px solid var(--border-subtle);
         }
 
-        .preview-modal-title {
-            font-size: 13px;
-            font-weight: 600;
+        .video-player-title {
+            font-size: 14px;
+            font-weight: 700;
             color: #ffffff;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .preview-modal-close {
+        .video-player-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-player-close {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 4px;
+            padding: 4px 8px;
             line-height: 1;
             transition: var(--transition);
         }
 
-        .preview-modal-close:hover {
+        .video-player-close:hover {
             color: #ffffff;
         }
 
-        .preview-modal-body {
+        .video-player-modal-body {
             flex: 1;
             background: #000000;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .preview-iframe {
+        .video-player-iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -1011,14 +1527,14 @@
     <!-- TOP APPLICATION TITLEBAR -->
     <header class="app-topbar">
         <div class="topbar-left">
-            <a href="home.html" class="brand-badge" title="AutoFrame V1.0">
+            <a href="javascript:void(0)" onclick="switchTab('dashboard')" class="brand-badge" title="AutoFrame V1.0">
                 <span class="brand-name">AutoFrame</span>
                 <span class="brand-version">V1.0</span>
             </a>
             <div class="topbar-sep"></div>
             <div class="topbar-app-status">
                 <span class="status-dot"></span>
-                <span>Espace de travail</span>
+                <span id="topbarCurrentViewName">Dashboard</span>
             </div>
         </div>
 
@@ -1028,37 +1544,18 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" id="projectSearchInput" placeholder="Rechercher un projet, une vidéo, un client..." oninput="filterProjects()">
+                <input type="text" id="projectSearchInput" placeholder="Rechercher un projet, une vidéo, un client..." oninput="handleGlobalSearch()">
                 <span class="search-kbd">Ctrl K</span>
             </div>
         </div>
 
         <div class="topbar-right">
-            <a href="create_video.html" class="btn-topbar btn-primary-action" title="Créer un nouveau projet vidéo">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span>Nouveau Projet</span>
+            <!-- LIEN GITHUB -->
+            <a href="https://github.com/NdarawFall/AutoFrame_Studio" target="_blank" rel="noopener noreferrer" class="btn-icon-topbar" title="Dépôt GitHub" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             </a>
 
-            <a href="studio.html" class="btn-topbar" title="Ouvrir le Studio de montage">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-                    <line x1="7" y1="2" x2="7" y2="22"></line>
-                    <line x1="17" y1="2" x2="17" y2="22"></line>
-                </svg>
-                <span>Studio</span>
-            </a>
-
-            <div class="topbar-sep"></div>
-
-            <a href="settings.html" class="btn-icon-topbar" title="Paramètres" aria-label="Paramètres">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-                </svg>
-            </a>
-
+            <!-- BOUTON MISE À JOUR -->
             <button type="button" class="btn-topbar" style="padding: 6px 10px;" title="Vérifier les mises à jour" onclick="showUpdateNotice(event)">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
@@ -1074,67 +1571,56 @@
         <aside class="app-sidebar">
             <div class="sidebar-top">
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">Navigation</div>
+                    <div class="sidebar-section-title">Espace de travail</div>
                     <nav class="sidebar-nav-list">
-                        <a href="home.html" class="sidebar-nav-item active">
+                        <!-- 1. DASHBOARD -->
+                        <div class="sidebar-nav-item active" id="sideItem-dashboard" onclick="switchTab('dashboard')">
                             <span class="sidebar-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                <span>Projets Récents</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                <span>Dashboard</span>
                             </span>
-                            <span class="sidebar-counter" id="sidebarProjectCount">7</span>
-                        </a>
+                            <span class="sidebar-counter" id="sidebarVideoCount">7</span>
+                        </div>
 
-                        <a href="studio.html" class="sidebar-nav-item">
+                        <!-- 2. MES RÉSEAUX -->
+                        <div class="sidebar-nav-item" id="sideItem-reseaux" onclick="switchTab('reseaux')">
                             <span class="sidebar-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
-                                <span>Studio Timeline</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span>Mes Réseaux</span>
                             </span>
-                        </a>
+                            <span class="sidebar-counter" id="sidebarChannelsCount">3</span>
+                        </div>
 
-                        <a href="monteur.html" class="sidebar-nav-item">
+                        <!-- 3. MONTAGE CLIENTS -->
+                        <div class="sidebar-nav-item" id="sideItem-clients" onclick="switchTab('clients')">
                             <span class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                                <span>Espace Monteur</span>
+                                <span>Montage Clients</span>
                             </span>
-                        </a>
+                            <span class="sidebar-counter" id="sidebarClientsCount">0</span>
+                        </div>
 
-                        <a href="createur.html" class="sidebar-nav-item">
-                            <span class="sidebar-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                                <span>Espace Créateur</span>
-                            </span>
-                        </a>
-
-                        <a href="assets.html" class="sidebar-nav-item">
+                        <!-- 4. MÉDIATHÈQUE ASSETS -->
+                        <div class="sidebar-nav-item" id="sideItem-assets" onclick="switchTab('assets')">
                             <span class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                                 <span>Médiathèque Assets</span>
                             </span>
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Formats Rapides</div>
-                    <nav class="sidebar-nav-list">
-                        <a href="create_video.html?format=9:16" class="sidebar-nav-item" title="Nouveau projet vertical 9:16">
-                            <span class="sidebar-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect></svg>
-                                <span>9:16 Shorts & TikTok</span>
-                            </span>
-                        </a>
-
-                        <a href="create_video.html?format=16:9" class="sidebar-nav-item" title="Nouveau projet paysage 16:9">
-                            <span class="sidebar-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect></svg>
-                                <span>16:9 YouTube Standard</span>
-                            </span>
-                        </a>
+                        </div>
                     </nav>
                 </div>
             </div>
 
+            <!-- FOOTER DE SIDEBAR : BOUTON PARAMÈTRES TOUT EN BAS -->
             <div class="sidebar-footer">
+                <!-- 5. PARAMÈTRES (AU BAS DU SIDEBAR) -->
+                <div class="sidebar-nav-item" id="sideItem-settings" onclick="switchTab('settings')" style="margin-bottom: 6px;">
+                    <span class="sidebar-item-left">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>Paramètres</span>
+                    </span>
+                </div>
+
                 <div class="sidebar-engine-card">
                     <div class="eng-title">
                         <span class="status-dot"></span>
@@ -1150,123 +1636,347 @@
             </div>
         </aside>
 
-        <!-- MAIN PROJECTS VIEW -->
+        <!-- MAIN VIEW (SPA VUES COMMUTABLES) -->
         <main class="app-main-view">
-            <!-- QUICK START HUB (3 PRO TILES) -->
-            <section class="quick-start-section">
-                <div class="quick-start-grid">
-                    <!-- TILE 1: CREATION IA -->
-                    <a href="create_video.html" class="software-tile tile-create">
-                        <div class="tile-header">
-                            <div class="tile-icon-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                            </div>
-                            <span class="tile-tag">Génération IA</span>
+
+            <!-- =================================================================
+                 VUE 1 : DASHBOARD
+                 ================================================================= -->
+            <section class="app-view active" id="view-dashboard">
+                <!-- GROS BOUTON PLEINE LARGEUR STUDIO -->
+                <a href="studio.html" class="hero-studio-fullwidth-btn" title="Ouvrir le Studio de Montage">
+                    <div class="studio-btn-left">
+                        <div class="studio-icon-glow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="20" rx="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon></svg>
                         </div>
-                        <div>
-                            <div class="tile-title">Nouveau Projet IA</div>
-                            <div class="tile-desc">Générez un script percutant, une voix off réaliste et des sous-titres animés automatiquement.</div>
+                        <div class="studio-text-group">
+                            <div class="studio-btn-title">STUDIO</div>
+                            <div class="studio-btn-sub">Accéder à la Timeline, composition HTML HyperFrames et rendu vidéo</div>
                         </div>
-                        <div class="tile-action-link">
-                            <span>Créer une vidéo</span>
+                    </div>
+                    <div class="studio-btn-right">
+                        <span class="studio-pill-tag">Éditeur Pro</span>
+                        <div class="studio-arrow-circle">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </div>
-                    </a>
+                    </div>
+                </a>
 
-                    <!-- TILE 2: STUDIO TIMELINE -->
-                    <a href="studio.html" class="software-tile tile-studio">
-                        <div class="tile-header">
-                            <div class="tile-icon-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
-                            </div>
-                            <span class="tile-tag">Éditeur Studio</span>
-                        </div>
-                        <div>
-                            <div class="tile-title">Studio de Montage</div>
-                            <div class="tile-desc">Composez vos scènes sur la timeline avec le moteur de rendu HTML HyperFrames et prévisualisation directe.</div>
-                        </div>
-                        <div class="tile-action-link">
-                            <span>Ouvrir la Timeline</span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
-                    </a>
-
-                    <!-- TILE 3: ESPACE MONTEUR -->
-                    <a href="monteur.html" class="software-tile tile-monteur">
-                        <div class="tile-header">
-                            <div class="tile-icon-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            </div>
-                            <span class="tile-tag">Clients & Assets</span>
-                        </div>
-                        <div>
-                            <div class="tile-title">Espace Monteur</div>
-                            <div class="tile-desc">Créez des dossiers clients et centralisez vos 5 catégories d'assets : rushes bruts, voix off et musiques.</div>
-                        </div>
-                        <div class="tile-action-link">
-                            <span>Gérer les clients</span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
-                    </a>
-                </div>
-            </section>
-
-            <!-- PROJECTS SECTION -->
-            <section class="projects-section">
+                <!-- SECTION PROJETS / VIDÉOS (TRI DU PLUS RÉCENT AU PLUS ANCIEN) -->
                 <div class="projects-section-header">
                     <div class="projects-heading">
-                        <h2>Projets Récents</h2>
-                        <span class="projects-count-pill" id="projectCountLabel">Chargement...</span>
+                        <h2>Mes Vidéos & Projets</h2>
+                        <span class="projects-count-pill" id="dashboardVideoCountLabel">7 vidéos</span>
                     </div>
 
                     <div class="projects-filters">
-                        <button type="button" class="filter-btn active" data-filter="all" onclick="setProjectFilter('all', this)">Tous</button>
-                        <button type="button" class="filter-btn" data-filter="9:16" onclick="setProjectFilter('9:16', this)">Shorts 9:16</button>
-                        <button type="button" class="filter-btn" data-filter="16:9" onclick="setProjectFilter('16:9', this)">YouTube 16:9</button>
+                        <button type="button" class="filter-btn active" data-filter="all" onclick="setDashboardFilter('all', this)">Toutes</button>
+                        
+                        <!-- FILTRE PAR RÉSEAUX -->
+                        <select class="filter-select" id="filterReseauxSelect" onchange="handleReseauFilterChange(this)">
+                            <option value="">📡 Réseaux (Tous)</option>
+                            <option value="YouTube">YouTube</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Instagram">Instagram</option>
+                        </select>
+
+                        <!-- FILTRE PAR MONTAGE CLIENTS -->
+                        <select class="filter-select" id="filterClientsSelect" onchange="handleClientFilterChange(this)">
+                            <option value="">🎬 Montage Clients (Tous)</option>
+                        </select>
+
+                        <button type="button" class="filter-btn" data-filter="9:16" onclick="setDashboardFilter('9:16', this)">9:16 Shorts</button>
+                        <button type="button" class="filter-btn" data-filter="16:9" onclick="setDashboardFilter('16:9', this)">16:9 YouTube</button>
                     </div>
 
                     <div class="projects-tools">
-                        <button type="button" class="btn-tool" onclick="openProjectsFolder()" title="Ouvrir le dossier des fichiers vidéo sur le disque">
+                        <button type="button" class="btn-tool" onclick="openProjectsFolder()" title="Ouvrir le dossier des vidéos sur le disque">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                             <span>Dossier local</span>
                         </button>
-                        <button type="button" class="btn-tool" onclick="loadProjectsFromApi()" title="Rafraîchir les projets">
+                        <button type="button" class="btn-tool" onclick="loadDashboardProjects()" title="Rafraîchir les vidéos">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                         </button>
                     </div>
                 </div>
 
-                <!-- PROJECTS GRID CONTAINER -->
-                <div class="projects-grid" id="projectsGrid">
-                    <!-- Les cartes de projets récents seront injectées dynamiquement ici -->
+                <!-- GRILLE DES VIDÉOS CRÉÉES -->
+                <div class="projects-grid" id="dashboardProjectsGrid">
+                    <!-- Rendu dynamique par JS -->
                 </div>
 
-                <!-- EMPTY STATE (SI AUCUN PROJET) -->
-                <div class="empty-projects-state" id="emptyProjectsState">
+                <div class="empty-projects-state" id="emptyDashboardState">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
                         <line x1="7" y1="2" x2="7" y2="22"></line>
                         <line x1="17" y1="2" x2="17" y2="22"></line>
                     </svg>
-                    <div style="font-weight: 600; color: #ffffff;">Aucun projet ne correspond à ce filtre</div>
-                    <div style="font-size: 12px; color: var(--text-muted);">Créez un nouveau projet ou modifiez votre recherche.</div>
+                    <div style="font-weight: 600; color: #ffffff;">Aucune vidéo ne correspond à ce filtre</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">Créez une vidéo depuis "Mes Réseaux" ou "Montage Clients".</div>
                 </div>
             </section>
+
+            <!-- =================================================================
+                 VUE 2 : MES RÉSEAUX (CHAÎNES & FORMATS DE CRÉATEUR)
+                 ================================================================= -->
+            <section class="app-view" id="view-reseaux">
+                <div class="page-header-row">
+                    <div class="page-title-group">
+                        <h1>
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span>Mes Réseaux & Chaînes</span>
+                        </h1>
+                        <p class="page-desc">Gérez vos comptes sociaux, définissez leurs Brand Kits et lancez la création de vidéos dédiées.</p>
+                    </div>
+                    <button type="button" class="btn-add-action" onclick="openAddChannelModal()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Nouvelle Chaîne</span>
+                    </button>
+                </div>
+
+                <!-- GRILLE DES CHAÎNES -->
+                <div class="channels-grid" id="channelsGridContainer">
+                    <!-- Rendu dynamique -->
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 VUE 3 : MONTAGE CLIENTS (ESPACE MONTEUR, DOSSIERS & PROMPT CARD)
+                 ================================================================= -->
+            <section class="app-view" id="view-clients">
+                <div class="page-header-row">
+                    <div class="page-title-group">
+                        <h1>
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Montage Clients & Rushes</span>
+                        </h1>
+                        <p class="page-desc">Centralisez les assets de vos clients (rushes bruts, voix off, musiques) et générez des montages sur-mesure.</p>
+                    </div>
+                    <button type="button" class="btn-add-action" style="background:#2563eb; border-color:#3b82f6;" onclick="openCreateClientModal()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Nouveau Client</span>
+                    </button>
+                </div>
+
+                <!-- SÉLECTEUR DE CLIENTS -->
+                <div class="clients-bar">
+                    <div class="clients-bar-header">
+                        <span>Sélectionner un Client :</span>
+                        <span id="currentClientFolderLabel" style="font-size:11px; color:var(--text-muted); font-family:monospace;">Clients/</span>
+                    </div>
+                    <div class="clients-row" id="clientsListRow">
+                        <!-- Rendu dynamique -->
+                    </div>
+                </div>
+
+                <!-- CARTE DE CRÉATION VIDÉO CLIENT (PROMPT CARD MONTEUR) -->
+                <div class="monteur-prompt-card" id="clientPromptCard">
+                    <div class="monteur-prompt-header">
+                        <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3b82f6" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            <span>Créer une Vidéo pour <span id="activeClientNameTitle">ce client</span></span>
+                        </div>
+                        <div class="monteur-fmt-group">
+                            <button type="button" class="btn-fmt-pill active" data-fmt="9:16" onclick="setClientVideoFormat('9:16', this)">9:16 Shorts</button>
+                            <button type="button" class="btn-fmt-pill" data-fmt="16:9" onclick="setClientVideoFormat('16:9', this)">16:9 YouTube</button>
+                            <button type="button" class="btn-fmt-pill" data-fmt="1:1" onclick="setClientVideoFormat('1:1', this)">1:1 Carré</button>
+                        </div>
+                    </div>
+
+                    <textarea class="monteur-prompt-textarea" id="clientVideoPromptInput" placeholder="Décrivez les consignes de montage pour ce client (ex: Rythme rapide, zooms dynamiques sur les rushes bruts, sous-titres animés...)"></textarea>
+
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="button" class="btn-monteur-generate" onclick="handleGenerateClientVideo()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Générer la Vidéo pour ce Client</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5 CATÉGORIES D'ASSETS CLIENT -->
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="font-size:13px; font-weight:700; color:#ffffff;">Assets & Rushes du Client</div>
+                    <div class="client-assets-grid">
+                        <div class="client-asset-bucket">
+                            <div class="bucket-header">
+                                <span>🎥 Rushes Bruts</span>
+                                <span class="bucket-count" id="count-rushes">0</span>
+                            </div>
+                            <div class="bucket-dropzone" onclick="triggerClientAssetUpload('rushes_bruts')">+ Déposer rushes</div>
+                        </div>
+
+                        <div class="client-asset-bucket">
+                            <div class="bucket-header">
+                                <span>🎙️ Voix Off</span>
+                                <span class="bucket-count" id="count-voix">0</span>
+                            </div>
+                            <div class="bucket-dropzone" onclick="triggerClientAssetUpload('voix_off')">+ Déposer audio</div>
+                        </div>
+
+                        <div class="client-asset-bucket">
+                            <div class="bucket-header">
+                                <span>🎵 Musiques</span>
+                                <span class="bucket-count" id="count-musiques">0</span>
+                            </div>
+                            <div class="bucket-dropzone" onclick="triggerClientAssetUpload('musiques')">+ Déposer musique</div>
+                        </div>
+
+                        <div class="client-asset-bucket">
+                            <div class="bucket-header">
+                                <span>🖼️ Illustrations</span>
+                                <span class="bucket-count" id="count-illustrations">0</span>
+                            </div>
+                            <div class="bucket-dropzone" onclick="triggerClientAssetUpload('images_illustrations')">+ Déposer images</div>
+                        </div>
+
+                        <div class="client-asset-bucket">
+                            <div class="bucket-header">
+                                <span>📁 Références</span>
+                                <span class="bucket-count" id="count-references">0</span>
+                            </div>
+                            <div class="bucket-dropzone" onclick="triggerClientAssetUpload('references')">+ Moodboard</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" id="clientAssetFileInput" style="display:none;" onchange="handleClientAssetFileSelected(event)">
+            </section>
+
+            <!-- =================================================================
+                 VUE 4 : MÉDIATHÈQUE ASSETS (TRANSPOSITION ASSETS.HTML)
+                 ================================================================= -->
+            <section class="app-view" id="view-assets">
+                <div class="page-header-row">
+                    <div class="page-title-group">
+                        <h1>
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#8b5cf6" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            <span>Médiathèque d'Assets Globaux</span>
+                        </h1>
+                        <p class="page-desc">Centralisez vos B-rolls, effets sonores, musiques et visuels réutilisables dans tout le logiciel (<code>./01_Assets/</code>).</p>
+                    </div>
+                    <button type="button" class="btn-add-action" style="background:#7c3aed; border-color:#8b5cf6;" onclick="triggerGlobalAssetUpload()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Importer un Asset</span>
+                    </button>
+                </div>
+
+                <div class="assets-filter-bar">
+                    <button type="button" class="asset-cat-btn active" data-cat="all" onclick="filterAssetsCategory('all', this)">Tous</button>
+                    <button type="button" class="asset-cat-btn" data-cat="Videos" onclick="filterAssetsCategory('Videos', this)">B-Rolls & Vidéos</button>
+                    <button type="button" class="asset-cat-btn" data-cat="Music" onclick="filterAssetsCategory('Music', this)">Musiques</button>
+                    <button type="button" class="asset-cat-btn" data-cat="SFX" onclick="filterAssetsCategory('SFX', this)">Effets Sonores (SFX)</button>
+                    <button type="button" class="asset-cat-btn" data-cat="Logos" onclick="filterAssetsCategory('Logos', this)">Logos & Pictos</button>
+                </div>
+
+                <div class="assets-grid" id="assetsGridContainer">
+                    <!-- Rendu dynamique -->
+                </div>
+                <input type="file" id="globalAssetFileInput" style="display:none;" onchange="handleGlobalAssetFileSelected(event)">
+            </section>
+
+            <!-- =================================================================
+                 VUE 5 : PARAMÈTRES (TRANSPOSITION SETTINGS.HTML)
+                 ================================================================= -->
+            <section class="app-view" id="view-settings">
+                <div class="page-header-row">
+                    <div class="page-title-group">
+                        <h1>
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#a1a1aa" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Configuration & Paramètres</span>
+                        </h1>
+                        <p class="page-desc">Gérez vos clés API, les modèles d'intelligence artificielle (Kombo IA) et les voix de synthèse.</p>
+                    </div>
+                </div>
+
+                <div class="settings-container">
+                    <!-- BLOC 1: FORMAT & RÉSOLUTION -->
+                    <div class="settings-card">
+                        <div class="settings-card-title">Format & Résolution par Défaut</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">Format de Rendu</label>
+                                <select class="settings-form-select" id="prefFormat">
+                                    <option value="16:9">16:9 — Paysage (YouTube)</option>
+                                    <option value="9:16">9:16 — Vertical (TikTok, Shorts)</option>
+                                    <option value="1:1">1:1 — Carré (Instagram, LinkedIn)</option>
+                                </select>
+                            </div>
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">Fréquence d'Images</label>
+                                <select class="settings-form-select" id="prefFps">
+                                    <option value="30">30 FPS (Standard Web)</option>
+                                    <option value="60">60 FPS (Haute Fluidité)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOC 2: VOIX OFF & MOTEURS IA -->
+                    <div class="settings-card">
+                        <div class="settings-card-title">Moteurs d'IA & Kombo Intelligent</div>
+                        <div class="settings-form-row">
+                            <label class="settings-form-label">Fournisseur IA Prioritaire</label>
+                            <select class="settings-form-select" id="prefAiProvider">
+                                <option value="kombo">Kombo IA (Bascule automatique en cascade)</option>
+                                <option value="gemini">Google Gemini API (Cloud)</option>
+                                <option value="claude_cli">Claude Code CLI (Local)</option>
+                                <option value="agy_cli">Antigravity CLI (Local)</option>
+                                <option value="groq">Groq Cloud (Llama 3.3)</option>
+                                <option value="openrouter">OpenRouter API</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- BLOC 3: CLÉS API -->
+                    <div class="settings-card">
+                        <div class="settings-card-title">Clés d'API Externes</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">Google Gemini API</label>
+                                <input type="password" class="settings-form-input" id="keyGoogleApi" placeholder="AIzaSy...">
+                            </div>
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">Groq Cloud API</label>
+                                <input type="password" class="settings-form-input" id="keyGroqApi" placeholder="gsk_...">
+                            </div>
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">OpenRouter API</label>
+                                <input type="password" class="settings-form-input" id="keyOpenRouterApi" placeholder="sk-or-v1-...">
+                            </div>
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">ElevenLabs API</label>
+                                <input type="password" class="settings-form-input" id="keyElevenLabsApi" placeholder="xi-api-key...">
+                            </div>
+                            <div class="settings-form-row">
+                                <label class="settings-form-label">HeyGen API</label>
+                                <input type="password" class="settings-form-input" id="keyHeyGenApi" placeholder="API Key HeyGen...">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-save-settings" onclick="saveAllSettings()">Enregistrer les Paramètres</button>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
-    <!-- PREVIEW MODAL -->
-    <div class="preview-modal-overlay" id="previewModalOverlay" onclick="handlePreviewOverlayClick(event)">
-        <div class="preview-modal-dialog">
-            <div class="preview-modal-header">
-                <div class="preview-modal-title">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    <span id="previewModalTitle">Prévisualisation Vidéo</span>
+    <!-- GRAND MODAL PLAYER VIDÉO -->
+    <div class="video-player-modal-overlay" id="videoPlayerModalOverlay" onclick="handleVideoOverlayClick(event)">
+        <div class="video-player-modal-dialog">
+            <div class="video-player-modal-header">
+                <div class="video-player-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ef4444" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span id="playerModalVideoTitle">Lecture Vidéo</span>
                 </div>
-                <button type="button" class="preview-modal-close" onclick="closePreviewModal()">✕</button>
+                <div class="video-player-actions">
+                    <a href="#" id="playerModalOpenStudioBtn" class="btn-tool" style="background:#2563eb; color:#ffffff; border-color:#3b82f6;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
+                        <span>Éditer dans le Studio</span>
+                    </a>
+                    <button type="button" class="video-player-close" onclick="closeVideoPlayerModal()" title="Fermer la vidéo">✕</button>
+                </div>
             </div>
-            <div class="preview-modal-body">
-                <iframe id="previewIframe" class="preview-iframe" src="about:blank"></iframe>
+            <div class="video-player-modal-body">
+                <iframe id="videoPlayerIframe" class="video-player-iframe" src="about:blank"></iframe>
             </div>
         </div>
     </div>
@@ -1281,122 +1991,194 @@
     </div>
 
     <!-- MODAL TUTORIEL VIDÉO -->
-    <div class="preview-modal-overlay" id="tutorialModalOverlay" onclick="if(event.target.id==='tutorialModalOverlay') closeTutorialModal()">
-        <div class="preview-modal-dialog" style="max-width: 820px; height: 520px;">
-            <div class="preview-modal-header">
-                <div class="preview-modal-title">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+    <div class="video-player-modal-overlay" id="tutorialModalOverlay" onclick="if(event.target.id==='tutorialModalOverlay') closeTutorialModal()">
+        <div class="video-player-modal-dialog" style="max-width: 820px; height: 500px;">
+            <div class="video-player-modal-header">
+                <div class="video-player-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
                     <span>Tutoriel de Présentation AutoFrame</span>
                 </div>
-                <button type="button" class="preview-modal-close" onclick="closeTutorialModal()">✕</button>
+                <button type="button" class="video-player-close" onclick="closeTutorialModal()">✕</button>
             </div>
-            <div class="preview-modal-body" style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; padding:30px; text-align:center;">
+            <div class="video-player-modal-body" style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; padding:30px; text-align:center;">
                 <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="#ef4444" stroke-width="1.6"><polygon points="5 3 19 12 5 21 5 3"></polygon><rect x="2" y="2" width="20" height="20" rx="3"></rect></svg>
                 <div style="font-size: 16px; font-weight: 700; color: #ffffff;">Vidéo de présentation AutoFrame</div>
                 <div style="font-size: 13px; color: var(--text-secondary); max-width: 480px; line-height: 1.5;">
-                    AutoFrame V1.0 est prêt. Explorez l'espace Créateur, le Studio Timeline et l'Espace Monteur pour composer vos premières vidéos automatisées.
+                    Explorez l'espace Dashboard, Mes Réseaux, Montage Clients et la Médiathèque Assets pour composer vos vidéos avec l'IA.
                 </div>
-                <a href="studio.html" class="btn-topbar btn-primary-action" style="margin-top: 8px;">Ouvrir le Studio</a>
+                <a href="studio.html" class="btn-topbar" style="margin-top: 8px; background:#2563eb; color:#ffffff; border-color:#3b82f6;">Ouvrir le Studio</a>
             </div>
         </div>
     </div>
 
+    <!-- =====================================================================
+         LOGIQUE APPLICATIVE UNIFIÉE (ROUTAGE SPA & DONNÉES)
+         ===================================================================== -->
     <script>
-        // Projets par défaut (chargement immédiat zéro temps d'attente)
-        const DEFAULT_PROJECTS = [
+        // DONNÉES PAR DÉFAUT POUR AFFICHAGE INSTANTANÉ (ZÉRO LATENCE)
+        const DEFAULT_VIDEOS = [
             {
-                name: "video_growkaz_stickman_15s.html",
                 file: "video_growkaz_stickman_15s.html",
                 path: "04_Videos/video_growkaz_stickman_15s.html",
                 title: "GrowKaz Stickman Motion 15s",
                 duration: 15,
                 format: "9:16",
-                date: "Aujourd'hui"
+                date: "Aujourd'hui",
+                reseau: "TikTok",
+                client: ""
             },
             {
-                name: "top10_football_15s.html",
                 file: "top10_football_15s.html",
                 path: "04_Videos/top10_football_15s.html",
                 title: "Top 10 Buts Football 15s",
                 duration: 15,
                 format: "9:16",
-                date: "Hier"
+                date: "Hier",
+                reseau: "YouTube",
+                client: ""
             },
             {
-                name: "claude_fable_5_2_30s_saas_commercial.html",
                 file: "claude_fable_5_2_30s_saas_commercial.html",
                 path: "04_Videos/claude_fable_5_2_30s_saas_commercial.html",
                 title: "Claude Fable SaaS Commercial 30s",
                 duration: 30,
                 format: "16:9",
-                date: "13 nov. 2026"
+                date: "13 nov. 2026",
+                reseau: "YouTube",
+                client: ""
             },
             {
-                name: "hyperframes_25s_motion_design_composition.html",
                 file: "hyperframes_25s_motion_design_composition.html",
                 path: "04_Videos/hyperframes_25s_motion_design_composition.html",
                 title: "HyperFrames Motion Design 25s",
                 duration: 25,
                 format: "16:9",
-                date: "13 nov. 2026"
+                date: "13 nov. 2026",
+                reseau: "",
+                client: ""
             },
             {
-                name: "video_ascii_crt_terminal_15s.html",
                 file: "video_ascii_crt_terminal_15s.html",
                 path: "04_Videos/video_ascii_crt_terminal_15s.html",
                 title: "ASCII CRT Retro Terminal 15s",
                 duration: 15,
                 format: "9:16",
-                date: "13 nov. 2026"
+                date: "13 nov. 2026",
+                reseau: "TikTok",
+                client: ""
             },
             {
-                name: "eye_tracking_20s.html",
                 file: "eye_tracking_20s.html",
                 path: "04_Videos/eye_tracking_20s.html",
                 title: "Eye Tracking Focus Effect 20s",
                 duration: 20,
                 format: "9:16",
-                date: "06 nov. 2026"
+                date: "06 nov. 2026",
+                reseau: "Instagram",
+                client: ""
             },
             {
-                name: "design_ask_anything_pill_5s.html",
                 file: "design_ask_anything_pill_5s.html",
                 path: "04_Videos/design_ask_anything_pill_5s.html",
                 title: "Ask Anything Interactive Pill 5s",
                 duration: 5,
                 format: "16:9",
-                date: "07 nov. 2026"
+                date: "07 nov. 2026",
+                reseau: "",
+                client: ""
             }
         ];
 
-        let allProjects = [...DEFAULT_PROJECTS];
-        let currentFilter = 'all';
+        let allVideos = [...DEFAULT_VIDEOS];
+        let allChannels = [
+            { id: "tech_decodeur", name: "Tech Décodeur", platform: "YouTube", format: "16:9", videosCount: 3 },
+            { id: "story_vibe", name: "Story Vibe Shorts", platform: "TikTok", format: "9:16", videosCount: 4 },
+            { id: "autoframe_reels", name: "AutoFrame Pro", platform: "Instagram", format: "9:16", videosCount: 2 }
+        ];
+        let allClients = [];
+        let activeClient = null;
+        let clientFormatSelected = "9:16";
 
-        // Nettoyage esthétique des noms de fichiers pour un affichage pro
-        function formatProjectTitle(fileName) {
+        let dashboardCurrentFilter = 'all';
+        let dashboardReseauFilter = '';
+        let dashboardClientFilter = '';
+
+        // ---------------------------------------------------------------------
+        // 1. GESTION DU ROUTAGE SPA (COMMUTATION ENTRE LES 5 ONGLETS)
+        // ---------------------------------------------------------------------
+        const TAB_NAMES = {
+            'dashboard': 'Dashboard',
+            'reseaux': 'Mes Réseaux',
+            'clients': 'Montage Clients',
+            'assets': 'Médiathèque Assets',
+            'settings': 'Paramètres'
+        };
+
+        function switchTab(tabId) {
+            if (!TAB_NAMES[tabId]) tabId = 'dashboard';
+
+            // Masquer toutes les vues
+            document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
+
+            // Activer la vue cible
+            const viewEl = document.getElementById(`view-${tabId}`);
+            if (viewEl) viewEl.classList.add('active');
+
+            // Activer l'élément de la sidebar
+            const sideEl = document.getElementById(`sideItem-${tabId}`);
+            if (sideEl) sideEl.classList.add('active');
+
+            // Mettre à jour l'indicateur du topbar
+            const topLabel = document.getElementById('topbarCurrentViewName');
+            if (topLabel) topLabel.textContent = TAB_NAMES[tabId];
+
+            // Sauvegarder dans le hash URL
+            if (window.location.hash !== `#${tabId}`) {
+                history.replaceState(null, '', `#${tabId}`);
+            }
+
+            // Déclencher les chargements spécifiques
+            if (tabId === 'dashboard') {
+                renderDashboardProjects();
+            } else if (tabId === 'reseaux') {
+                loadChannelsData();
+            } else if (tabId === 'clients') {
+                loadClientsData();
+            } else if (tabId === 'assets') {
+                loadAssetsData();
+            } else if (tabId === 'settings') {
+                loadSettingsData();
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 2. VUE DASHBOARD (PROJETS RÉCENTS, FILTRES CROISÉS & GRAND MODAL PLAYER)
+        // ---------------------------------------------------------------------
+        function formatVideoTitle(fileName) {
             let t = fileName.replace(/\.html$/i, '')
                             .replace(/^video_/i, '')
                             .replace(/_/g, ' ');
-            // Mettre en majuscule le début de chaque mot
             return t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
 
-        function renderProjects() {
-            const grid = document.getElementById('projectsGrid');
-            const emptyState = document.getElementById('emptyProjectsState');
+        function renderDashboardProjects() {
+            const grid = document.getElementById('dashboardProjectsGrid');
+            const emptyState = document.getElementById('emptyDashboardState');
             const searchVal = (document.getElementById('projectSearchInput').value || '').toLowerCase().trim();
 
-            const filtered = allProjects.filter(p => {
-                const matchFilter = currentFilter === 'all' || p.format === currentFilter;
+            const filtered = allVideos.filter(v => {
+                const matchFmt = dashboardCurrentFilter === 'all' || v.format === dashboardCurrentFilter;
+                const matchReseau = !dashboardReseauFilter || (v.reseau && v.reseau.toLowerCase() === dashboardReseauFilter.toLowerCase());
+                const matchClient = !dashboardClientFilter || (v.client && v.client.toLowerCase() === dashboardClientFilter.toLowerCase());
                 const matchSearch = !searchVal || 
-                                    (p.title && p.title.toLowerCase().includes(searchVal)) || 
-                                    (p.name && p.name.toLowerCase().includes(searchVal));
-                return matchFilter && matchSearch;
+                                    (v.title && v.title.toLowerCase().includes(searchVal)) || 
+                                    (v.file && v.file.toLowerCase().includes(searchVal));
+                return matchFmt && matchReseau && matchClient && matchSearch;
             });
 
-            // Mise à jour des compteurs
-            document.getElementById('projectCountLabel').textContent = `${allProjects.length} projet${allProjects.length > 1 ? 's' : ''}`;
-            document.getElementById('sidebarProjectCount').textContent = allProjects.length;
+            document.getElementById('dashboardVideoCountLabel').textContent = `${allVideos.length} vidéo${allVideos.length > 1 ? 's' : ''}`;
+            document.getElementById('sidebarVideoCount').textContent = allVideos.length;
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
@@ -1406,21 +2188,22 @@
 
             emptyState.classList.remove('show');
 
-            grid.innerHTML = filtered.map(p => {
-                const is916 = (p.format === '9:16');
+            grid.innerHTML = filtered.map(v => {
+                const is916 = (v.format === '9:16');
                 const fmtClass = is916 ? 'fmt-916' : 'fmt-169';
                 const fmtLabel = is916 ? '9:16 Shorts' : '16:9 YouTube';
-                const title = p.title || formatProjectTitle(p.name);
-                const durStr = `${Math.round(p.duration || 15)}s`;
-                const dateStr = p.date || 'Récemment';
+                const title = v.title || formatVideoTitle(v.file);
+                const durStr = `${Math.round(v.duration || 15)}s`;
+                const dateStr = v.date || 'Récemment';
+                const videoPath = v.path || `04_Videos/${v.file}`;
 
                 return `
-                    <div class="project-card" onclick="openInStudio('${p.path || '04_Videos/' + p.file}')">
+                    <div class="project-card" onclick="openGrandVideoPlayer('${videoPath}', '${escapeJs(title)}')">
                         <div class="project-thumb">
                             <div class="thumb-pattern"></div>
                             <span class="thumb-format-badge ${fmtClass}">${fmtLabel}</span>
                             <span class="thumb-duration-badge">${durStr}</span>
-                            <div class="thumb-play-overlay" title="Ouvrir dans le Studio">
+                            <div class="thumb-play-overlay" title="Regarder la vidéo en plein écran">
                                 <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             </div>
                         </div>
@@ -1432,15 +2215,15 @@
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                     <span>${dateStr}</span>
                                 </span>
-                                <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted);">${is916 ? '1080×1920' : '1920×1080'}</span>
+                                <span style="font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-muted);">${is916 ? '1080×1920' : '1920×1080'}</span>
                             </div>
 
                             <div class="project-card-actions" onclick="event.stopPropagation()">
-                                <a href="studio.html?video=${encodeURIComponent(p.path || '04_Videos/' + p.file)}" class="btn-card-edit" title="Éditer dans le Studio">
+                                <a href="studio.html?video=${encodeURIComponent(videoPath)}" class="btn-card-edit" title="Éditer sur la Timeline">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
                                     <span>Éditer Studio</span>
                                 </a>
-                                <button type="button" class="btn-card-icon" title="Prévisualiser la vidéo" onclick="previewProject('${p.path || '04_Videos/' + p.file}', '${title}')">
+                                <button type="button" class="btn-card-icon" title="Regarder la vidéo" onclick="openGrandVideoPlayer('${videoPath}', '${escapeJs(title)}')">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 </button>
                             </div>
@@ -1450,78 +2233,392 @@
             }).join('');
         }
 
-        function setProjectFilter(filter, btn) {
-            currentFilter = filter;
+        function setDashboardFilter(filter, btn) {
+            dashboardCurrentFilter = filter;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
-            renderProjects();
+            renderDashboardProjects();
         }
 
-        function filterProjects() {
-            renderProjects();
+        function handleReseauFilterChange(sel) {
+            dashboardReseauFilter = sel.value;
+            renderDashboardProjects();
         }
 
-        function openInStudio(filePath) {
-            window.location.href = `studio.html?video=${encodeURIComponent(filePath)}`;
+        function handleClientFilterChange(sel) {
+            dashboardClientFilter = sel.value;
+            renderDashboardProjects();
         }
 
-        function previewProject(filePath, title) {
-            const overlay = document.getElementById('previewModalOverlay');
-            const iframe = document.getElementById('previewIframe');
-            const titleEl = document.getElementById('previewModalTitle');
+        function handleGlobalSearch() {
+            renderDashboardProjects();
+        }
+
+        function escapeJs(str) {
+            return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        // GRAND MODAL PLAYER VIDÉO
+        function openGrandVideoPlayer(videoPath, title) {
+            const overlay = document.getElementById('videoPlayerModalOverlay');
+            const iframe = document.getElementById('videoPlayerIframe');
+            const titleEl = document.getElementById('playerModalVideoTitle');
+            const editBtn = document.getElementById('playerModalOpenStudioBtn');
+
             if (overlay && iframe) {
-                iframe.src = filePath;
-                if (titleEl) titleEl.textContent = title || 'Prévisualisation Vidéo';
+                iframe.src = videoPath;
+                if (titleEl) titleEl.textContent = title || 'Lecture Vidéo';
+                if (editBtn) editBtn.href = `studio.html?video=${encodeURIComponent(videoPath)}`;
                 overlay.classList.add('open');
             }
         }
 
-        function closePreviewModal() {
-            const overlay = document.getElementById('previewModalOverlay');
-            const iframe = document.getElementById('previewIframe');
+        function closeVideoPlayerModal() {
+            const overlay = document.getElementById('videoPlayerModalOverlay');
+            const iframe = document.getElementById('videoPlayerIframe');
             if (overlay) overlay.classList.remove('open');
             if (iframe) iframe.src = 'about:blank';
         }
 
-        function handlePreviewOverlayClick(e) {
-            if (e.target.id === 'previewModalOverlay') {
-                closePreviewModal();
+        function handleVideoOverlayClick(e) {
+            if (e.target.id === 'videoPlayerModalOverlay') {
+                closeVideoPlayerModal();
             }
         }
 
         async function openProjectsFolder() {
-            try {
-                await fetch('/api/open-projects-folder');
-            } catch (e) {
-                console.log('Ouverture dossier:', e);
-            }
+            try { await fetch('/api/open-projects-folder'); } catch(e) {}
         }
 
-        // Chargement dynamique des vidéos réelles depuis l'API backend
-        async function loadProjectsFromApi() {
+        async function loadDashboardProjects() {
             try {
                 const res = await fetch('/api/files');
                 if (res.ok) {
                     const data = await res.json();
                     if (data && Array.isArray(data.videos) && data.videos.length > 0) {
-                        allProjects = data.videos.map(v => ({
-                            name: v.file || v.name,
+                        allVideos = data.videos.map(v => ({
                             file: v.file || v.name,
                             path: v.path || `04_Videos/${v.file || v.name}`,
-                            title: formatProjectTitle(v.file || v.name),
+                            title: formatVideoTitle(v.file || v.name),
                             duration: v.duration || 15,
                             format: v.format || '9:16',
-                            date: 'Sur disque'
+                            date: 'Sur disque',
+                            reseau: v.channelName || (v.format === '9:16' ? 'TikTok' : 'YouTube'),
+                            client: v.isClient ? (v.clientName || 'Client') : ''
                         }));
-                        renderProjects();
+                        renderDashboardProjects();
                     }
                 }
-            } catch (err) {
-                console.warn('API /api/files non accessible, utilisation du cache local');
+            } catch(e) {}
+        }
+
+        // ---------------------------------------------------------------------
+        // 3. VUE MES RÉSEAUX (CHAÎNES & BRAND KITS)
+        // ---------------------------------------------------------------------
+        function renderChannels() {
+            const container = document.getElementById('channelsGridContainer');
+            if (!container) return;
+
+            document.getElementById('sidebarChannelsCount').textContent = allChannels.length;
+
+            container.innerHTML = allChannels.map(ch => {
+                const isYt = ch.platform === 'YouTube';
+                const isTt = ch.platform === 'TikTok';
+                const tagClass = isYt ? 'yt' : (isTt ? 'tt' : 'ig');
+
+                return `
+                    <div class="channel-card">
+                        <div class="channel-card-top">
+                            <div class="channel-avatar">
+                                ${ch.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <div class="channel-name">${ch.name}</div>
+                                <span class="channel-platform-tag ${tagClass}">${ch.platform} • ${ch.format}</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size:12px; color:var(--text-muted);">
+                            Format par défaut : <strong>${ch.format}</strong> • ${ch.videosCount || 0} vidéos publiées
+                        </div>
+
+                        <div class="channel-card-footer">
+                            <a href="create_video.html?channel=${encodeURIComponent(ch.id)}" class="btn-topbar" style="background:#dc2626; color:#ffffff; border-color:#ef4444; font-size:11.5px;">
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                <span>Créer une Vidéo</span>
+                            </a>
+                            <a href="channel.html?id=${encodeURIComponent(ch.id)}" class="btn-tool">
+                                <span>Brand Kit & Vidéos ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadChannelsData() {
+            try {
+                const res = await fetch('/api/files');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && Array.isArray(data.channels) && data.channels.length > 0) {
+                        allChannels = data.channels;
+                    }
+                }
+            } catch(e) {}
+            renderChannels();
+        }
+
+        function openAddChannelModal() {
+            const name = prompt("Nom de la nouvelle chaîne / compte réseau :");
+            if (!name || !name.trim()) return;
+            const platform = prompt("Plateforme (YouTube, TikTok, Instagram) :", "YouTube") || "YouTube";
+            const fmt = platform === 'YouTube' ? '16:9' : '9:16';
+            const newCh = {
+                id: name.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+                name: name.trim(),
+                platform: platform,
+                format: fmt,
+                videosCount: 0
+            };
+            allChannels.push(newCh);
+            renderChannels();
+        }
+
+        // ---------------------------------------------------------------------
+        // 4. VUE MONTAGE CLIENTS (ESPACE MONTEUR, DOSSIERS & PROMPT CARD)
+        // ---------------------------------------------------------------------
+        function renderClientsList() {
+            const row = document.getElementById('clientsListRow');
+            const selectFilter = document.getElementById('filterClientsSelect');
+            if (!row) return;
+
+            document.getElementById('sidebarClientsCount').textContent = allClients.length;
+
+            if (allClients.length === 0) {
+                row.innerHTML = `<div style="font-size:12px; color:var(--text-muted);">Aucun client enregistré — Cliquez sur "+ Nouveau Client" pour démarrer.</div>`;
+                if (selectFilter) selectFilter.innerHTML = `<option value="">🎬 Montage Clients (Aucun)</option>`;
+                return;
+            }
+
+            if (selectFilter) {
+                selectFilter.innerHTML = `<option value="">🎬 Montage Clients (Tous)</option>` + 
+                    allClients.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            }
+
+            row.innerHTML = allClients.map((c, idx) => {
+                const isAct = (activeClient && activeClient.name === c.name);
+                return `
+                    <div class="client-pill-btn ${isAct ? 'active' : ''}" onclick="selectClientByIndex(${idx})">
+                        <div class="client-pill-avatar">${c.name.charAt(0).toUpperCase()}</div>
+                        <span>${c.name}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectClientByIndex(idx) {
+            if (allClients[idx]) {
+                activeClient = allClients[idx];
+                document.getElementById('activeClientNameTitle').textContent = activeClient.name;
+                document.getElementById('currentClientFolderLabel').textContent = `Clients/${activeClient.name}/`;
+                renderClientsList();
             }
         }
 
-        // Raccourci clavier Ctrl+K pour recherche
+        function setClientVideoFormat(fmt, btn) {
+            clientFormatSelected = fmt;
+            document.querySelectorAll('.btn-fmt-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        function handleGenerateClientVideo() {
+            const prompt = (document.getElementById('clientVideoPromptInput').value || '').trim();
+            if (!activeClient) {
+                alert("Veuillez d'abord sélectionner ou créer un client.");
+                return;
+            }
+            // Rediriger vers create_video avec le client pré-sélectionné
+            window.location.href = `create_video.html?client=${encodeURIComponent(activeClient.name)}&format=${clientFormatSelected}&prompt=${encodeURIComponent(prompt)}`;
+        }
+
+        async function loadClientsData() {
+            try {
+                const res = await fetch('/api/clients');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && Array.isArray(data.clients)) {
+                        allClients = data.clients;
+                        if (!activeClient && allClients.length > 0) {
+                            activeClient = allClients[0];
+                        }
+                    }
+                }
+            } catch(e) {}
+            renderClientsList();
+        }
+
+        async function openCreateClientModal() {
+            const name = prompt("Nom du nouveau client / projet de montage :");
+            if (!name || !name.trim()) return;
+            try {
+                const res = await fetch('/api/clients/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name.trim() })
+                });
+                if (res.ok) {
+                    await loadClientsData();
+                }
+            } catch(e) {
+                allClients.push({ name: name.trim(), folders: [] });
+                renderClientsList();
+            }
+        }
+
+        let pendingClientCategory = '';
+        function triggerClientAssetUpload(cat) {
+            if (!activeClient) {
+                alert("Veuillez d'abord sélectionner ou créer un client.");
+                return;
+            }
+            pendingClientCategory = cat;
+            document.getElementById('clientAssetFileInput').click();
+        }
+
+        async function handleClientAssetFileSelected(event) {
+            const file = event.target.files[0];
+            if (!file || !activeClient) return;
+            const formData = new FormData();
+            formData.append('client', activeClient.name);
+            formData.append('category', pendingClientCategory);
+            formData.append('file', file);
+            try {
+                await fetch('/api/clients/upload', { method: 'POST', body: formData });
+                alert(`Fichier "${file.name}" ajouté au dossier ${pendingClientCategory} de ${activeClient.name} !`);
+            } catch(e) {
+                alert(`Fichier sélectionné : ${file.name}`);
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 5. VUE MÉDIATHÈQUE ASSETS (CATALOGUE & UPLOAD)
+        // ---------------------------------------------------------------------
+        let allAssetsList = [
+            { name: "ambient_dark_synths.mp3", category: "Music", size: "3.2 MB" },
+            { name: "whoosh_cinematic_transition.mp3", category: "SFX", size: "420 KB" },
+            { name: "broll_tokyo_cyberpunk_neon_1080p.mp4", category: "Videos", size: "14.8 MB" },
+            { name: "broll_ai_digital_matrix_loop.mp4", category: "Videos", size: "11.2 MB" },
+            { name: "logo_autoframe_vector.svg", category: "Logos", size: "24 KB" }
+        ];
+        let currentAssetCategory = 'all';
+
+        function renderAssets() {
+            const grid = document.getElementById('assetsGridContainer');
+            if (!grid) return;
+
+            const filtered = allAssetsList.filter(a => currentAssetCategory === 'all' || a.category === currentAssetCategory);
+
+            grid.innerHTML = filtered.map(a => `
+                <div class="asset-item-card" onclick="alert('Asset : ' + '${a.name}')">
+                    <div class="asset-item-thumb">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </div>
+                    <div class="asset-item-name" title="${a.name}">${a.name}</div>
+                    <div class="asset-item-meta">
+                        <span>${a.category}</span>
+                        <span>${a.size}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterAssetsCategory(cat, btn) {
+            currentAssetCategory = cat;
+            document.querySelectorAll('.asset-cat-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderAssets();
+        }
+
+        async function loadAssetsData() {
+            try {
+                const res = await fetch('/api/assets-catalog');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && Array.isArray(data.items) && data.items.length > 0) {
+                        allAssetsList = data.items;
+                    }
+                }
+            } catch(e) {}
+            renderAssets();
+        }
+
+        function triggerGlobalAssetUpload() {
+            document.getElementById('globalAssetFileInput').click();
+        }
+
+        async function handleGlobalAssetFileSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                await fetch('/api/upload-asset', { method: 'POST', body: formData });
+                alert(`Asset "${file.name}" importé avec succès dans 01_Assets/ !`);
+                loadAssetsData();
+            } catch(e) {
+                alert(`Asset prêt pour upload : ${file.name}`);
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 6. VUE PARAMÈTRES (IA, CLÉS API & SAUVEGARDE)
+        // ---------------------------------------------------------------------
+        async function loadSettingsData() {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const cfg = await res.json();
+                    if (cfg.google_api_key) document.getElementById('keyGoogleApi').value = cfg.google_api_key;
+                    if (cfg.groq_api_key) document.getElementById('keyGroqApi').value = cfg.groq_api_key;
+                    if (cfg.openrouter_api_key) document.getElementById('keyOpenRouterApi').value = cfg.openrouter_api_key;
+                    if (cfg.elevenlabs_api_key) document.getElementById('keyElevenLabsApi').value = cfg.elevenlabs_api_key;
+                    if (cfg.heygen_api_key) document.getElementById('keyHeyGenApi').value = cfg.heygen_api_key;
+                }
+            } catch(e) {}
+        }
+
+        async function saveAllSettings() {
+            const payload = {
+                google_api_key: document.getElementById('keyGoogleApi').value.trim(),
+                groq_api_key: document.getElementById('keyGroqApi').value.trim(),
+                openrouter_api_key: document.getElementById('keyOpenRouterApi').value.trim(),
+                elevenlabs_api_key: document.getElementById('keyElevenLabsApi').value.trim(),
+                heygen_api_key: document.getElementById('keyHeyGenApi').value.trim(),
+                default_format: document.getElementById('prefFormat').value,
+                fps: document.getElementById('prefFps').value,
+                ai_provider: document.getElementById('prefAiProvider').value
+            };
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    alert("Paramètres enregistrés avec succès !");
+                } else {
+                    alert("Paramètres enregistrés localement.");
+                }
+            } catch(e) {
+                alert("Paramètres enregistrés.");
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 7. INITIALISATION & RACCOURCIS
+        // ---------------------------------------------------------------------
         document.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
@@ -1529,12 +2626,12 @@
                 if (inp) inp.focus();
             }
             if (e.key === 'Escape') {
-                closePreviewModal();
+                closeVideoPlayerModal();
                 closeTutorialModal();
             }
         });
 
-        // Prefetch automatique au survol pour fluidité instantanée
+        // Prefetching instantané
         document.addEventListener('mouseover', function(e) {
             const a = e.target.closest('a[href]');
             if (!a) return;
@@ -1549,33 +2646,29 @@
             }
         }, { passive: true });
 
-        // Système de mise à jour fluide
-        let isCheckingUpdate = false;
+        // Système de mise à jour
         async function showUpdateNotice(e) {
             if (e) e.stopPropagation();
             const toast = document.getElementById('updateToast');
             const toastText = document.getElementById('updateToastText');
-            const label = document.getElementById('topbarUpdateLabel');
-
-            if (label) label.textContent = 'Vérification...';
             try {
                 const res = await fetch('/api/app/check-update', { method: 'POST' });
                 const data = await res.json();
                 if (data.status === 'available') {
                     if (toastText) toastText.textContent = `Nouvelle version v${data.latestVersion || ''} disponible !`;
-                    if (toast) toast.classList.add('show');
-                    if (label) label.textContent = 'Mise à jour dispo';
                 } else {
                     if (toastText) toastText.textContent = `AutoFrame V1.0 est à jour (v${data.currentVersion || '1.0.0'})`;
-                    if (toast) toast.classList.add('show');
-                    if (label) label.textContent = 'V1.0 (À jour)';
+                }
+                if (toast) {
+                    toast.classList.add('show');
                     setTimeout(() => toast.classList.remove('show'), 3500);
                 }
-            } catch (err) {
-                if (toastText) toastText.textContent = 'AutoFrame V1.0 est à jour.';
-                if (toast) toast.classList.add('show');
-                if (label) label.textContent = 'V1.0';
-                setTimeout(() => toast.classList.remove('show'), 3000);
+            } catch(e) {
+                if (toastText) toastText.textContent = "AutoFrame V1.0 est à jour.";
+                if (toast) {
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                }
             }
         }
 
@@ -1587,10 +2680,11 @@
             document.getElementById('tutorialModalOverlay').classList.remove('open');
         }
 
-        // Initialisation immédiate
+        // Démarrage : lecture du hash URL ou 'dashboard' par défaut
         window.addEventListener('DOMContentLoaded', () => {
-            renderProjects();
-            loadProjectsFromApi();
+            const initialTab = (window.location.hash || '').replace('#', '') || 'dashboard';
+            switchTab(initialTab);
+            loadDashboardProjects();
         });
     </script>
 </body>
