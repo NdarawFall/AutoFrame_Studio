@@ -376,6 +376,7 @@
             overflow-y: auto;
             background: #000000;
             position: relative;
+            scroll-behavior: smooth;
         }
 
         .view-panel {
@@ -5734,7 +5735,7 @@
             background: transparent;
             border: none;
             position: sticky;
-            top: 76px;
+            top: 24px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -7165,33 +7166,22 @@
             <!-- VUE 5 : PARAMÈTRES LOGICIEL DANS LE HOMEPAGE              -->
             <!-- ========================================================= -->
             <section id="viewSettings" class="view-panel">
-                <div class="view-header-row" style="margin-bottom: 24px;">
-                    <div class="view-title-wrap">
-                        <h2>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                            <span>Configuration & Paramètres</span>
-                        </h2>
-                        <p>Configurez vos clés API externes, modèles IA, proxies locaux (9router), constructeur du Kombo IA et moteurs de rendu.</p>
-                    </div>
-
-                </div>
-
-                <div class="settings-layout">
+                <div class="settings-layout" style="padding-top: 10px;">
 
         <!-- SIDEBAR A GAUCHE : SANS FOND, PURE TYPOGRAPHIE -->
         <aside class="settings-sidebar">
             <div class="sidebar-title">Navigation</div>
             <nav class="sidebar-nav">
-                <a href="#sec-general" class="sidebar-link active" onclick="activateNav(this)">
+                <a href="#sec-general" class="sidebar-link active" onclick="activateNav(this, event)">
                     <span>Général & Format</span>
                 </a>
-                <a href="#sec-voice" class="sidebar-link" onclick="activateNav(this)">
+                <a href="#sec-voice" class="sidebar-link" onclick="activateNav(this, event)">
                     <span>Voix Off & Kombo IA</span>
                 </a>
-                <a href="#sec-api" class="sidebar-link" onclick="activateNav(this)">
+                <a href="#sec-api" class="sidebar-link" onclick="activateNav(this, event)">
                     <span>Clés API</span>
                 </a>
-                <a href="#sec-render" class="sidebar-link" onclick="activateNav(this)">
+                <a href="#sec-render" class="sidebar-link" onclick="activateNav(this, event)">
                     <span>Moteur de Rendu</span>
                 </a>
 
@@ -9138,7 +9128,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 if (viewName === 'dashboard') renderDashboardProjects();
                 if (viewName === 'reseaux') renderChannelsView();
                 if (viewName === 'create_video') renderCustomChannelPicker();
-                if (viewName === 'settings') { if (typeof detectLocalAiAgentsUi === 'function') detectLocalAiAgentsUi(); if (typeof renderKomboListUI === 'function') renderKomboListUI(); }
+                if (viewName === 'settings') { if (typeof detectLocalAiAgentsUi === 'function') detectLocalAiAgentsUi(); if (typeof renderKomboListUI === 'function') renderKomboListUI(); if (typeof handleSettingsScroll === 'function') setTimeout(handleSettingsScroll, 60); }
                 if (viewName === 'clients') renderClientsView();
                 if (viewName === 'assets') renderAssetsView();
             }
@@ -11101,14 +11091,23 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+                document.querySelectorAll('.modal-overlay, .script-modal-overlay').forEach(m => m.classList.remove('open'));
                 closeAssetAudioModal();
                 closeGrandVideoPlayer();
+                const search = document.getElementById('globalAppSearch');
+                if (search && (document.activeElement === search || search.value)) {
+                    search.value = '';
+                    search.blur();
+                    handleGlobalSearch();
+                }
             }
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault();
                 const search = document.getElementById('globalAppSearch');
-                if (search) search.focus();
+                if (search) {
+                    search.focus();
+                    search.select();
+                }
             }
         });
 
@@ -14577,38 +14576,68 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
-        function activateNav(link) {
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+        function activateNav(link, e) {
+            if (e) e.preventDefault();
+            document.querySelectorAll('.settings-sidebar .sidebar-link').forEach(el => el.classList.remove('active'));
             link.classList.add('active');
+            const href = link.getAttribute('href') || '';
+            const targetId = href.replace('#', '');
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
-        window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('section.card');
-            const atBottom = (window.innerHeight + window.pageYOffset) >= (document.documentElement.scrollHeight - 70);
+        function handleSettingsScroll() {
+            if (currentView !== 'settings') return;
+            const mainEl = document.querySelector('main.app-main') || document.documentElement;
+            const sections = [
+                document.getElementById('sec-general'),
+                document.getElementById('sec-voice'),
+                document.getElementById('sec-api'),
+                document.getElementById('sec-render')
+            ].filter(Boolean);
 
-            if (atBottom) {
-                // Dès que l'utilisateur atteint le bas de page, activer immédiatement la dernière section (Moteur de Rendu)
-                document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (sections.length === 0) return;
+
+            const scrollTop = mainEl.scrollTop || window.pageYOffset || 0;
+            const scrollHeight = mainEl.scrollHeight || document.documentElement.scrollHeight || 0;
+            const clientHeight = mainEl.clientHeight || window.innerHeight || 0;
+
+            // Détection du bas de page : active immédiatement la dernière section (Moteur de Rendu)
+            if (scrollTop + clientHeight >= scrollHeight - 70) {
+                document.querySelectorAll('.settings-sidebar .sidebar-link').forEach(link => {
                     link.classList.toggle('active', link.getAttribute('href') === '#sec-render');
                 });
                 return;
             }
 
-            // Seuil proportionnel dynamique à 35% de la hauteur écran
-            const threshold = window.scrollY + (window.innerHeight * 0.35);
+            const mainRect = mainEl.getBoundingClientRect ? mainEl.getBoundingClientRect() : { top: 0 };
             let activeId = 'sec-general';
+
             sections.forEach(sec => {
-                if (sec.offsetTop <= threshold) {
+                const rect = sec.getBoundingClientRect();
+                // Si le haut de la section se trouve à 240px ou moins du haut visible du viewport de défilement
+                if (rect.top - mainRect.top <= 240) {
                     activeId = sec.getAttribute('id');
                 }
             });
 
             if (activeId) {
-                document.querySelectorAll('.sidebar-link').forEach(link => {
+                document.querySelectorAll('.settings-sidebar .sidebar-link').forEach(link => {
                     link.classList.toggle('active', link.getAttribute('href') === `#${activeId}`);
                 });
             }
+        }
+
+        // Écoute de défilement sur le conteneur principal à défilement ET sur la fenêtre
+        window.addEventListener('DOMContentLoaded', () => {
+            const mainScrollEl = document.querySelector('main.app-main');
+            if (mainScrollEl) {
+                mainScrollEl.addEventListener('scroll', handleSettingsScroll, { passive: true });
+            }
         });
+        window.addEventListener('scroll', handleSettingsScroll, { passive: true });
 
         async function saveSettings() {
             const ttsEngine = document.getElementById('prefTtsEngine') ? document.getElementById('prefTtsEngine').value : 'elevenlabs';
