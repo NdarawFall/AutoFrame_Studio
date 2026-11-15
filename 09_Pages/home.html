@@ -7701,6 +7701,14 @@
             <!-- VUE 6 : CRÉER UNE VIDÉO (CENTRALISÉE EN SPA SANS QUITTER LA PAGE) -->
             <!-- ========================================================= -->
             <section id="viewCreateVideo" class="view-panel">
+                <!-- BOUTON RETOUR À LA CHAÎNE D'ORIGINE -->
+                <div id="createVideoBackToChannelRow" style="display: none; margin-bottom: 16px;">
+                    <button type="button" class="btn-back-channels" onclick="backToOriginChannel()" style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px; color: #ffffff; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s ease;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        <span id="labelBackToOriginChannel">Retour à la chaîne</span>
+                    </button>
+                </div>
+
                 <div class="view-header-row" style="margin-bottom: 24px; align-items: flex-start; justify-content: space-between; gap: 16px;">
                     <div class="view-title-wrap">
                         <h2>
@@ -10149,52 +10157,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             document.getElementById('sumRef').textContent = (activeClient.categories && activeClient.categories.images_references ? activeClient.categories.images_references.length : 0);
         }
 
-        function triggerClientAvatarInput() {
-            document.getElementById('clientAvatarUploadInput').click();
-        }
-
-        async function handleClientAvatarUploadFile(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file || !activeClient) return;
-
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const base64Data = e.target.result.split(',')[1];
-                try {
-                    const res = await fetch('/api/clients/avatar', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ client: activeClient.name, filename: file.name, data: base64Data })
-                    });
-                    const d = await res.json();
-                    if (d.success) {
-                        activeClient.avatarUrl = d.avatarUrl;
-                        showToast('Logo/Photo client mis à jour !');
-                        renderClientsView();
-                    }
-                } catch (err) {
-                    activeClient.avatarUrl = e.target.result;
-                    showToast('Logo/Photo client mis à jour localement');
-                    renderClientsView();
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function toggleClientPromptBlock() {
-            const block = document.getElementById('clientPromptContainer');
-            const label = document.getElementById('labelTogglePromptBlock');
-            if (block) {
-                if (block.style.display === 'none') {
-                    block.style.display = 'flex';
-                    if (label) label.textContent = '⚡ Consignes de Montage IA (Actif)';
-                } else {
-                    block.style.display = 'none';
-                    if (label) label.textContent = '+ Activer les consignes de montage IA';
-                }
-            }
-        }
-
         function setClientVideoFormat(fmt, btn) {
             clientCurrentFormat = fmt;
             document.querySelectorAll('#clientPromptContainer .format-pill').forEach(b => b.classList.remove('active'));
@@ -10260,22 +10222,31 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
             if (activeClient.categories && activeClient.categories[cat]) {
                 activeClient.categories[cat] = activeClient.categories[cat].filter(f => f.name !== filename);
-                showToast('Fichier supprimé', '🗑️');
-                renderActiveClientWorkspace();
             }
+            renderActiveClientWorkspace();
+            showToast(`Fichier "${filename}" supprimé`, '🗑️');
         }
 
-        let newClientAvatarBase64 = '';
+        function openCreateClientModal() {
+            document.getElementById('newClientNameInput').value = '';
+            document.getElementById('createClientModal').classList.add('open');
+        }
+
+        function closeCreateClientModal() {
+            document.getElementById('createClientModal').classList.remove('open');
+        }
+
+        let newClientAvatarBase64 = null;
         function handleNewClientAvatarFile(input) {
-            const file = input.files && input.files[0];
-            if (!file) return;
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
                 newClientAvatarBase64 = e.target.result;
                 const prev = document.getElementById('newClientAvatarPreview');
                 if (prev) {
+                    prev.innerHTML = '';
                     prev.style.backgroundImage = `url('${newClientAvatarBase64}')`;
-                    prev.textContent = '';
                 }
             };
             reader.readAsDataURL(file);
@@ -11413,14 +11384,36 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         // LOGIQUE SÉLECTEUR DE CHAÎNE SUR-MESURE & CRÉATION VIDÉO SPA
         // =====================================================================
         let currentCreationChannel = null;
+        let currentChannelId = null;
+        let creationOriginChannelId = null;
 
         function openCreateVideoView(channelId) {
+            creationOriginChannelId = channelId || null;
             switchView('create_video');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const backRow = document.getElementById('createVideoBackToChannelRow');
+            const backLabel = document.getElementById('labelBackToOriginChannel');
+
             if (channelId) {
+                const originChan = channelsCache.find(c => c.id === channelId);
+                if (backRow) backRow.style.display = 'block';
+                if (backLabel) backLabel.textContent = originChan ? `Retour à la chaîne "${originChan.name}"` : 'Retour à la chaîne';
                 selectCreationChannel(channelId);
             } else {
+                if (backRow) backRow.style.display = 'none';
                 selectCreationChannel(null);
+            }
+        }
+
+        function backToOriginChannel() {
+            if (creationOriginChannelId) {
+                const chanId = creationOriginChannelId;
+                creationOriginChannelId = null;
+                switchView('reseaux');
+                openChannelDetailView(chanId);
+            } else {
+                switchView('reseaux');
             }
         }
 
@@ -11542,8 +11535,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 if (nameEl) nameEl.textContent = 'Sans Chaîne (Indépendant)';
                 const subEl = document.getElementById('pickerCurrentSub');
                 if (subEl) subEl.textContent = 'Vidéos génériques / Multi-plateformes';
+                const badge = document.getElementById('storageTargetBadge');
+                if (badge) badge.style.display = 'none';
             } else {
-                const found = channelsCache.find(c => c.id === channelId);
+                const found = channelsCache.find(c => String(c.id) === String(channelId) || c.name === channelId);
                 if (found) {
                     currentCreationChannel = found;
                     currentChannelId = found.id;
@@ -11567,6 +11562,22 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         if (typeof selectVideoFormat === 'function') selectVideoFormat('9:16');
                     } else if (found.format === '16:9') {
                         if (typeof selectVideoFormat === 'function') selectVideoFormat('16:9');
+                    }
+
+                    // Badge de stockage ciblé
+                    const badge = document.getElementById('storageTargetBadge');
+                    if (badge) {
+                        badge.style.display = 'inline-flex';
+                        badge.textContent = `Chaîne : ${found.name} (01_Assets/.../${found.id}/)`;
+                    }
+
+                    // Couleur d'accentuation des sous-titres
+                    if (found.colorPrimary) {
+                        try {
+                            currentSubtitleAccentColor = found.colorPrimary;
+                            const hexInput = document.getElementById('subAccentColorHex');
+                            if (hexInput) hexInput.value = found.colorPrimary.toUpperCase();
+                        } catch(e) {}
                     }
                 }
             }
@@ -12252,7 +12263,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         let currentSelectedFormat = null;
         let currentAudioOption = null;
         let currentSubtitlesOption = null;
-        const currentChannelId = new URLSearchParams(window.location.search).get('channel') || '';
+        currentChannelId = currentChannelId || (new URLSearchParams(window.location.search).get('channel') || '');
         // Suffixe aléatoire à 4 chiffres unique pour identifier et lier tous les assets d'une même vidéo autonome
         const sessionAssetSuffix = Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -13795,13 +13806,16 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (elSec) elSec.value = colSec.startsWith('#') ? colSec : '#' + colSec;
             if (elSecHex) elSecHex.value = (elSec ? elSec.value : colSec).toUpperCase();
 
-            // Brand Kit : 3 Polices de la chaîne
-            const elFontPri = document.getElementById('editChannelFontPrimary');
-            const elFontSec = document.getElementById('editChannelFontSecondary');
-            const elFontAcc = document.getElementById('editChannelFontAccent');
-            if (elFontPri) elFontPri.value = channel.fontPrimary || 'Montserrat';
-            if (elFontSec) elFontSec.value = channel.fontSecondary || 'Inter';
-            if (elFontAcc) elFontAcc.value = channel.fontAccent || 'Caveat';
+            // Brand Kit : Polices de la chaîne (champ texte libre)
+            const elFonts = document.getElementById('editChannelFontsInput');
+            if (elFonts) {
+                if (channel.fonts) {
+                    elFonts.value = channel.fonts;
+                } else {
+                    const fontsList = [channel.fontPrimary, channel.fontSecondary, channel.fontAccent].filter(Boolean);
+                    elFonts.value = fontsList.length > 0 ? fontsList.join(', ') : 'Montserrat, Inter';
+                }
+            }
 
             const avatarPreview = document.getElementById('editChannelAvatarPreview');
             const fallback = document.getElementById('editChannelAvatarFallback');
@@ -13862,13 +13876,16 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 if (elPri) channel.colorPrimary = elPri.value;
                 if (elSec) channel.colorSecondary = elSec.value;
 
-                // Sauvegarde 3 fonts
-                const elFontPri = document.getElementById('editChannelFontPrimary');
-                const elFontSec = document.getElementById('editChannelFontSecondary');
-                const elFontAcc = document.getElementById('editChannelFontAccent');
-                if (elFontPri) channel.fontPrimary = elFontPri.value;
-                if (elFontSec) channel.fontSecondary = elFontSec.value;
-                if (elFontAcc) channel.fontAccent = elFontAcc.value;
+                // Sauvegarde Polices
+                const elFonts = document.getElementById('editChannelFontsInput');
+                if (elFonts) {
+                    const fontsVal = elFonts.value.trim();
+                    channel.fonts = fontsVal;
+                    const parts = fontsVal.split(',').map(s => s.trim()).filter(Boolean);
+                    channel.fontPrimary = parts[0] || 'Montserrat';
+                    channel.fontSecondary = parts[1] || 'Inter';
+                    channel.fontAccent = parts[2] || '';
+                }
 
                 if (editChannelAvatarBase64) {
                     channel.avatar = editChannelAvatarBase64;
@@ -15467,69 +15484,42 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                         <span>Couleurs Officielles de la Marque (2 couleurs)</span>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-                        <div>
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Couleur Principale (Primaire)</label>
-                            <div class="channel-color-control-box">
-                                <input type="color" id="editChannelColorPrimary" class="channel-color-picker-input" oninput="document.getElementById('editChannelColorPrimaryHex').value = this.value.toUpperCase()">
-                                <input type="text" id="editChannelColorPrimaryHex" class="channel-color-hex-text" maxlength="7" oninput="if(this.value.length===7) document.getElementById('editChannelColorPrimary').value = this.value">
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin: 0; white-space: nowrap;">Principale :</label>
+                            <div class="channel-color-control-box" style="width: 140px; padding: 4px 8px; height: 36px; box-sizing: border-box;">
+                                <input type="color" id="editChannelColorPrimary" class="channel-color-picker-input" style="width: 26px; height: 26px;" oninput="document.getElementById('editChannelColorPrimaryHex').value = this.value.toUpperCase()">
+                                <input type="text" id="editChannelColorPrimaryHex" class="channel-color-hex-text" maxlength="7" style="font-size: 12px; width: 68px !important; padding: 0 !important;" oninput="if(this.value.length===7) document.getElementById('editChannelColorPrimary').value = this.value">
                             </div>
                         </div>
 
-                        <div>
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Couleur Secondaire</label>
-                            <div class="channel-color-control-box">
-                                <input type="color" id="editChannelColorSecondary" class="channel-color-picker-input" oninput="document.getElementById('editChannelColorSecondaryHex').value = this.value.toUpperCase()">
-                                <input type="text" id="editChannelColorSecondaryHex" class="channel-color-hex-text" maxlength="7" oninput="if(this.value.length===7) document.getElementById('editChannelColorSecondary').value = this.value">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin: 0; white-space: nowrap;">Secondaire :</label>
+                            <div class="channel-color-control-box" style="width: 140px; padding: 4px 8px; height: 36px; box-sizing: border-box;">
+                                <input type="color" id="editChannelColorSecondary" class="channel-color-picker-input" style="width: 26px; height: 26px;" oninput="document.getElementById('editChannelColorSecondaryHex').value = this.value.toUpperCase()">
+                                <input type="text" id="editChannelColorSecondaryHex" class="channel-color-hex-text" maxlength="7" style="font-size: 12px; width: 68px !important; padding: 0 !important;" oninput="if(this.value.length===7) document.getElementById('editChannelColorSecondary').value = this.value">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. TYPOGRAPHIES OFFICIELLES (LES 3 FONTS DE LA CHAÎNE) -->
+                <!-- 3. TYPOGRAPHIES / POLICES DE LA CHAÎNE -->
                 <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
-                    <div style="font-size: 13px; font-weight: 700; color: #ffffff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <label class="form-label" style="font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; color: #a1a1aa;"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
-                        <span>Typographies de la Chaîne (3 polices)</span>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-                        <div>
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Titres (Primaire)</label>
-                            <select id="editChannelFontPrimary" class="channel-settings-select">
-                                <option value="Montserrat">Montserrat</option>
-                                <option value="Inter">Inter</option>
-                                <option value="Bebas Neue">Bebas Neue</option>
-                                <option value="Outfit">Outfit</option>
-                                <option value="Poppins">Poppins</option>
-                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
-                                <option value="Roboto">Roboto</option>
-                                <option value="JetBrains Mono">JetBrains Mono</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Corps (Secondaire)</label>
-                            <select id="editChannelFontSecondary" class="channel-settings-select">
-                                <option value="Inter">Inter</option>
-                                <option value="Roboto">Roboto</option>
-                                <option value="Montserrat">Montserrat</option>
-                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
-                                <option value="Outfit">Outfit</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 600; color: #a1a1aa; margin-bottom: 5px; display: block;">Accent / Script</label>
-                            <select id="editChannelFontAccent" class="channel-settings-select">
-                                <option value="Caveat">Caveat</option>
-                                <option value="Dancing Script">Dancing Script</option>
-                                <option value="Patrick Hand">Patrick Hand</option>
-                                <option value="JetBrains Mono">JetBrains Mono</option>
-                                <option value="Inter">Inter</option>
-                            </select>
-                        </div>
-                    </div>
+                        <span>Polices / Typographies de la Chaîne</span>
+                    </label>
+                    <input type="text" id="editChannelFontsInput" list="channelFontsSuggestions" class="channel-settings-input" placeholder="Ex: Montserrat, Inter, Bebas Neue..." style="font-size: 13px;">
+                    <datalist id="channelFontsSuggestions">
+                        <option value="Montserrat, Inter">
+                        <option value="Bebas Neue, Montserrat">
+                        <option value="Poppins, Inter">
+                        <option value="Outfit, Plus Jakarta Sans">
+                        <option value="Cinzel, Montserrat">
+                        <option value="Inter, Roboto">
+                        <option value="JetBrains Mono, Inter">
+                    </datalist>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Saisissez vos polices préférées séparées par des virgules (ex: Titres, Corps). Entrée libre compatible Google Fonts.</div>
                 </div>
 
             </div>
