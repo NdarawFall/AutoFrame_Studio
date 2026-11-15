@@ -8959,12 +8959,19 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             </div>
             <div class="video-player-screen-wrap" id="grandPlayerContainer">
                 <!-- Lecteur natif MP4 / WebM -->
-                <video id="grandPlayerVideoEl" controls autoplay playsinline style="display: none; width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 68vh; object-fit: contain; outline: none; background: #000; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.85);"></video>
+                <video id="grandPlayerVideoEl" controls playsinline style="display: none; width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 68vh; object-fit: contain; outline: none; background: #000; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.85);"></video>
 
                 <!-- Lecteur Compositions HTML dynamiques avec Vraie Barre Player -->
                 <div id="grandPlayerIframeWrapper" style="display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; position: relative;">
                     <div id="grandPlayerIframeViewport" style="width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 64vh; background: #000; border-radius: 8px; overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;">
                         <iframe id="grandPlayerIframeEl" src="about:blank" style="width: 100%; height: 100%; border: none; display: block; background: #000;"></iframe>
+
+                        <!-- Overlay Grand Bouton Play quand la composition est en pause -->
+                        <div id="playerBigPlayOverlay" onclick="toggleCompositionPlayback()" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); cursor: pointer; z-index: 10; transition: opacity 0.2s ease;">
+                            <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 36px rgba(0,0,0,0.7); transform: scale(1); transition: transform 0.15s ease;" onmouseenter="this.style.transform='scale(1.08)'" onmouseleave="this.style.transform='scale(1)'">
+                                <svg viewBox="0 0 24 24" fill="#000000" style="width: 30px; height: 30px; margin-left: 4px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- VRAIE BARRE DE CONTRÔLE PLAYER COMPLÈTE -->
@@ -9178,28 +9185,28 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             if (!allVideosList || allVideosList.length === 0) {
                 allVideosList = [
                     { 
-                        id: 'v2', 
-                        title: 'GrowKaz Stickman Motion 15s', 
-                        format: '9:16', 
-                        duration: '15s', 
-                        videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
-                        resolution: '1080×1920', 
-                        category: 'clients', 
-                        client: 'marcus',
-                        timestamp: baseVideoNow - 35 * 60000 // aujourd'hui - 35min
-                    },
-                    { 
                         id: 'v1', 
-                        title: 'Top 10 Buts Football 15s', 
-                        format: '9:16', 
-                        duration: '15s', 
+                        title: 'Ballon d\'Or 2024 — Classement Officiel', 
+                        format: '16:9', 
+                        duration: '23s', 
                         videoPath: '../04_Videos/top10_football_15s.html', 
-                        resolution: '1080×1920', 
+                        resolution: '1920×1080', 
                         category: 'reseaux', 
                         platform: 'YouTube',
                         channelId: 'ch_1793911184121',
                         channelName: 'Greatest Eleven',
                         timestamp: baseVideoNow - 3 * 3600000 // aujourd'hui - 3h
+                    },
+                    { 
+                        id: 'v2', 
+                        title: 'GrowKaz Stickman Motion 15s', 
+                        format: '16:9', 
+                        duration: '15s', 
+                        videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
+                        resolution: '1920×1080', 
+                        category: 'clients', 
+                        client: 'marcus',
+                        timestamp: baseVideoNow - 35 * 60000 // aujourd'hui - 35min
                     },
                     { 
                         id: 'v3', 
@@ -9218,10 +9225,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     { 
                         id: 'v4', 
                         title: 'ASCII CRT Retro Terminal 15s', 
-                        format: '9:16', 
+                        format: '16:9', 
                         duration: '15s', 
                         videoPath: '../04_Videos/video_ascii_crt_terminal_15s.html', 
-                        resolution: '1080×1920', 
+                        resolution: '1920×1080', 
                         category: 'reseaux', 
                         platform: 'Instagram',
                         channelId: 'ch_1793102190223',
@@ -9242,10 +9249,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     { 
                         id: 'v6', 
                         title: 'Eye Tracking Focus Effect 20s', 
-                        format: '9:16', 
+                        format: '16:9', 
                         duration: '20s', 
                         videoPath: '../04_Videos/eye_tracking_20s.html', 
-                        resolution: '1080×1920', 
+                        resolution: '1920×1080', 
                         category: 'reseaux', 
                         platform: 'YouTube',
                         channelId: 'ch_1794092386560',
@@ -9255,10 +9262,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     { 
                         id: 'v7', 
                         title: 'Design Ask Anything Pill 5s', 
-                        format: '9:16', 
+                        format: '16:9', 
                         duration: '05s', 
                         videoPath: '../04_Videos/design_ask_anything_pill_5s.html', 
-                        resolution: '1080×1920', 
+                        resolution: '1920×1080', 
                         category: 'standalone', 
                         platform: null,
                         channelId: null,
@@ -10701,12 +10708,34 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 // Masquer les footers internes dupliqués
                 const internalFooter = doc.getElementById('pageFooter');
                 if (internalFooter) internalFooter.style.display = 'none';
-                const viewport = doc.getElementById('viewport');
-                if (viewport) {
-                    viewport.style.height = '100%';
-                    viewport.style.width = '100%';
+                const internalViewport = doc.getElementById('viewport');
+                if (internalViewport) {
+                    internalViewport.style.height = '100%';
+                    internalViewport.style.width = '100%';
                 }
                 if (typeof win.fitStage === 'function') win.fitStage();
+
+                // Détection dynamique du format réel de la scène (16:9 vs 9:16)
+                const stage = doc.getElementById('stage') || doc.querySelector('.stage') || doc.body;
+                const canvas = doc.getElementById('mainCanvas') || doc.querySelector('canvas');
+                const stageW = parseInt(stage?.style?.width || stage?.getAttribute('width') || canvas?.getAttribute('width') || '0', 10);
+                const stageH = parseInt(stage?.style?.height || stage?.getAttribute('height') || canvas?.getAttribute('height') || '0', 10);
+                const viewport = document.getElementById('grandPlayerIframeViewport');
+                const pillEl = document.getElementById('grandPlayerFormatPill');
+
+                if ((stageW === 1920 && stageH === 1080) || (stageW > stageH && stageW > 0)) {
+                    if (viewport) {
+                        viewport.style.aspectRatio = '16 / 9';
+                        viewport.style.maxWidth = '1040px';
+                    }
+                    if (pillEl) pillEl.textContent = '16:9';
+                } else if (stageH > stageW && stageW > 0) {
+                    if (viewport) {
+                        viewport.style.aspectRatio = '9 / 16';
+                        viewport.style.maxWidth = '360px';
+                    }
+                    if (pillEl) pillEl.textContent = '9:16';
+                }
 
                 // Détecter la vraie durée
                 if (typeof win.DURATION === 'number' && win.DURATION > 0) {
@@ -10714,20 +10743,24 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 } else if (win.__timeline && typeof win.__timeline.duration === 'number') {
                     compositionDurationSec = win.__timeline.duration;
                 }
+                const totalTimeEl = document.getElementById('playerTotalTime');
+                if (totalTimeEl) totalTimeEl.textContent = formatTime(compositionDurationSec);
 
-                // Démarrer la lecture de la composition
-                isCompositionPlaying = true;
+                // Initialiser le premier frame SANS AUTOPLAY (en attente du clic utilisateur)
+                isCompositionPlaying = false;
+            updateCompositionPlayBtnState();
+                compositionCurrentSec = 0;
                 updateCompositionPlayBtnState();
                 updateCompositionTimeDisplay();
 
-                if (typeof win.play === 'function') {
-                    win.play();
-                } else if (win.__timeline && typeof win.__timeline.play === 'function') {
-                    win.__timeline.play();
-                } else {
-                    const stage = doc.getElementById('stage') || doc.body;
-                    if (stage) stage.click();
+                if (typeof win.renderAt === 'function') {
+                    win.renderAt(0);
+                } else if (win.__timeline && typeof win.__timeline.seek === 'function') {
+                    win.__timeline.seek(0);
                 }
+                if (typeof win.pause === 'function') win.pause();
+                else if (win.__timeline && typeof win.__timeline.pause === 'function') win.__timeline.pause();
+
             } catch (e) {
                 console.log('Hook composition info:', e);
             }
@@ -10805,7 +10838,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 }
                 compositionDurationSec = durSec;
                 compositionCurrentSec = 0;
-                isCompositionPlaying = true;
+                
+                // IMPORTANT : NE PAS LANCER EN AUTOPLAY
+                isCompositionPlaying = false;
+            updateCompositionPlayBtnState();
                 updateCompositionPlayBtnState();
                 updateCompositionTimeDisplay();
 
@@ -10819,24 +10855,30 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     if (isCompositionPlaying) {
                         try {
                             const win = iframeEl.contentWindow;
-                            if (win && typeof win.currentTime === 'number') {
-                                compositionCurrentSec = win.currentTime;
-                            } else if (win && typeof win.playbackTime === 'number') {
+                            if (win && typeof win.playbackTime === 'number') {
                                 compositionCurrentSec = win.playbackTime;
+                            } else if (win && typeof win.currentTime === 'number') {
+                                compositionCurrentSec = win.currentTime;
                             } else {
-                                compositionCurrentSec += 0.2;
+                                compositionCurrentSec += 0.1;
                             }
                         } catch(e) {
-                            compositionCurrentSec += 0.2;
+                            compositionCurrentSec += 0.1;
                         }
 
                         if (compositionCurrentSec >= compositionDurationSec) {
-                            compositionCurrentSec = 0;
-                            restartCompositionPlayback();
+                            compositionCurrentSec = compositionDurationSec;
+                            isCompositionPlaying = false;
+            updateCompositionPlayBtnState();
+                            updateCompositionPlayBtnState();
+                            try {
+                                const win = iframeEl.contentWindow;
+                                if (win && typeof win.pause === 'function') win.pause();
+                            } catch(e) {}
                         }
                         updateCompositionTimeDisplay();
                     }
-                }, 200);
+                }, 100);
 
             } else {
                 // Mode Fichier Vidéo Standard MP4 / WebM
@@ -10858,8 +10900,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     videoEl.style.display = 'block';
                     videoEl.src = resolvedPath;
                     videoEl.currentTime = 0;
-                    videoEl.load();
-                    videoEl.play().catch(e => console.log('Autoplay standard info:', e));
+                    videoEl.pause();
                 }
             }
 
@@ -10876,6 +10917,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 compositionTimer = null;
             }
             isCompositionPlaying = false;
+            updateCompositionPlayBtnState();
 
             if (videoEl) {
                 videoEl.pause();
@@ -10901,6 +10943,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     const win = iframeEl.contentWindow;
                     if (win) {
                         if (isCompositionPlaying) {
+                            if (compositionCurrentSec >= compositionDurationSec) {
+                                compositionCurrentSec = 0;
+                                if (typeof win.renderAt === 'function') win.renderAt(0);
+                            }
                             if (typeof win.play === 'function') win.play();
                             else if (win.__timeline && typeof win.__timeline.play === 'function') win.__timeline.play();
                         } else {
@@ -10915,13 +10961,18 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         function updateCompositionPlayBtnState() {
             const playIcon = document.getElementById('playerPlayIcon');
             const pauseIcon = document.getElementById('playerPauseIcon');
-            if (!playIcon || !pauseIcon) return;
-            if (isCompositionPlaying) {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            } else {
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
+            const bigOverlay = document.getElementById('playerBigPlayOverlay');
+            if (playIcon && pauseIcon) {
+                if (isCompositionPlaying) {
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                } else {
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            }
+            if (bigOverlay) {
+                bigOverlay.style.display = isCompositionPlaying ? 'none' : 'flex';
             }
         }
 
@@ -13826,16 +13877,16 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 } else if (item.id === 'groq') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
-                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8 - Testé OK)</option>
-                            <option value="openai/gpt-oss-120b" ${item.model === 'openai/gpt-oss-120b' ? 'selected' : ''}>openai/gpt-oss-120b (GPT-OSS 120B - Testé OK)</option>
+                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8)</option>
+                            <option value="openai/gpt-oss-120b" ${item.model === 'openai/gpt-oss-120b' ? 'selected' : ''}>openai/gpt-oss-120b (GPT-OSS 120B)</option>
                         </select>
                     `;
                 } else if (item.id === 'openrouter') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle OpenRouter">
-                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning - Testé OK)</option>
-                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat - Testé OK)</option>
-                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash - Testé OK)</option>
+                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning)</option>
+                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat)</option>
+                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash)</option>
                         </select>
                     `;
                 } else if (item.id === 'claude_cli') {

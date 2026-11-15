@@ -1597,16 +1597,16 @@
                 } else if (item.id === 'groq') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
-                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8 - Testé OK)</option>
-                            <option value="openai/gpt-oss-120b" ${item.model === 'openai/gpt-oss-120b' ? 'selected' : ''}>openai/gpt-oss-120b (GPT-OSS 120B - Testé OK)</option>
+                            <option value="qwen/qwen3.8-27b" ${item.model === 'qwen/qwen3.8-27b' ? 'selected' : ''}>qwen/qwen3.8-27b (Qwen 3.8)</option>
+                            <option value="openai/gpt-oss-120b" ${item.model === 'openai/gpt-oss-120b' ? 'selected' : ''}>openai/gpt-oss-120b (GPT-OSS 120B)</option>
                         </select>
                     `;
                 } else if (item.id === 'openrouter') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle OpenRouter">
-                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning - Testé OK)</option>
-                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat - Testé OK)</option>
-                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash - Testé OK)</option>
+                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning)</option>
+                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat)</option>
+                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash)</option>
                         </select>
                     `;
                 } else if (item.id === 'claude_cli') {
