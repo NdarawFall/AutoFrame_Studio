@@ -4998,7 +4998,229 @@
         }
 
     
+
+
+        /* --- DASHBOARD CIRCLE FILTERS & CHIPS --- */
+        .dashboard-circle-filters-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-circle-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .filter-circle-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .filter-circle-btn.active {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: #ffffff;
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+            transform: scale(1.08);
+        }
+
+        .filter-circle-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .filter-all-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-all-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .filter-all-btn.active {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            font-weight: 700;
+        }
+
+        .dashboard-subfilter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 2px;
+            margin-top: 10px;
+            margin-bottom: 6px;
+            scrollbar-width: none;
+        }
+        .dashboard-subfilter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .subfilter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            color: #d4d4d8;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .subfilter-chip:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .subfilter-chip.active {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: #ffffff;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .subfilter-chip-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-color: #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        /* --- BOUTONS PRO ET DÉTAIL CHAÎNE --- */
+        .btn-create-video-head {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #ffffff;
+            border: 1px solid #ffffff;
+            border-radius: 8px;
+            color: #000000;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+        }
+        .btn-create-video-head:hover {
+            background: #e4e4e7;
+            border-color: #e4e4e7;
+            transform: translateY(-1px);
+        }
+
+        .btn-new-channel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-new-channel:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-back-channels {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #d4d4d8;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-back-channels:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .channel-detail-banner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+        }
+
+        .project-thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+        .project-card:hover .project-thumb-img {
+            transform: scale(1.05);
+        }
+
 </style>
+    <!-- ANTI-FLASH SPA ROUTING : Active immédiatement la vue mémorisée avant le rendu graphique -->
+    <script>
+        (function() {
+            try {
+                var hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+                var saved = hash || localStorage.getItem('autoframe_active_view') || 'dashboard';
+                if (saved && saved !== 'dashboard') {
+                    var panelId = saved === 'create_video' ? 'viewCreateVideo' : ('view' + saved.charAt(0).toUpperCase() + saved.slice(1));
+                    var style = document.createElement('style');
+                    style.id = 'spaEarlyStyle';
+                    style.textContent = '#viewDashboard{display:none!important;}#' + panelId + '{display:block!important;}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body>
 
@@ -5128,29 +5350,60 @@
                 </a>
 
                 <!-- LISTE DES VIDÉOS BIEN TRIÉES -->
-                <div class="dashboard-header-row">
+                <div class="dashboard-header-row" style="margin-bottom: 8px;">
                     <div class="dashboard-heading">
                         <h2>Mes Vidéos & Projets</h2>
                         <span class="dashboard-count-badge" id="dashboardVideosCount">0 vidéo</span>
                     </div>
 
-                    <div class="dashboard-filters-wrap">
-                        <button type="button" class="filter-btn active" onclick="setDashboardFilter('all', this)">Toutes</button>
-                        <select class="filter-dropdown-select" id="filterReseauSelect" onchange="handleReseauFilterChange(this)">
-                            <option value="">🎬 Réseaux (Tous)</option>
-                        </select>
-                        <select class="filter-dropdown-select" id="filterClientSelect" onchange="handleClientFilterChange(this)">
-                            <option value="">💼 Montage Clients (Tous)</option>
-                        </select>
-                        <button type="button" class="filter-btn" onclick="setDashboardFilter('9:16', this)">9:16 Shorts</button>
-                        <button type="button" class="filter-btn" onclick="setDashboardFilter('16:9', this)">16:9 YouTube</button>
-                        <button type="button" class="filter-btn" onclick="openProjectsFolder()" title="Ouvrir le dossier local de projets">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            <span>Dossier local</span>
+                    <!-- LES 4 CERCLES FILTRES RÉSEAUX + MONTAGE & BOUTON TOUTES -->
+                    <div class="dashboard-circle-filters-wrap">
+                        <button type="button" class="filter-all-btn active" id="btnFilterAllVideos" onclick="resetDashboardFilter()" title="Afficher toutes les vidéos les plus récentes">
+                            Toutes les vidéos
                         </button>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <!-- 1. CERCLE YOUTUBE -->
+                            <button type="button" class="filter-circle-btn" id="circleBtnYouTube" onclick="toggleDashboardCircleFilter('YouTube')" title="Filtrer par chaînes YouTube">
+                                <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            </button>
+
+                            <!-- 2. CERCLE INSTAGRAM -->
+                            <button type="button" class="filter-circle-btn" id="circleBtnInstagram" onclick="toggleDashboardCircleFilter('Instagram')" title="Filtrer par comptes Instagram">
+                                <svg viewBox="0 0 24 24">
+                                    <defs>
+                                        <radialGradient id="igCircleFilterGrad" cx="20%" cy="105%" r="105%">
+                                            <stop offset="0%" stop-color="#ffd521" />
+                                            <stop offset="20%" stop-color="#fd5949" />
+                                            <stop offset="60%" stop-color="#d6249f" />
+                                            <stop offset="100%" stop-color="#285AEB" />
+                                        </radialGradient>
+                                    </defs>
+                                    <rect x="2" y="2" width="20" height="20" rx="5.5" fill="url(#igCircleFilterGrad)"></rect>
+                                    <circle cx="12" cy="12" r="4.2" fill="none" stroke="#ffffff" stroke-width="1.8"></circle>
+                                    <circle cx="17.2" cy="6.8" r="1.1" fill="#ffffff"></circle>
+                                </svg>
+                            </button>
+
+                            <!-- 3. CERCLE TIKTOK -->
+                            <button type="button" class="filter-circle-btn" id="circleBtnTikTok" onclick="toggleDashboardCircleFilter('TikTok')" title="Filtrer par comptes TikTok">
+                                <svg viewBox="0 0 24 24" fill="#FFFFFF"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.5 6.3 6.3 0 0 0 1.86-4.5v-7.1a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.86.01z"/></svg>
+                            </button>
+
+                            <!-- 4. CERCLE MONTAGE CLIENTS -->
+                            <button type="button" class="filter-circle-btn" id="circleBtnClients" onclick="toggleDashboardCircleFilter('Clients')" title="Filtrer par Montage Clients">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" stroke="#ffffff" fill="none"></rect>
+                                    <path d="M7 4v4M12 4v4M17 4v4M2 8h20" stroke="#ffffff"></path>
+                                    <polygon points="10 11 15 14 10 17 10 11" fill="#3b82f6" stroke="none"></polygon>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
+                <!-- LISTE HORIZONTALE DÉFILABLE DYNAMIQUE (CHAÎNES OU CLIENTS SELON LE CERCLE CLIQUÉ) -->
+                <div class="dashboard-subfilter-bar" id="dashboardSubFilterBar" style="display: none;"></div>
                 <div class="projects-grid" id="dashboardProjectsGrid">
                     <!-- Généré dynamiquement -->
                 </div>
@@ -5160,7 +5413,9 @@
             <!-- VUE 2 : MES RÉSEAUX (TRANSPOSITION COMPLETE CREATEUR.HTML) -->
             <!-- ========================================================= -->
             <section id="viewReseaux" class="view-panel">
-                <div class="view-header-row">
+                <!-- 1. CONTENEUR GLOBAL : GRILLE ET APERÇU DE TOUTES LES CHAÎNES -->
+                <div id="reseauxOverviewContainer">
+                    <div class="view-header-row">
                     <div class="view-title-wrap">
                         <h2>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -5170,11 +5425,11 @@
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <button type="button" class="btn-primary-action" onclick="openCreateVideoView()" style="background: #ffffff; color: #000000; font-weight: 700; border-color: #ffffff;">
+                        <button type="button" class="btn-create-video-head" onclick="openCreateVideoView()" title="Créer une nouvelle vidéo">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             <span>Créer une Vidéo</span>
                         </button>
-                        <button type="button" class="btn-secondary-action" onclick="openAddChannelModal()">
+                        <button type="button" class="btn-new-channel" onclick="openAddChannelModal()" title="Ajouter une nouvelle chaîne">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                             <span>Nouvelle Chaîne</span>
                         </button>
@@ -5251,7 +5506,65 @@
                 <div class="channels-grid" id="channelsListGrid">
                     <!-- Rendu dynamique -->
                 </div>
-            </section>
+                </div>
+
+                <!-- 2. CONTENEUR DÉTAIL D'UNE CHAÎNE (CENTRALISÉ SANS RECHARGEMENT) -->
+                <div id="channelDetailContainer" style="display: none;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <button type="button" class="btn-back-channels" onclick="closeChannelDetailView()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            <span>Retour à toutes les chaînes</span>
+                        </button>
+
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button type="button" class="btn-create-video-head" id="btnDetailCreateVideo" onclick="openCreateVideoForCurrentDetailChannel()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span>Créer une Vidéo pour cette chaîne</span>
+                            </button>
+                            <button type="button" class="btn-new-channel" id="btnDetailSettings" onclick="openChannelSettingsModal(currentDetailChannelId)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                <span>Paramètres</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BANNIÈRE PROFIL DE LA CHAÎNE -->
+                    <div class="channel-detail-banner" id="channelDetailBanner">
+                        <div style="display: flex; align-items: center; gap: 18px;">
+                            <div class="channel-avatar-circle" id="detailChannelAvatar" style="width: 68px; height: 68px; font-size: 24px;" onclick="triggerChangeChannelAvatar(currentDetailChannelId)" title="Changer l'avatar">
+                                <span id="detailChannelFallback">C</span>
+                                <div class="channel-avatar-hover">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                </div>
+                            </div>
+                            <div class="detail-channel-info">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <h2 id="detailChannelName" style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0;">Nom</h2>
+                                    <span id="detailChannelPlatformBadge" class="badge-platform">YouTube</span>
+                                    <span id="detailChannelFormatBadge" class="badge-format-pill">16:9</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 16px; margin-top: 6px; font-size: 12px; color: var(--text-muted);">
+                                    <span id="detailChannelVideosCount">0 vidéo</span>
+                                    <span id="detailChannelDescText">Format principal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION DES VIDÉOS DE CETTE CHAÎNE -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; margin-top: 24px;">
+                        <h3 style="color: #ffffff; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Vidéos de la Chaîne</span>
+                        </h3>
+                        <span id="detailVideosCountBadge" class="dashboard-count-badge">0 vidéo</span>
+                    </div>
+
+                    <div class="projects-grid" id="detailChannelVideosGrid">
+                        <!-- Rempli dynamiquement -->
+                    </div>
+                </div>
+    </section>
 
             <!-- ========================================================= -->
             <!-- VUE 3 : MONTAGE CLIENTS (TRANSPOSITION COMPLÈTE MONTEUR)  -->
@@ -7014,6 +7327,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
         function switchView(viewName) {
             currentView = viewName;
+            localStorage.setItem('autoframe_active_view', viewName);
+            window.location.hash = '#' + viewName;
+            const earlyStyle = document.getElementById('spaEarlyStyle');
+            if (earlyStyle) earlyStyle.remove();
 
             // Mise à jour de la topbar
             const viewTitles = {
@@ -7117,12 +7434,92 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
             if (allVideosList.length === 0) {
                 allVideosList = [
-                    { id: 'v1', title: 'Top 10 Buts Football 15s', format: '9:16', duration: '15s', videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', date: 'Hier', resolution: '1080×1920', category: 'reseaux', channelId: 'ch_1794091667085' },
-                    { id: 'v2', title: 'GrowKaz Stickman Motion 15s', format: '9:16', duration: '15s', videoPath: '../01_Assets/Videos/marvid_scroll.mp4', date: 'Aujourd\'hui', resolution: '1080×1920', category: 'clients', client: 'marcus' },
-                    { id: 'v3', title: 'Claude Fable SaaS Commercial 30s', format: '16:9', duration: '38s', videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', date: '13 nov. 2026', resolution: '1920×1080', category: 'reseaux', channelId: 'ch_1794092040974' },
-                    { id: 'v4', title: 'ASCII CRT Retro Terminal 15s', format: '9:16', duration: '15s', videoPath: '../01_Assets/Videos/marvid_scroll.mp4', date: '13 nov. 2026', resolution: '1080×1920', category: 'reseaux', channelId: 'ch_1794091565439' },
-                    { id: 'v5', title: 'Motion Design Commercial 25s', format: '16:9', duration: '25s', videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', date: '13 nov. 2026', resolution: '1920×1080', category: 'clients', client: 'marcus' },
-                    { id: 'v6', title: 'Eye Tracking Focus Effect 20s', format: '9:16', duration: '20s', videoPath: '../01_Assets/Videos/marvid_scroll.mp4', date: '06 nov. 2026', resolution: '1080×1920', category: 'reseaux', channelId: 'ch_1794091667085' }
+                    { 
+                        id: 'v1', 
+                        title: 'Top 10 Buts Football 15s', 
+                        format: '9:16', 
+                        duration: '15s', 
+                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        poster: '../01_Assets/Images/styles/template_top_10.jpg',
+                        date: 'Hier', 
+                        resolution: '1080×1920', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1793911184121',
+                        channelName: 'Greatest Eleven',
+                        timestamp: 1731670000000
+                    },
+                    { 
+                        id: 'v2', 
+                        title: 'GrowKaz Stickman Motion 15s', 
+                        format: '9:16', 
+                        duration: '15s', 
+                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        poster: '../01_Assets/Images/growkaz_stickman_concept.jpg',
+                        date: 'Aujourd\'hui', 
+                        resolution: '1080×1920', 
+                        category: 'clients', 
+                        client: 'marcus',
+                        timestamp: 1731680000000
+                    },
+                    { 
+                        id: 'v3', 
+                        title: 'Claude Fable SaaS Commercial 30s', 
+                        format: '16:9', 
+                        duration: '38s', 
+                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        poster: '../01_Assets/Images/styles/template_saas_motion_design.jpg',
+                        date: '13 nov. 2026', 
+                        resolution: '1920×1080', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1793911244535',
+                        channelName: 'Dr Klavius',
+                        timestamp: 1731500000000
+                    },
+                    { 
+                        id: 'v4', 
+                        title: 'ASCII CRT Retro Terminal 15s', 
+                        format: '9:16', 
+                        duration: '15s', 
+                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        poster: '../01_Assets/Images/marvidflow/marvid_dashboard.png',
+                        date: '13 nov. 2026', 
+                        resolution: '1080×1920', 
+                        category: 'reseaux', 
+                        platform: 'Instagram',
+                        channelId: 'ch_1793102190223',
+                        channelName: 'Galsen Tuto',
+                        timestamp: 1731490000000
+                    },
+                    { 
+                        id: 'v5', 
+                        title: 'Motion Design Commercial 25s', 
+                        format: '16:9', 
+                        duration: '25s', 
+                        videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
+                        poster: '../01_Assets/Images/Design_Tips_Frames/01_typography.png',
+                        date: '13 nov. 2026', 
+                        resolution: '1920×1080', 
+                        category: 'clients', 
+                        client: 'marcus',
+                        timestamp: 1731480000000
+                    },
+                    { 
+                        id: 'v6', 
+                        title: 'Eye Tracking Focus Effect 20s', 
+                        format: '9:16', 
+                        duration: '20s', 
+                        videoPath: '../01_Assets/Videos/marvid_scroll.mp4', 
+                        poster: '../01_Assets/Images/Design_Tips_Frames/15_short_form_animation.png',
+                        date: '06 nov. 2026', 
+                        resolution: '1080×1920', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1794092386560',
+                        channelName: 'Le Secrets Des Geeks',
+                        timestamp: 1730900000000
+                    }
                 ];
             }
 
@@ -7160,7 +7557,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             updateSidebarCounters();
             
             // Rendu de la vue initiale
-            const initialHash = (window.location.hash || '#dashboard').replace('#', '');
+            const initialHash = window.location.hash ? window.location.hash.replace('#', '') : (localStorage.getItem('autoframe_active_view') || 'dashboard');
             switchView(initialHash);
         }
 
@@ -7179,24 +7576,135 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         // =====================================================================
         // SECTION DASHBOARD
         // =====================================================================
+        let activeCircleCategory = null; // 'YouTube' | 'Instagram' | 'TikTok' | 'Clients' | null
+        let activeSubFilterId = null; // channelId or client name
+
+        function resetDashboardFilter() {
+            activeCircleCategory = null;
+            activeSubFilterId = null;
+            
+            document.querySelectorAll('.filter-circle-btn').forEach(b => b.classList.remove('active'));
+            const btnAll = document.getElementById('btnFilterAllVideos');
+            if (btnAll) btnAll.classList.add('active');
+            
+            const subBar = document.getElementById('dashboardSubFilterBar');
+            if (subBar) {
+                subBar.style.display = 'none';
+                subBar.innerHTML = '';
+            }
+            
+            renderDashboardProjects();
+        }
+
+        function toggleDashboardCircleFilter(category) {
+            if (activeCircleCategory === category) {
+                resetDashboardFilter();
+                return;
+            }
+
+            activeCircleCategory = category;
+            activeSubFilterId = null;
+
+            document.querySelectorAll('.filter-circle-btn').forEach(b => b.classList.remove('active'));
+            const btnAll = document.getElementById('btnFilterAllVideos');
+            if (btnAll) btnAll.classList.remove('active');
+
+            const circleBtn = document.getElementById('circleBtn' + category);
+            if (circleBtn) circleBtn.classList.add('active');
+
+            renderDashboardSubFilterBar(category);
+            renderDashboardProjects();
+        }
+
+        function renderDashboardSubFilterBar(category) {
+            const subBar = document.getElementById('dashboardSubFilterBar');
+            if (!subBar) return;
+            subBar.style.display = 'flex';
+
+            let html = '';
+
+            if (category === 'YouTube' || category === 'Instagram' || category === 'TikTok') {
+                const filteredChannels = channelsCache.filter(c => c.platform === category);
+                const allLabel = category === 'YouTube' ? 'Toutes les chaînes YouTube' : (category === 'Instagram' ? 'Tous les comptes Instagram' : 'Tous les comptes TikTok');
+                
+                html += `
+                    <div class="subfilter-chip ${!activeSubFilterId ? 'active' : ''}" onclick="selectDashboardSubFilter(null)">
+                        <span>${allLabel} (${filteredChannels.length})</span>
+                    </div>
+                `;
+
+                filteredChannels.forEach(c => {
+                    const isSel = activeSubFilterId === c.id;
+                    const avatarStyle = c.avatar ? `background-image: url('../${c.avatar.replace(/^\.\.\//, '')}');` : '';
+                    const fallbackLetter = c.name ? c.name.charAt(0).toUpperCase() : 'C';
+                    const vidCount = allVideosList.filter(v => v.channelId === c.id).length;
+
+                    html += `
+                        <div class="subfilter-chip ${isSel ? 'active' : ''}" onclick="selectDashboardSubFilter('${c.id}')">
+                            <div class="subfilter-chip-avatar" style="${avatarStyle}">
+                                ${!c.avatar ? fallbackLetter : ''}
+                            </div>
+                            <span>${escapeHtml(c.name)}</span>
+                            <span style="font-size: 10px; opacity: 0.7; font-family: 'JetBrains Mono', monospace;">${vidCount}</span>
+                        </div>
+                    `;
+                });
+            } else if (category === 'Clients') {
+                html += `
+                    <div class="subfilter-chip ${!activeSubFilterId ? 'active' : ''}" onclick="selectDashboardSubFilter(null)">
+                        <span>Tous les clients (${clientsCache.length})</span>
+                    </div>
+                `;
+
+                clientsCache.forEach(cl => {
+                    const isSel = activeSubFilterId === cl.name;
+                    const avatarStyle = cl.avatar ? `background-image: url('../${cl.avatar.replace(/^\.\.\//, '')}');` : '';
+                    const fallbackLetter = cl.name ? cl.name.charAt(0).toUpperCase() : 'C';
+                    const vidCount = allVideosList.filter(v => v.client === cl.name).length;
+
+                    html += `
+                        <div class="subfilter-chip ${isSel ? 'active' : ''}" onclick="selectDashboardSubFilter('${cl.name}')">
+                            <div class="subfilter-chip-avatar" style="${avatarStyle}">
+                                ${!cl.avatar ? fallbackLetter : ''}
+                            </div>
+                            <span>${escapeHtml(cl.name)}</span>
+                            <span style="font-size: 10px; opacity: 0.7; font-family: 'JetBrains Mono', monospace;">${vidCount}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            subBar.innerHTML = html;
+        }
+
+        function selectDashboardSubFilter(id) {
+            activeSubFilterId = id;
+            if (activeCircleCategory) {
+                renderDashboardSubFilterBar(activeCircleCategory);
+            }
+            renderDashboardProjects();
+        }
+
         function renderDashboardProjects() {
             const grid = document.getElementById('dashboardProjectsGrid');
-            const reseauSelect = document.getElementById('filterReseauSelect');
-            const clientSelect = document.getElementById('filterClientSelect');
+            if (!grid) return;
 
-            // Mise à jour des filtres déroulants
-            reseauSelect.innerHTML = '<option value="">🎬 Réseaux (Tous)</option>' + 
-                channelsCache.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${c.platform})</option>`).join('');
-            clientSelect.innerHTML = '<option value="">💼 Montage Clients (Tous)</option>' + 
-                clientsCache.map(cl => `<option value="${cl.name}">${escapeHtml(cl.name)}</option>`).join('');
+            // Par défaut : toutes les vidéos triées par date la plus récente
+            let filtered = allVideosList.slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-            let filtered = allVideosList.filter(v => {
-                if (dashboardFilter === '9:16' && v.format !== '9:16') return false;
-                if (dashboardFilter === '16:9' && v.format !== '16:9') return false;
-                if (dashboardReseauFilter && v.channelId !== dashboardReseauFilter) return false;
-                if (dashboardClientFilter && v.client !== dashboardClientFilter) return false;
-                return true;
-            });
+            if (activeCircleCategory) {
+                if (activeCircleCategory === 'YouTube' || activeCircleCategory === 'Instagram' || activeCircleCategory === 'TikTok') {
+                    filtered = filtered.filter(v => {
+                        if (activeSubFilterId) return v.channelId === activeSubFilterId;
+                        return v.platform === activeCircleCategory;
+                    });
+                } else if (activeCircleCategory === 'Clients') {
+                    filtered = filtered.filter(v => {
+                        if (activeSubFilterId) return v.client === activeSubFilterId;
+                        return v.category === 'clients';
+                    });
+                }
+            }
 
             document.getElementById('dashboardVideosCount').textContent = `${filtered.length} vidéo${filtered.length > 1 ? 's' : ''}`;
 
@@ -7205,12 +7713,12 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 return;
             }
 
-            // Cards vidéo épurées : carré/aspect vidéo, sans bouton play au centre,
-            // dégradé noir doux en bas, durée en bas à droite, clic ouvre directement le grand modal.
+            // Cards avec miniature image instantanée haute résolution (aucun écran noir),
+            // dégradé noir doux en bas, badge de durée en bas à droite, et ouverture directe du lecteur.
             grid.innerHTML = filtered.map(v => `
-                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Cliquer pour regarder ${escapeHtml(v.title)}">
+                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Regarder ${escapeHtml(v.title)}">
                     <div class="project-thumb">
-                        <video src="${v.videoPath}#t=0.5" preload="metadata" muted playsinline></video>
+                        <img src="${v.poster || '../01_Assets/Images/styles/template_top_10.jpg'}" alt="${escapeHtml(v.title)}" class="project-thumb-img" onerror="this.src='../01_Assets/Images/styles/template_2d_explainer.jpg'">
                         <div class="project-card-overlay"></div>
                         <div class="project-card-footer">
                             <div class="project-card-info-wrap">
@@ -7222,13 +7730,6 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     </div>
                 </div>
             `).join('');
-        }
-
-        function setDashboardFilter(val, btn) {
-            dashboardFilter = val;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            renderDashboardProjects();
         }
 
         function handleReseauFilterChange(sel) {
@@ -7340,7 +7841,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 // Card de chaîne épuré : pas de bouton créer vidéo sur le card,
                 // bouton paramètres bien visible, et bouton supprimer compact et discret (26x26px).
                 return `
-                    <div class="channel-card">
+                    <div class="channel-card" onclick="openChannelDetailView('${c.id}')" style="cursor: pointer;">
                         <div class="channel-header">
                             <div class="channel-avatar-circle" style="${avatarStyle}" onclick="triggerChangeChannelAvatar('${c.id}')" title="Changer l'avatar de la chaîne">
                                 ${!c.avatar ? fallbackLetter : ''}
@@ -7367,13 +7868,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
                         <div class="channel-actions-row" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                             <!-- BOUTON PARAMÈTRES DE LA CHAÎNE -->
-                            <a href="channel_settings.html?id=${encodeURIComponent(c.id)}" class="btn-card-action" style="flex: 1; justify-content: center;" title="Accéder aux paramètres et Brand Kit de la chaîne">
+                            <button type="button" class="btn-card-action" onclick="event.stopPropagation(); openChannelSettingsModal('${c.id}')" style="flex: 1; justify-content: center;" title="Accéder aux paramètres et Brand Kit de la chaîne">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                                 <span>Paramètres</span>
-                            </a>
+                            </button>
 
                             <!-- BOUTON SUPPRIMER RETRÉCI ET COMPACT -->
-                            <button type="button" class="btn-card-delete-compact" title="Supprimer la chaîne" onclick="confirmDeleteChannel('${c.id}', '${escapeJs(c.name)}')">
+                            <button type="button" class="btn-card-delete-compact" title="Supprimer la chaîne" onclick="event.stopPropagation(); confirmDeleteChannel('${c.id}', '${escapeJs(c.name)}')">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                             </button>
                         </div>
@@ -10531,6 +11032,170 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             window.location.href = targetUrl;
         }
     
+
+
+        // =====================================================================
+        // VUE DÉTAILLÉE D'UNE CHAÎNE & MODAL PARAMÈTRES (TRANSPOSITION COMPLETE)
+        // =====================================================================
+        let currentDetailChannelId = null;
+
+        function openChannelDetailView(channelId) {
+            const channel = channelsCache.find(c => c.id === channelId);
+            if (!channel) return;
+
+            currentDetailChannelId = channelId;
+
+            // Masquer la vue d'ensemble et afficher le détail
+            document.getElementById('reseauxOverviewContainer').style.display = 'none';
+            document.getElementById('channelDetailContainer').style.display = 'block';
+
+            // Remplir les données de l'en-tête
+            document.getElementById('detailChannelName').textContent = channel.name;
+            const fallbackEl = document.getElementById('detailChannelFallback');
+            const avatarEl = document.getElementById('detailChannelAvatar');
+
+            if (channel.avatar) {
+                avatarEl.style.backgroundImage = `url('../${channel.avatar.replace(/^\.\.\//, '')}')`;
+                fallbackEl.style.display = 'none';
+            } else {
+                avatarEl.style.backgroundImage = '';
+                fallbackEl.style.display = 'block';
+                fallbackEl.textContent = channel.name.charAt(0).toUpperCase();
+            }
+
+            // Platform badge
+            const pBadge = document.getElementById('detailChannelPlatformBadge');
+            pBadge.className = 'badge-platform ' + (channel.platform === 'Instagram' ? 'instagram' : (channel.platform === 'TikTok' ? 'tiktok' : 'youtube'));
+            pBadge.textContent = channel.platform;
+
+            // Format badge
+            document.getElementById('detailChannelFormatBadge').textContent = channel.format || '16:9';
+
+            // Filtrer les vidéos de cette chaîne
+            const channelVideos = allVideosList.filter(v => v.channelId === channelId);
+            document.getElementById('detailChannelVideosCount').textContent = `${channelVideos.length} vidéo${channelVideos.length > 1 ? 's' : ''}`;
+            document.getElementById('detailVideosCountBadge').textContent = `${channelVideos.length} vidéo${channelVideos.length > 1 ? 's' : ''}`;
+            document.getElementById('detailChannelDescText').textContent = channel.description || (channel.format === '9:16' ? 'Format vertical Shorts / Reels' : 'Format paysage YouTube');
+
+            const grid = document.getElementById('detailChannelVideosGrid');
+            if (channelVideos.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 48px; text-align: center; color: var(--text-muted); background: var(--bg-surface); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 36px; height: 36px; margin-bottom: 8px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <h4 style="color:#ffffff; margin-bottom: 6px;">Aucune vidéo publiée pour cette chaîne</h4>
+                        <p style="font-size: 12px; margin-bottom: 16px;">Générez votre première vidéo dédiée avec vos paramètres de marque.</p>
+                        <button type="button" class="btn-create-video-head" onclick="openCreateVideoForCurrentDetailChannel()">+ Créer une Vidéo pour cette chaîne</button>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = channelVideos.map(v => `
+                    <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}')" title="Regarder ${escapeHtml(v.title)}">
+                        <div class="project-thumb">
+                            <img src="${v.poster || '../01_Assets/Images/styles/template_top_10.jpg'}" alt="${escapeHtml(v.title)}" class="project-thumb-img">
+                            <div class="project-card-overlay"></div>
+                            <div class="project-card-footer">
+                                <div class="project-card-info-wrap">
+                                    <div class="project-card-title">${escapeHtml(v.title)}</div>
+                                    <div class="project-card-meta">${v.date || 'Récemment'} • ${v.format || '16:9'}</div>
+                                </div>
+                                <span class="project-duration-badge">${v.duration || '15s'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeChannelDetailView() {
+            currentDetailChannelId = null;
+            document.getElementById('reseauxOverviewContainer').style.display = 'block';
+            document.getElementById('channelDetailContainer').style.display = 'none';
+            renderChannelsView();
+        }
+
+        function openCreateVideoForCurrentDetailChannel() {
+            if (currentDetailChannelId) {
+                openCreateVideoView(currentDetailChannelId);
+            } else {
+                openCreateVideoView();
+            }
+        }
+
+        // --- MODAL PARAMÈTRES DE LA CHAÎNE ---
+        function openChannelSettingsModal(channelId) {
+            const channel = channelsCache.find(c => c.id === channelId);
+            if (!channel) return;
+
+            document.getElementById('editChannelId').value = channel.id;
+            document.getElementById('editChannelNameInput').value = channel.name || '';
+            document.getElementById('editChannelPlatformInput').value = channel.platform || 'YouTube';
+            document.getElementById('editChannelFormatInput').value = channel.format || '16:9';
+            document.getElementById('editChannelDescInput').value = channel.description || '';
+
+            const avatarPreview = document.getElementById('editChannelAvatarPreview');
+            const fallback = document.getElementById('editChannelAvatarFallback');
+
+            if (channel.avatar) {
+                avatarPreview.style.backgroundImage = `url('../${channel.avatar.replace(/^\.\.\//, '')}')`;
+                fallback.style.display = 'none';
+            } else {
+                avatarPreview.style.backgroundImage = '';
+                fallback.style.display = 'block';
+                fallback.textContent = (channel.name || 'C').charAt(0).toUpperCase();
+            }
+
+            document.getElementById('channelSettingsModal').classList.add('open');
+        }
+
+        function closeChannelSettingsModal() {
+            document.getElementById('channelSettingsModal').classList.remove('open');
+        }
+
+        function handleEditChannelAvatarSelected(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const preview = document.getElementById('editChannelAvatarPreview');
+                const fallback = document.getElementById('editChannelAvatarFallback');
+                preview.style.backgroundImage = `url('${evt.target.result}')`;
+                fallback.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveChannelSettingsModal() {
+            const id = document.getElementById('editChannelId').value;
+            const name = document.getElementById('editChannelNameInput').value.trim();
+            const platform = document.getElementById('editChannelPlatformInput').value;
+            const format = document.getElementById('editChannelFormatInput').value;
+            const desc = document.getElementById('editChannelDescInput').value.trim();
+
+            if (!name) {
+                alert('Veuillez saisir un nom pour la chaîne.');
+                return;
+            }
+
+            const channel = channelsCache.find(c => c.id === id);
+            if (channel) {
+                channel.name = name;
+                channel.platform = platform;
+                channel.format = format;
+                channel.description = desc;
+            }
+
+            closeChannelSettingsModal();
+            showToast('Paramètres de la chaîne enregistrés');
+
+            // Mettre à jour l'affichage
+            if (currentDetailChannelId === id) {
+                openChannelDetailView(id);
+            }
+            renderChannelsView();
+        }
+
 </script>
 
 <div class="script-modal-overlay" id="docModalOverlay" onclick="handleDocOverlayClick(event)">
@@ -10570,5 +11235,68 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
     </div>
 
     
+
+
+    <!-- MODAL : PARAMÈTRES ET BRAND KIT DE LA CHAÎNE (CENTRALISÉ) -->
+    <div class="modal-overlay" id="channelSettingsModal" onclick="handleModalOutsideClick(event, 'channelSettingsModal')">
+        <div class="modal-dialog" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 18px; height: 18px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Paramètres de la Chaîne</span>
+                </h3>
+                <button type="button" class="btn-modal-close" onclick="closeChannelSettingsModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editChannelId">
+                
+                <div style="display: flex; align-items: center; gap: 16px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 8px;">
+                    <div class="channel-avatar-circle" id="editChannelAvatarPreview" style="width: 52px; height: 52px; cursor: pointer; flex-shrink: 0;" onclick="document.getElementById('editChannelAvatarFileInput').click()" title="Changer l'avatar">
+                        <span id="editChannelAvatarFallback">C</span>
+                    </div>
+                    <input type="file" id="editChannelAvatarFileInput" accept="image/*" style="display: none;" onchange="handleEditChannelAvatarSelected(event)">
+                    <div>
+                        <button type="button" class="btn-new-channel" onclick="document.getElementById('editChannelAvatarFileInput').click()" style="padding: 5px 12px; font-size: 11.5px;">Changer l'avatar / logo</button>
+                        <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 3px;">Formats acceptés : PNG, JPG, WebP</div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Nom de la Chaîne</label>
+                    <input type="text" id="editChannelNameInput" class="form-input-text" placeholder="Ex: Dr Klavius, Greatest Eleven...">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label class="form-label">Plateforme</label>
+                        <select id="editChannelPlatformInput" class="form-select">
+                            <option value="YouTube">YouTube</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="TikTok">TikTok</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Format Vidéo par Défaut</label>
+                        <select id="editChannelFormatInput" class="form-select">
+                            <option value="16:9">16:9 — Paysage Horizontal (1920×1080)</option>
+                            <option value="9:16">9:16 — Portrait Vertical (1080×1920)</option>
+                            <option value="1:1">1:1 — Carré Standard (1080×1080)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Slogan / Description de la Chaîne</label>
+                    <textarea id="editChannelDescInput" class="form-textarea" style="min-height: 75px;" placeholder="Univers, thématiques et directives de marque..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeChannelSettingsModal()">Annuler</button>
+                <button type="button" class="btn-modal-submit" onclick="saveChannelSettingsModal()">Enregistrer les modifications</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
