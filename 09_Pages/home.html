@@ -10218,15 +10218,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             if (activeClient.categories && activeClient.categories[cat]) {
                 activeClient.categories[cat] = activeClient.categories[cat].filter(f => f.name !== filename);
             }
-            showToast(`Fichier "${filename}" supprimé`);
             renderActiveClientWorkspace();
-        }
-
-        function copyClientFolderRelPath() {
-            if (!activeClient) return;
-            const p = `Clients/${activeClient.name}/`;
-            navigator.clipboard.writeText(p);
-            showToast(`Chemin "${p}" copié !`);
+            showToast(`Fichier "${filename}" supprimé`);
         }
 
         function openCreateClientModal() {
@@ -10246,8 +10239,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             reader.onload = (e) => {
                 newClientAvatarBase64 = e.target.result;
                 const prev = document.getElementById('newClientAvatarPreview');
-                prev.innerHTML = '';
-                prev.style.backgroundImage = `url('${newClientAvatarBase64}')`;
+                if (prev) {
+                    prev.innerHTML = '';
+                    prev.style.backgroundImage = `url('${newClientAvatarBase64}')`;
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -10320,7 +10315,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
 
         function openDeleteClientModal() {
             if (!activeClient) return;
-            document.getElementById('deleteClientMsg').innerHTML = `Voulez-vous vraiment supprimer définitivement le client <strong style="color:#ffffff;">"${activeClient.name}"</strong> et ses assets ?`;
+            const msgEl = document.getElementById('deleteClientMsg');
+            if (msgEl) {
+                msgEl.textContent = `Voulez-vous vraiment supprimer définitivement le client "${activeClient.name}" et tous ses fichiers ?`;
+            }
             document.getElementById('deleteClientModal').classList.add('open');
         }
 
