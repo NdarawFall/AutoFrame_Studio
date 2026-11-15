@@ -358,11 +358,11 @@
 
         .font-specimen {
             padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
+            background: rgba(255, 46, 67, 0.05);
+            border: 1px dashed rgba(255, 46, 67, 0.35);
             border-radius: var(--radius-sm);
             font-size: 13px;
-            color: var(--text-primary);
+            color: #ff3344 !important;
             transition: var(--transition-smooth);
             overflow: hidden;
             text-overflow: ellipsis;

@@ -4849,18 +4849,18 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const spPrim = document.getElementById('specimenChannelFontPrimary');
             if (spPrim) {
                 spPrim.style.fontFamily = `"${fPrim}", sans-serif`;
-                spPrim.style.color = cPrim;
+                spPrim.style.color = '#ff3344';
             }
 
             const spSec = document.getElementById('specimenChannelFontSecondary');
             if (spSec) {
                 spSec.style.fontFamily = `"${fSec}", sans-serif`;
+                spSec.style.color = '#ff3344';
             }
-
             const spAcc = document.getElementById('specimenChannelFontAccent');
             if (spAcc) {
                 spAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`;
-                spAcc.style.color = cSec;
+                spAcc.style.color = '#ff3344';
             }
         }
 

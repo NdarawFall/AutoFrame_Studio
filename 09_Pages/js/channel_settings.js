@@ -185,13 +185,13 @@ const STORAGE_KEY_CHANNELS = 'vibeeditor_channels_data';
 
             // Specimens
             const spPrim = document.getElementById('specimenFontPrimary');
-            if (spPrim) spPrim.style.fontFamily = `"${fPrim}", sans-serif`;
+            if (spPrim) { spPrim.style.fontFamily = `"${fPrim}", sans-serif`; spPrim.style.color = '#ff3344'; }
 
             const spSec = document.getElementById('specimenFontSecondary');
-            if (spSec) spSec.style.fontFamily = `"${fSec}", sans-serif`;
+            if (spSec) { spSec.style.fontFamily = `"${fSec}", sans-serif`; spSec.style.color = '#ff3344'; }
 
             const spAcc = document.getElementById('specimenFontAccent');
-            if (spAcc) spAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`;
+            if (spAcc) { spAcc.style.fontFamily = `"${fAcc}", cursive, sans-serif`; spAcc.style.color = '#ff3344'; }
         }
 
         async function saveSettings() {
