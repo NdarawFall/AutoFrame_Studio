@@ -328,7 +328,7 @@ async function callOpenRouterProvider(systemPrompt, userPrompt, temperature = 0.
         throw new Error("Clé API OpenRouter manquante dans api_config.json");
     }
 
-    const model = preferredModel || config.openrouter_model || 'nvidia/nemotron-4-340b-instruct:free';
+    const model = preferredModel || config.openrouter_model || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
 
     const postData = JSON.stringify({
         model: model,
@@ -506,7 +506,7 @@ async function callAiKombo(systemPrompt, userPrompt, temperature = 0.7) {
             { id: 'gemini', name: 'Google Gemini', model: config.gemini_model || 'gemini-2.5-flash', enabled: true },
             { id: 'groq', name: 'Groq Cloud AI', model: config.groq_model || 'llama-3.3-70b-versatile', enabled: Boolean(config.groq_api_key) },
             { id: 'claude_cli', name: 'Claude Code CLI (Local)', model: 'local', enabled: true },
-            { id: 'openrouter', name: 'OpenRouter (Modèles gratuits / Nvidia)', model: config.openrouter_model || 'nvidia/nemotron-4-340b-instruct:free', enabled: Boolean(config.openrouter_api_key) },
+            { id: 'openrouter', name: 'OpenRouter (Modèles gratuits / Nvidia)', model: config.openrouter_model || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: Boolean(config.openrouter_api_key) },
             { id: 'agy_cli', name: 'Antigravity CLI (Local)', model: 'local', enabled: true }
         ].filter(item => item.enabled);
     }

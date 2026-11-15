@@ -89,7 +89,11 @@ const DEFAULT_CONFIG = {
     sketchfab_api_token: "",
     coverr_api_key: "",
     heygen_api_key: "",
-    heygen_voice_id: "b11a7dbb250f483eadad9fb253e7d313"
+    heygen_voice_id: "b11a7dbb250f483eadad9fb253e7d313",
+    groq_api_key: "",
+    groq_model: "llama-3.3-70b-versatile",
+    openrouter_api_key: "",
+    openrouter_model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
 };
 
 // Initialisation automatique transparente sans aucune manipulation technique de l'utilisateur

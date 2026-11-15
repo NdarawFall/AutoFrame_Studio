@@ -130,20 +130,21 @@
 
         /* --- LAYOUT AVEC SIDEBAR SANS FOND (PURE TEXTE) --- */
         .settings-layout {
-            max-width: 1100px;
+            max-width: 1560px;
             width: 100%;
             margin: 0 auto;
-            padding: 40px 24px 80px 24px;
+            padding: 24px 28px 80px 28px;
             display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 48px;
+            grid-template-columns: 180px 1fr;
+            gap: 28px;
             align-items: start;
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 900px) {
             .settings-layout {
                 grid-template-columns: 1fr;
-                gap: 24px;
+                gap: 20px;
+                padding: 16px;
             }
         }
 
@@ -152,19 +153,19 @@
             background: transparent;
             border: none;
             position: sticky;
-            top: 86px;
+            top: 76px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 16px;
         }
 
         .sidebar-title {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1px;
             color: var(--text-muted);
-            padding-left: 2px;
+            padding-left: 4px;
         }
 
         .sidebar-nav {
@@ -640,8 +641,8 @@
         /* --- STYLES KOMBO IA & DÉTECTEUR D'AGENTS LOCAUX --- */
         .agent-detector-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
             margin-top: 10px;
         }
         .agent-card {
@@ -651,7 +652,7 @@
             padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             position: relative;
             transition: all 0.2s ease;
         }
@@ -663,7 +664,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .agent-card-title {
             display: flex;
@@ -684,6 +686,7 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: var(--text-muted);
+            white-space: nowrap;
         }
         .agent-status-badge.detected {
             background: rgba(16, 185, 129, 0.15);
@@ -695,16 +698,12 @@
             border-color: rgba(100, 116, 139, 0.25);
             color: #94a3b8;
         }
-        .agent-card-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.45;
-        }
         .agent-card-action {
-            margin-top: 4px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         /* --- LISTE ORDONNÉE DU KOMBO IA --- */
@@ -721,8 +720,8 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         .kombo-list {
@@ -734,12 +733,13 @@
             background: #111317;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 12px 14px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            row-gap: 12px;
+            column-gap: 16px;
             transition: all 0.2s ease;
         }
         .kombo-item-card.is-active {
@@ -754,8 +754,9 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex: 1;
-            min-width: 240px;
+            flex: 1 1 260px;
+            min-width: 220px;
+            flex-wrap: wrap;
         }
         .kombo-priority-tag {
             font-family: 'JetBrains Mono', monospace;
@@ -777,30 +778,33 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            min-width: 140px;
         }
         .kombo-name {
             font-size: 13px;
             font-weight: 700;
             color: #ffffff;
-        }
-        .kombo-desc {
-            font-size: 11px;
-            color: var(--text-muted);
+            white-space: nowrap;
         }
         .kombo-right-group {
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex: 1 1 360px;
         }
         .kombo-model-select {
             background: #090a0d;
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #ffffff;
-            font-size: 11.5px;
-            padding: 5px 10px;
+            font-size: 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             outline: none;
-            max-width: 230px;
+            flex: 1 1 260px;
+            min-width: 220px;
+            max-width: 100%;
         }
         .kombo-order-btn {
             background: #1c1e24;
@@ -812,6 +816,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
             cursor: pointer;
             transition: all 0.15s ease;
         }
@@ -898,7 +906,6 @@
             
             <div class="page-header">
                 <h1 class="page-title">Configuration</h1>
-                <p class="page-desc">Gérez vos voix off ElevenLabs & HeyGen, votre modèle IA Gemini préféré, vos préférences de format et vos clés API multimédias.</p>
             </div>
 
             <!-- 1. FORMAT & AFFICHAGE -->
@@ -921,7 +928,6 @@
                             <option value="4:5">4:5 — Portrait (1080 × 1350 - Instagram Feed)</option>
                             <option value="21:9">21:9 — Ultra-Large (2560 × 1080 - Cinématique)</option>
                         </select>
-                        <span class="form-hint">Définit le ratio par défaut du lecteur et de l'exportateur.</span>
                     </div>
 
                     <div class="form-row">
@@ -930,7 +936,6 @@
                             <option value="30" selected>30 FPS (Standard Vidéo Web / YouTube)</option>
                             <option value="60">60 FPS (Ultra-Fluide)</option>
                         </select>
-                        <span class="form-hint">Fréquence utilisée pour la timeline et l'échantillonnage.</span>
                     </div>
 
                     <div class="form-row" style="grid-column: 1 / -1;">
@@ -943,10 +948,8 @@
                             <option value="Iman_Gadzhi_Style">Iman Gadzhi Style (Documentaire sombre & Haute finance)</option>
                             <option value="trash_style">Trash Style (Punk edit, chaos & collages)</option>
                         </select>
-                        <span class="form-hint">Définit le style pré-sélectionné lors de la création d'une vidéo ou d'une chaîne.</span>
                     </div>
-
-                    </div>
+                </div>
             </section>
 
             <!-- 2. VOIX OFF (ELEVENLABS & HEYGEN) & MODÈLE IA -->
@@ -954,7 +957,7 @@
                 <div class="card-header">
                     <div class="card-title" style="color: #ffffff;">
                         <svg class="icon" viewBox="0 0 24 24" style="color: #ff3344;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        <span>Voix Off (ElevenLabs & HeyGen) & Modèle IA</span>
+                        <span>Voix Off & Modèles IA</span>
                     </div>
                     <span class="card-badge" style="background: rgba(255, 51, 68, 0.15); border-color: rgba(255, 51, 68, 0.35); color: #ff7b8a;">Configuration</span>
                 </div>
@@ -965,18 +968,16 @@
                     <div class="form-row" style="grid-column: 1 / -1;">
                         <label class="form-label">
                             <span style="font-weight: 600; font-size: 13px;">Moteur Vocal par Défaut</span>
-                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">(Choisissez le moteur de synthèse vocale pour vos vidéos)</span>
                         </label>
                         <select class="form-select" id="prefTtsEngine">
                             <option value="elevenlabs" selected>ElevenLabs — Voix Off Ultra-Réalistes & Expressives (Recommandé)</option>
                             <option value="heygen">HeyGen — Voice Turbo & Avatars Parlants</option>
                         </select>
-                        <span class="form-hint">Définit le moteur de synthèse vocale prioritaire utilisé par l'IA et le studio pour générer les narrations.</span>
                     </div>
 
                     <!-- JAUGE ET NOMBRE DE CRÉDITS RESTANTS ELEVENLABS -->
                     <div class="form-row" style="grid-column: 1 / -1;">
-                        <div id="elevenlabsUsageBox" style="display: none; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 10px; flex-direction: column; gap: 8px;">
+                        <div id="elevenlabsUsageBox" style="display: none; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 6px; flex-direction: column; gap: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                                 <span style="font-size: 12px; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 6px;">
                                     <svg class="icon" style="width: 14px; height: 14px; stroke: #10b981;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -1004,20 +1005,19 @@
                                 <span>Voix par Défaut ElevenLabs</span>
                             </span>
                             <button type="button" onclick="loadVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
-                                <span>Actualiser les voix</span>
+                                <span>Actualiser</span>
                                 <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                             </button>
                         </label>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <select class="form-select" id="elevenlabsVoiceId" style="flex: 1;" onchange="onVoiceSelected()">
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <select class="form-select" id="elevenlabsVoiceId" style="flex: 1; min-width: 240px;" onchange="onVoiceSelected()">
                                 <option value="21m00Tcm4TlvDq8ikWAM">Chargement des voix ElevenLabs...</option>
                             </select>
-                            <button type="button" id="btnPreviewVoice" onclick="playVoicePreview()" class="btn-secondary" style="padding: 11px 16px; font-size: 12px; display: none; align-items: center; gap: 6px;" title="Écouter un court extrait de cette voix">
+                            <button type="button" id="btnPreviewVoice" onclick="playVoicePreview()" class="btn-secondary" style="padding: 10px 14px; font-size: 12px; display: none; align-items: center; gap: 6px;" title="Écouter un court extrait de cette voix">
                                 <svg class="icon" style="width:14px; height:14px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 <span>Écouter</span>
                             </button>
                         </div>
-                        <span class="form-hint" id="voiceHelpHint">Vos voix créées/clonées et les voix officielles par défaut de votre compte ElevenLabs.</span>
                     </div>
 
                     <!-- MODÈLE ELEVENLABS -->
@@ -1027,18 +1027,17 @@
                             <option value="eleven_multilingual_v2" selected>eleven_multilingual_v2 (Recommandé — Toutes langues & émotions réalistes)</option>
                             <option value="eleven_turbo_v2_5">eleven_turbo_v2_5 (Ultra-rapide, faible latence)</option>
                         </select>
-                        <span class="form-hint">Le modèle multilingue v2 offre le meilleur réalisme vocal en français.</span>
                     </div>
 
                     <!-- SÉLECTEUR DE VOIX HEYGEN -->
-                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
                         <label class="form-label">
                             <span style="display:flex; align-items:center; gap:6px;">
                                 <img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px;">
                                 <span>Voix par Défaut HeyGen</span>
                             </span>
                             <button type="button" onclick="loadHeyGenVoicesFromUi()" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer; text-decoration:underline; display:flex; align-items:center; gap:4px;">
-                                <span>Actualiser les voix HeyGen</span>
+                                <span>Actualiser</span>
                                 <svg class="icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                             </button>
                         </label>
@@ -1062,69 +1061,59 @@
                             <div class="voice-dropdown-menu" id="settingsDropdownHeygen">
                                 <div class="voice-search-box">
                                     <svg class="icon" style="width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                    <input type="text" class="voice-search-input" id="settingsSearchHeygenInput" placeholder="Rechercher une voix HeyGen (nom, langue)..." oninput="filterSettingsVoices('heygen')">
+                                    <input type="text" class="voice-search-input" id="settingsSearchHeygenInput" placeholder="Rechercher une voix HeyGen..." oninput="filterSettingsVoices('heygen')">
                                 </div>
                                 <div class="voice-items-list" id="settingsListHeygenItems"></div>
                             </div>
                         </div>
-                        <div id="heygenKeyStatus" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 6px; color: var(--text-muted);">
-                            <span>Synchronisez vos voix HeyGen officielles et personnalisées.</span>
-                        </div>
                     </div>
 
                     <!-- MODÈLE GEMINI PRÉFÉRÉ -->
-                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
                         <label class="form-label">
                             <span style="display:flex; align-items:center; gap:6px;">
                                 <svg class="icon" style="width:15px; height:15px; color:#ff3344;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                <span>Modèle Gemini Préféré (Intelligence Artificielle)</span>
+                                <span>Modèle Gemini Préféré</span>
                             </span>
-                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 400;">(Gratuit par défaut ou Abonnement Payant)</span>
                         </label>
                         <select class="form-select" id="prefGeminiModel" onchange="handleGeminiModelChange(this.value)">
                             <optgroup label="Modèles Gratuits (Sans abonnement - Clé standard Google)">
-                                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite — Gratuit (Par défaut / Historique du studio, Ultra-rapide & Stable)</option>
+                                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite — Gratuit (Ultra-rapide & Stable)</option>
                                 <option value="gemini-3.5-flash">gemini-3.5-flash — Gratuit (Flash polyvalent)</option>
                                 <option value="gemini-flash-latest">gemini-flash-latest — Gratuit (Alias stable Flash)</option>
                                 <option value="gemini-3.7-flash">gemini-3.7-flash — Gratuit (Raisonnement hybride Flash)</option>
                                 <option value="gemini-3.8-flash">gemini-3.8-flash — Gratuit (Dernière révision Flash)</option>
                             </optgroup>
-                            <optgroup label="Modèles Surpuissants Pro (Abonnements payants / Quota Pro Google AI)">
-                                <option value="gemini-4-argon">gemini-4-argon — Argon Pro (Le modèle de pointe ultra-puissant nouvelle génération)</option>
-                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview — Pro 3.1 (Raisonnement complexe approfondi)</option>
-                                <option value="gemini-pro-latest">gemini-pro-latest — Pro Latest (Alias Pro haute précision)</option>
+                            <optgroup label="Modèles Pro (Abonnements payants)">
+                                <option value="gemini-4-argon">gemini-4-argon — Argon Pro (Modèle de pointe)</option>
+                                <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview — Pro 3.1</option>
+                                <option value="gemini-pro-latest">gemini-pro-latest — Pro Latest</option>
                             </optgroup>
                             <optgroup label="Autre">
                                 <option value="custom">Autre modèle personnalisé (saisie libre)...</option>
                             </optgroup>
                         </select>
                         <div id="customGeminiModelWrapper" style="display: none; margin-top: 8px;">
-                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-4-argon ou gemini-2.5-pro">
+                            <input class="form-input" type="text" id="customGeminiModel" placeholder="Ex: gemini-4-argon">
                         </div>
-                        <span class="form-hint">Par défaut, <strong>gemini-3.5-flash-lite</strong> est configuré pour un usage gratuit immédiat sans dépassement de quota (modèle historique du projet). Si vous disposez d'un compte payant ou abonnement Google AI Studio, sélectionnez <strong>gemini-4-argon</strong> ou <strong>gemini-pro-latest</strong>.</span>
                     </div>
 
                     
                     <!-- ============================================================= -->
-                    <!-- NOUVEAU : AGENTS IA LOCAUX & CONSTRUCTEUR DU KOMBO IA          -->
+                    <!-- AGENTS IA LOCAUX & CONSTRUCTEUR DU KOMBO IA                   -->
                     <!-- ============================================================= -->
-                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 14px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
                         
                         <!-- HEADER KOMBO & AGENTS -->
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
-                            <div>
-                                <label class="form-label" style="margin-bottom: 3px;">
-                                    <span style="display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:700; color:#ffffff;">
-                                        <svg class="icon" style="width:17px; height:17px; color:#3b82f6;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <span>Kombo IA — Chaîne de Secours & Détecteur d'Agents Locaux</span>
-                                    </span>
-                                </label>
-                                <span class="form-hint" style="max-width: 650px;">
-                                    Utilisez vos agents IA locaux (<strong>Claude Code CLI</strong> ou <strong>Antigravity</strong>) sans surcoût d'API, et configurez votre <strong>Kombo de secours</strong> : si une IA est en panne ou dépasse son quota, l'IA suivante prend le relais automatiquement.
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
+                            <label class="form-label" style="margin-bottom: 0;">
+                                <span style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color:#ffffff;">
+                                    <svg class="icon" style="width:16px; height:16px; color:#3b82f6;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    <span>Kombo IA & Détecteur d'Agents Locaux</span>
                                 </span>
-                            </div>
-                            <button type="button" class="btn-secondary" onclick="detectLocalAiAgentsUi(true)" style="padding: 8px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-                                <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            </label>
+                            <button type="button" class="btn-secondary" onclick="detectLocalAiAgentsUi(true)" style="padding: 6px 12px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px;">
+                                <svg class="icon" viewBox="0 0 24 24" style="width:12px; height:12px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                                 <span>Détecter mes agents locaux</span>
                             </button>
                         </div>
@@ -1140,9 +1129,6 @@
                                         <span>Claude Code CLI</span>
                                     </div>
                                     <span class="agent-status-badge" id="badgeClaudeStatus">Vérification...</span>
-                                </div>
-                                <div class="agent-card-desc">
-                                    CLI Anthropic officiel installé localement. Utilise votre abonnement Claude Code directement sans clé API séparée.
                                 </div>
                                 <div class="agent-card-action">
                                     <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionClaudeText">claude</span>
@@ -1161,9 +1147,6 @@
                                     </div>
                                     <span class="agent-status-badge" id="badgeAgyStatus">Vérification...</span>
                                 </div>
-                                <div class="agent-card-desc">
-                                    CLI Google Antigravity officiel installé. Pilote vos générations directement via votre environnement de travail local.
-                                </div>
                                 <div class="agent-card-action">
                                     <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionAgyText">agy</span>
                                     <button type="button" class="btn-secondary" onclick="testProviderQuick('agy_cli', this)" style="padding: 4px 10px; font-size: 11px;">
@@ -1177,14 +1160,8 @@
                         <!-- CONSTRUCTEUR DE KOMBO IA (ORDRE DE PRIORITÉ) -->
                         <div class="kombo-container">
                             <div class="kombo-header-row">
-                                <div>
-                                    <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-                                        <span>Ordre de Priorité du Kombo (de A à Z)</span>
-                                        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">(Bascule automatique si le modèle supérieur échoue)</span>
-                                    </div>
-                                    <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">
-                                        Par défaut, <strong>Google Gemini</strong> est le modèle prioritaire. Utilisez les flèches <strong>⬆ / ⬇</strong> pour définir votre chaîne de secours personnalisée.
-                                    </div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                                    <span>Ordre de Priorité du Kombo (de A à Z)</span>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
                                     <button type="button" class="btn-secondary" id="btnTestEntireKombo" onclick="testEntireKomboChain()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
@@ -1198,7 +1175,7 @@
                             <div class="kombo-list" id="komboListWrapper">
                                 <!-- Injecté dynamiquement par renderKomboListUI() -->
                             </div>
-
+                            
                             <!-- BOX DES RÉSULTATS DU TEST KOMBO -->
                             <div id="komboTestResultsBox" style="display: none; margin-top: 14px; padding: 12px 14px; background: #08090b; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 12px; font-family: 'JetBrains Mono', monospace;">
                             </div>
@@ -1207,19 +1184,19 @@
                     </div>
 
                     <!-- TESTEUR DE VOIX DIRECT -->
-                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding: 16px; background: rgba(255, 255, 255, 0.04); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.15);">
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding: 14px; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.12);">
                         <label class="form-label" style="margin-bottom: 6px;">
                             <span>Tester la Voix en Direct</span>
-                            <span id="testVoiceStatus" style="font-size: 11px; font-weight: 500; color: var(--text-secondary);">Prêt pour le test</span>
+                            <span id="testVoiceStatus" style="font-size: 11px; font-weight: 500; color: var(--text-secondary);">Prêt</span>
                         </label>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <input class="form-input" type="text" id="testVoiceText" style="flex: 1; min-width: 250px;" value="Bonjour, voici la voix off ultra réaliste générée pour vos vidéos.">
-                            <button type="button" class="btn-primary" id="btnTestVoice" onclick="runVoiceTest()" style="padding: 10px 18px; font-size: 12px; display: inline-flex; align-items: center; gap: 8px;">
+                            <button type="button" class="btn-primary" id="btnTestVoice" onclick="runVoiceTest()" style="padding: 9px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 8px;">
                                 <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                <span>Générer un Échantillon</span>
+                                <span>Générer</span>
                             </button>
                         </div>
-                        <audio id="audioPreview" controls style="width: 100%; margin-top: 12px; display: none; height: 36px;"></audio>
+                        <audio id="audioPreview" controls style="width: 100%; margin-top: 10px; display: none; height: 36px;"></audio>
                     </div>
                 </div>
             </section>
@@ -1229,7 +1206,7 @@
                 <div class="card-header">
                     <div class="card-title">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1-1l-3 3m-3 7l-4 4a2.828 2.828 0 1 1-4-4l4-4m1.414-1.414l2.828-2.828a2 2 0 0 1 2.828 0l2.828 2.828a2 2 0 0 1 0 2.828l-2.828 2.828"></path></svg>
-                        <span>Clés API Générales & Médias</span>
+                        <span>Clés API</span>
                     </div>
                     <span class="card-badge" id="apiStatusBadge">Sécurisé Local</span>
                 </div>
@@ -1248,13 +1225,12 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Utilisé pour la génération de scripts, scénarios, prompts et modifications de vidéo par l'IA.</span>
                     </div>
 
                     <!-- GROQ CLOUD AI (INFÉRENCE ULTRA-RAPIDE) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Clé API Groq Cloud (Inférence Ultra-Rapide)</span>
+                            <span>Groq Cloud (Llama 3.3 Ultra-Rapide)</span>
                             <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">Obtenir une clé gratuite ↗</a>
                         </label>
                         <div class="input-password-wrapper">
@@ -1263,13 +1239,12 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet une vitesse de génération fulgurante (500 tokens/s avec Llama 3.3 70B). Recommandé en priorité 2 dans votre Kombo de secours.</span>
                     </div>
 
                     <!-- OPENROUTER (MODÈLES GRATUITS NVIDIA & MULTI-IA) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Clé API OpenRouter (Modèles Gratuits Nvidia & Multi-IA)</span>
+                            <span>OpenRouter (Modèles Gratuits Nvidia & Multi-IA)</span>
                             <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
@@ -1278,15 +1253,13 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Accédez à des centaines de modèles dont des modèles 100% gratuits (Nvidia Nemotron 340B, Llama 3.3 Free, Mistral) pour ne jamais payer de surplus.</span>
                     </div>
-
 
                     <!-- ELEVENLABS API (VOIX OFF ULTRA-RÉALISTES) -->
                     <div class="form-row">
                         <label class="form-label">
                             <span><img src="../01_Assets/Logos/elevenlabs_symbol.svg" alt="ElevenLabs" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">Clé API ElevenLabs</span>
-                            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noreferrer">Obtenir une clé ↗ (10 000 car./mois gratuits)</a>
+                            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyElevenlabs" placeholder="sk_..." oninput="handleApiKeyChange()">
@@ -1294,16 +1267,13 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <div id="elevenlabsKeyStatus" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 6px; color: var(--text-muted);">
-                            <span>Clé ElevenLabs pour générer les voix off ultra-réalistes et suivre vos quotas.</span>
-                        </div>
                     </div>
 
                     <!-- HEYGEN API (VOICE TURBO & TTS) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span><img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">HeyGen API (Voice Turbo & Génération Vocale)</span>
-                            <a href="https://app.heygen.com/settings?nav=API" target="_blank" rel="noreferrer">Obtenir une clé HeyGen ↗ (Voice Turbo API)</a>
+                            <span><img src="../01_Assets/Logos/heygen_symbol.svg" alt="HeyGen" style="width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 6px; display: inline-block;">Clé API HeyGen</span>
+                            <a href="https://app.heygen.com/settings?nav=API" target="_blank" rel="noreferrer">Obtenir une clé HeyGen ↗</a>
                         </label>
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyHeygen" placeholder="Votre clé API HeyGen..." oninput="handleHeyGenKeyChange()">
@@ -1311,14 +1281,13 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet de générer des voix off ultra-rapides et expressives avec HeyGen Voice Turbo ou d'intégrer des avatars parlants.</span>
                     </div>
 
                     <!-- PIXABAY (IMAGES, VECTEURS & B-ROLL) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Pixabay API (Images & Vidéos B-Roll Gratuites)</span>
-                            <a href="https://pixabay.com/api/docs/" target="_blank" rel="noreferrer">Obtenir une clé gratuite ↗</a>
+                            <span>Pixabay API (B-Roll Gratuit)</span>
+                            <a href="https://pixabay.com/api/docs/" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
                             <input class="form-input" type="password" id="apiKeyPixabay" placeholder="Ex: 48921820-a612df13...">
@@ -1326,28 +1295,26 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet à l'IA de rechercher, récupérer et insérer automatiquement des photos, vidéos HD et musiques libres de droits.</span>
                     </div>
 
                     <!-- COVERR (VIDÉOS STOCK CINÉMA HD / 4K & B-ROLL) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Coverr.co API (Vidéos Stock HD / 4K & B-Roll)</span>
-                            <a href="https://coverr.co/developers" target="_blank" rel="noreferrer">Obtenir une clé Coverr ↗</a>
+                            <span>Coverr.co API (Stock Vidéos HD/4K)</span>
+                            <a href="https://coverr.co/developers" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
-                            <input class="form-input" type="password" id="apiKeyCoverr" placeholder="Ex: cov_... ou votre clé API Coverr">
+                            <input class="form-input" type="password" id="apiKeyCoverr" placeholder="cov_...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyCoverr', this)" title="Afficher / Masquer">
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet d'importer directement des vidéos de stock cinéma HD/4K et des plans B-roll professionnels depuis Coverr.co.</span>
                     </div>
 
                     <!-- BRANDFETCH (LOGOS VECTORIELS & COULEURS DE MARQUES) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Brandfetch API (Logos SVG & Chartes Graphiques)</span>
+                            <span>Brandfetch API (Logos SVG)</span>
                             <a href="https://brandfetch.com/developers" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
@@ -1356,43 +1323,39 @@
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet à l'IA d'extraire automatiquement en haute résolution les logos vectoriels SVG, bannières et palettes de n'importe quelle marque.</span>
                     </div>
 
                     <!-- DÉTOURAGE IA (CLIPDROP / REMOVE.BG) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Détourage IA Automatique (Clipdrop ou Remove.bg)</span>
-                            <a href="https://clipdrop.co/apis" target="_blank" rel="noreferrer">Obtenir une clé Clipdrop ↗</a>
+                            <span>Détourage IA (Clipdrop / Remove.bg)</span>
+                            <a href="https://clipdrop.co/apis" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
                         </label>
                         <div class="input-password-wrapper">
-                            <input class="form-input" type="password" id="apiKeyBgRemove" placeholder="Ex: clipdrop_... ou remove_bg_...">
+                            <input class="form-input" type="password" id="apiKeyBgRemove" placeholder="clipdrop_... ou remove_bg_...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyBgRemove', this)" title="Afficher / Masquer">
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet à l'IA d'isoler automatiquement les personnes et objets avec une netteté studio transparente, ou utilise le script local gratuit (Python rembg).</span>
                     </div>
 
                     <!-- SKETCHFAB API TOKEN (MODÈLES 3D RÉALISTES) -->
                     <div class="form-row">
                         <label class="form-label">
-                            <span>Sketchfab API Token (Modèles 3D Réalistes)</span>
-                            <a href="https://sketchfab.com/settings/password" target="_blank" rel="noreferrer">Obtenir un token gratuit ↗</a>
+                            <span>Sketchfab Token (Modèles 3D)</span>
+                            <a href="https://sketchfab.com/settings/password" target="_blank" rel="noreferrer">Obtenir un token ↗</a>
                         </label>
                         <div class="input-password-wrapper">
-                            <input class="form-input" type="password" id="apiKeySketchfab" placeholder="Votre API Token Sketchfab...">
+                            <input class="form-input" type="password" id="apiKeySketchfab" placeholder="API Token Sketchfab...">
                             <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeySketchfab', this)" title="Afficher / Masquer">
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
-                        <span class="form-hint">Permet à l'IA et au script de télécharger automatiquement des supercars, objets réalistes et assets 3D certifiés au format .glb/.gltf.</span>
                     </div>
                 
                     <!-- BOUTON TEST UNIFIÉ DE TOUTES LES CLÉS -->
-                    <div style="grid-column: 1 / -1; margin-top: 15px; padding-top: 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
-                        <span style="font-size: 12px; color: var(--text-muted);">Vérifie automatiquement chaque clé API connectée :</span>
-                        <button type="button" class="btn-secondary" id="btnTestAllApis" onclick="testAllApiKeys()" style="background: #1a1a2e; border: 1.5px solid #7c3aed; color: #a78bfa; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; gap: 8px; display: inline-flex; align-items: center; cursor: pointer; transition: var(--transition-smooth);">
+                    <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+                        <button type="button" class="btn-secondary" id="btnTestAllApis" onclick="testAllApiKeys()" style="background: #1a1a2e; border: 1.5px solid #7c3aed; color: #a78bfa; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; gap: 8px; display: inline-flex; align-items: center; cursor: pointer; transition: var(--transition-smooth);">
                             <span>🔑</span> Tester toutes les clés API
                         </button>
                     </div>
@@ -1417,13 +1380,11 @@
                             <option value="medium">Équilibré (CRF 23 — Fichiers plus légers)</option>
                             <option value="ultra">Ultra / Master (CRF 14 — Qualité studio maximale)</option>
                         </select>
-                        <span class="form-hint">Ajuste le facteur de compression FFmpeg lors de l'export.</span>
                     </div>
 
                     <div class="form-row">
                         <label class="form-label">Moteur Graphique</label>
                         <input class="form-input" type="text" value="Puppeteer (Chromium Headless) + FFmpeg" readonly style="color: var(--text-secondary);">
-                        <span class="form-hint">Capture exacte trame par trame avec synchronisation audio intégrée.</span>
                     </div>
                 </div>
             </section>
@@ -1506,11 +1467,11 @@
         let detectedAgents = { claude: { installed: false }, agy: { installed: false } };
 
         let defaultKomboOrder = [
-            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent et rapide', model: 'gemini-3.5-flash-lite', enabled: true },
-            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair (Llama 3.3 70B à 500 tok/s)', model: 'llama-3.3-70b-versatile', enabled: true },
-            { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic sans clé API requise', model: 'local', enabled: true },
-            { id: 'openrouter', name: 'OpenRouter (Modèles gratuits / Nvidia)', desc: 'Nvidia Nemotron 340B, Llama 3.3 Free, Mistral', model: 'nvidia/nemotron-4-340b-instruct:free', enabled: true },
-            { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity agy', model: 'local', enabled: true }
+            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent', model: 'gemini-3.5-flash-lite', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair Llama 3.3', model: 'llama-3.3-70b-versatile', enabled: true },
+            { id: 'openrouter', name: 'OpenRouter (Modèles Gratuits)', desc: 'Nemotron Reasoning, Flint, Ling', model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', enabled: true },
+            { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic', model: 'local', enabled: true },
+            { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity', model: 'local', enabled: true }
         ];
 
         let currentKomboOrder = [...defaultKomboOrder];
@@ -1624,9 +1585,12 @@
                 } else if (item.id === 'openrouter') {
                     modelSelectHtml = `
                         <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle OpenRouter">
-                            <option value="nvidia/nemotron-4-340b-instruct:free" ${item.model === 'nvidia/nemotron-4-340b-instruct:free' ? 'selected' : ''}>nvidia/nemotron-4-340b:free (Gratuit)</option>
-                            <option value="meta-llama/llama-3.3-70b-instruct:free" ${item.model === 'meta-llama/llama-3.3-70b-instruct:free' ? 'selected' : ''}>meta-llama/llama-3.3-70b:free (Gratuit)</option>
-                            <option value="mistralai/mistral-7b-instruct:free" ${item.model === 'mistralai/mistral-7b-instruct:free' ? 'selected' : ''}>mistral-7b-instruct:free (Gratuit)</option>
+                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" ${item.model === 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free' ? 'selected' : ''}>nvidia/nemotron-3-nano-omni-30b (Reasoning - Testé OK)</option>
+                            <option value="recursive/flint-v1.0:free" ${item.model === 'recursive/flint-v1.0:free' ? 'selected' : ''}>recursive/flint-v1.0:free (Chat - Testé OK)</option>
+                            <option value="inclusionai/ling-3.2-flash:free" ${item.model === 'inclusionai/ling-3.2-flash:free' ? 'selected' : ''}>inclusionai/ling-3.2-flash:free (Flash - Testé OK)</option>
+                            <option value="nvidia/nemotron-3.5-embed-8b:free" ${item.model === 'nvidia/nemotron-3.5-embed-8b:free' ? 'selected' : ''}>nvidia/nemotron-3.5-embed-8b:free (Embed)</option>
+                            <option value="nvidia/nemotron-3.5-rerank-8b:free" ${item.model === 'nvidia/nemotron-3.5-rerank-8b:free' ? 'selected' : ''}>nvidia/nemotron-3.5-rerank-8b:free (Rerank)</option>
+                            <option value="nvidia/nemotron-3-embed-1b:free" ${item.model === 'nvidia/nemotron-3-embed-1b:free' ? 'selected' : ''}>nvidia/nemotron-3-embed-1b:free (Embed)</option>
                         </select>
                     `;
                 } else if (item.id === 'claude_cli') {
@@ -1778,6 +1742,10 @@
                 const savedKombo = localStorage.getItem('autoframe_ai_kombo_order');
                 if (savedKombo) currentKomboOrder = JSON.parse(savedKombo);
             } catch (e) {}
+            const openrouterItem = currentKomboOrder.find(k => k.id === 'openrouter');
+            if (openrouterItem && (!openrouterItem.model || openrouterItem.model.includes('nemotron-4-340b'))) {
+                openrouterItem.model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+            }
             renderKomboListUI();
             detectLocalAiAgentsUi(false);
             // 1. LocalStorage
