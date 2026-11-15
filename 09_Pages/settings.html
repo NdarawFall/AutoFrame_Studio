@@ -636,6 +636,203 @@
             transform: scale(1.08);
         }
 
+    
+        /* --- STYLES KOMBO IA & DÉTECTEUR D'AGENTS LOCAUX --- */
+        .agent-detector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .agent-card {
+            background: #0f1013;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .agent-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            background: #14161b;
+        }
+        .agent-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .agent-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .agent-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+        }
+        .agent-status-badge.detected {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #34d399;
+        }
+        .agent-status-badge.not-detected {
+            background: rgba(100, 116, 139, 0.12);
+            border-color: rgba(100, 116, 139, 0.25);
+            color: #94a3b8;
+        }
+        .agent-card-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+        .agent-card-action {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- LISTE ORDONNÉE DU KOMBO IA --- */
+        .kombo-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .kombo-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .kombo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .kombo-item-card {
+            background: #111317;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+        .kombo-item-card.is-active {
+            border-color: rgba(59, 130, 246, 0.35);
+            background: rgba(59, 130, 246, 0.04);
+        }
+        .kombo-item-card.is-disabled {
+            opacity: 0.55;
+            filter: grayscale(0.6);
+        }
+        .kombo-left-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 240px;
+        }
+        .kombo-priority-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #1c1e24;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            white-space: nowrap;
+        }
+        .kombo-item-card.is-primary .kombo-priority-tag {
+            background: rgba(37, 99, 235, 0.25);
+            border-color: #3b82f6;
+            color: #60a5fa;
+        }
+        .kombo-name-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .kombo-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .kombo-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .kombo-right-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .kombo-model-select {
+            background: #090a0d;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 11.5px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            outline: none;
+            max-width: 230px;
+        }
+        .kombo-order-btn {
+            background: #1c1e24;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .kombo-order-btn:hover:not(:disabled) {
+            background: #282c35;
+            border-color: #ffffff;
+        }
+        .kombo-order-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+        .kombo-test-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #0f1013;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+        }
+
     </style>
 </head>
 <body>
@@ -684,7 +881,7 @@
                     <span>Général & Format</span>
                 </a>
                 <a href="#sec-voice" class="sidebar-link" onclick="activateNav(this)">
-                    <span>Voix Off & Modèle IA</span>
+                    <span>Voix Off & Kombo IA</span>
                 </a>
                 <a href="#sec-api" class="sidebar-link" onclick="activateNav(this)">
                     <span>Clés API</span>
@@ -907,6 +1104,108 @@
                         <span class="form-hint">Par défaut, <strong>gemini-3.5-flash-lite</strong> est configuré pour un usage gratuit immédiat sans dépassement de quota (modèle historique du projet). Si vous disposez d'un compte payant ou abonnement Google AI Studio, sélectionnez <strong>gemini-4-argon</strong> ou <strong>gemini-pro-latest</strong>.</span>
                     </div>
 
+                    
+                    <!-- ============================================================= -->
+                    <!-- NOUVEAU : AGENTS IA LOCAUX & CONSTRUCTEUR DU KOMBO IA          -->
+                    <!-- ============================================================= -->
+                    <div class="form-row" style="grid-column: 1 / -1; margin-top: 14px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                        
+                        <!-- HEADER KOMBO & AGENTS -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
+                            <div>
+                                <label class="form-label" style="margin-bottom: 3px;">
+                                    <span style="display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:700; color:#ffffff;">
+                                        <svg class="icon" style="width:17px; height:17px; color:#3b82f6;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <span>Kombo IA — Chaîne de Secours & Détecteur d'Agents Locaux</span>
+                                    </span>
+                                </label>
+                                <span class="form-hint" style="max-width: 650px;">
+                                    Utilisez vos agents IA locaux (<strong>Claude Code CLI</strong> ou <strong>Antigravity</strong>) sans surcoût d'API, et configurez votre <strong>Kombo de secours</strong> : si une IA est en panne ou dépasse son quota, l'IA suivante prend le relais automatiquement.
+                                </span>
+                            </div>
+                            <button type="button" class="btn-secondary" onclick="detectLocalAiAgentsUi(true)" style="padding: 8px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                                <span>Détecter mes agents locaux</span>
+                            </button>
+                        </div>
+
+                        <!-- CARTES DE DÉTECTION AGENTS LOCAUX -->
+                        <div class="agent-detector-grid">
+                            
+                            <!-- CARTE CLAUDE CODE CLI -->
+                            <div class="agent-card" id="agentCardClaude">
+                                <div class="agent-card-top">
+                                    <div class="agent-card-title">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:#f97316;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                        <span>Claude Code CLI</span>
+                                    </div>
+                                    <span class="agent-status-badge" id="badgeClaudeStatus">Vérification...</span>
+                                </div>
+                                <div class="agent-card-desc">
+                                    CLI Anthropic officiel installé localement. Utilise votre abonnement Claude Code directement sans clé API séparée.
+                                </div>
+                                <div class="agent-card-action">
+                                    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionClaudeText">claude</span>
+                                    <button type="button" class="btn-secondary" onclick="testProviderQuick('claude_cli', this)" style="padding: 4px 10px; font-size: 11px;">
+                                        <span>Tester</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CARTE ANTIGRAVITY CLI -->
+                            <div class="agent-card" id="agentCardAgy">
+                                <div class="agent-card-top">
+                                    <div class="agent-card-title">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px; stroke:#38bdf8;"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                        <span>Antigravity CLI (agy)</span>
+                                    </div>
+                                    <span class="agent-status-badge" id="badgeAgyStatus">Vérification...</span>
+                                </div>
+                                <div class="agent-card-desc">
+                                    CLI Google Antigravity officiel installé. Pilote vos générations directement via votre environnement de travail local.
+                                </div>
+                                <div class="agent-card-action">
+                                    <span style="font-size:11px; font-family:'JetBrains Mono', monospace; color:var(--text-muted);" id="versionAgyText">agy</span>
+                                    <button type="button" class="btn-secondary" onclick="testProviderQuick('agy_cli', this)" style="padding: 4px 10px; font-size: 11px;">
+                                        <span>Tester</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- CONSTRUCTEUR DE KOMBO IA (ORDRE DE PRIORITÉ) -->
+                        <div class="kombo-container">
+                            <div class="kombo-header-row">
+                                <div>
+                                    <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                                        <span>Ordre de Priorité du Kombo (de A à Z)</span>
+                                        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">(Bascule automatique si le modèle supérieur échoue)</span>
+                                    </div>
+                                    <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">
+                                        Par défaut, <strong>Google Gemini</strong> est le modèle prioritaire. Utilisez les flèches <strong>⬆ / ⬇</strong> pour définir votre chaîne de secours personnalisée.
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button type="button" class="btn-secondary" id="btnTestEntireKombo" onclick="testEntireKomboChain()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                        <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                        <span>Tester le Kombo complet</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CONTENEUR DES CARTES ORDONNÉES DU KOMBO -->
+                            <div class="kombo-list" id="komboListWrapper">
+                                <!-- Injecté dynamiquement par renderKomboListUI() -->
+                            </div>
+
+                            <!-- BOX DES RÉSULTATS DU TEST KOMBO -->
+                            <div id="komboTestResultsBox" style="display: none; margin-top: 14px; padding: 12px 14px; background: #08090b; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; font-size: 12px; font-family: 'JetBrains Mono', monospace;">
+                            </div>
+                        </div>
+
+                    </div>
+
                     <!-- TESTEUR DE VOIX DIRECT -->
                     <div class="form-row" style="grid-column: 1 / -1; margin-top: 10px; padding: 16px; background: rgba(255, 255, 255, 0.04); border-radius: var(--radius-md); border: 1px dashed rgba(255, 255, 255, 0.15);">
                         <label class="form-label" style="margin-bottom: 6px;">
@@ -951,6 +1250,37 @@
                         </div>
                         <span class="form-hint">Utilisé pour la génération de scripts, scénarios, prompts et modifications de vidéo par l'IA.</span>
                     </div>
+
+                    <!-- GROQ CLOUD AI (INFÉRENCE ULTRA-RAPIDE) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Clé API Groq Cloud (Inférence Ultra-Rapide)</span>
+                            <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">Obtenir une clé gratuite ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyGroq" placeholder="gsk_..." oninput="handleGroqKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyGroq', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <span class="form-hint">Permet une vitesse de génération fulgurante (500 tokens/s avec Llama 3.3 70B). Recommandé en priorité 2 dans votre Kombo de secours.</span>
+                    </div>
+
+                    <!-- OPENROUTER (MODÈLES GRATUITS NVIDIA & MULTI-IA) -->
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>Clé API OpenRouter (Modèles Gratuits Nvidia & Multi-IA)</span>
+                            <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Obtenir une clé ↗</a>
+                        </label>
+                        <div class="input-password-wrapper">
+                            <input class="form-input" type="password" id="apiKeyOpenrouter" placeholder="sk-or-v1-..." oninput="handleOpenRouterKeyChange()">
+                            <button class="btn-toggle-eye" type="button" onclick="togglePasswordVisibility('apiKeyOpenrouter', this)" title="Afficher / Masquer">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                        <span class="form-hint">Accédez à des centaines de modèles dont des modèles 100% gratuits (Nvidia Nemotron 340B, Llama 3.3 Free, Mistral) pour ne jamais payer de surplus.</span>
+                    </div>
+
 
                     <!-- ELEVENLABS API (VOIX OFF ULTRA-RÉALISTES) -->
                     <div class="form-row">
@@ -1166,8 +1496,271 @@
         let heygenKeyChangeTimeout = null;
         let previewAudioInstance = null;
 
+        
+        // =========================================================================
+        // GESTION DU KOMBO IA & DÉTECTION DES AGENTS LOCAUX
+        // =========================================================================
+        const API_KEY_GROQ = 'vibeeditor_api_key_groq';
+        const API_KEY_OPENROUTER = 'vibeeditor_api_key_openrouter';
+
+        let detectedAgents = { claude: { installed: false }, agy: { installed: false } };
+
+        let defaultKomboOrder = [
+            { id: 'gemini', name: 'Google Gemini', desc: 'Modèle IA natif polyvalent et rapide', model: 'gemini-3.5-flash-lite', enabled: true },
+            { id: 'groq', name: 'Groq Cloud AI', desc: 'Inférence éclair (Llama 3.3 70B à 500 tok/s)', model: 'llama-3.3-70b-versatile', enabled: true },
+            { id: 'claude_cli', name: 'Claude Code CLI (Local)', desc: 'Agent local Anthropic sans clé API requise', model: 'local', enabled: true },
+            { id: 'openrouter', name: 'OpenRouter (Modèles gratuits / Nvidia)', desc: 'Nvidia Nemotron 340B, Llama 3.3 Free, Mistral', model: 'nvidia/nemotron-4-340b-instruct:free', enabled: true },
+            { id: 'agy_cli', name: 'Antigravity CLI (Local)', desc: 'Agent local Google Antigravity agy', model: 'local', enabled: true }
+        ];
+
+        let currentKomboOrder = [...defaultKomboOrder];
+
+        async function detectLocalAiAgentsUi(showToastMsg = false) {
+            const badgeClaude = document.getElementById('badgeClaudeStatus');
+            const badgeAgy = document.getElementById('badgeAgyStatus');
+            const textClaude = document.getElementById('versionClaudeText');
+            const textAgy = document.getElementById('versionAgyText');
+
+            if (badgeClaude) badgeClaude.textContent = 'Détection...';
+            if (badgeAgy) badgeAgy.textContent = 'Détection...';
+
+            try {
+                const res = await fetch('/api/ai/detect');
+                const data = await res.json();
+                if (data.success && data.agents) {
+                    detectedAgents = data.agents;
+
+                    // Mise à jour Claude Code
+                    if (data.agents.claude && data.agents.claude.installed) {
+                        if (badgeClaude) {
+                            badgeClaude.className = 'agent-status-badge detected';
+                            badgeClaude.innerHTML = '🟢 Connecté & Prêt';
+                        }
+                        if (textClaude) textClaude.textContent = data.agents.claude.version;
+                    } else {
+                        if (badgeClaude) {
+                            badgeClaude.className = 'agent-status-badge not-detected';
+                            badgeClaude.innerHTML = '⚪ Non détecté';
+                        }
+                        if (textClaude) textClaude.textContent = 'Non installé dans le PATH';
+                    }
+
+                    // Mise à jour Antigravity
+                    if (data.agents.agy && data.agents.agy.installed) {
+                        if (badgeAgy) {
+                            badgeAgy.className = 'agent-status-badge detected';
+                            badgeAgy.innerHTML = '🟢 Connecté & Prêt';
+                        }
+                        if (textAgy) textAgy.textContent = 'Antigravity ' + data.agents.agy.version;
+                    } else {
+                        if (badgeAgy) {
+                            badgeAgy.className = 'agent-status-badge not-detected';
+                            badgeAgy.innerHTML = '⚪ Non détecté';
+                        }
+                        if (textAgy) textAgy.textContent = 'Non installé dans le PATH';
+                    }
+
+                    renderKomboListUI();
+
+                    if (showToastMsg && typeof showToast === 'function') {
+                        const foundCount = (data.agents.claude.installed ? 1 : 0) + (data.agents.agy.installed ? 1 : 0);
+                        showToast(`${foundCount} agent(s) local/locaux détecté(s) !`);
+                    }
+                }
+            } catch (err) {
+                console.error('Erreur détection agents locaux:', err);
+                if (badgeClaude) badgeClaude.textContent = 'Erreur';
+                if (badgeAgy) badgeAgy.textContent = 'Erreur';
+            }
+        }
+
+        function renderKomboListUI() {
+            const wrapper = document.getElementById('komboListWrapper');
+            if (!wrapper) return;
+
+            wrapper.innerHTML = '';
+
+            currentKomboOrder.forEach((item, index) => {
+                const card = document.createElement('div');
+                const isPrimary = index === 0;
+                card.className = `kombo-item-card ${item.enabled ? 'is-active' : 'is-disabled'} ${isPrimary ? 'is-primary' : ''}`;
+
+                const priorityLabel = isPrimary 
+                    ? '1️⃣ Prioritaire (Par défaut)' 
+                    : `${index + 1}️⃣ Secours ${index}`;
+
+                let modelSelectHtml = '';
+                if (item.id === 'gemini') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Gemini">
+                            <option value="gemini-3.5-flash-lite" ${item.model === 'gemini-3.5-flash-lite' ? 'selected' : ''}>gemini-3.5-flash-lite (Gratuit standard)</option>
+                            <option value="gemini-3.5-flash" ${item.model === 'gemini-3.5-flash' ? 'selected' : ''}>gemini-3.5-flash</option>
+                            <option value="gemini-flash-latest" ${item.model === 'gemini-flash-latest' ? 'selected' : ''}>gemini-flash-latest</option>
+                            <option value="gemini-3.7-flash" ${item.model === 'gemini-3.7-flash' ? 'selected' : ''}>gemini-3.7-flash</option>
+                            <option value="gemini-4-argon" ${item.model === 'gemini-4-argon' ? 'selected' : ''}>gemini-4-argon (Pro)</option>
+                            <option value="gemini-pro-latest" ${item.model === 'gemini-pro-latest' ? 'selected' : ''}>gemini-pro-latest (Pro)</option>
+                        </select>
+                    `;
+                } else if (item.id === 'groq') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle Groq">
+                            <option value="llama-3.3-70b-versatile" ${item.model === 'llama-3.3-70b-versatile' ? 'selected' : ''}>llama-3.3-70b-versatile</option>
+                            <option value="llama-3.1-8b-instant" ${item.model === 'llama-3.1-8b-instant' ? 'selected' : ''}>llama-3.1-8b-instant (Ultra-rapide)</option>
+                            <option value="mixtral-8x7b-32768" ${item.model === 'mixtral-8x7b-32768' ? 'selected' : ''}>mixtral-8x7b-32768</option>
+                        </select>
+                    `;
+                } else if (item.id === 'openrouter') {
+                    modelSelectHtml = `
+                        <select class="kombo-model-select" onchange="onKomboModelChanged(${index}, this.value)" title="Choisir le modèle OpenRouter">
+                            <option value="nvidia/nemotron-4-340b-instruct:free" ${item.model === 'nvidia/nemotron-4-340b-instruct:free' ? 'selected' : ''}>nvidia/nemotron-4-340b:free (Gratuit)</option>
+                            <option value="meta-llama/llama-3.3-70b-instruct:free" ${item.model === 'meta-llama/llama-3.3-70b-instruct:free' ? 'selected' : ''}>meta-llama/llama-3.3-70b:free (Gratuit)</option>
+                            <option value="mistralai/mistral-7b-instruct:free" ${item.model === 'mistralai/mistral-7b-instruct:free' ? 'selected' : ''}>mistral-7b-instruct:free (Gratuit)</option>
+                        </select>
+                    `;
+                } else if (item.id === 'claude_cli') {
+                    const isInst = detectedAgents.claude && detectedAgents.claude.installed;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#34d399' : '#94a3b8'};">${isInst ? 'CLI Local Actif' : 'Non détecté'}</span>`;
+                } else if (item.id === 'agy_cli') {
+                    const isInst = detectedAgents.agy && detectedAgents.agy.installed;
+                    modelSelectHtml = `<span style="font-size: 11px; font-family:'JetBrains Mono',monospace; color: ${isInst ? '#34d399' : '#94a3b8'};">${isInst ? 'CLI Local Actif' : 'Non détecté'}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="kombo-left-group">
+                        <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleKomboItem(${index})" style="accent-color: #3b82f6; width: 16px; height: 16px; cursor: pointer;" title="Activer / Désactiver ce modèle dans le Kombo">
+                        <span class="kombo-priority-tag">${priorityLabel}</span>
+                        <div class="kombo-name-block">
+                            <span class="kombo-name">${item.name}</span>
+                            <span class="kombo-desc">${item.desc}</span>
+                        </div>
+                    </div>
+                    <div class="kombo-right-group">
+                        ${modelSelectHtml}
+                        <button type="button" class="kombo-order-btn" onclick="moveKomboItem(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Monter la priorité d'un cran (vers le haut)">
+                            ▲
+                        </button>
+                        <button type="button" class="kombo-order-btn" onclick="moveKomboItem(${index}, 1)" ${index === currentKomboOrder.length - 1 ? 'disabled' : ''} title="Descendre la priorité d'un cran (vers le bas)">
+                            ▼
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="testProviderQuick('${item.id}', this)" style="padding: 5px 10px; font-size: 11px; white-space: nowrap;">
+                            <span>⚡ Tester</span>
+                        </button>
+                    </div>
+                `;
+
+                wrapper.appendChild(card);
+            });
+        }
+
+        function moveKomboItem(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= currentKomboOrder.length) return;
+            const temp = currentKomboOrder[index];
+            currentKomboOrder[index] = currentKomboOrder[newIndex];
+            currentKomboOrder[newIndex] = temp;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            renderKomboListUI();
+        }
+
+        function toggleKomboItem(index) {
+            currentKomboOrder[index].enabled = !currentKomboOrder[index].enabled;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            renderKomboListUI();
+        }
+
+        function onKomboModelChanged(index, newModel) {
+            currentKomboOrder[index].model = newModel;
+            try { localStorage.setItem('autoframe_ai_kombo_order', JSON.stringify(currentKomboOrder)); } catch (e) {}
+            if (currentKomboOrder[index].id === 'gemini') {
+                const sel = document.getElementById('prefGeminiModel');
+                if (sel) sel.value = newModel;
+            }
+        }
+
+        async function testProviderQuick(providerId, btnEl) {
+            const origHtml = btnEl ? btnEl.innerHTML : '';
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl.innerHTML = '<span>Test...</span>';
+            }
+
+            try {
+                const item = currentKomboOrder.find(k => k.id === providerId) || { model: '' };
+                const res = await fetch('/api/ai/test-provider', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ provider: providerId, model: item.model })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (typeof showToast === 'function') showToast(`${providerId} : Réponse en ${data.latencyMs}ms (Succès)`);
+                    if (btnEl) btnEl.innerHTML = `<span style="color:#34d399;">✓ ${data.latencyMs}ms</span>`;
+                } else {
+                    if (typeof showToast === 'function') showToast(`${providerId} : Échec (${data.error || 'Erreur'})`, 'error');
+                    if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Échec</span>';
+                }
+            } catch (e) {
+                if (typeof showToast === 'function') showToast(`Erreur test ${providerId}: ${e.message}`, 'error');
+                if (btnEl) btnEl.innerHTML = '<span style="color:#f87171;">Erreur</span>';
+            } finally {
+                setTimeout(() => {
+                    if (btnEl) {
+                        btnEl.disabled = false;
+                        btnEl.innerHTML = origHtml;
+                    }
+                }, 3500);
+            }
+        }
+
+        async function testEntireKomboChain() {
+            const btn = document.getElementById('btnTestEntireKombo');
+            const box = document.getElementById('komboTestResultsBox');
+            if (btn) btn.disabled = true;
+            if (box) {
+                box.style.display = 'block';
+                box.innerHTML = '<div style="color:#60a5fa;">⚡ Lancement du test séquentiel du Kombo IA...</div>';
+            }
+
+            const activeItems = currentKomboOrder.filter(k => k.enabled);
+
+            for (let i = 0; i < activeItems.length; i++) {
+                const item = activeItems[i];
+                const priorityText = i === 0 ? '1er Prioritaire' : `Secours ${i}`;
+                box.innerHTML += `<div>→ Test de ${item.name} (${item.model})...</div>`;
+
+                try {
+                    const res = await fetch('/api/ai/test-provider', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ provider: item.id, model: item.model })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        box.innerHTML += `<div style="color:#34d399;">  ✓ [${priorityText}] ${item.name} : ${data.latencyMs}ms - Réponse valide reçue</div>`;
+                    } else {
+                        box.innerHTML += `<div style="color:#f87171;">  ✗ [${priorityText}] ${item.name} : ${data.error || 'Erreur'}</div>`;
+                    }
+                } catch (e) {
+                    box.innerHTML += `<div style="color:#f87171;">  ✗ [${priorityText}] ${item.name} : ${e.message}</div>`;
+                }
+            }
+
+            box.innerHTML += '<div style="margin-top:6px; color:#ffffff; font-weight:700;">Test du Kombo terminé.</div>';
+            if (btn) btn.disabled = false;
+        }
+
+        function handleGroqKeyChange() {}
+        function handleOpenRouterKeyChange() {}
+
         // CHARGEMENT INITIAL (LocalStorage + /api/settings api_config.json)
         window.addEventListener('load', async () => {
+            // Initialisation synchrone immédiate du Kombo IA
+            try {
+                const savedKombo = localStorage.getItem('autoframe_ai_kombo_order');
+                if (savedKombo) currentKomboOrder = JSON.parse(savedKombo);
+            } catch (e) {}
+            renderKomboListUI();
+            detectLocalAiAgentsUi(false);
             // 1. LocalStorage
             const savedTtsEngine = localStorage.getItem(PREF_KEY_TTS_ENGINE);
             if (savedTtsEngine && document.getElementById('prefTtsEngine')) document.getElementById('prefTtsEngine').value = savedTtsEngine;
@@ -1226,6 +1819,21 @@
                     if (cfg.pref_subtitle_style && !savedSubtitleStyle && document.getElementById('prefSubtitleStyle')) document.getElementById('prefSubtitleStyle').value = cfg.pref_subtitle_style;
 
                     
+                    
+                    if (cfg.groq_api_key && document.getElementById('apiKeyGroq')) {
+                        document.getElementById('apiKeyGroq').value = cfg.groq_api_key;
+                        localStorage.setItem(API_KEY_GROQ, cfg.groq_api_key);
+                    }
+                    if (cfg.openrouter_api_key && document.getElementById('apiKeyOpenrouter')) {
+                        document.getElementById('apiKeyOpenrouter').value = cfg.openrouter_api_key;
+                        localStorage.setItem(API_KEY_OPENROUTER, cfg.openrouter_api_key);
+                    }
+                    if (Array.isArray(cfg.ai_kombo_order) && cfg.ai_kombo_order.length > 0) {
+                        currentKomboOrder = cfg.ai_kombo_order;
+                    }
+                    renderKomboListUI();
+                    detectLocalAiAgentsUi(false);
+
                     if (cfg.gemini_model) {
                         setGeminiModelUI(cfg.gemini_model);
                         localStorage.setItem(PREF_KEY_GEMINI_MODEL, cfg.gemini_model);
@@ -1815,7 +2423,12 @@
                         pref_template: template,
                         pref_subtitle_style: subtitleStyle,
                         tts_engine: ttsEngine,
-                                                gemini_model: geminiModel,
+                                                
+                        groq_api_key: (document.getElementById('apiKeyGroq')?.value || '').trim(),
+                        openrouter_api_key: (document.getElementById('apiKeyOpenrouter')?.value || '').trim(),
+                        ai_kombo_order: currentKomboOrder,
+                        ai_kombo_enabled: true,
+                        gemini_model: geminiModel,
                         google_api_key: googleKey,
                         elevenlabs_api_key: elevenlabsKey,
                         elevenlabs_voice_id: elevenlabsVoice,

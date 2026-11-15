@@ -143,99 +143,10 @@ function isColorLight(colorStr) {
 }
 
 // Appel sécurisé à Google Gemini API (Multi-modèles, IPv4 forcé, timeout, retry)
+// Appel IA via le Kombo Multi-Modèles (Gemini, Groq, OpenRouter, Claude Code CLI, Antigravity)
+const { callAiKombo } = require('./ai_kombo.cjs');
 async function callGeminiAPI(systemPrompt, userPrompt, temperature = 0.7) {
-    const config = loadApiConfig();
-    const apiKey = (config.google_api_key || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '').trim();
-    if (!apiKey) {
-        throw new Error("Clé API Google Gemini manquante. Veuillez la configurer dans Paramètres (settings.html) ou via la variable d'environnement GOOGLE_API_KEY.");
-    }
-
-    const userPreferredModel = (config.gemini_model || '').trim();
-    const candidateModels = [
-        ...(userPreferredModel ? [userPreferredModel] : []),
-        'gemini-3.5-flash-lite',
-        'gemini-3.5-flash',
-        'gemini-flash-latest',
-        'gemini-3.7-flash',
-        'gemini-3.8-flash',
-        'gemini-4-argon',
-        'gemini-pro-latest'
-    ].filter((m, idx, arr) => arr.indexOf(m) === idx);
-    let lastError = null;
-
-    for (const model of candidateModels) {
-        try {
-            const result = await new Promise((resolve, reject) => {
-                const postData = JSON.stringify({
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    },
-                    contents: [
-                        {
-                            role: 'user',
-                            parts: [{ text: userPrompt }]
-                        }
-                    ],
-                    generationConfig: {
-                        responseMimeType: 'application/json',
-                        temperature: temperature
-                    }
-                });
-
-                const options = {
-                    hostname: 'generativelanguage.googleapis.com',
-                    path: `/v1beta/models/${model}:generateContent?key=${apiKey}`,
-                    method: 'POST',
-                    family: 4, // Forcer IPv4
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Content-Length': Buffer.byteLength(postData)
-                    },
-                    timeout: 25000
-                };
-
-                const req = https.request(options, (res) => {
-                    let body = '';
-                    res.on('data', chunk => { body += chunk; });
-                    res.on('end', () => {
-                        if (res.statusCode < 200 || res.statusCode >= 300) {
-                            return reject(new Error(`Gemini API HTTP ${res.statusCode} (${model}): ${body.slice(0, 200)}`));
-                        }
-                        try {
-                            const data = JSON.parse(body);
-                            const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                            if (!candidateText) {
-                                return reject(new Error(`Réponse Gemini vide (${model})`));
-                            }
-                            const parsedJson = JSON.parse(candidateText);
-                            resolve(parsedJson);
-                        } catch (e) {
-                            reject(new Error(`Erreur parsing JSON Gemini (${model}): ${e.message}`));
-                        }
-                    });
-                });
-
-                req.on('timeout', () => {
-                    req.destroy();
-                    reject(new Error(`Timeout (25s) lors de l'appel Gemini (${model})`));
-                });
-
-                req.on('error', (err) => {
-                    reject(err);
-                });
-
-                req.write(postData);
-                req.end();
-            });
-
-            return result;
-        } catch (err) {
-            console.warn(`[Gemini Model Fallback] Échec avec ${model} (${err.message}). Tentative modèle suivant...`);
-            lastError = err;
-        }
-    }
-
-    throw lastError || new Error("Tous les modèles Gemini ont échoué.");
+    return await callAiKombo(systemPrompt, userPrompt, temperature);
 }
 
 // Extraction d'un slug court, clair et pertinent (2 à 3 mots clés du sujet)

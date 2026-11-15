@@ -1779,6 +1779,48 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 5e. API pour sauvegarder ou charger les clés & paramètres dans api_config.json
+    
+    // -------------------------------------------------------------------------
+    // API KOMBO IA & DÉTECTION AGENTS LOCAUX (Claude Code, Antigravity, Groq, OpenRouter)
+    // -------------------------------------------------------------------------
+    if (cleanUrl === '/api/ai/detect' && req.method === 'GET') {
+        try {
+            const { detectLocalAiAgents } = require('./ai_kombo.cjs');
+            const agents = detectLocalAiAgents();
+            res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Cache-Control': 'no-store, no-cache, must-revalidate'
+            });
+            return res.end(JSON.stringify({ success: true, agents }));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+    }
+
+    if (cleanUrl === '/api/ai/test-provider' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const { testSingleProvider } = require('./ai_kombo.cjs');
+                const data = JSON.parse(body || '{}');
+                const result = await testSingleProvider(data.provider, data);
+                res.writeHead(200, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Cache-Control': 'no-store, no-cache, must-revalidate'
+                });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+        return;
+    }
+
     if (cleanUrl === '/api/settings') {
         const configPath = getResolvedConfigPath();
 
@@ -2393,13 +2435,10 @@ const server = http.createServer(async (req, res) => {
                     return {};
                 })();
 
-                const geminiKey = (apiCfg.google_api_key || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '').trim();
-                if (!geminiKey) throw new Error("Clé Google Gemini non configurée dans api_config.json.");
-
                 console.log("[Studio Chat] Message reçu sur " + videoPathRel + " : « " + instruction + " »");
 
-                // Appel Gemini avec détection d'intention (Question/Discussion vs Modification réelle)
-                const httpsMod = require('https');
+                // Appel via le Kombo IA Multi-Modèles (Gemini, Groq, Claude Code CLI, OpenRouter, Antigravity)
+                const { callAiKombo } = require('./ai_kombo.cjs');
                 const systemPrompt = "Tu es l'assistant IA créatif et motion designer de AutoFrame pour le studio de montage vidéo.\n" +
                     "L'utilisateur s'adresse à toi dans l'interface de discussion dédiée à la vidéo en cours d'édition (" + path.basename(videoPathRel) + ").\n\n" +
                     "DÉCISION D'INTENTION CRUCIALE :\n" +
@@ -2421,78 +2460,14 @@ const server = http.createServer(async (req, res) => {
                 const userPrompt = "Code HTML actuel de la vidéo (" + videoPathRel + ") :\n---\n" +
                     currentCode + "\n---\n\nMessage de l'utilisateur :\n« " + instruction + " »";
 
-                const payload = JSON.stringify({
-                    contents: [
-                        { role: 'user', parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
-                    ],
-                    generationConfig: {
-                        temperature: 0.3,
-                        responseMimeType: "application/json"
-                    }
-                });
-
-                const userModel = (apiCfg.gemini_model || '').trim();
-                const candidateModels = [
-                    ...(userModel ? [userModel] : []),
-                    'gemini-3.5-flash-lite',
-                    'gemini-3.5-flash',
-                    'gemini-flash-latest',
-                    'gemini-3.7-flash',
-                    'gemini-3.8-flash',
-                    'gemini-4-argon',
-                    'gemini-pro-latest'
-                ].filter((m, idx, arr) => arr.indexOf(m) === idx);
-
                 let parsedResult = null;
-                let usedModel = null;
-                let lastErr = null;
-
-                for (const m of candidateModels) {
-                    try {
-                        console.log("[Studio Chat] Essai avec le modèle Gemini : " + m);
-                        const rawJson = await new Promise((resolve, reject) => {
-                            const reqApi = httpsMod.request("https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + geminiKey, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Content-Length': Buffer.byteLength(payload)
-                                },
-                                timeout: 60000
-                            }, (resApi) => {
-                                let resBody = '';
-                                resApi.on('data', c => { resBody += c; });
-                                resApi.on('end', () => {
-                                    if (resApi.statusCode !== 200) {
-                                        return reject(new Error("Gemini HTTP " + resApi.statusCode + " (" + m + "): " + resBody.slice(0, 180)));
-                                    }
-                                    try {
-                                        const json = JSON.parse(resBody);
-                                        const txt = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text;
-                                        if (!txt) return reject(new Error("Réponse textuelle Gemini vide"));
-                                        resolve(txt);
-                                    } catch (e) { reject(e); }
-                                });
-                            });
-                            reqApi.on('error', reject);
-                            reqApi.on('timeout', () => { reqApi.destroy(); reject(new Error("Timeout Gemini (" + m + ")")); });
-                            reqApi.write(payload);
-                            reqApi.end();
-                        });
-
-                        try {
-                            parsedResult = JSON.parse(rawJson);
-                            usedModel = m;
-                            break;
-                        } catch (e) {
-                            console.warn("[Studio Chat] Erreur parsing JSON renvoyé par " + m + " : " + e.message);
-                        }
-                    } catch (errM) {
-                        lastErr = errM;
-                        console.warn("[Studio Chat] " + m + " indisponible : " + errM.message + ". Essai modèle suivant...");
-                    }
+                let usedModel = "Kombo IA";
+                try {
+                    parsedResult = await callAiKombo(systemPrompt, userPrompt, 0.3);
+                } catch (errKombo) {
+                    console.error("[Studio Chat Kombo Error]:", errKombo.message);
+                    throw errKombo;
                 }
-
-                if (!parsedResult) throw lastErr || new Error("Impossible d'obtenir une réponse de Gemini.");
 
                 const action = (parsedResult.action || 'reply').toLowerCase();
                 const replyText = parsedResult.reply || "Réponse reçue.";
