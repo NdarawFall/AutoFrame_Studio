@@ -8460,19 +8460,19 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                         <button type="button" class="btn-sub-param" id="btnApplyCustomFont" onclick="applyCustomSubtitleFont()" style="padding: 6px 12px; white-space: nowrap;">Appliquer</button>
                                     </div>
                                     <datalist id="popularGoogleFontsList">
-                                        <option value="Poppins">
-                                        <option value="Anton">
-                                        <option value="Oswald">
-                                        <option value="Syne">
-                                        <option value="Cinzel">
-                                        <option value="Playfair Display">
-                                        <option value="Cabinet Grotesk">
-                                        <option value="Caveat">
-                                        <option value="Orbitron">
-                                        <option value="Raleway">
-                                        <option value="Bungee">
-                                        <option value="Righteous">
-                                        <option value="Archivo Black">
+                                        <option value="Poppins"></option>
+                                        <option value="Anton"></option>
+                                        <option value="Oswald"></option>
+                                        <option value="Syne"></option>
+                                        <option value="Cinzel"></option>
+                                        <option value="Playfair Display"></option>
+                                        <option value="Cabinet Grotesk"></option>
+                                        <option value="Caveat"></option>
+                                        <option value="Orbitron"></option>
+                                        <option value="Raleway"></option>
+                                        <option value="Bungee"></option>
+                                        <option value="Righteous"></option>
+                                        <option value="Archivo Black"></option>
                                     </datalist>
                                 </div>
 
@@ -10160,21 +10160,19 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         // =====================================================================
         // SECTION MONTAGE CLIENTS (TRANSPOSITION COMPLÈTE DE MONTEUR.HTML)
         // =====================================================================
-        function renderClientsView(customList) {
+        function renderClientsView() {
             const circleContainer = document.getElementById('clientsCircleContainer');
-            if (!circleContainer) return;
-            const list = customList || clientsCache;
-            document.getElementById('clientsCountSpan').textContent = list.length;
+            document.getElementById('clientsCountSpan').textContent = clientsCache.length;
 
-            if (list.length === 0) {
-                circleContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 12px 0;">Aucun client trouvé.</div>';
+            if (clientsCache.length === 0) {
+                circleContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 12px 0;">Aucun client configuré. Créez-en un via le bouton ci-dessus.</div>';
                 document.getElementById('selectedClientWorkspace').style.display = 'none';
                 return;
             }
 
             document.getElementById('selectedClientWorkspace').style.display = 'flex';
 
-            circleContainer.innerHTML = list.map(cl => {
+            circleContainer.innerHTML = clientsCache.map(cl => {
                 const isActive = activeClient && activeClient.name === cl.name;
                 const avatarSrc = cl.avatarUrl ? (cl.avatarUrl.startsWith('http') ? cl.avatarUrl : `../${cl.avatarUrl.replace(/^\.\.\//, '')}`) : '';
                 const fallbackChar = cl.name ? cl.name.charAt(0).toUpperCase() : 'C';
@@ -15829,18 +15827,18 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     </div>
 
                     <datalist id="channelSystemFontsDatalist">
-                        <option value="Montserrat">
-                        <option value="Inter">
-                        <option value="Poppins">
-                        <option value="Bebas Neue">
-                        <option value="Outfit">
-                        <option value="Cinzel">
-                        <option value="Caveat">
-                        <option value="Plus Jakarta Sans">
-                        <option value="JetBrains Mono">
-                        <option value="Playfair Display">
-                        <option value="Roboto">
-                        <option value="Arial">
+                        <option value="Montserrat"></option>
+                        <option value="Inter"></option>
+                        <option value="Poppins"></option>
+                        <option value="Bebas Neue"></option>
+                        <option value="Outfit"></option>
+                        <option value="Cinzel"></option>
+                        <option value="Caveat"></option>
+                        <option value="Plus Jakarta Sans"></option>
+                        <option value="JetBrains Mono"></option>
+                        <option value="Playfair Display"></option>
+                        <option value="Roboto"></option>
+                        <option value="Arial"></option>
                     </datalist>
 
                     <div style="display: flex; flex-direction: column; gap: 14px;">
