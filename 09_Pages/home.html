@@ -2622,10 +2622,17 @@
         }
 
         .project-card-meta {
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
             font-weight: 500;
             margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
 
@@ -9175,34 +9182,33 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             }
             activeClient = clientsCache[0];
 
-            // C. Vidéos et Projets récents
+            // C. Vidéos et Projets récents (avec horodatage précis date & heure)
+            const baseVideoNow = Date.now();
             if (!allVideosList || allVideosList.length === 0) {
                 allVideosList = [
-                    { 
-                        id: 'v1', 
-                        title: 'Top 10 Buts Football 15s', 
-                        format: '9:16', 
-                        duration: '15s', 
-                        videoPath: '../04_Videos/top10_football_15s.html', 
-                        date: 'Hier', 
-                        resolution: '1080×1920', 
-                        category: 'reseaux', 
-                        platform: 'YouTube',
-                        channelId: 'ch_1793911184121',
-                        channelName: 'Greatest Eleven',
-                        timestamp: 1731670000000
-                    },
                     { 
                         id: 'v2', 
                         title: 'GrowKaz Stickman Motion 15s', 
                         format: '9:16', 
                         duration: '15s', 
                         videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
-                        date: 'Aujourd\'hui', 
                         resolution: '1080×1920', 
                         category: 'clients', 
                         client: 'marcus',
-                        timestamp: 1731680000000
+                        timestamp: baseVideoNow - 35 * 60000 // aujourd'hui - 35min
+                    },
+                    { 
+                        id: 'v1', 
+                        title: 'Top 10 Buts Football 15s', 
+                        format: '9:16', 
+                        duration: '15s', 
+                        videoPath: '../04_Videos/top10_football_15s.html', 
+                        resolution: '1080×1920', 
+                        category: 'reseaux', 
+                        platform: 'YouTube',
+                        channelId: 'ch_1793911184121',
+                        channelName: 'Greatest Eleven',
+                        timestamp: baseVideoNow - 3 * 3600000 // aujourd'hui - 3h
                     },
                     { 
                         id: 'v3', 
@@ -9210,14 +9216,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '38s', 
                         videoPath: '../04_Videos/claude_fable_5_2_30s_saas_commercial.html', 
-                        date: '13 nov. 2026', 
                         resolution: '1920×1080', 
                         category: 'standalone', 
                         platform: null,
                         channelId: null,
                         channelName: null,
                         client: null,
-                        timestamp: 1731500000000
+                        timestamp: baseVideoNow - 26 * 3600000 // hier
                     },
                     { 
                         id: 'v4', 
@@ -9225,13 +9230,12 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '15s', 
                         videoPath: '../04_Videos/video_ascii_crt_terminal_15s.html', 
-                        date: '13 nov. 2026', 
                         resolution: '1080×1920', 
                         category: 'reseaux', 
                         platform: 'Instagram',
                         channelId: 'ch_1793102190223',
                         channelName: 'Galsen Tuto',
-                        timestamp: 1731490000000
+                        timestamp: baseVideoNow - 48 * 3600000
                     },
                     { 
                         id: 'v5', 
@@ -9239,11 +9243,10 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '25s', 
                         videoPath: '../04_Videos/hyperframes_25s_motion_design_composition.html', 
-                        date: '13 nov. 2026', 
                         resolution: '1920×1080', 
                         category: 'clients', 
                         client: 'marcus',
-                        timestamp: 1731480000000
+                        timestamp: baseVideoNow - 52 * 3600000
                     },
                     { 
                         id: 'v6', 
@@ -9251,13 +9254,12 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '20s', 
                         videoPath: '../04_Videos/eye_tracking_20s.html', 
-                        date: '06 nov. 2026', 
                         resolution: '1080×1920', 
                         category: 'reseaux', 
                         platform: 'YouTube',
                         channelId: 'ch_1794092386560',
                         channelName: 'Le Secrets Des Geeks',
-                        timestamp: 1730900000000
+                        timestamp: baseVideoNow - 9 * 86400000
                     },
                     { 
                         id: 'v7', 
@@ -9265,14 +9267,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '9:16', 
                         duration: '05s', 
                         videoPath: '../04_Videos/design_ask_anything_pill_5s.html', 
-                        date: '05 nov. 2026', 
                         resolution: '1080×1920', 
                         category: 'standalone', 
                         platform: null,
                         channelId: null,
                         channelName: null,
                         client: null,
-                        timestamp: 1730800000000
+                        timestamp: baseVideoNow - 10 * 86400000
                     },
                     { 
                         id: 'v8', 
@@ -9280,13 +9281,12 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                         format: '16:9', 
                         duration: '01:24', 
                         videoPath: '../01_Assets/Videos/17_design_tips_for_video_editors.mp4', 
-                        date: '04 nov. 2026', 
                         resolution: '1920×1080', 
                         category: 'reseaux', 
                         platform: 'YouTube',
                         channelId: 'ch_1793911244535',
                         channelName: 'Dr Klavius',
-                        timestamp: 1730700000000
+                        timestamp: baseVideoNow - 11 * 86400000
                     }
                 ];
             }
@@ -9297,6 +9297,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     title = (v.file || v.name || 'Projet Vidéo ' + (i + 1)).replace('.html', '').replace('.mp4', '').replace(/_/g, ' ');
                 }
                 const videoPath = v.videoPath || v.path || (v.file ? `../04_Videos/${v.file}` : '../01_Assets/Videos/17_design_tips_for_video_editors.mp4');
+                const ts = v.timestamp || (baseVideoNow - i * 86400000);
                 return {
                     ...v,
                     id: v.id || ('vid_' + i),
@@ -9304,8 +9305,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                     videoPath,
                     duration: typeof v.duration === 'number' ? Math.round(v.duration) + 's' : (v.duration || '15s'),
                     format: v.format || '16:9',
-                    date: v.date || 'Récemment',
-                    timestamp: v.timestamp || (Date.now() - i * 86400000)
+                    timestamp: ts,
+                    lastOpened: v.lastOpened || ts
                 };
             });
 
@@ -9386,6 +9387,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                     title = (v.file || v.name || 'Projet Vidéo ' + (i + 1)).replace('.html', '').replace('.mp4', '').replace(/_/g, ' ');
                                 }
                                 const videoPath = v.videoPath || v.path || (v.file ? `../04_Videos/${v.file}` : '../01_Assets/Videos/17_design_tips_for_video_editors.mp4');
+                                const ts = v.timestamp || (Date.now() - i * 86400000);
                                 return {
                                     ...v,
                                     id: v.id || ('vid_' + i),
@@ -9393,8 +9395,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                     videoPath,
                                     duration: typeof v.duration === 'number' ? Math.round(v.duration) + 's' : (v.duration || '15s'),
                                     format: v.format || '16:9',
-                                    date: v.date || 'Récemment',
-                                    timestamp: v.timestamp || (Date.now() - i * 86400000)
+                                    timestamp: ts,
+                                    lastOpened: v.lastOpened || ts
                                 };
                             });
                             updated = true;
@@ -9565,14 +9567,89 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             renderDashboardProjects();
         }
 
+        // =====================================================================
+        // GESTION DE LA DATE & HEURE DE DERNIÈRE OUVERTURE (JAMAIS "RÉCEMMENT")
+        // =====================================================================
+        const VIDEO_LAST_OPENED_STORAGE_KEY = 'autoframe_videos_last_opened';
+
+        function getVideoLastOpenedTimestamp(v) {
+            if (!v) return Date.now();
+            try {
+                const stored = JSON.parse(localStorage.getItem(VIDEO_LAST_OPENED_STORAGE_KEY) || '{}');
+                const k1 = v.id;
+                const k2 = v.videoPath;
+                const k3 = v.title;
+                if (k1 && stored[k1]) return Number(stored[k1]);
+                if (k2 && stored[k2]) return Number(stored[k2]);
+                if (k3 && stored[k3]) return Number(stored[k3]);
+            } catch (e) {}
+            if (v.lastOpened) return Number(v.lastOpened);
+            if (v.timestamp) return Number(v.timestamp);
+            return Date.now();
+        }
+
+        function formatVideoLastOpenedDateTime(timestamp) {
+            if (!timestamp) timestamp = Date.now();
+            const d = new Date(timestamp);
+            if (isNaN(d.getTime())) return '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+            const month = months[d.getMonth()] || 'nov.';
+            const year = d.getFullYear();
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${day} ${month} ${year} à ${hours}:${minutes}`;
+        }
+
+        function recordVideoOpened(videoPathOrObj, optionalTitle) {
+            try {
+                let vid = null;
+                const path = typeof videoPathOrObj === 'string' ? videoPathOrObj : (videoPathOrObj ? videoPathOrObj.videoPath : '');
+                const title = optionalTitle || (typeof videoPathOrObj === 'object' ? videoPathOrObj.title : '');
+                
+                if (allVideosList && Array.isArray(allVideosList)) {
+                    vid = allVideosList.find(v => 
+                        (path && (v.videoPath === path || v.videoPath === '../' + path || '../' + v.videoPath === path)) || 
+                        (title && v.title === title) || 
+                        (v.id && (v.id === path || v.id === videoPathOrObj))
+                    );
+                }
+
+                const now = Date.now();
+                const stored = JSON.parse(localStorage.getItem(VIDEO_LAST_OPENED_STORAGE_KEY) || '{}');
+                
+                if (vid) {
+                    vid.lastOpened = now;
+                    if (vid.id) stored[vid.id] = now;
+                    if (vid.videoPath) stored[vid.videoPath] = now;
+                    if (vid.title) stored[vid.title] = now;
+                }
+                if (path) stored[path] = now;
+                if (title) stored[title] = now;
+                
+                localStorage.setItem(VIDEO_LAST_OPENED_STORAGE_KEY, JSON.stringify(stored));
+
+                // Si sur le dashboard, rafraîchir l'affichage pour mettre à jour la date et l'heure immédiatement
+                if (currentView === 'dashboard') {
+                    renderDashboardProjects();
+                }
+            } catch (e) {
+                console.warn('Erreur recordVideoOpened:', e);
+            }
+        }
+
         // Rendu authentique d'une card vidéo : 
         // - Si vidéo native (.mp4/.webm) : frame extrait nativement à 0.5s par le navigateur sans capture manuelle
         // - Si composition HTML ou sans frame direct : affichage studio moderne épuré sans faux visuels inventés
+        // - Date et heure de dernière ouverture réelle (au lieu de "Récemment")
         function renderVideoCardHtml(v) {
             const isVideoFile = v.videoPath && (v.videoPath.endsWith('.mp4') || v.videoPath.endsWith('.webm') || v.videoPath.endsWith('.mov'));
             const durationBadge = v.duration || '15s';
             const formatBadge = v.format || '16:9';
-            const dateBadge = v.date || 'Récemment';
+            
+            // Calcul précis de la date et heure de dernière ouverture
+            const lastOpenedTs = getVideoLastOpenedTimestamp(v);
+            const dateBadge = formatVideoLastOpenedDateTime(lastOpenedTs);
 
             let thumbContent = '';
             if (isVideoFile) {
@@ -9592,14 +9669,16 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             }
 
             return `
-                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}', '${formatBadge}', '${durationBadge}')" title="Regarder ${escapeHtml(v.title)}">
+                <div class="project-card" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}', '${formatBadge}', '${durationBadge}')" title="Regarder ${escapeHtml(v.title)} • Dernière ouverture : ${dateBadge}">
                     <div class="project-thumb">
                         ${thumbContent}
                         <div class="project-card-overlay"></div>
                         <div class="project-card-footer">
                             <div class="project-card-info-wrap">
                                 <div class="project-card-title">${escapeHtml(v.title)}</div>
-                                <div class="project-card-meta">${dateBadge} • ${formatBadge}</div>
+                                <div class="project-card-meta" title="Dernière ouverture : ${dateBadge}">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 11px; height: 11px; display: inline-block; opacity: 0.8; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>${dateBadge}</span> • <span>${formatBadge}</span>
+                                </div>
                             </div>
                             <span class="project-duration-badge">${durationBadge}</span>
                         </div>
@@ -9612,8 +9691,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             const grid = document.getElementById('dashboardProjectsGrid');
             if (!grid) return;
 
-            // Par défaut : toutes les vidéos triées par date la plus récente
-            let filtered = customList ? customList.slice() : allVideosList.slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            // Par défaut : toutes les vidéos triées par date et heure de dernière ouverture
+            let filtered = customList ? customList.slice() : allVideosList.slice().sort((a, b) => getVideoLastOpenedTimestamp(b) - getVideoLastOpenedTimestamp(a));
 
             if (!customList && activeCircleCategory) {
                 if (activeCircleCategory === 'YouTube' || activeCircleCategory === 'Instagram' || activeCircleCategory === 'TikTok') {
@@ -10664,6 +10743,9 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
         }
 
         function openGrandVideoPlayer(videoPath, title, format, duration) {
+            // Enregistrement immédiat de l'heure et de la date de dernière ouverture de cette vidéo
+            recordVideoOpened(videoPath, title);
+
             const overlay = document.getElementById('videoPlayerModalOverlay');
             const videoEl = document.getElementById('grandPlayerVideoEl');
             const iframeWrapper = document.getElementById('grandPlayerIframeWrapper');
@@ -10677,6 +10759,12 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             let resolvedPath = (videoPath || '').trim();
             if (!resolvedPath.startsWith('http') && !resolvedPath.startsWith('../') && !resolvedPath.startsWith('/') && !resolvedPath.startsWith('file:')) {
                 resolvedPath = '../' + resolvedPath;
+            }
+
+            const studioLink = document.getElementById('grandPlayerStudioLink');
+            if (studioLink) {
+                studioLink.href = 'studio.html?video=' + encodeURIComponent(resolvedPath);
+                studioLink.onclick = () => recordVideoOpened(resolvedPath, title);
             }
 
             if (compositionTimer) {
