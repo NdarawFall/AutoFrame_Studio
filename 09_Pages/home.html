@@ -2560,13 +2560,13 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                 <!-- Lecteur natif MP4 / WebM -->
                 <video id="grandPlayerVideoEl" playsinline onclick="toggleCompositionPlayback()" style="display: none; width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 68vh; object-fit: contain; outline: none; background: #000; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.85); cursor: pointer;"></video>
 
-                <!-- Lecteur Compositions HTML dynamiques avec Vraie Barre Player -->
+                <!-- Lecteur Compositions HTML dynamiques -->
                 <div id="grandPlayerIframeWrapper" style="display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; position: relative;">
                     <div id="grandPlayerIframeViewport" style="width: 100%; max-width: 1040px; aspect-ratio: 16/9; max-height: 64vh; background: #000; border-radius: 8px; overflow: hidden; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;">
                         <iframe id="grandPlayerIframeEl" src="about:blank" style="width: 100%; height: 100%; border: none; display: block; background: #000;"></iframe>
 
                         <!-- Surface de clic interactive sur toute la vidéo (permet de mettre en pause / play en cliquant n'importe où sur la vidéo) -->
-                        <div id="playerVideoClickSurface" onclick="toggleCompositionPlayback()" style="position: absolute; inset: 0; z-index: 8; cursor: pointer; background: transparent;" title="Cliquer pour Lecture / Pause"></div>
+                        <div id="playerVideoClickSurface" onclick="toggleCompositionPlayback()" style="position: absolute; inset: 0; z-index: 8; cursor: pointer; background: transparent;" title="Cliquer pour Lecture / Pause (Espace)"></div>
 
                         <!-- Overlay Grand Bouton Play quand la composition est en pause -->
                         <div id="playerBigPlayOverlay" onclick="toggleCompositionPlayback()" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); cursor: pointer; z-index: 10; transition: opacity 0.2s ease;">
@@ -2575,44 +2575,45 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- VRAIE BARRE DE CONTRÔLE PLAYER COMPLÈTE -->
-                    <div class="composition-player-bar" id="compositionPlayerBar">
-                        <!-- Play / Pause -->
-                        <button type="button" class="player-btn" id="playerPlayPauseBtn" onclick="toggleCompositionPlayback()" title="Lecture / Pause">
-                            <svg id="playerPlayIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            <svg id="playerPauseIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px; display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-                        </button>
+                <!-- VRAIE BARRE DE CONTRÔLE PLAYER COMPLÈTE (Commune pour MP4 & Compositions HTML) -->
+                <div class="composition-player-bar" id="compositionPlayerBar">
+                    <!-- Play / Pause -->
+                    <button type="button" class="player-btn" id="playerPlayPauseBtn" onclick="toggleCompositionPlayback()" title="Lecture / Pause (Espace)">
+                        <svg id="playerPlayIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg id="playerPauseIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 15px; height: 15px; display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </button>
 
-                        <!-- Restart -->
-                        <button type="button" class="player-btn" onclick="restartCompositionPlayback()" title="Recommencer depuis le début">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                        </button>
+                    <!-- Restart -->
+                    <button type="button" class="player-btn" onclick="restartCompositionPlayback()" title="Recommencer depuis le début">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    </button>
 
-                        <!-- Timeline Scrubber -->
-                        <div class="player-scrubber-track" id="playerScrubberTrack" onmousedown="startPlayerScrub(event)" onclick="handlePlayerScrub(event)">
-                            <div class="player-scrubber-progress" id="playerScrubberProgress" style="width: 0%;"></div>
-                            <div class="player-scrubber-handle" id="playerScrubberHandle" style="left: 0%;"></div>
-                        </div>
-
-                        <!-- Timecode numérique 00:00 / 00:15 -->
-                        <div class="player-time-display">
-                            <span id="playerCurrentTime">00:00</span>
-                            <span style="opacity: 0.5;">/</span>
-                            <span id="playerTotalTime">00:15</span>
-                        </div>
-
-                        <!-- Volume / Mute -->
-                        <button type="button" class="player-btn" id="playerVolumeBtn" onclick="toggleCompositionVolume()" title="Couper / Rétablir le son">
-                            <svg id="playerVolumeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                            <svg id="playerMuteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-                        </button>
-
-                        <!-- Fullscreen -->
-                        <button type="button" class="player-btn" onclick="togglePlayerFullscreen()" title="Plein écran">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-                        </button>
+                    <!-- Timeline Scrubber -->
+                    <div class="player-scrubber-track" id="playerScrubberTrack" onmousedown="startPlayerScrub(event)" onclick="handlePlayerScrub(event)">
+                        <div class="player-scrubber-progress" id="playerScrubberProgress" style="width: 0%;"></div>
+                        <div class="player-scrubber-handle" id="playerScrubberHandle" style="left: 0%;"></div>
                     </div>
+
+                    <!-- Timecode numérique 00:00 / 00:15 -->
+                    <div class="player-time-display">
+                        <span id="playerCurrentTime">00:00</span>
+                        <span style="opacity: 0.5;">/</span>
+                        <span id="playerTotalTime">00:15</span>
+                    </div>
+
+                    <!-- Volume / Mute -->
+                    <button type="button" class="player-btn" id="playerVolumeBtn" onclick="toggleCompositionVolume()" title="Couper / Rétablir le son (M)">
+                        <svg id="playerVolumeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        <svg id="playerMuteIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                    </button>
+
+                    <!-- Fullscreen (Style YouTube) -->
+                    <button type="button" class="player-btn" id="playerFullscreenBtn" onclick="togglePlayerFullscreen()" title="Plein écran (F)">
+                        <svg id="fullscreenExpandIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        <svg id="fullscreenCompressIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; display: none;"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
