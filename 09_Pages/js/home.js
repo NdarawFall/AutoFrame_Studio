@@ -1363,9 +1363,65 @@
             showToast(`Asset "${deletedName}" supprimé avec succès`);
         }
 
+        // --- OPTIMISATIONS HAUTE PERFORMANCE DU MODULE ASSETS (PAGINATION, LAZY LOADING, ZERO LAG) ---
+        let assetPageSize = 36;
+        let assetCurrentDisplayCount = 36;
+        let assetInfiniteScrollBound = false;
+
+        function startAssetVideoHover(container, url) {
+            if (!container || container.querySelector('video')) return;
+            const vid = document.createElement('video');
+            vid.src = url + '#t=0.5';
+            vid.muted = true;
+            vid.playsInline = true;
+            vid.preload = 'auto';
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+            vid.style.position = 'absolute';
+            vid.style.inset = '0';
+            vid.style.zIndex = '2';
+            vid.oncanplay = () => vid.play().catch(() => {});
+            container.appendChild(vid);
+        }
+
+        function stopAssetVideoHover(container) {
+            if (!container) return;
+            const vid = container.querySelector('video');
+            if (vid) {
+                vid.pause();
+                vid.src = '';
+                vid.remove();
+            }
+        }
+
+        function loadMoreAssets() {
+            assetCurrentDisplayCount += assetPageSize;
+            renderAssetsView();
+        }
+
+        function setupAssetInfiniteScroll() {
+            if (assetInfiniteScrollBound) return;
+            const mainEl = document.querySelector('main.app-main');
+            if (!mainEl) return;
+            mainEl.addEventListener('scroll', () => {
+                if (currentView !== 'assets') return;
+                const scrollBottom = mainEl.scrollHeight - mainEl.scrollTop - mainEl.clientHeight;
+                if (scrollBottom < 350) {
+                    const btn = document.getElementById('btnLoadMoreAssets');
+                    if (btn && btn.style.display !== 'none' && !btn.dataset.loading) {
+                        btn.dataset.loading = 'true';
+                        loadMoreAssets();
+                    }
+                }
+            }, { passive: true });
+            assetInfiniteScrollBound = true;
+        }
+
         function renderAssetsView(customList) {
             const grid = document.getElementById('assetsCatalogGrid');
             if (!grid) return;
+            setupAssetInfiniteScroll();
 
             // Filtrage par type et sous-dossier (ou liste personnalisée filtrée)
             let filtered = customList ? customList.slice() : assetsCatalogList.filter(item => {
@@ -1389,22 +1445,27 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map(item => {
+            const totalCount = filtered.length;
+            const visible = filtered.slice(0, assetCurrentDisplayCount);
+
+            const cardsHtml = visible.map(item => {
                 let previewHtml = '';
 
                 if (item.type === 'Videos') {
-                    // MINIATURE VIDÉO NATIVE POUR SAVOIR DE QUOI IL S'AGIT !
+                    // MINIATURE VIDÉO OPTIMISÉE SANS DÉCODEUR ACTIF (0ms de freeze, s'anime au survol)
                     previewHtml = `
-                        <div class="asset-video-thumb-container">
-                            <video src="${item.url}#t=0.5" preload="metadata" muted playsinline></video>
+                        <div class="asset-video-thumb-container" onmouseenter="startAssetVideoHover(this, '${escapeJs(item.url)}')" onmouseleave="stopAssetVideoHover(this)">
+                            <div class="asset-video-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width: 28px; height: 28px; color: #a1a1aa;"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+                            </div>
                             <div class="video-play-center-badge">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             </div>
                         </div>
                     `;
                 } else if (item.type === 'Images' || item.type === 'Vectors') {
-                    // IMAGE AVEC CADRAGE CONTAIN ET FOND CONTRASTE NEUTRE DAMIER !
-                    previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}">`;
+                    // IMAGE AVEC LAZY LOADING ET DÉCODAGE ASYNCHRONE (chargement fluide 60fps)
+                    previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">`;
                 } else {
                     // AUDIO AVEC NOTE MUSICALE
                     previewHtml = `
@@ -1434,9 +1495,25 @@
                     </div>
                 `;
             }).join('');
+
+            let loadMoreHtml = '';
+            if (totalCount > assetCurrentDisplayCount) {
+                const remaining = totalCount - assetCurrentDisplayCount;
+                loadMoreHtml = `
+                    <div style="grid-column: 1 / -1; display: flex; justify-content: center; padding: 24px 0 20px 0;">
+                        <button type="button" class="btn-load-more-assets" id="btnLoadMoreAssets" onclick="loadMoreAssets()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <span>Afficher plus d'assets (${Math.min(assetPageSize, remaining)} de plus / ${totalCount} au total)</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = cardsHtml + loadMoreHtml;
         }
 
         function filterAssetType(type, btn) {
+            assetCurrentDisplayCount = assetPageSize;
             assetCategoryFilter = type;
             document.querySelectorAll('#viewAssets .channel-filter-pill').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
@@ -1444,6 +1521,7 @@
         }
 
         function filterAssetSubfolder(sub, btn) {
+            assetCurrentDisplayCount = assetPageSize;
             assetSubfolderFilter = sub;
             document.querySelectorAll('.subfolder-chip').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');

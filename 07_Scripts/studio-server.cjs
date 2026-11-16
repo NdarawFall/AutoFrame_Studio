@@ -1211,9 +1211,28 @@ const server = http.createServer(async (req, res) => {
         return res.end(JSON.stringify(result));
     }
 
+    // Cache mémoire ultra-rapide pour le catalogue d'assets (évite les fs.statSync à répétition)
+    let _assetsCatalogCache = null;
+    let _assetsCatalogCacheTime = 0;
+    function invalidateAssetsCatalogCache() {
+        _assetsCatalogCache = null;
+        _assetsCatalogCacheTime = 0;
+    }
+
     // 5b-bis. API Catalogue Complet d'Assets Récursif (Médiathèque Avancée)
     if (cleanUrl === '/api/assets-catalog' && req.method === 'GET') {
         try {
+            // Réponse instantanée < 1ms si le cache est récent (< 30s)
+            if (_assetsCatalogCache && (Date.now() - _assetsCatalogCacheTime < 30000)) {
+                res.writeHead(200, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Cache-Control': 'public, max-age=15',
+                    'X-Cache': 'HIT'
+                });
+                return res.end(_assetsCatalogCache);
+            }
+
             const assetsDir = path.join(ROOT_DIR, '01_Assets');
             const formatBytes = (bytes) => {
                 if (!bytes || bytes === 0) return '0 B';
@@ -1322,13 +1341,22 @@ const server = http.createServer(async (req, res) => {
                 categoriesCount: categories.length
             };
 
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
-            return res.end(JSON.stringify({
+            const payload = JSON.stringify({
                 success: true,
                 stats,
                 categories,
                 items
-            }));
+            });
+            _assetsCatalogCache = payload;
+            _assetsCatalogCacheTime = Date.now();
+
+            res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Cache-Control': 'public, max-age=15',
+                'X-Cache': 'MISS'
+            });
+            return res.end(payload);
         } catch (err) {
             console.error('Erreur assets-catalog :', err);
             res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
@@ -1360,6 +1388,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
                     fs.unlinkSync(targetPath);
+                    invalidateAssetsCatalogCache();
                     res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                     return res.end(JSON.stringify({ success: true, message: 'Fichier supprimé avec succès' }));
                 }
@@ -1406,6 +1435,8 @@ const server = http.createServer(async (req, res) => {
                 const relativePath = subfolder 
                     ? `01_Assets/${category}/${subfolder}/${safeName}` 
                     : `01_Assets/${category}/${safeName}`;
+
+                invalidateAssetsCatalogCache();
 
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 

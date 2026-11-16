@@ -269,7 +269,7 @@
                 `;
             } else if (item.type === 'video') {
                 previewContent = `
-                    <video class="asset-video" src="${safeUrl}" preload="metadata" muted playsinline></video>
+                    <video class="asset-video" src="${safeUrl}" preload="none" muted playsinline></video>
                     <span class="video-duration-badge" id="dur_${item.id}">--:--</span>
                     <div class="preview-overlay">
                         <button class="overlay-btn" onclick="openPreviewModal('${escapeHtml(item.id)}')" title="Lire / Inspecter">
@@ -312,7 +312,7 @@
                             </div>
                         </div>
 
-                        <audio id="audioEl_${item.id}" src="${safeUrl}" preload="metadata"></audio>
+                        <audio id="audioEl_${item.id}" src="${safeUrl}" preload="none"></audio>
                     </div>
                 `;
             } else {
