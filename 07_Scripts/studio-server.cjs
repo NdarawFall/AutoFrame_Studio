@@ -42,8 +42,9 @@ let renderState = {
 };
 let currentRenderProcess = null;
 
-// Intégration du moteur Orchestrateur IA AutoFrame
+// Intégration du moteur Orchestrateur IA MarvidFlow & Nettoyage Scratch
 const { runAiVideoPipeline } = require('./ai_director.cjs');
+const { cleanupScratch, setVideoProcessLock } = require('./cleanup-scratch.cjs');
 
 // Registre des tâches de création vidéo en cours
 const activeCreationJobs = new Map();
@@ -1091,6 +1092,7 @@ const server = http.createServer(async (req, res) => {
             } catch (e) {}
             currentRenderProcess = null;
             renderState.isRendering = false;
+            setVideoProcessLock(false, 'render');
             renderState.statusText = 'Rendu interrompu par l\'utilisateur';
             renderState.progress = 0;
             renderState.logs.push('⛔ Rendu arrêté.');
@@ -1590,6 +1592,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Lancement asynchrone autonome du pipeline IA (ne bloque pas le serveur HTTP)
                 (async () => {
+                    setVideoProcessLock(true, 'creation');
                     try {
                         const result = await runAiVideoPipeline(data, (stepId, phaseLabel, percent, logMsg, logType, extraData) => {
                             jobState.currentStep = stepId;
@@ -1615,7 +1618,20 @@ const server = http.createServer(async (req, res) => {
                             text: `✓ Processus 100% terminé ! Accès au Studio prêt : ${result.videoUrl}`,
                             type: 'success'
                         });
+
+                        // Nettoyage automatique du dossier scratch une fois la vidéo complètement créée
+                        setVideoProcessLock(false, 'creation');
+                        cleanupScratch({
+                            logger: (msg) => {
+                                jobState.logs.push({
+                                    time: new Date().toTimeString().split(' ')[0],
+                                    text: msg,
+                                    type: 'info'
+                                });
+                            }
+                        });
                     } catch (pipelineErr) {
+                        setVideoProcessLock(false, 'creation');
                         console.error('[AiVideoPipeline Error]:', pipelineErr);
                         jobState.status = 'error';
                         jobState.error = pipelineErr.message;
@@ -1691,6 +1707,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Lancement asynchrone du pipeline avec reprise
                 (async () => {
+                    setVideoProcessLock(true, 'creation');
                     try {
                         const result = await runAiVideoPipeline(resumePayload, (stepId, phaseLabel, percent, logMsg, logType, extraData) => {
                             jobState.currentStep = stepId;
@@ -1716,7 +1733,20 @@ const server = http.createServer(async (req, res) => {
                             text: `✓ Processus 100% finalisé après reprise ! Accès au Studio prêt : ${result.videoUrl}`,
                             type: 'success'
                         });
+
+                        // Nettoyage automatique du dossier scratch une fois la vidéo complètement créée
+                        setVideoProcessLock(false, 'creation');
+                        cleanupScratch({
+                            logger: (msg) => {
+                                jobState.logs.push({
+                                    time: new Date().toTimeString().split(' ')[0],
+                                    text: msg,
+                                    type: 'info'
+                                });
+                            }
+                        });
                     } catch (pipelineErr) {
+                        setVideoProcessLock(false, 'creation');
                         console.error('[AiVideoPipeline Resume Error]:', pipelineErr);
                         jobState.status = 'error';
                         jobState.error = pipelineErr.message;
@@ -1835,11 +1865,15 @@ const server = http.createServer(async (req, res) => {
         let body = '';
         req.on('data', chunk => { body += chunk; });
         req.on('end', async () => {
+            setVideoProcessLock(true, 'creation');
             try {
                 const data = JSON.parse(body || '{}');
                 const result = await runAiVideoPipeline(data, (stepId, phaseLabel, percent, logMsg) => {
                     console.log(`[AI Pipeline ${percent}%] ${logMsg}`);
                 });
+
+                setVideoProcessLock(false, 'creation');
+                cleanupScratch();
 
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify({ 
@@ -1848,6 +1882,7 @@ const server = http.createServer(async (req, res) => {
                     videoUrl: result.videoUrl 
                 }));
             } catch (err) {
+                setVideoProcessLock(false, 'creation');
                 console.error('Erreur create-video synchrone :', err);
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({ error: err.message }));
@@ -2690,6 +2725,7 @@ function executeRender(videoName) {
 }
 
 function startNativeRender(videoName) {
+    setVideoProcessLock(true, 'render');
     renderState.statusText = 'Lancement de Chrome Headless & FFmpeg (Zéro Dépendance)...';
     renderState.progress = 20;
     renderState.logs.push('Démarrage de render.cjs...');
@@ -2717,10 +2753,14 @@ function startNativeRender(videoName) {
     child.on('close', (code) => {
         currentRenderProcess = null;
         renderState.isRendering = false;
+        setVideoProcessLock(false, 'render');
         if (code === 0) {
             renderState.progress = 100;
             renderState.statusText = 'Rendu terminé avec succès !';
             renderState.logs.push('✅ Rendu finalisé.');
+            cleanupScratch({
+                logger: (msg) => renderState.logs.push(msg)
+            });
         } else {
             renderState.statusText = 'Échec du rendu (Code: ' + code + ')';
             renderState.logs.push('❌ Le processus s\'est arrêté avec code ' + code);

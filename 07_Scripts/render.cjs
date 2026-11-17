@@ -87,7 +87,10 @@ const baseVideoName = path.basename(targetVideoParam);
 const OUTPUT_FILE = path.resolve(OUTPUT_DIR, baseVideoName.replace(/\.html$/i, '.mp4'));
 const FPS = 30;
 
+const { cleanupScratch, setVideoProcessLock } = require('./cleanup-scratch.cjs');
+
 async function main() {
+    setVideoProcessLock(true, 'render');
     console.log(`\n======================================================`);
     console.log(`🎬  DÉMARRAGE DU RENDU VIDÉO (Mode Zéro Dépendance)`);
     console.log(`📄  Source : ${HTML_FILE}`);
@@ -310,9 +313,14 @@ async function main() {
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log(`\n✅ SUCCÈS ! Vidéo créée en ${elapsed}s :`);
     console.log(`   👉 ${OUTPUT_FILE}\n`);
+
+    // Libération du verrou et nettoyage automatique des résidus temporaires (scratch)
+    setVideoProcessLock(false, 'render');
+    cleanupScratch();
 }
 
 main().catch(err => {
+    setVideoProcessLock(false, 'render');
     console.error('Erreur :', err);
     process.exit(1);
 });

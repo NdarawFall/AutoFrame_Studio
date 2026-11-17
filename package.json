@@ -11,7 +11,8 @@
     "desktop": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win",
-    "predist": "node 07_Scripts/audit-build-security.cjs"
+    "predist": "node 07_Scripts/audit-build-security.cjs",
+    "clean:scratch": "node 07_Scripts/cleanup-scratch.cjs"
   },
   "keywords": [
     "video-editor",
