@@ -212,7 +212,8 @@ function createWindow() {
         show: false
     });
 
-    const startUrl = 'http://localhost:3000/09_Pages/home.html';
+    const activePort = process.env.ACTIVE_STUDIO_PORT || process.env.PORT || '3000';
+    const startUrl = `http://localhost:${activePort}/09_Pages/home.html`;
     mainWindow.loadURL(startUrl);
 
     mainWindow.once('ready-to-show', () => {
@@ -227,7 +228,7 @@ function createWindow() {
 
     // Ouvre les liens externes (GitHub, LinkedIn, sites web) dans le vrai navigateur
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        if (!url.startsWith('http://localhost:3000')) {
+        if (!url.startsWith(`http://localhost:${activePort}`)) {
             shell.openExternal(url);
             return { action: 'deny' };
         }

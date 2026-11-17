@@ -7,7 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 
-const PORT = 3000;
+let PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+process.env.ACTIVE_STUDIO_PORT = String(PORT);
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 const MIME_TYPES = {
@@ -2687,6 +2688,13 @@ function startNativeRender(videoName) {
 
 server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
+        if (!process.env.IS_ELECTRON && PORT < 3010) {
+            PORT++;
+            process.env.ACTIVE_STUDIO_PORT = String(PORT);
+            console.log(`ℹ️   Port occupé, tentative automatique sur le port ${PORT}...`);
+            server.listen(PORT);
+            return;
+        }
         console.log(`ℹ️   Le port ${PORT} est déjà utilisé par une instance active. Connexion directe.`);
     } else {
         console.error('Erreur serveur HTTP :', err);

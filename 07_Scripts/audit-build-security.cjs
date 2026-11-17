@@ -10,7 +10,7 @@ const path = require('path');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 console.log('\n🔒 ======================================================');
-console.log('🔒  AUDIT DE SÉCURITÉ PRÉ-COMPILATION AUTOFRAME STUDIO');
+console.log('🔒  AUDIT DE SÉCURITÉ PRÉ-COMPILATION MARVIDFLOW STUDIO');
 console.log('🔒 ======================================================\n');
 
 let hasSecurityViolation = false;

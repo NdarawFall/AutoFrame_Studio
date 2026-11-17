@@ -7,27 +7,43 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-// Détection de Chrome
+// Détection d'un navigateur Chromium (Chrome, Edge, Brave)
 function getChromePath() {
     const candidates = [
         'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
         'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
         path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
         'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+        path.join(process.env.LOCALAPPDATA || '', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+        'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+        'C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+        path.join(process.env.LOCALAPPDATA || '', 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+        'C:\\Program Files\\Chromium\\Application\\chrome.exe',
+        path.join(process.env.LOCALAPPDATA || '', 'Chromium', 'Application', 'chrome.exe')
     ];
     for (const p of candidates) {
         if (p && fs.existsSync(p)) return p;
     }
-    return 'chrome';
+    try {
+        const stdout = execSync('where chrome || where msedge || where brave', { stdio: ['ignore', 'pipe', 'ignore'], encoding: 'utf8' });
+        const firstLine = stdout.split(/\r?\n/)[0]?.trim();
+        if (firstLine && fs.existsSync(firstLine)) return firstLine;
+    } catch (e) {}
+    return null;
 }
 
-// Détection de FFmpeg (priorité 64-bit)
+// Détection de FFmpeg (priorité 64-bit avec support asar unpack)
 function getFfmpegPath() {
     try {
         const installer = require('@ffmpeg-installer/ffmpeg');
-        if (installer && installer.path && fs.existsSync(installer.path)) {
-            return installer.path;
+        if (installer && installer.path) {
+            let p = installer.path;
+            if (p.includes('app.asar')) {
+                const unpacked = p.replace('app.asar', 'app.asar.unpacked');
+                if (fs.existsSync(unpacked)) return unpacked;
+            }
+            if (fs.existsSync(p)) return p;
         }
     } catch (e) {}
 
@@ -80,6 +96,9 @@ async function main() {
 
     if (!fs.existsSync(HTML_FILE)) {
         throw new Error(`Fichier HTML introuvable : ${HTML_FILE}`);
+    }
+    if (!CHROME_PATH) {
+        throw new Error(`Navigateur Chromium introuvable. Installez Google Chrome, Microsoft Edge ou Brave pour le moteur de rendu vidéo.`);
     }
     if (!FFMPEG_PATH) {
         throw new Error(`FFmpeg introuvable. Installez FFmpeg ou ajoutez-le au PATH.`);

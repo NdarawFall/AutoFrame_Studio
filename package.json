@@ -68,6 +68,11 @@
       "!.agents/**/*",
       "!scratch/**/*"
     ],
+    "asarUnpack": [
+      "node_modules/@ffmpeg-installer/**/*",
+      "node_modules/@imgly/**/*",
+      "node_modules/@xenova/**/*"
+    ],
     "publish": [
       {
         "provider": "github",
