@@ -1,5 +1,5 @@
 /**
- * ELECTRON-MAIN.CJS — Point d'entrée de l'application de bureau Windows AutoFrame
+ * ELECTRON-MAIN.CJS — Point d'entrée de l'application de bureau Windows MarvidFlow
  * Démarre le serveur local en arrière-plan, gère la fenêtre native et les mises à jour directes via GitHub Releases.
  */
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
@@ -12,8 +12,10 @@ const { spawn } = require('child_process');
 process.env.IS_ELECTRON = '1';
 
 // Détermine le répertoire de données de l'utilisateur (dossier avec pleins droits de lecture/écriture)
-// Les clients, chaînes et vidéos créés par l'utilisateur sont stockés dans Documents/AutoFrame
-const userDataDir = path.join(app.getPath('documents'), 'AutoFrame');
+// Les clients, chaînes et vidéos créés par l'utilisateur sont stockés dans Documents/MarvidFlow
+const oldDataDir = path.join(app.getPath('documents'), 'AutoFrame');
+const defaultDataDir = path.join(app.getPath('documents'), 'MarvidFlow');
+const userDataDir = fs.existsSync(oldDataDir) && !fs.existsSync(defaultDataDir) ? oldDataDir : defaultDataDir;
 process.env.VIBE_USER_DATA = userDataDir;
 
 // S'assurer que les sous-dossiers existent pour l'utilisateur
@@ -200,7 +202,7 @@ function createWindow() {
         minWidth: 1080,
         minHeight: 720,
         backgroundColor: '#050507',
-        title: 'AutoFrame Studio',
+        title: 'MarvidFlow Studio',
         icon: fs.existsSync(iconPath) ? iconPath : undefined,
         webPreferences: {
             nodeIntegration: false,

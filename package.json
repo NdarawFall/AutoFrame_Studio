@@ -1,7 +1,7 @@
 {
-  "name": "autoframe",
+  "name": "marvidflow",
   "version": "1.0.0",
-  "description": "AutoFrame 1.0 — Studio vidéo automatisé & moteur de motion design IA",
+  "description": "MarvidFlow 1.0 — Studio de montage & production vidéo automatisé IA",
   "main": "electron-main.cjs",
   "scripts": {
     "start": "node 07_Scripts/studio-server.cjs",
@@ -45,8 +45,8 @@
     "electron-builder": "^26.18.0"
   },
   "build": {
-    "appId": "com.autoframe.studio",
-    "productName": "AutoFrame",
+    "appId": "com.marvidflow.studio",
+    "productName": "MarvidFlow",
     "copyright": "Copyright © 2026 Ndaraw Fall",
     "directories": {
       "output": "dist"
@@ -72,7 +72,7 @@
       {
         "provider": "github",
         "owner": "NdarawFall",
-        "repo": "AutoFrame_Studio"
+        "repo": "MarvidFlow"
       }
     ],
     "win": {
@@ -92,14 +92,14 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "AutoFrame Studio",
-      "uninstallDisplayName": "AutoFrame Studio ${version}",
-      "artifactName": "AutoFrame-Setup-${version}.${ext}",
+      "shortcutName": "MarvidFlow Studio",
+      "uninstallDisplayName": "MarvidFlow Studio ${version}",
+      "artifactName": "MarvidFlow-Setup-${version}.${ext}",
       "deleteAppDataOnUninstall": false
     }
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NdarawFall/AutoFrame_Studio.git"
+    "url": "https://github.com/NdarawFall/MarvidFlow.git"
   }
 }

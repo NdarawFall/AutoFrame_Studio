@@ -2696,7 +2696,7 @@ server.on('error', (err) => {
 server.listen(PORT, () => {
     const url = `http://localhost:${PORT}/09_Pages/home.html`;
     console.log(`\n======================================================`);
-    console.log(`🎬  AUTOFRAME LANCÉ AVEC SUCCÈS !`);
+    console.log(`🎬  MARVIDFLOW STUDIO LANCÉ AVEC SUCCÈS !`);
     console.log(`👉  URL : ${url}`);
     console.log(`📁  Racine : ${ROOT_DIR}`);
     console.log(`⌨️   Appuyez sur [Ctrl + C] pour arrêter le serveur.`);
