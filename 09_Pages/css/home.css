@@ -335,18 +335,19 @@
             color: #ffffff;
         }
 
-        /* Bouton Aide & Support : Fond gris, texte blanc */
+        /* Bouton Aide & Support : Fond gris transparent (translucide), texte blanc */
         .btn-sidebar-help {
-            background: #27272a !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
             color: #ffffff !important;
             font-weight: 600 !important;
+            backdrop-filter: blur(8px);
             margin-top: 4px;
         }
 
         .btn-sidebar-help:hover {
-            background: #3f3f46 !important;
-            border-color: rgba(255, 255, 255, 0.28) !important;
+            background: rgba(255, 255, 255, 0.14) !important;
+            border-color: rgba(255, 255, 255, 0.24) !important;
             color: #ffffff !important;
         }
 
@@ -365,8 +366,8 @@
         }
 
         .btn-sidebar-tutorial:hover {
-            background: #e11d48 !important;
-            border-color: #e11d48 !important;
+            background: #e02233 !important;
+            border-color: #e02233 !important;
             color: #ffffff !important;
             box-shadow: 0 4px 14px rgba(255, 51, 68, 0.45) !important;
             transform: translateY(-1px);
