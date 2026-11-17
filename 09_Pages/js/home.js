@@ -114,24 +114,11 @@
                 ];
             }
 
-            // B. Clients
-            if (!clientsCache || clientsCache.length === 0) {
-                clientsCache = [{
-                    name: 'marcus',
-                    avatarUrl: 'Clients/marcus/avatar_1794101335316.png',
-                    categories: {
-                        images_references: [],
-                        videos_references: [],
-                        clips_video: [],
-                        voix_off: [],
-                        musiques: [],
-                        effets_sonores: [],
-                        images_illustrations: [],
-                        skills: []
-                    }
-                }];
+            // B. Clients (chargés dynamiquement depuis le dossier Clients/ sans mock persistant)
+            if (!clientsCache) {
+                clientsCache = [];
             }
-            activeClient = clientsCache[0];
+            activeClient = clientsCache.length > 0 ? clientsCache[0] : null;
 
             // C. Vidéos et Projets récents (avec horodatage précis date & heure)
             const baseVideoNow = Date.now();
@@ -157,8 +144,8 @@
                         duration: '15s', 
                         videoPath: '../04_Videos/video_growkaz_stickman_15s.html', 
                         resolution: '1920×1080', 
-                        category: 'clients', 
-                        client: 'marcus',
+                        category: 'standalone', 
+                        client: null,
                         timestamp: baseVideoNow - 35 * 60000 // aujourd'hui - 35min
                     },
                     { 
@@ -195,8 +182,8 @@
                         duration: '25s', 
                         videoPath: '../04_Videos/hyperframes_25s_motion_design_composition.html', 
                         resolution: '1920×1080', 
-                        category: 'clients', 
-                        client: 'marcus',
+                        category: 'standalone', 
+                        client: null,
                         timestamp: baseVideoNow - 52 * 3600000
                     },
                     { 
@@ -328,9 +315,9 @@
                 if (resClients.status === 'fulfilled' && resClients.value.ok) {
                     try {
                         const data = await resClients.value.json();
-                        if (data.success && Array.isArray(data.clients) && data.clients.length > 0) {
+                        if (data.success && Array.isArray(data.clients)) {
                             clientsCache = data.clients;
-                            activeClient = clientsCache.find(c => c.name === (activeClient ? activeClient.name : '')) || clientsCache[0];
+                            activeClient = clientsCache.find(c => c.name === (activeClient ? activeClient.name : '')) || (clientsCache.length > 0 ? clientsCache[0] : null);
                             updated = true;
                         }
                     } catch(e) {}
