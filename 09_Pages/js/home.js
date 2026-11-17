@@ -324,7 +324,19 @@
                     try {
                         const data = await resClients.value.json();
                         if (data.success && Array.isArray(data.clients)) {
-                            clientsCache = data.clients;
+                            clientsCache = data.clients.map(cl => ({
+                                ...cl,
+                                categories: cl.categories || cl.folders || {
+                                    images_references: [],
+                                    videos_references: [],
+                                    clips_video: [],
+                                    voix_off: [],
+                                    musiques: [],
+                                    effets_sonores: [],
+                                    images_illustrations: [],
+                                    skills: []
+                                }
+                            }));
                             activeClient = clientsCache.find(c => c.name === (activeClient ? activeClient.name : '')) || (clientsCache.length > 0 ? clientsCache[0] : null);
                             updated = true;
                         }
@@ -416,6 +428,24 @@
             loadAllInitialData();
             showToast('Données actualisées');
         }
+
+        function toggleUserProfileMenu(e) {
+            if (e) e.stopPropagation();
+            const dd = document.getElementById('userProfileDropdown');
+            if (!dd) return;
+            const isOpen = dd.style.display === 'block';
+            dd.style.display = isOpen ? 'none' : 'block';
+        }
+
+        window.addEventListener('click', (e) => {
+            const dd = document.getElementById('userProfileDropdown');
+            const btn = document.getElementById('userProfileBtn');
+            if (dd && dd.style.display === 'block') {
+                if (!dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+                    dd.style.display = 'none';
+                }
+            }
+        });
 
         // =====================================================================
         // SECTION DASHBOARD
@@ -1196,7 +1226,7 @@
                 await fetch('/api/clients/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ client: name, avatar: newClientAvatarBase64 })
+                    body: JSON.stringify({ name: name, client: name, avatar: newClientAvatarBase64 })
                 });
             } catch (e) {}
 
@@ -1256,11 +1286,11 @@
                 await fetch('/api/clients/delete-client', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ client: toDel })
+                    body: JSON.stringify({ client: toDel, name: toDel })
                 });
             } catch (e) {}
 
-            clientsCache = clientsCache.filter(c => c.name !== toDel);
+            clientsCache = clientsCache.filter(c => c.name !== toDel && c.name.toLowerCase() !== toDel.toLowerCase());
             activeClient = clientsCache[0] || null;
             closeDeleteClientModal();
             showToast(`Client "${toDel}" supprimé`);

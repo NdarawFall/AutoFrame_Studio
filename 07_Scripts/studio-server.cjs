@@ -257,74 +257,84 @@ const server = http.createServer(async (req, res) => {
 
     // API : Lister tous les clients et leurs sous-dossiers
     if (cleanUrl === '/api/clients' && req.method === 'GET') {
-        if (cachedClientsResponseJson) {
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-            return res.end(cachedClientsResponseJson);
-        }
         try {
-            const entries = fs.readdirSync(clientsBasePath, { withFileTypes: true });
-            const clientsList = [];
+            const searchBaseDirs = [clientsBasePath];
+            const rootClients = path.join(ROOT_DIR, 'Clients');
+            if (!searchBaseDirs.includes(rootClients)) searchBaseDirs.push(rootClients);
 
-            for (const entry of entries) {
-                if (!entry.isDirectory()) continue;
-                if (entry.name.startsWith('.') || entry.name.toLowerCase() === 'readme.md') continue;
+            const clientsMap = new Map();
 
-                const clientDirName = entry.name;
-                const clientDirPath = path.join(clientsBasePath, clientDirName);
-                const stat = fs.statSync(clientDirPath);
+            for (const basePath of searchBaseDirs) {
+                if (!fs.existsSync(basePath)) continue;
+                const entries = fs.readdirSync(basePath, { withFileTypes: true });
 
-                const foldersData = {};
-                let totalAssets = 0;
+                for (const entry of entries) {
+                    if (!entry.isDirectory()) continue;
+                    if (entry.name.startsWith('.') || entry.name.toLowerCase() === 'readme.md') continue;
 
-                for (const sub of CLIENT_SUBFOLDERS) {
-                    const subDirPath = path.join(clientDirPath, sub);
-                    if (!fs.existsSync(subDirPath)) {
-                        try { fs.mkdirSync(subDirPath, { recursive: true }); } catch (e) {}
+                    const clientDirName = entry.name;
+                    if (clientsMap.has(clientDirName.toLowerCase())) continue;
+
+                    const clientDirPath = path.join(basePath, clientDirName);
+                    const stat = fs.statSync(clientDirPath);
+
+                    const foldersData = {};
+                    let totalAssets = 0;
+
+                    for (const sub of CLIENT_SUBFOLDERS) {
+                        const subDirPath = path.join(clientDirPath, sub);
+                        if (!fs.existsSync(subDirPath)) {
+                            try { fs.mkdirSync(subDirPath, { recursive: true }); } catch (e) {}
+                        }
+                        const files = fs.readdirSync(subDirPath, { withFileTypes: true })
+                            .filter(f => f.isFile() && !f.name.startsWith('.'))
+                            .map(f => {
+                                const fStat = fs.statSync(path.join(subDirPath, f.name));
+                                return {
+                                    name: f.name,
+                                    size: fStat.size,
+                                    mtime: fStat.mtime,
+                                    ext: path.extname(f.name).toLowerCase(),
+                                    relativeUrl: `Clients/${clientDirName}/${sub}/${f.name}`
+                                };
+                            });
+                        foldersData[sub] = files;
+                        totalAssets += files.length;
                     }
-                    const files = fs.readdirSync(subDirPath, { withFileTypes: true })
-                        .filter(f => f.isFile() && !f.name.startsWith('.'))
-                        .map(f => {
-                            const fStat = fs.statSync(path.join(subDirPath, f.name));
-                            return {
-                                name: f.name,
-                                size: fStat.size,
-                                mtime: fStat.mtime,
-                                ext: path.extname(f.name).toLowerCase(),
-                                relativeUrl: `Clients/${clientDirName}/${sub}/${f.name}`
-                            };
-                        });
-                    foldersData[sub] = files;
-                    totalAssets += files.length;
-                }
 
-                // Détecter l'avatar du client (avatar_* ou avatar.png/jpg/webp à la racine du client)
-                let clientAvatarUrl = '';
-                const rootClientFiles = fs.readdirSync(clientDirPath, { withFileTypes: true });
-                for (const rf of rootClientFiles) {
-                    if (rf.isFile()) {
-                        const lowName = rf.name.toLowerCase();
-                        if (lowName.startsWith('avatar_') || lowName === 'avatar.png' || lowName === 'avatar.jpg' || lowName === 'avatar.jpeg' || lowName === 'avatar.webp') {
-                            clientAvatarUrl = `Clients/${clientDirName}/${rf.name}`;
-                            break;
+                    // Détecter l'avatar du client
+                    let clientAvatarUrl = '';
+                    const rootClientFiles = fs.readdirSync(clientDirPath, { withFileTypes: true });
+                    for (const rf of rootClientFiles) {
+                        if (rf.isFile()) {
+                            const lowName = rf.name.toLowerCase();
+                            if (lowName.startsWith('avatar_') || lowName === 'avatar.png' || lowName === 'avatar.jpg' || lowName === 'avatar.jpeg' || lowName === 'avatar.webp') {
+                                clientAvatarUrl = `Clients/${clientDirName}/${rf.name}`;
+                                break;
+                            }
                         }
                     }
-                }
 
-                clientsList.push({
-                    name: clientDirName,
-                    createdAt: stat.birthtime || stat.mtime,
-                    avatarUrl: clientAvatarUrl,
-                    totalAssets,
-                    folders: foldersData
-                });
+                    clientsMap.set(clientDirName.toLowerCase(), {
+                        name: clientDirName,
+                        createdAt: stat.birthtime || stat.mtime,
+                        avatarUrl: clientAvatarUrl,
+                        totalAssets,
+                        folders: foldersData,
+                        categories: foldersData
+                    });
+                }
             }
 
+            const clientsList = Array.from(clientsMap.values());
             clientsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-            const jsonOut = JSON.stringify({ success: true, clients: clientsList });
-            cachedClientsResponseJson = jsonOut;
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-            return res.end(jsonOut);
+            res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            });
+            return res.end(JSON.stringify({ success: true, clients: clientsList }));
         } catch (err) {
             console.error('Erreur GET /api/clients :', err);
             res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -332,7 +342,7 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
-    // API : Créer un nouveau client avec ses 5 sous-dossiers
+    // API : Créer un nouveau client avec ses sous-dossiers
     if (cleanUrl === '/api/clients/create' && req.method === 'POST') {
         invalidateClientsCache();
         let body = '';
@@ -340,7 +350,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => {
             try {
                 const payload = JSON.parse(body || '{}');
-                const rawName = (payload.name || '').trim();
+                const rawName = (payload.name || payload.client || '').trim();
                 const safeName = rawName.replace(/[^a-zA-Z0-9_\-\s]/g, '').trim().replace(/\s+/g, '_');
 
                 if (!safeName) {
@@ -360,12 +370,24 @@ const server = http.createServer(async (req, res) => {
                     fs.mkdirSync(path.join(targetClientDir, sub), { recursive: true });
                 }
 
+                let savedAvatarUrl = '';
+                if (payload.avatar && typeof payload.avatar === 'string' && payload.avatar.includes('base64,')) {
+                    try {
+                        const base64Data = payload.avatar.split('base64,')[1];
+                        const avatarPath = path.join(targetClientDir, 'avatar.png');
+                        fs.writeFileSync(avatarPath, Buffer.from(base64Data, 'base64'));
+                        savedAvatarUrl = `Clients/${safeName}/avatar.png`;
+                    } catch(e) {}
+                }
+
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({
                     success: true,
                     client: {
                         name: safeName,
-                        folders: CLIENT_SUBFOLDERS
+                        avatarUrl: savedAvatarUrl,
+                        folders: CLIENT_SUBFOLDERS,
+                        categories: {}
                     }
                 }));
             } catch (err) {
@@ -464,15 +486,30 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => {
             try {
                 const payload = JSON.parse(body || '{}');
-                const clientName = (payload.client || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '_');
-                const targetClientDir = path.join(clientsBasePath, clientName);
+                const rawClient = (payload.client || payload.name || '').trim();
+                const clientName = rawClient.replace(/[^a-zA-Z0-9_\-]/g, '_');
 
-                if (fs.existsSync(targetClientDir)) {
-                    fs.rmSync(targetClientDir, { recursive: true, force: true });
+                const searchBaseDirs = [clientsBasePath];
+                const rootClients = path.join(ROOT_DIR, 'Clients');
+                if (!searchBaseDirs.includes(rootClients)) searchBaseDirs.push(rootClients);
+
+                let deleted = false;
+                for (const basePath of searchBaseDirs) {
+                    if (!fs.existsSync(basePath)) continue;
+                    try {
+                        const entries = fs.readdirSync(basePath, { withFileTypes: true });
+                        for (const ent of entries) {
+                            if (ent.isDirectory() && (ent.name === clientName || ent.name === rawClient || ent.name.toLowerCase() === clientName.toLowerCase() || ent.name.toLowerCase() === rawClient.toLowerCase())) {
+                                const targetDir = path.join(basePath, ent.name);
+                                fs.rmSync(targetDir, { recursive: true, force: true });
+                                deleted = true;
+                            }
+                        }
+                    } catch(e) {}
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                return res.end(JSON.stringify({ success: true, client: clientName }));
+                return res.end(JSON.stringify({ success: true, client: clientName, deleted }));
             } catch (err) {
                 console.error('Erreur /api/clients/delete-client :', err);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
@@ -2698,10 +2735,10 @@ const isInsideRoot = filePath.startsWith(ROOT_DIR);
             return;
         }
 
-        const isHtml = ext === '.html';
-        const cacheControl = isHtml 
-            ? 'no-cache, must-revalidate' 
-            : 'public, max-age=86400, stale-while-revalidate=3600';
+        const isStaticMedia = ['.mp4', '.webm', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.woff2', '.ttf'].includes(ext);
+        const cacheControl = isStaticMedia 
+            ? 'public, max-age=86400, stale-while-revalidate=3600' 
+            : 'no-cache, no-store, must-revalidate';
 
         res.writeHead(200, {
             'Content-Type': contentType,
