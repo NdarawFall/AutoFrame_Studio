@@ -56,8 +56,8 @@ global.triggerElectronUpdateCheck = () => {
 
     const reqOpts = {
         hostname: 'api.github.com',
-        path: '/repos/NdarawFall/AutoFrame_Studio/releases/latest',
-        headers: { 'User-Agent': 'AutoFrame-Studio-Desktop' }
+        path: '/repos/NdarawFall/MarvidFlow/releases/latest',
+        headers: { 'User-Agent': 'MarvidFlow-Studio-Desktop' }
     };
 
     https.get(reqOpts, (res) => {
@@ -79,7 +79,7 @@ global.triggerElectronUpdateCheck = () => {
                     const downloadUrl = exeAsset ? exeAsset.browser_download_url : release.html_url;
 
                     if (latestTag && latestTag !== currentVersion) {
-                        console.log(`[AutoFrame Update] Nouvelle version trouvée : v${latestTag} (actuelle: v${currentVersion})`);
+                        console.log(`[MarvidFlow Update] Nouvelle version trouvée : v${latestTag} (actuelle: v${currentVersion})`);
                         if (global.setAppUpdateState) {
                             global.setAppUpdateState({
                                 status: 'available',
@@ -90,7 +90,7 @@ global.triggerElectronUpdateCheck = () => {
                             });
                         }
                     } else {
-                        console.log(`[AutoFrame Update] Application à jour (v${currentVersion}).`);
+                        console.log(`[MarvidFlow Update] Application à jour (v${currentVersion}).`);
                         if (global.setAppUpdateState) {
                             global.setAppUpdateState({
                                 status: 'up-to-date',
@@ -105,14 +105,14 @@ global.triggerElectronUpdateCheck = () => {
                     }
                 }
             } catch (err) {
-                console.error('[AutoFrame Update] Erreur parsing release :', err);
+                console.error('[MarvidFlow Update] Erreur parsing release :', err);
                 if (global.setAppUpdateState) {
                     global.setAppUpdateState({ status: 'error', error: err.message });
                 }
             }
         });
     }).on('error', (err) => {
-        console.error('[AutoFrame Update] Erreur réseau vérification :', err);
+        console.error('[MarvidFlow Update] Erreur réseau vérification :', err);
         if (global.setAppUpdateState) {
             global.setAppUpdateState({ status: 'error', error: err.message });
         }
@@ -124,14 +124,14 @@ global.triggerElectronInstallUpdate = () => {
     const downloadUrl = state && state.downloadUrl ? state.downloadUrl : null;
 
     if (!downloadUrl) {
-        shell.openExternal('https://github.com/NdarawFall/AutoFrame_Studio/releases/latest');
+        shell.openExternal('https://github.com/NdarawFall/MarvidFlow/releases/latest');
         return;
     }
 
     // Si c'est un lien direct vers le fichier .exe, on le télécharge dans le dossier temporaire
     if (downloadUrl.endsWith('.exe')) {
-        const tempPath = path.join(app.getPath('temp'), `AutoFrame-Setup-v${state.latestVersion || 'update'}.exe`);
-        console.log(`[AutoFrame Update] Téléchargement de ${downloadUrl} vers ${tempPath}...`);
+        const tempPath = path.join(app.getPath('temp'), `MarvidFlow-Setup-v${state.latestVersion || 'update'}.exe`);
+        console.log(`[MarvidFlow Update] Téléchargement de ${downloadUrl} vers ${tempPath}...`);
 
         if (global.setAppUpdateState) {
             global.setAppUpdateState({ status: 'downloading', progress: 10 });
@@ -162,7 +162,7 @@ global.triggerElectronInstallUpdate = () => {
 
                 file.on('finish', () => {
                     file.close(() => {
-                        console.log('[AutoFrame Update] Téléchargement terminé. Lancement de l\\'installeur...');
+                        console.log("[MarvidFlow Update] Téléchargement terminé. Lancement de l'installeur...");
                         if (global.setAppUpdateState) {
                             global.setAppUpdateState({ status: 'downloaded', progress: 100 });
                         }
@@ -180,7 +180,7 @@ global.triggerElectronInstallUpdate = () => {
                 });
             }).on('error', (err) => {
                 fs.unlink(tempPath, () => {});
-                console.error('[AutoFrame Update] Erreur téléchargement :', err);
+                console.error('[MarvidFlow Update] Erreur téléchargement :', err);
                 shell.openExternal(downloadUrl);
             });
         };
