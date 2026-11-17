@@ -250,9 +250,17 @@
 
             // Filtrer les vidéos supprimées par l'utilisateur
             try {
-                const deletedList = JSON.parse(localStorage.getItem('autoframe_deleted_videos') || '[]');
+                const deletedList = JSON.parse(localStorage.getItem('marvidflow_deleted_videos') || localStorage.getItem('autoframe_deleted_videos') || '[]');
                 if (deletedList.length > 0) {
-                    allVideosList = allVideosList.filter(v => !deletedList.includes(v.videoPath) && !deletedList.includes(v.title));
+                    allVideosList = allVideosList.filter(v => {
+                        const vp = (v.videoPath || v.path || v.file || '').replace(/^(\.\.[\/\\])+/, '').replace(/^[\\/]+/, '');
+                        const vf = vp.split(/[/\\]/).pop();
+                        const vt = (v.title || '').trim().toLowerCase();
+                        if (deletedList.some(d => d && (d === vp || d === vf || d === v.videoPath || (vt && d.toLowerCase().trim() === vt)))) {
+                            return false;
+                        }
+                        return true;
+                    });
                 }
             } catch(e) {}
 
@@ -326,8 +334,23 @@
                 if (resFiles.status === 'fulfilled' && resFiles.value.ok) {
                     try {
                         const data = await resFiles.value.json();
-                        if (data.videos && Array.isArray(data.videos) && data.videos.length > 0) {
-                            allVideosList = data.videos.map((v, i) => {
+                        if (data.videos && Array.isArray(data.videos)) {
+                            let deletedList = [];
+                            try {
+                                deletedList = JSON.parse(localStorage.getItem('marvidflow_deleted_videos') || localStorage.getItem('autoframe_deleted_videos') || '[]');
+                            } catch(e) {}
+
+                            const filtered = data.videos.filter(v => {
+                                const vp = (v.path || v.file || v.videoPath || v.name || '').replace(/^(\.\.[\/\\])+/, '').replace(/^[\\/]+/, '');
+                                const vf = vp.split(/[/\\]/).pop();
+                                const vt = (v.title || '').trim().toLowerCase();
+                                if (deletedList.some(d => d && (d === vp || d === vf || d === v.name || (vt && d.toLowerCase().trim() === vt)))) {
+                                    return false;
+                                }
+                                return true;
+                            });
+
+                            allVideosList = filtered.map((v, i) => {
                                 let title = v.title;
                                 if (!title) {
                                     title = (v.file || v.name || 'Projet Vidéo ' + (i + 1)).replace('.html', '').replace('.mp4', '').replace(/_/g, ' ');
@@ -2268,30 +2291,41 @@
         async function executeDeleteCurrentVideo() {
             if (!currentPlayingVideo) return;
             const toDelete = currentPlayingVideo;
-            const pathToDelete = toDelete.path;
-            const titleToDelete = toDelete.title;
+            const pathToDelete = (toDelete.path || '').trim();
+            const titleToDelete = (toDelete.title || '').trim();
+            const cleanPath = pathToDelete.replace(/^(\.\.[\/\\])+/, '').replace(/^[\\/]+/, '');
+            const baseFileName = cleanPath.split(/[/\\]/).pop();
 
             // 1. Retirer de la liste locale en mémoire
             allVideosList = allVideosList.filter(v => {
-                if (v.videoPath && pathToDelete && (v.videoPath === pathToDelete || '../' + v.videoPath === pathToDelete || v.videoPath === '../' + pathToDelete)) return false;
-                if (v.title && titleToDelete && v.title === titleToDelete) return false;
+                const vp = (v.videoPath || v.path || v.file || '').replace(/^(\.\.[\/\\])+/, '').replace(/^[\\/]+/, '');
+                const vf = vp.split(/[/\\]/).pop();
+                if (baseFileName && (vf === baseFileName || vp === cleanPath)) return false;
+                if (v.title && titleToDelete && v.title.toLowerCase().trim() === titleToDelete.toLowerCase().trim()) return false;
                 return true;
             });
 
             // 2. Persister les suppressions dans localStorage
             try {
-                const deletedList = JSON.parse(localStorage.getItem('autoframe_deleted_videos') || '[]');
-                if (pathToDelete && !deletedList.includes(pathToDelete)) deletedList.push(pathToDelete);
-                if (titleToDelete && !deletedList.includes(titleToDelete)) deletedList.push(titleToDelete);
+                const deletedList = JSON.parse(localStorage.getItem('marvidflow_deleted_videos') || localStorage.getItem('autoframe_deleted_videos') || '[]');
+                [pathToDelete, cleanPath, baseFileName, titleToDelete].forEach(item => {
+                    if (item && !deletedList.includes(item)) deletedList.push(item);
+                });
+                localStorage.setItem('marvidflow_deleted_videos', JSON.stringify(deletedList));
                 localStorage.setItem('autoframe_deleted_videos', JSON.stringify(deletedList));
             } catch(e) {}
 
-            // 3. Appel API si disponible
+            // 3. Appel API pour supprimer définitivement le fichier physique sur le disque
             try {
                 await fetch('/api/delete-video', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ path: pathToDelete, title: titleToDelete })
+                    body: JSON.stringify({
+                        video: pathToDelete,
+                        path: cleanPath,
+                        file: baseFileName,
+                        title: titleToDelete
+                    })
                 });
             } catch(e) {}
 

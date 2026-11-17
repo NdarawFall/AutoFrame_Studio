@@ -1108,80 +1108,122 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => {
             try {
                 const data = JSON.parse(body || '{}');
-                const rawTarget = decodeURIComponent(data.video || '').trim();
-                const videoTarget = rawTarget.replace(/^[\\/\\]+/, '');
-                if (!videoTarget) {
+                const rawTarget = decodeURIComponent(data.video || data.path || data.file || data.videoPath || data.id || '').trim();
+                let videoTarget = rawTarget.replace(/^(\.\.[\/\\])+/, '').replace(/^(\.[\/\\])+/, '').replace(/^[\\/\\]+/, '');
+                if (!videoTarget && !data.title) {
                     res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                     return res.end(JSON.stringify({ error: 'Chemin de vidéo manquant' }));
                 }
 
-                // Résolution sécurisée du fichier (tolérance relative, absolue et sous-dossiers)
-                let filePath = path.join(ROOT_DIR, videoTarget);
-                if (!fs.existsSync(filePath)) {
-                    filePath = path.join(ROOT_DIR, '04_Videos', path.basename(videoTarget));
-                }
-                if (!fs.existsSync(filePath)) {
-                    filePath = path.resolve(ROOT_DIR, videoTarget);
-                }
-                if (!fs.existsSync(filePath)) {
-                    // Chercher dans 03_Chaines
-                    const chainesDir = path.join(ROOT_DIR, '03_Chaines');
-                    if (fs.existsSync(chainesDir)) {
-                        const subs = fs.readdirSync(chainesDir);
-                        for (const sub of subs) {
-                            const candidate = path.join(chainesDir, sub, path.basename(videoTarget));
-                            if (fs.existsSync(candidate)) {
-                                filePath = candidate;
-                                break;
-                            }
+                const baseFn = videoTarget ? path.basename(videoTarget) : '';
+                let foundPath = null;
+
+                // Dossiers candidats de recherche (dans ROOT_DIR et USER_DATA_DIR)
+                const searchDirs = [ROOT_DIR];
+                if (typeof USER_DATA_DIR !== 'undefined' && USER_DATA_DIR && USER_DATA_DIR !== ROOT_DIR) searchDirs.push(USER_DATA_DIR);
+
+                if (videoTarget) {
+                    for (const baseDir of searchDirs) {
+                        const directPath = path.join(baseDir, videoTarget);
+                        if (fs.existsSync(directPath) && fs.statSync(directPath).isFile()) {
+                            foundPath = directPath;
+                            break;
                         }
+                        const inVideos = path.join(baseDir, '04_Videos', baseFn);
+                        if (fs.existsSync(inVideos) && fs.statSync(inVideos).isFile()) {
+                            foundPath = inVideos;
+                            break;
+                        }
+                        const inRendus = path.join(baseDir, '08_Rendus', baseFn);
+                        if (fs.existsSync(inRendus) && fs.statSync(inRendus).isFile()) {
+                            foundPath = inRendus;
+                            break;
+                        }
+
+                        // Recherche dans 03_Chaines
+                        const chDir = path.join(baseDir, '03_Chaines');
+                        if (fs.existsSync(chDir)) {
+                            try {
+                                const subs = fs.readdirSync(chDir);
+                                for (const s of subs) {
+                                    const cand = path.join(chDir, s, baseFn);
+                                    if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+                                        foundPath = cand;
+                                        break;
+                                    }
+                                }
+                            } catch(e) {}
+                        }
+                        if (foundPath) break;
+
+                        // Recherche dans Clients
+                        const clientsDir = path.join(baseDir, 'Clients');
+                        if (fs.existsSync(clientsDir)) {
+                            try {
+                                const subs = fs.readdirSync(clientsDir);
+                                for (const s of subs) {
+                                    const cand = path.join(clientsDir, s, baseFn);
+                                    if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+                                        foundPath = cand;
+                                        break;
+                                    }
+                                }
+                            } catch(e) {}
+                        }
+                        if (foundPath) break;
                     }
                 }
 
-                if (!fs.existsSync(filePath)) {
-                    filePath = path.join(ROOT_DIR, '08_Rendus', path.basename(videoTarget));
-                }
-
                 const allowedExts = ['.html', '.mp4', '.webm', '.mov', '.mkv'];
-                const fileExt = path.extname(filePath).toLowerCase();
+                if (foundPath && allowedExts.includes(path.extname(foundPath).toLowerCase())) {
+                    fs.unlinkSync(foundPath);
 
-                if (fs.existsSync(filePath) && allowedExts.includes(fileExt)) {
-                    fs.unlinkSync(filePath);
-
-                    // Synchroniser channels.json au cas où la vidéo appartenait à une chaîne
-                    try {
-                        const channelsPath = path.join(ROOT_DIR, '07_Scripts', 'channels.json');
-                        if (fs.existsSync(channelsPath)) {
-                            let channels = JSON.parse(fs.readFileSync(channelsPath, 'utf8') || '[]');
-                            let changed = false;
-                            const baseFn = path.basename(filePath);
-                            channels.forEach(ch => {
-                                if (ch.videos && Array.isArray(ch.videos)) {
-                                    const initialLen = ch.videos.length;
-                                    ch.videos = ch.videos.filter(v => (v.file !== baseFn && v.path !== videoTarget));
-                                    if (ch.videos.length !== initialLen) {
-                                        ch.videoCount = ch.videos.length;
-                                        changed = true;
-                                    }
-                                }
-                            });
-                            if (changed) {
-                                fs.writeFileSync(channelsPath, JSON.stringify(channels, null, 2), 'utf8');
+                    // Supprimer également le MP4 rendu associé si on a supprimé le HTML
+                    if (foundPath.endsWith('.html') && baseFn) {
+                        const mp4Name = baseFn.replace(/\.html$/, '.mp4');
+                        for (const bDir of searchDirs) {
+                            const possibleMp4 = path.join(bDir, '08_Rendus', mp4Name);
+                            if (fs.existsSync(possibleMp4)) {
+                                try { fs.unlinkSync(possibleMp4); } catch(e) {}
                             }
                         }
-                    } catch (e) {}
+                    }
+
+                    // Synchroniser channels.json (dans ROOT_DIR et USER_DATA_DIR)
+                    searchDirs.forEach(bDir => {
+                        try {
+                            const chJsonPath = path.join(bDir, '07_Scripts', 'channels.json');
+                            if (fs.existsSync(chJsonPath)) {
+                                let channels = JSON.parse(fs.readFileSync(chJsonPath, 'utf8') || '[]');
+                                let changed = false;
+                                channels.forEach(ch => {
+                                    if (ch.videos && Array.isArray(ch.videos)) {
+                                        const initLen = ch.videos.length;
+                                        ch.videos = ch.videos.filter(v => (v.file !== baseFn && v.name !== baseFn && v.path !== videoTarget));
+                                        if (ch.videos.length !== initLen) {
+                                            ch.videoCount = ch.videos.length;
+                                            changed = true;
+                                        }
+                                    }
+                                });
+                                if (changed) fs.writeFileSync(chJsonPath, JSON.stringify(channels, null, 2), 'utf8');
+                            }
+                        } catch(e) {}
+                    });
 
                     res.writeHead(200, {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*',
-                        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
+                        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
                     });
-                    return res.end(JSON.stringify({ success: true, message: 'Vidéo ' + videoTarget + ' supprimée' }));
+                    return res.end(JSON.stringify({ success: true, message: 'Vidéo supprimée avec succès : ' + (baseFn || videoTarget) }));
                 }
-                res.writeHead(404, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                return res.end(JSON.stringify({ error: 'Fichier non trouvé' }));
+
+                res.writeHead(200, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                });
+                return res.end(JSON.stringify({ success: true, message: 'Entrée vidéo retirée' }));
             } catch (e) {
                 res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
                 return res.end(JSON.stringify({ error: e.message }));
