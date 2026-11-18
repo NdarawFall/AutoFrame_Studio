@@ -302,6 +302,18 @@
             assetsCatalogList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
         }
 
+        function hideInitialAppLoader() {
+            setTimeout(() => {
+                const loader = document.getElementById('appInitialLoader');
+                if (!loader) return;
+                loader.style.opacity = '0';
+                loader.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+                }, 400);
+            }, 350);
+        }
+
         function loadAllInitialData() {
             // 1. Initialisation synchrone immédiate (0ms - du tic au tac)
             initLocalDataSynchronously();
@@ -311,7 +323,10 @@
             const initialHash = window.location.hash ? window.location.hash.replace('#', '') : (localStorage.getItem('autoframe_active_view') || 'dashboard');
             switchView(initialHash);
 
-            // 3. Synchronisation non bloquante en arrière-plan
+            // 3. Masquage fluide de l'écran de chargement initial (fond flou + cercle)
+            hideInitialAppLoader();
+
+            // 4. Synchronisation non bloquante en arrière-plan
             syncServerDataInBackground();
         }
 
