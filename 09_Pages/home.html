@@ -15,9 +15,10 @@
         (function() {
             try {
                 var hash = window.location.hash ? window.location.hash.replace('#', '') : '';
-                var saved = hash || localStorage.getItem('autoframe_active_view') || 'dashboard';
-                if (saved && saved !== 'dashboard') {
-                    var panelId = saved === 'create_video' ? 'viewCreateVideo' : ('view' + saved.charAt(0).toUpperCase() + saved.slice(1));
+                // Par défaut, toute ouverture de l'application sans #hash dans l'URL ouvre le Dashboard
+                var targetView = hash ? (hash || 'dashboard') : 'dashboard';
+                if (targetView && targetView !== 'dashboard') {
+                    var panelId = targetView === 'create_video' ? 'viewCreateVideo' : ('view' + targetView.charAt(0).toUpperCase() + targetView.slice(1));
                     var style = document.createElement('style');
                     style.id = 'spaEarlyStyle';
                     style.textContent = '#viewDashboard{display:none!important;}#' + panelId + '{display:block!important;}';
@@ -2173,8 +2174,8 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                 3. Aperçu Vidéo 16:9 en Direct :
                             </label>
 
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 18px 14px;">
-                                <div class="sub-stage-169" id="subStage169" style="max-width: 640px; width: 100%;">
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px 16px;">
+                                <div class="sub-stage-169" id="subStage169" style="max-width: 660px; width: 100%; aspect-ratio: 16 / 9; background: #1c2029; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center;">
                                     <div class="stage-grid"></div>
                                     <div class="stage-safe-guides"></div>
                                     <div class="stage-ratio-tag">16:9 VIDÉO</div>

@@ -1114,6 +1114,154 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
+        /* --- APERÇU VIDÉO 16:9 DES SOUS-TITRES (CADRE FOND GRIS AVEC ANGLES ARRONDIS) --- */
+        .sub-stage-169 {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            aspect-ratio: 16 / 9;
+            background: #1c2029; /* Cadre fond gris moderne */
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px; /* Angles arrondis */
+            overflow: hidden;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .sub-stage-169 .stage-grid {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+        }
+
+        .sub-stage-169 .stage-safe-guides {
+            position: absolute;
+            inset: 16px 24px;
+            border: 1px dashed rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .sub-stage-169 .stage-ratio-tag {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            background: rgba(12, 14, 20, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #a1a1aa;
+            letter-spacing: 0.5px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .sub-stage-169 .stage-pos-tag {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: rgba(12, 14, 20, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #e4e4e7;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .sub-stage-169 .subtitle-container {
+            position: absolute;
+            left: 0;
+            right: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            padding: 0 20px;
+            z-index: 10;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sub-stage-169 .subtitle-container.pos-bottom {
+            bottom: 22px;
+            top: auto;
+            transform: none;
+        }
+
+        .sub-stage-169 .subtitle-container.pos-center {
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+        }
+
+        .sub-stage-169 .subtitle-container.pos-top {
+            top: 22px;
+            bottom: auto;
+            transform: none;
+        }
+
+        .sub-stage-169 .subtitle-box {
+            display: inline-block;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.25;
+            transition: all 0.15s ease;
+            max-width: 90%;
+        }
+
+        .sub-stage-169 .subtitle-box.font-inter { font-family: 'Inter', sans-serif; }
+        .sub-stage-169 .subtitle-box.font-montserrat { font-family: 'Montserrat', sans-serif; font-weight: 900; }
+        .sub-stage-169 .subtitle-box.font-caveat { font-family: 'Caveat', cursive; font-size: 28px; }
+        .sub-stage-169 .subtitle-box.font-playfair { font-family: 'Playfair Display', serif; font-style: italic; }
+        .sub-stage-169 .subtitle-box.font-jetbrains { font-family: 'JetBrains Mono', monospace; font-size: 20px; }
+        .sub-stage-169 .subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Inter'), sans-serif; }
+
+        .sub-stage-169 .subtitle-box .word {
+            color: var(--sub-base-color, #ffffff);
+            display: inline-block;
+            margin: 0 3px;
+            transition: color 0.12s ease, transform 0.12s ease;
+        }
+
+        .sub-stage-169 .subtitle-box .word.active {
+            color: var(--sub-accent-color, #ffe600) !important;
+            font-weight: 900;
+            transform: scale(1.08);
+        }
+
+        .sub-stage-169 .subtitle-box.bg-box {
+            background: var(--sub-bg-color, rgba(0, 0, 0, 0.85));
+            padding: 8px 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .sub-stage-169 .subtitle-box.radius-none { border-radius: 0px; }
+        .sub-stage-169 .subtitle-box.radius-round { border-radius: 8px; }
+        .sub-stage-169 .subtitle-box.radius-pill { border-radius: 999px; padding: 8px 22px; }
+
+        .sub-stage-169 .subtitle-box.glow-subtle {
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85));
+        }
+        .sub-stage-169 .subtitle-box.glow-intense {
+            filter: drop-shadow(0 0 10px var(--sub-accent-color, #ffe600)) drop-shadow(0 4px 8px rgba(0,0,0,0.9));
+        }
+        .sub-stage-169 .subtitle-box.glow-shadow {
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.95)) drop-shadow(0 1px 3px rgba(0,0,0,0.9));
+        }
+
         /* --- FORMAT CHOICE CARDS --- */
         .format-cards-grid {
             display: grid;

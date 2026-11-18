@@ -318,9 +318,9 @@
             // 1. Initialisation synchrone immédiate (0ms - du tic au tac)
             initLocalDataSynchronously();
 
-            // 2. Rendu instantané de la vue et des compteurs
+            // 2. Rendu instantané : Dashboard par défaut à l'ouverture, sauf si un #hash précis est dans l'URL
             updateSidebarCounters();
-            const initialHash = window.location.hash ? window.location.hash.replace('#', '') : (localStorage.getItem('autoframe_active_view') || 'dashboard');
+            const initialHash = window.location.hash ? window.location.hash.replace('#', '') : 'dashboard';
             switchView(initialHash);
 
             // 3. Masquage fluide de l'écran de chargement initial (fond flou + cercle)
