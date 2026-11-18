@@ -440,8 +440,8 @@
 
         body.sidebar-is-collapsed .sidebar-nav-item svg {
             margin: 0 auto !important;
-            width: 19px !important;
-            height: 19px !important;
+            width: 16px !important;
+            height: 16px !important;
         }
 
         .btn-sidebar-tutorial svg {
