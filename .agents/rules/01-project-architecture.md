@@ -14,6 +14,9 @@
 > 5. **Règle Stricte sur les Scripts Temporaires** :
 >    - **JAMAIS** de script temporaire/jetable dans `07_Scripts/` ni à la racine du projet ! Le dossier `07_Scripts/` est réservé aux scripts permanents du moteur.
 >    - Tout script temporaire/jetable pour des tests, manipulations ou contournements doit impérativement être créé dans le dossier `scratch/` ET être immédiatement supprimé après son exécution (aucun déchet résiduel).
+> 6. **Maintien Continu de l'Architecture & Traçabilité des Fichiers** :
+>    - Ce document de référence (`01-project-architecture.md`) DOIT être **systématiquement mis à jour** chaque fois qu'un fichier ou dossier **consistant et pérenne** est créé, déplacé, renommé ou supprimé (nouveaux modules, scripts permanents du moteur, dossiers d'assets pérennes, documentations dans `Docs/`).
+>    - Les fichiers et dossiers éphémères/résiduels (contenus temporaires de `scratch/`, checkpoints intermédiaires nettoyés automatiquement) ne doivent pas y figurer.
 
 ---
 
@@ -37,6 +40,7 @@ heygen-new/
 ├── 01_Assets/                  # Bibliothèque statique et répertoires de stockage des médias
 │   ├── Avatars/                # Portraits et présentateurs
 │   ├── Audio_Mix/              # Bandes sonores finales mixées
+│   ├── Captures/               # Captures d'écran UI, mockups et snapshots de sites web (PNG/WebP/MP4)
 │   ├── Effets_Sonores/         # Bruitages d'impact et transitions (SFX : whoosh, pop, hit, pass)
 │   ├── Flags/                  # Drapeaux nationaux vectoriels SVG / PNG
 │   ├── Handwriting/            # Tracés SVG manuscrits générés par le skill Tegaki
@@ -97,9 +101,12 @@ heygen-new/
 │   ├── channel.html            # Vue détaillée d'une chaîne spécifique avec ses vidéos
 │   ├── channel_settings.html   # Paramètres d'une chaîne (Brand Kit, couleurs, typographies)
 │   └── settings.html           # Paramètres généraux de l'application et gestion des clés API
-└── Clients/                    # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
-    ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
-    └── README.md               # Guide d'organisation des rushes par client
+├── Clients/                    # [Clients] Rushes & vidéos brutes non montées des clients (Short / Reel / TikTok)
+│   ├── .gitkeep                # Dossier vide par défaut sur Git pour la confidentialité et le stockage
+│   └── README.md               # Guide d'organisation des rushes par client
+└── Docs/                       # Documentation officielle du projet et guides utilisateurs
+    ├── DOCUMENTATION_CREATION_VIDEO.md  # Guide complet de création vidéo
+    └── MARVIDFLOW_AI_COACH_SKILL.md     # Master prompt / Skill IA pour le brainstorming externe (Claude, ChatGPT, Gemini)
 ```
 
 ---
@@ -149,4 +156,5 @@ Afin d'éviter tout conflit et d'assurer une traçabilité totale entre une vid�
 | **`08_Rendus/`** | Éphémère | Sorties finales vidéo MP4. | Écriture exclusive par `render.cjs` **sur ordre explicite utilisateur**. |
 | **`09_Pages/`** | Pérenne | Écrans et interfaces utilisateur du Studio web. | Maintenance et affichage UI. |
 | **`Clients/`** | Données locales | Rushes et vidéos brutes non montées déposées par l'utilisateur pour ses clients (édition Short / Reel / TikTok). | Lecture par l'IA lors du montage, ignoré par Git. |
+| **`Docs/`** | Pérenne | Documentation officielle du projet et guides utilisateurs (création vidéo, prompts coachs IA). | Maintenance et enrichissement documentaire. |
 
