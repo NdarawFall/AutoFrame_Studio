@@ -49,56 +49,129 @@ function parseArgs() {
  * ==========================================
  */
 
-async function fetchElevenLabsVoices(apiKey) {
+let _elevenVoicesCache = null;
+let _elevenCacheKey = '';
+let _elevenCacheTimestamp = 0;
+const ELEVEN_CACHE_TTL = 1000 * 60 * 60 * 24; // 24 heures de cache
+
+const FALLBACK_ELEVEN_VOICES = [
+    { id: "21m00Tcm4TlvDq8ikWAM", name: "Rachel (Calm & Natural)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/21m00Tcm4TlvDq8ikWAM/df6788f9-5c96-470d-8312-aab3b3d8f50a.mp3", labels: { accent: "american", gender: "female" } },
+    { id: "AZnzlk1XvdvUeBnXmlld", name: "Domi (Confident)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/AZnzlk1XvdvUeBnXmlld/506e7ce7-b08a-4370-9008-db230f822656.mp3", labels: { accent: "american", gender: "female" } },
+    { id: "EXAVITQu4vr4xnSDxMaL", name: "Bella (Soft & Gentle)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/EXAVITQu4vr4xnSDxMaL/09d3b690-3b1a-45c1-8409-d5885c39a341.mp3", labels: { accent: "american", gender: "female" } },
+    { id: "ErXwobaYiN019PkySvjV", name: "Antoni (Narrative & Warm)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/ErXwobaYiN019PkySvjV/38d8f8f0-0417-48f4-b425-4c6e99e235e7.mp3", labels: { accent: "american", gender: "male" } },
+    { id: "MF3mGyEYCl7XYWbV9V6O", name: "Elli (Emotional & Dynamic)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/MF3mGyEYCl7XYWbV9V6O/d89be768-4504-4537-83eb-598d933e1467.mp3", labels: { accent: "american", gender: "female" } },
+    { id: "TxGEqnHWrfWFTfGW9XjX", name: "Josh (Deep & Engaging)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/TxGEqnHWrfWFTfGW9XjX/3a384317-10c0-4e45-a79a-471249e0e3fb.mp3", labels: { accent: "american", gender: "male" } },
+    { id: "VR6AewLTigWG4nxSOuka", name: "Arnold (Crisp & Authoritative)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/VR6AewLTigWG4nxSOuka/6429f55e-a0e2-4549-b54c-5353841a156e.mp3", labels: { accent: "american", gender: "male" } },
+    { id: "pNInz6obpgDQGcFmaJgB", name: "Adam (Dominant & Pro)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/pNInz6obpgDQGcFmaJgB/673417e2-4014-48e0-a937-29d3c52a0a54.mp3", labels: { accent: "american", gender: "male" } },
+    { id: "yoZ06aMxZJJ28mfd3POQ", name: "Sam (Dynamic Storyteller)", category: "premade", previewUrl: "https://storage.googleapis.com/eleven-public-prod/premade/voices/yoZ06aMxZJJ28mfd3POQ/20e33425-f761-4fa1-840a-9d2979203ee3.mp3", labels: { accent: "american", gender: "male" } }
+];
+
+async function fetchElevenLabsVoices(apiKey, forceRefresh = false) {
     const key = apiKey || process.env.ELEVENLABS_API_KEY || loadConfig().elevenlabs_api_key;
+    const now = Date.now();
+    const cacheFile = path.join(__dirname, '.elevenlabs_voices_cache.json');
+
+    // 1. Retour instantané depuis le cache (mémoire ou disque) si la clé n'a pas changé
+    if (!forceRefresh && key) {
+        if (_elevenVoicesCache && _elevenCacheKey === key && (now - _elevenCacheTimestamp < ELEVEN_CACHE_TTL)) {
+            return _elevenVoicesCache;
+        }
+        if (fs.existsSync(cacheFile)) {
+            try {
+                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+                if (cached.key === key && cached.data && (now - (cached.timestamp || 0) < ELEVEN_CACHE_TTL)) {
+                    _elevenVoicesCache = cached.data;
+                    _elevenCacheKey = key;
+                    _elevenCacheTimestamp = cached.timestamp || now;
+                    return _elevenVoicesCache;
+                }
+            } catch(e) {}
+        }
+    }
+
     if (!key) {
-        throw new Error("Clé API ElevenLabs manquante. Renseignez-la dans Paramètres.");
+        return {
+            success: true,
+            customVoices: [],
+            defaultVoices: FALLBACK_ELEVEN_VOICES,
+            total: FALLBACK_ELEVEN_VOICES.length,
+            isFallback: true,
+            message: "Clé API ElevenLabs non renseignée dans Paramètres."
+        };
     }
 
-    const response = await fetch('https://api.elevenlabs.io/v1/voices', {
-        headers: { 'xi-api-key': key }
-    });
+    try {
+        const response = await fetch('https://api.elevenlabs.io/v1/voices', {
+            headers: { 'xi-api-key': key },
+            signal: AbortSignal.timeout(3500)
+        });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erreur ElevenLabs [${response.status}] : ${errorText}`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const all = data.voices || [];
+        const excludedNames = ['ibrahima', 'khady'];
+
+        const customVoices = all
+            .filter(v => ['cloned', 'generated', 'custom'].includes(v.category))
+            .filter(v => {
+                const nameLower = (v.name || '').toLowerCase();
+                return !excludedNames.some(ex => nameLower.includes(ex));
+            })
+            .map(v => ({
+                id: v.voice_id,
+                name: v.name,
+                category: v.category,
+                previewUrl: v.preview_url || '',
+                labels: v.labels || {}
+            }));
+
+        const defaultVoices = all
+            .filter(v => v.category === 'premade')
+            .map(v => ({
+                id: v.voice_id,
+                name: v.name,
+                category: v.category,
+                previewUrl: v.preview_url || '',
+                labels: v.labels || {}
+            }));
+
+        const result = {
+            success: true,
+            customVoices,
+            defaultVoices: defaultVoices.length > 0 ? defaultVoices : FALLBACK_ELEVEN_VOICES,
+            total: customVoices.length + (defaultVoices.length || FALLBACK_ELEVEN_VOICES.length)
+        };
+
+        // Sauvegarde dans le cache persistant
+        _elevenVoicesCache = result;
+        _elevenCacheKey = key;
+        _elevenCacheTimestamp = now;
+        try {
+            fs.writeFileSync(cacheFile, JSON.stringify({ key, timestamp: now, data: result }), 'utf8');
+        } catch(e) {}
+
+        return result;
+    } catch(err) {
+        // En cas de lenteur réseau ou timeout, vérifier si un cache disque existe
+        if (fs.existsSync(cacheFile)) {
+            try {
+                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+                if (cached.data) return cached.data;
+            } catch(e) {}
+        }
+        // Sinon renvoyer la liste officielle de secours instantanément
+        return {
+            success: true,
+            customVoices: [],
+            defaultVoices: FALLBACK_ELEVEN_VOICES,
+            total: FALLBACK_ELEVEN_VOICES.length,
+            isFallback: true,
+            error: err.message
+        };
     }
-
-    const data = await response.json();
-    const all = data.voices || [];
-
-    const excludedNames = ['ibrahima', 'khady'];
-
-    const customVoices = all
-        .filter(v => ['cloned', 'generated', 'custom'].includes(v.category))
-        .filter(v => {
-            const nameLower = (v.name || '').toLowerCase();
-            return !excludedNames.some(ex => nameLower.includes(ex));
-        })
-        .map(v => ({
-            id: v.voice_id,
-            name: v.name,
-            category: v.category,
-            previewUrl: v.preview_url || '',
-            labels: v.labels || {}
-        }));
-
-    const defaultVoices = all
-        .filter(v => v.category === 'premade')
-        .map(v => ({
-            id: v.voice_id,
-            name: v.name,
-            category: v.category,
-            previewUrl: v.preview_url || '',
-            labels: v.labels || {}
-        }));
-
-    return {
-        success: true,
-        customVoices,
-        defaultVoices,
-        total: customVoices.length + defaultVoices.length
-    };
 }
 
 async function fetchElevenLabsSubscription(apiKey) {
@@ -189,76 +262,120 @@ async function generateElevenLabs({ text, apiKey, voiceId, modelId, outputPath }
  * ==========================================
  */
 
+const FALLBACK_HEYGEN_VOICES = [
+    { id: 'b11a7dbb250f483eadad9fb253e7d313', name: 'Solange', language: 'French', gender: 'female', previewUrl: '' },
+    { id: '1e457f920f2648719bc5a691bcdd5fb6', name: 'Claude', language: 'French', gender: 'male', previewUrl: '' },
+    { id: '924cf04218eb4ebdaeb024cf4fcb8c34', name: 'Marion', language: 'French', gender: 'female', previewUrl: '' },
+    { id: '09cba1bb538d40beaf0b98f2441a75c4', name: 'Wayne', language: 'English', gender: 'male', previewUrl: '' },
+    { id: '83fa1432f7034c549beea0e599988db2', name: 'Amber', language: 'English', gender: 'female', previewUrl: '' }
+];
+
 let _heygenVoicesCache = null;
+let _heygenCacheKey = null;
 let _heygenCacheTimestamp = 0;
-const HEYGEN_CACHE_TTL = 1000 * 60 * 60 * 6; // 6 heures de cache
+const HEYGEN_CACHE_TTL = 1000 * 60 * 60 * 24; // 24 heures de cache
 
 async function fetchHeyGenVoices(apiKey, forceRefresh = false) {
     const key = apiKey || process.env.HEYGEN_API_KEY || loadConfig().heygen_api_key;
-    if (!key) {
-        throw new Error("Clé API HeyGen manquante. Renseignez-la dans Paramètres.");
-    }
-
     const now = Date.now();
     const cacheFile = path.join(__dirname, '.heygen_voices_cache.json');
 
-    // Vérification du cache mémoire ou disque (pour éviter de re-télécharger 3000 voix à chaque requête)
+    // Vérification du cache mémoire ou disque (pour éviter de re-télécharger à chaque requête)
     if (!forceRefresh) {
-        if (_heygenVoicesCache && (now - _heygenCacheTimestamp < HEYGEN_CACHE_TTL)) {
+        if (_heygenVoicesCache && _heygenCacheKey === key && (now - _heygenCacheTimestamp < HEYGEN_CACHE_TTL)) {
             return _heygenVoicesCache;
         }
         if (fs.existsSync(cacheFile)) {
             try {
                 const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-                if (cached.timestamp && (now - cached.timestamp < HEYGEN_CACHE_TTL) && cached.data) {
+                if (cached.key === key && cached.data && (now - (cached.timestamp || 0) < HEYGEN_CACHE_TTL)) {
                     _heygenVoicesCache = cached.data;
-                    _heygenCacheTimestamp = cached.timestamp;
+                    _heygenCacheKey = key;
+                    _heygenCacheTimestamp = cached.timestamp || now;
                     return _heygenVoicesCache;
                 }
             } catch (e) {}
         }
     }
 
-    const response = await fetch('https://api.heygen.com/v2/voices', {
-        headers: { 'X-Api-Key': key }
-    });
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erreur HeyGen [${response.status}] : ${errorText}`);
+    if (!key) {
+        const frVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French');
+        const enVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English');
+        return {
+            success: true,
+            voices: FALLBACK_HEYGEN_VOICES,
+            frenchVoices: frVoices,
+            englishVoices: enVoices,
+            otherVoices: [],
+            total: FALLBACK_HEYGEN_VOICES.length,
+            isFallback: true,
+            message: "Clé API HeyGen non renseignée dans Paramètres."
+        };
     }
 
-    const data = await response.json();
-    const rawVoices = (data.data && data.data.voices) || [];
-
-    const voices = rawVoices.map(v => ({
-        id: v.voice_id,
-        name: v.name,
-        language: v.language || 'Autre',
-        gender: v.gender || 'unknown',
-        previewUrl: v.preview_audio || ''
-    }));
-
-    const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-    const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-    const otherVoices = voices.filter(v => !frenchVoices.includes(v) && !englishVoices.includes(v));
-
-    const result = {
-        success: true,
-        voices,
-        frenchVoices,
-        englishVoices,
-        otherVoices,
-        total: voices.length
-    };
-
-    _heygenVoicesCache = result;
-    _heygenCacheTimestamp = now;
     try {
-        fs.writeFileSync(cacheFile, JSON.stringify({ timestamp: now, data: result }), 'utf8');
-    } catch (e) {}
+        const response = await fetch('https://api.heygen.com/v2/voices', {
+            headers: { 'X-Api-Key': key },
+            signal: AbortSignal.timeout(4000)
+        });
 
-    return result;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawVoices = (data.data && data.data.voices) || [];
+
+        const voices = rawVoices.map(v => ({
+            id: v.voice_id,
+            name: v.name,
+            language: v.language || 'Autre',
+            gender: v.gender || 'unknown',
+            previewUrl: v.preview_audio || v.preview_audio_url || ''
+        }));
+
+        const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
+        const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
+        const otherVoices = voices.filter(v => !frenchVoices.includes(v) && !englishVoices.includes(v));
+
+        const result = {
+            success: true,
+            voices,
+            frenchVoices: frenchVoices.length > 0 ? frenchVoices : FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French'),
+            englishVoices: englishVoices.length > 0 ? englishVoices : FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English'),
+            otherVoices,
+            total: voices.length
+        };
+
+        _heygenVoicesCache = result;
+        _heygenCacheKey = key;
+        _heygenCacheTimestamp = now;
+        try {
+            fs.writeFileSync(cacheFile, JSON.stringify({ key, timestamp: now, data: result }), 'utf8');
+        } catch (e) {}
+
+        return result;
+    } catch(err) {
+        // En cas de lenteur réseau ou timeout, vérifier si un cache disque existe
+        if (fs.existsSync(cacheFile)) {
+            try {
+                const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+                if (cached.data) return cached.data;
+            } catch(e) {}
+        }
+        const frVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'French');
+        const enVoices = FALLBACK_HEYGEN_VOICES.filter(v => v.language === 'English');
+        return {
+            success: true,
+            voices: FALLBACK_HEYGEN_VOICES,
+            frenchVoices: frVoices,
+            englishVoices: enVoices,
+            otherVoices: [],
+            total: FALLBACK_HEYGEN_VOICES.length,
+            isFallback: true,
+            error: err.message
+        };
+    }
 }
 
 async function generateHeyGen({ text, apiKey, voiceId, model, outputPath }) {

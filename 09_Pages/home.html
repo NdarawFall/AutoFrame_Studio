@@ -2059,123 +2059,124 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                             </div>
                         </div>
 
-                        <!-- 2. PARAMÈTRES PERSONNALISABLES (MÊME STYLE & CONTRÔLE TOTAL) -->
-                        <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
-                                2. Personnalisation du Style :
-                            </label>
+                        <!-- CONTENEUR SPLIT EN 2 COLONNES : PARAMÈTRES (GAUCHE) & APERÇU 16:9 EN DIRECT (DROITE) -->
+                        <div class="sub-split-editor">
+                            <!-- COLONNE GAUCHE : 2. PARAMÈTRES PERSONNALISABLES -->
+                            <div class="sub-split-controls">
+                                <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
+                                    2. Personnalisation du Style :
+                                </label>
 
-                            <!-- LIGNE A : POLICE (6 MEILLEURES + CHAMP SUR-MESURE) & COULEUR DU TEXTE DE BASE -->
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
-                                <!-- CHOIX DE LA POLICE -->
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Police d'Écriture :</label>
-                                        <span id="subFontSelectedLabel" style="font-size: 10px; font-family: monospace; color: var(--text-muted);">Inter</span>
-                                    </div>
-                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="subFontGroup">
-                                        <button type="button" class="btn-sub-param active" data-font="font-inter" onclick="setSubtitleFontPreset('font-inter', 'Inter', this)">Inter</button>
-                                        <button type="button" class="btn-sub-param" data-font="font-outfit" onclick="setSubtitleFontPreset('font-outfit', 'Outfit', this)">Outfit</button>
-                                        <button type="button" class="btn-sub-param" data-font="font-montserrat" onclick="setSubtitleFontPreset('font-montserrat', 'Montserrat', this)">Montserrat</button>
-                                        <button type="button" class="btn-sub-param" data-font="font-jakarta" onclick="setSubtitleFontPreset('font-jakarta', 'Plus Jakarta Sans', this)">Plus Jakarta</button>
-                                        <button type="button" class="btn-sub-param" data-font="font-bebas" onclick="setSubtitleFontPreset('font-bebas', 'Bebas Neue', this)">Bebas Neue</button>
-                                        <button type="button" class="btn-sub-param" data-font="font-roboto" onclick="setSubtitleFontPreset('font-roboto', 'Roboto', this)">Roboto</button>
-                                    </div>
-                                    <!-- CHAMP DE POLICE PERSONNALISÉE -->
-                                    <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
-                                        <input type="text" id="subCustomFontInput" list="popularGoogleFontsList" placeholder="Ou tapez votre police (ex: Poppins, Anton, Caveat, Orbitron...)" onkeydown="if(event.key==='Enter'){event.preventDefault();applyCustomSubtitleFont();}" style="flex: 1; padding: 6px 10px; font-size: 11.5px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; color: #ffffff; outline: none;">
-                                        <button type="button" class="btn-sub-param" id="btnApplyCustomFont" onclick="applyCustomSubtitleFont()" style="padding: 6px 12px; white-space: nowrap;">Appliquer</button>
-                                    </div>
-                                    <datalist id="popularGoogleFontsList">
-                                        <option value="Poppins"></option>
-                                        <option value="Anton"></option>
-                                        <option value="Oswald"></option>
-                                        <option value="Syne"></option>
-                                        <option value="Cinzel"></option>
-                                        <option value="Playfair Display"></option>
-                                        <option value="Cabinet Grotesk"></option>
-                                        <option value="Caveat"></option>
-                                        <option value="Orbitron"></option>
-                                        <option value="Raleway"></option>
-                                        <option value="Bungee"></option>
-                                        <option value="Righteous"></option>
-                                        <option value="Archivo Black"></option>
-                                    </datalist>
-                                </div>
-
-                                <!-- COULEUR DU TEXTE DE BASE (HEX + SÉLECTEUR COULEUR) -->
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Couleur de Base du Texte :</label>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <input type="text" id="subBaseColorHex" value="#FFFFFF" maxlength="7" oninput="onSubtitleBaseColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
-                                        <input type="color" id="subBaseColorPicker" value="#ffffff" onchange="onSubtitleBaseColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Sélecteur de couleur">
-                                    </div>
-                                    <span style="font-size: 10px; color: var(--text-muted);">Couleur principale du sous-titrage.</span>
-                                </div>
-                            </div>
-
-                            <!-- LIGNE B : LUEUR (GLOW) & FOND (BACKGROUND) + ARRONDI -->
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Effet de Lueur (Glow) :</label>
-                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="subGlowGroup">
-                                        <button type="button" class="btn-sub-param active" data-glow="none" onclick="setSubtitleGlow('none', this)">Sans Lueur</button>
-                                        <button type="button" class="btn-sub-param" data-glow="glow-subtle" onclick="setSubtitleGlow('glow-subtle', this)">Subtile</button>
-                                        <button type="button" class="btn-sub-param" data-glow="glow-intense" onclick="setSubtitleGlow('glow-intense', this)">Intense</button>
-                                        <button type="button" class="btn-sub-param" data-glow="glow-accent" onclick="setSubtitleGlow('glow-accent', this)">Lueur Colorée</button>
-                                    </div>
-                                </div>
-
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Fond (Arrière-plan) & Arrondi :</label>
-                                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                                        <button type="button" class="btn-sub-param active" id="btnToggleSubBg" onclick="toggleSubtitleBg(this)">Sans Fond</button>
-                                        <div style="display: inline-flex; align-items: center; gap: 6px;">
-                                            <input type="text" id="subBgColorHex" value="#000000" maxlength="7" oninput="onSubtitleBgColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
-                                            <input type="color" id="subBgColorPicker" value="#000000" onchange="onSubtitleBgColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Couleur de fond">
+                                <!-- LIGNE A : POLICE (6 MEILLEURES + CHAMP SUR-MESURE) & COULEUR DU TEXTE DE BASE -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+                                    <!-- CHOIX DE LA POLICE -->
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Police d'Écriture :</label>
+                                            <span id="subFontSelectedLabel" style="font-size: 10px; font-family: monospace; color: var(--text-muted);">Inter</span>
                                         </div>
-                                        <div style="display: flex; gap: 4px; align-items: center;" id="subRadiusGroup">
-                                            <button type="button" class="btn-sub-param active" data-radius="radius-none" onclick="setSubtitleRadius('radius-none', this)" title="0px">0px</button>
-                                            <button type="button" class="btn-sub-param" data-radius="radius-sm" onclick="setSubtitleRadius('radius-sm', this)" title="6px">6px</button>
-                                            <button type="button" class="btn-sub-param" data-radius="radius-md" onclick="setSubtitleRadius('radius-md', this)" title="12px">12px</button>
-                                            <button type="button" class="btn-sub-param" data-radius="radius-pill" onclick="setSubtitleRadius('radius-pill', this)" title="Pilule">Pilule</button>
+                                        <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="subFontGroup">
+                                            <button type="button" class="btn-sub-param active" data-font="font-inter" onclick="setSubtitleFontPreset('font-inter', 'Inter', this)">Inter</button>
+                                            <button type="button" class="btn-sub-param" data-font="font-outfit" onclick="setSubtitleFontPreset('font-outfit', 'Outfit', this)">Outfit</button>
+                                            <button type="button" class="btn-sub-param" data-font="font-montserrat" onclick="setSubtitleFontPreset('font-montserrat', 'Montserrat', this)">Montserrat</button>
+                                            <button type="button" class="btn-sub-param" data-font="font-jakarta" onclick="setSubtitleFontPreset('font-jakarta', 'Plus Jakarta Sans', this)">Plus Jakarta</button>
+                                            <button type="button" class="btn-sub-param" data-font="font-bebas" onclick="setSubtitleFontPreset('font-bebas', 'Bebas Neue', this)">Bebas Neue</button>
+                                            <button type="button" class="btn-sub-param" data-font="font-roboto" onclick="setSubtitleFontPreset('font-roboto', 'Roboto', this)">Roboto</button>
+                                        </div>
+                                        <!-- CHAMP DE POLICE PERSONNALISÉE -->
+                                        <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                                            <input type="text" id="subCustomFontInput" list="popularGoogleFontsList" placeholder="Ou tapez votre police (ex: Poppins, Anton, Caveat, Orbitron...)" onkeydown="if(event.key==='Enter'){event.preventDefault();applyCustomSubtitleFont();}" style="flex: 1; padding: 6px 10px; font-size: 11.5px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; color: #ffffff; outline: none;">
+                                            <button type="button" class="btn-sub-param" id="btnApplyCustomFont" onclick="applyCustomSubtitleFont()" style="padding: 6px 12px; white-space: nowrap;">Appliquer</button>
+                                        </div>
+                                        <datalist id="popularGoogleFontsList">
+                                            <option value="Poppins"></option>
+                                            <option value="Anton"></option>
+                                            <option value="Oswald"></option>
+                                            <option value="Syne"></option>
+                                            <option value="Cinzel"></option>
+                                            <option value="Playfair Display"></option>
+                                            <option value="Cabinet Grotesk"></option>
+                                            <option value="Caveat"></option>
+                                            <option value="Orbitron"></option>
+                                            <option value="Raleway"></option>
+                                            <option value="Bungee"></option>
+                                            <option value="Righteous"></option>
+                                            <option value="Archivo Black"></option>
+                                        </datalist>
+                                    </div>
+
+                                    <!-- COULEUR DU TEXTE DE BASE (HEX + SÉLECTEUR COULEUR) -->
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Couleur de Base du Texte :</label>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="text" id="subBaseColorHex" value="#FFFFFF" maxlength="7" oninput="onSubtitleBaseColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
+                                            <input type="color" id="subBaseColorPicker" value="#ffffff" onchange="onSubtitleBaseColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Sélecteur de couleur">
+                                        </div>
+                                        <span style="font-size: 10px; color: var(--text-muted);">Couleur principale du texte.</span>
+                                    </div>
+                                </div>
+
+                                <!-- LIGNE B : LUEUR (GLOW) & FOND (BACKGROUND) + ARRONDI -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Effet de Lueur (Glow) :</label>
+                                        <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="subGlowGroup">
+                                            <button type="button" class="btn-sub-param active" data-glow="none" onclick="setSubtitleGlow('none', this)">Sans Lueur</button>
+                                            <button type="button" class="btn-sub-param" data-glow="glow-subtle" onclick="setSubtitleGlow('glow-subtle', this)">Subtile</button>
+                                            <button type="button" class="btn-sub-param" data-glow="glow-intense" onclick="setSubtitleGlow('glow-intense', this)">Intense</button>
+                                            <button type="button" class="btn-sub-param" data-glow="glow-accent" onclick="setSubtitleGlow('glow-accent', this)">Lueur Colorée</button>
                                         </div>
                                     </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Fond (Arrière-plan) & Arrondi :</label>
+                                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                            <button type="button" class="btn-sub-param active" id="btnToggleSubBg" onclick="toggleSubtitleBg(this)">Sans Fond</button>
+                                            <div style="display: inline-flex; align-items: center; gap: 6px;">
+                                                <input type="text" id="subBgColorHex" value="#000000" maxlength="7" oninput="onSubtitleBgColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
+                                                <input type="color" id="subBgColorPicker" value="#000000" onchange="onSubtitleBgColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Couleur de fond">
+                                            </div>
+                                            <div style="display: flex; gap: 4px; align-items: center;" id="subRadiusGroup">
+                                                <button type="button" class="btn-sub-param active" data-radius="radius-none" onclick="setSubtitleRadius('radius-none', this)" title="0px">0px</button>
+                                                <button type="button" class="btn-sub-param" data-radius="radius-sm" onclick="setSubtitleRadius('radius-sm', this)" title="6px">6px</button>
+                                                <button type="button" class="btn-sub-param" data-radius="radius-md" onclick="setSubtitleRadius('radius-md', this)" title="12px">12px</button>
+                                                <button type="button" class="btn-sub-param" data-radius="radius-pill" onclick="setSubtitleRadius('radius-pill', this)" title="Pilule">Pilule</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- LIGNE C : COULEUR D'ACCENT & POSITION -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Couleur de Mise en Valeur (Accent / Chaîne) :</label>
+                                            <span id="subChannelColorBadge" style="display: none; font-size: 9.5px; font-weight: 700; color: #ff3344; background: rgba(255, 51, 68, 0.15); padding: 1px 6px; border-radius: 4px;">Couleur de la chaîne</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <input type="text" id="subAccentColorHex" value="#FFE600" maxlength="7" oninput="onSubtitleAccentColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
+                                            <input type="color" id="subAccentColorPicker" value="#ffe600" onchange="onSubtitleAccentColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Sélecteur d'accentuation">
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Position sur la Vidéo :</label>
+                                        <div style="display: flex; gap: 6px;" id="subPosGroup">
+                                            <button type="button" class="btn-sub-param active" data-pos="pos-bottom" onclick="setSubtitlePos('pos-bottom', this)">En Bas (Défaut)</button>
+                                            <button type="button" class="btn-sub-param" data-pos="pos-center" onclick="setSubtitlePos('pos-center', this)">Au Centre</button>
+                                            <button type="button" class="btn-sub-param" data-pos="pos-top" onclick="setSubtitlePos('pos-top', this)">En Haut</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- LIGNE C : COULEUR D'ACCENT & POSITION -->
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Couleur de Mise en Valeur (Accent / Chaîne) :</label>
-                                        <span id="subChannelColorBadge" style="display: none; font-size: 9.5px; font-weight: 700; color: #ff3344; background: rgba(255, 51, 68, 0.15); padding: 1px 6px; border-radius: 4px;">Couleur de la chaîne</span>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <input type="text" id="subAccentColorHex" value="#FFE600" maxlength="7" oninput="onSubtitleAccentColorHexInput(this.value)" style="width: 84px; padding: 6px 10px; font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #ffffff; text-transform: uppercase;">
-                                        <input type="color" id="subAccentColorPicker" value="#ffe600" onchange="onSubtitleAccentColorPickerChange(this.value)" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; background: transparent; padding: 1px;" title="Sélecteur d'accentuation">
-                                    </div>
-                                </div>
+                            <!-- COLONNE DROITE : 3. APERÇU VIDÉO 16:9 EN DIRECT (STICKY, SANS SCROLL) -->
+                            <div class="sub-split-preview">
+                                <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
+                                    3. Aperçu Vidéo 16:9 en Direct :
+                                </label>
 
-                                <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <label style="font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">Position sur la Vidéo :</label>
-                                    <div style="display: flex; gap: 6px;" id="subPosGroup">
-                                        <button type="button" class="btn-sub-param active" data-pos="pos-bottom" onclick="setSubtitlePos('pos-bottom', this)">En Bas (Défaut)</button>
-                                        <button type="button" class="btn-sub-param" data-pos="pos-center" onclick="setSubtitlePos('pos-center', this)">Au Centre</button>
-                                        <button type="button" class="btn-sub-param" data-pos="pos-top" onclick="setSubtitlePos('pos-top', this)">En Haut</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. APERÇU VIDÉO 16:9 EN DIRECT (UNIQUE) -->
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <label class="form-label" style="font-size: 11.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">
-                                3. Aperçu Vidéo 16:9 en Direct :
-                            </label>
-
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px 16px;">
-                                <div class="sub-stage-169" id="subStage169" style="max-width: 660px; width: 100%; aspect-ratio: 16 / 9; background: #1c2029; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center;">
+                                <div class="sub-stage-169" id="subStage169" style="width: 100%; aspect-ratio: 16 / 9; background: #1c2029; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 14px; position: relative; overflow: hidden; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center;">
                                     <div class="stage-grid"></div>
                                     <div class="stage-safe-guides"></div>
                                     <div class="stage-ratio-tag">16:9 VIDÉO</div>
@@ -2191,6 +2192,7 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
                                         </div>
                                     </div>
                                 </div>
+                                <span style="font-size: 10.5px; color: var(--text-muted); text-align: center;">Mise à jour en direct instantanée à chaque réglage</span>
                             </div>
                         </div>
 

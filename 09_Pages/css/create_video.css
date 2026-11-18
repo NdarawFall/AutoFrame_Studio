@@ -1114,6 +1114,46 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
+        /* --- LAYOUT SPLIT : PERSONNALISATION (GAUCHE) & APERÇU VIDÉO 16:9 STICKY (DROITE) --- */
+        .sub-split-editor {
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            gap: 18px;
+            align-items: start;
+            margin-top: 6px;
+        }
+
+        .sub-split-controls {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sub-split-preview {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .sub-split-editor {
+                grid-template-columns: 1fr;
+            }
+            .sub-split-preview {
+                position: static;
+            }
+        }
+
         /* --- APERÇU VIDÉO 16:9 DES SOUS-TITRES (CADRE FOND GRIS AVEC ANGLES ARRONDIS) --- */
         .sub-stage-169 {
             position: relative;

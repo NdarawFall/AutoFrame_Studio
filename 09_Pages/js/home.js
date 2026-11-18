@@ -4143,91 +4143,115 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             }
         }
 
-        async function loadElevenVoicesForCreateVideo() {
+        function applyElevenVoicesData(data) {
+            if (!data) return false;
+            createElevenVoicesCache = {};
+            elevenVoicesRawList = [];
+
+            if (data.customVoices && Array.isArray(data.customVoices)) {
+                data.customVoices.forEach(v => {
+                    createElevenVoicesCache[v.id] = v;
+                    elevenVoicesRawList.push(v);
+                });
+            }
+            if (data.defaultVoices && Array.isArray(data.defaultVoices)) {
+                data.defaultVoices.forEach(v => {
+                    createElevenVoicesCache[v.id] = v;
+                    elevenVoicesRawList.push(v);
+                });
+            }
+
+            if (elevenVoicesRawList.length === 0) return false;
+
+            renderVoiceRows('eleven', elevenVoicesRawList);
+
+            const savedVoice = localStorage.getItem('vibeeditor_elevenlabs_voice_id');
+            const initial = (savedVoice && createElevenVoicesCache[savedVoice]) ? savedVoice : elevenVoicesRawList[0].id;
+            selectVoiceItem('eleven', initial);
+            return true;
+        }
+
+        async function loadElevenVoicesForCreateVideo(forceRefresh = false) {
+            // 1. Rendu instantané 0ms depuis le cache localStorage
+            let hasLoadedFromCache = false;
+            if (!forceRefresh) {
+                try {
+                    const cachedStr = localStorage.getItem('marvidflow_cached_eleven_voices');
+                    if (cachedStr) {
+                        const cachedData = JSON.parse(cachedStr);
+                        hasLoadedFromCache = applyElevenVoicesData(cachedData);
+                    }
+                } catch(e) {}
+            }
+
             try {
                 const res = await fetch('/api/elevenlabs/voices');
                 if (!res.ok) throw new Error("Impossible de charger les voix ElevenLabs");
                 const data = await res.json();
 
-                createElevenVoicesCache = {};
-                elevenVoicesRawList = [];
-
-                if (data.customVoices) {
-                    data.customVoices.forEach(v => {
-                        createElevenVoicesCache[v.id] = v;
-                        elevenVoicesRawList.push(v);
-                    });
-                }
-                if (data.defaultVoices) {
-                    data.defaultVoices.forEach(v => {
-                        createElevenVoicesCache[v.id] = v;
-                        elevenVoicesRawList.push(v);
-                    });
-                }
-
-                renderVoiceRows('eleven', elevenVoicesRawList);
-
-                // Sélectionner la 1ère voix par défaut
-                if (elevenVoicesRawList.length > 0) {
-                    const savedVoice = localStorage.getItem('vibeeditor_elevenlabs_voice_id');
-                    const initial = (savedVoice && createElevenVoicesCache[savedVoice]) ? savedVoice : elevenVoicesRawList[0].id;
-                    selectVoiceItem('eleven', initial);
+                if (data && (data.customVoices || data.defaultVoices)) {
+                    localStorage.setItem('marvidflow_cached_eleven_voices', JSON.stringify(data));
+                    applyElevenVoicesData(data);
+                } else if (!hasLoadedFromCache) {
+                    throw new Error("Aucune voix trouvée");
                 }
             } catch(e) {
-                const list = document.getElementById('listElevenItems');
-                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement ElevenLabs (Vérifiez la clé)</div>';
+                if (!hasLoadedFromCache && elevenVoicesRawList.length === 0) {
+                    const list = document.getElementById('listElevenItems');
+                    if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Voix non disponibles (Vérifiez la clé dans Paramètres)</div>';
+                    const triggerText = document.getElementById('nameElevenSelected');
+                    if (triggerText) triggerText.textContent = 'Sélectionner une voix';
+                }
             }
         }
 
-        async function _old_loadElevenVoices() {
-            const select = document.getElementById('createVideoElevenVoiceSelect');
-            if (!select) return;
-            select.innerHTML = '<option value="">Chargement des voix ElevenLabs...</option>';
+        function applyHeyGenVoicesData(data) {
+            if (!data) return false;
+            createHeyGenVoicesCache = {};
+            heyGenVoicesRawList = [];
 
-            try {
-                const res = await fetch('/api/elevenlabs/voices');
-                if (!res.ok) throw new Error("Impossible de charger les voix ElevenLabs");
-                const data = await res.json();
-
-                createElevenVoicesCache = {};
-                select.innerHTML = '';
-
-                // Voix personnalisées
-                if (data.customVoices && data.customVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `Mes Voix Créées (${data.customVoices.length})`;
-                    data.customVoices.forEach(v => {
-                        createElevenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                // Voix officielles
-                if (data.defaultVoices && data.defaultVoices.length > 0) {
-                    const grp = document.createElement('optgroup');
-                    grp.label = `Voix Officielles ElevenLabs (${data.defaultVoices.length})`;
-                    data.defaultVoices.forEach(v => {
-                        createElevenVoicesCache[v.id] = v;
-                        const opt = document.createElement('option');
-                        opt.value = v.id;
-                        opt.textContent = `${v.name}`;
-                        grp.appendChild(opt);
-                    });
-                    select.appendChild(grp);
-                }
-
-                updateElevenVoicePreviewBtn();
-                updateVoiceBadgeStatus();
-            } catch(e) {
-                select.innerHTML = '<option value="">Erreur chargement ElevenLabs (Vérifiez votre clé dans Paramètres)</option>';
+            if (data.frenchVoices && Array.isArray(data.frenchVoices)) {
+                data.frenchVoices.forEach(v => {
+                    createHeyGenVoicesCache[v.id] = v;
+                    heyGenVoicesRawList.push(v);
+                });
             }
+            if (data.englishVoices && Array.isArray(data.englishVoices)) {
+                data.englishVoices.slice(0, 40).forEach(v => {
+                    createHeyGenVoicesCache[v.id] = v;
+                    heyGenVoicesRawList.push(v);
+                });
+            }
+            if (data.voices && Array.isArray(data.voices) && heyGenVoicesRawList.length === 0) {
+                data.voices.slice(0, 40).forEach(v => {
+                    createHeyGenVoicesCache[v.id] = v;
+                    heyGenVoicesRawList.push(v);
+                });
+            }
+
+            if (heyGenVoicesRawList.length === 0) return false;
+
+            renderVoiceRows('heygen', heyGenVoicesRawList);
+
+            const savedHeygen = localStorage.getItem('vibeeditor_heygen_voice_id');
+            const initial = (savedHeygen && createHeyGenVoicesCache[savedHeygen]) ? savedHeygen : heyGenVoicesRawList[0].id;
+            selectVoiceItem('heygen', initial);
+            return true;
         }
 
-        async function loadHeyGenVoicesForCreateVideo() {
+        async function loadHeyGenVoicesForCreateVideo(forceRefresh = false) {
+            // 1. Rendu instantané 0ms depuis le cache localStorage
+            let hasLoadedFromCache = false;
+            if (!forceRefresh) {
+                try {
+                    const cachedStr = localStorage.getItem('marvidflow_cached_heygen_voices');
+                    if (cachedStr) {
+                        const cachedData = JSON.parse(cachedStr);
+                        hasLoadedFromCache = applyHeyGenVoicesData(cachedData);
+                    }
+                } catch(e) {}
+            }
+
             try {
                 let data = null;
                 try {
@@ -4235,62 +4259,19 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     if (res.ok) data = await res.json();
                 } catch (e) {}
 
-                if (!data || !data.success) {
-                    const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
-                    if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v2/voices', {
-                            headers: { 'X-Api-Key': savedKey }
-                        });
-                        if (directRes.ok) {
-                            const raw = await directRes.json();
-                            const rawVoices = (raw.data && raw.data.voices) || [];
-                            const voices = rawVoices.map(v => ({
-                                id: v.voice_id,
-                                name: v.name,
-                                language: v.language || 'Autre',
-                                gender: v.gender || '',
-                                previewUrl: v.preview_audio || v.preview_audio_url || ''
-                            }));
-                            const frenchVoices = voices.filter(v => (v.language || '').toLowerCase().includes('french') || (v.language || '').toLowerCase().includes('français'));
-                            const englishVoices = voices.filter(v => (v.language || '').toLowerCase().includes('english') || (v.language || '').toLowerCase().includes('anglais'));
-                            data = { success: true, voices, frenchVoices, englishVoices, total: voices.length };
-                        }
-                    }
-                }
-
-                if (!data || !data.success) {
-                    throw new Error("Impossible de récupérer les voix HeyGen");
-                }
-
-                createHeyGenVoicesCache = {};
-                heyGenVoicesRawList = [];
-
-                // Voix françaises en tête
-                if (data.frenchVoices) {
-                    data.frenchVoices.forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        heyGenVoicesRawList.push(v);
-                    });
-                }
-                // Voix anglaises
-                if (data.englishVoices) {
-                    data.englishVoices.slice(0, 30).forEach(v => {
-                        createHeyGenVoicesCache[v.id] = v;
-                        heyGenVoicesRawList.push(v);
-                    });
-                }
-
-                renderVoiceRows('heygen', heyGenVoicesRawList);
-
-                // Sélectionner Solange ou 1ère voix française par défaut
-                if (heyGenVoicesRawList.length > 0) {
-                    const savedHeygen = localStorage.getItem('vibeeditor_heygen_voice_id');
-                    const initial = (savedHeygen && createHeyGenVoicesCache[savedHeygen]) ? savedHeygen : heyGenVoicesRawList[0].id;
-                    selectVoiceItem('heygen', initial);
+                if (data && data.success && (data.frenchVoices || data.voices)) {
+                    localStorage.setItem('marvidflow_cached_heygen_voices', JSON.stringify(data));
+                    applyHeyGenVoicesData(data);
+                } else if (!hasLoadedFromCache) {
+                    throw new Error("Aucune voix HeyGen reçue");
                 }
             } catch(e) {
-                const list = document.getElementById('listHeygenItems');
-                if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Erreur chargement HeyGen (Vérifiez la clé)</div>';
+                if (!hasLoadedFromCache && heyGenVoicesRawList.length === 0) {
+                    const list = document.getElementById('listHeygenItems');
+                    if (list) list.innerHTML = '<div style="padding:14px; color:#ff4444; font-size:12px;">Voix non disponibles (Vérifiez la clé dans Paramètres)</div>';
+                    const triggerText = document.getElementById('nameHeygenSelected');
+                    if (triggerText) triggerText.textContent = 'Sélectionner une voix';
+                }
             }
         }
 
@@ -6533,9 +6514,13 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             // Si une clé ElevenLabs est renseignée, actualiser les voix
             if (elevenlabsKey) {
                 loadVoices(elevenlabsKey, elevenlabsVoice);
+                localStorage.removeItem('marvidflow_cached_eleven_voices');
+                loadElevenVoicesForCreateVideo(true);
             }
             if (heygenKey) {
                 loadHeyGenVoicesFromUi(heygenVoice);
+                localStorage.removeItem('marvidflow_cached_heygen_voices');
+                loadHeyGenVoicesForCreateVideo(true);
             }
 
             const toast = document.getElementById('toast');

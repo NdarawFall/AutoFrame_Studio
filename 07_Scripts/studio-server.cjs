@@ -2275,8 +2275,8 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
-                res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                return res.end(JSON.stringify({ error: err.message }));
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, customVoices: [], defaultVoices: [], isFallback: true, error: err.message }));
             }
         };
 
@@ -2353,8 +2353,8 @@ const server = http.createServer(async (req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', 'Pragma': 'no-cache', 'Expires': '0' });
                 return res.end(JSON.stringify(result));
             } catch (err) {
-                res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-                return res.end(JSON.stringify({ error: err.message }));
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: true, voices: [], frenchVoices: [], englishVoices: [], isFallback: true, error: err.message }));
             }
         };
 
