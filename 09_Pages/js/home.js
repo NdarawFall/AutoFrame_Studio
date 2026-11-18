@@ -1626,9 +1626,72 @@
         }
 
         // --- OPTIMISATIONS HAUTE PERFORMANCE DU MODULE ASSETS (PAGINATION, LAZY LOADING, ZERO LAG) ---
-        let assetPageSize = 36;
-        let assetCurrentDisplayCount = 36;
+        let assetPageSize = 24;
+        let assetCurrentDisplayCount = 24;
         let assetInfiniteScrollBound = false;
+        let isAssetScrollTicking = false;
+        let currentFilteredAssetsList = [];
+
+        function renderAssetCardItemHtml(item) {
+            let previewHtml = '';
+
+            if (item.type === 'Videos') {
+                // MINIATURE VIDÉO OPTIMISÉE SANS DÉCODEUR ACTIF (0ms de freeze, s'anime au survol)
+                previewHtml = `
+                    <div class="asset-video-thumb-container" onmouseenter="startAssetVideoHover(this, '${escapeJs(item.url)}')" onmouseleave="stopAssetVideoHover(this)">
+                        <div class="asset-video-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width: 28px; height: 28px; color: #a1a1aa;"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+                        </div>
+                        <div class="video-play-center-badge">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                    </div>
+                `;
+            } else if (item.type === 'Images' || item.type === 'Vectors') {
+                // IMAGE AVEC LAZY LOADING ET DÉCODAGE ASYNCHRONE (chargement fluide 60fps)
+                previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">`;
+            } else {
+                // AUDIO AVEC NOTE MUSICALE
+                previewHtml = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 32px; height: 32px; color: #ffffff;"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        <span style="font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Audio Preview</span>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="asset-card" onclick="openAssetPreviewModal('${escapeJs(item.url)}', '${escapeJs(item.name)}', '${item.type}', '${item.subfolder}')">
+                    <div class="asset-card-preview">
+                        <span class="asset-badge-type">${item.subfolder || item.type}</span>
+                        <button type="button" class="asset-card-delete-btn" onclick="event.stopPropagation(); promptDeleteAsset('${escapeJs(item.url)}', '${escapeJs(item.name)}')" title="Supprimer cet asset">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                        ${previewHtml}
+                    </div>
+                    <div class="asset-card-body">
+                        <div class="asset-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+                        <div class="asset-meta-row">
+                            <span>${item.subfolder}</span>
+                            <span>${item.size || ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getLoadMoreBtnHtml(totalCount, displayedCount) {
+            if (totalCount <= displayedCount) return '';
+            const remaining = totalCount - displayedCount;
+            return `
+                <div id="assetLoadMoreContainer" style="grid-column: 1 / -1; display: flex; justify-content: center; padding: 24px 0 20px 0;">
+                    <button type="button" class="btn-load-more-assets" id="btnLoadMoreAssets" onclick="loadMoreAssets()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        <span>Afficher plus d'assets (${Math.min(assetPageSize, remaining)} de plus / ${totalCount} au total)</span>
+                    </button>
+                </div>
+            `;
+        }
 
         function startAssetVideoHover(container, url) {
             if (!container || container.querySelector('video')) return;
@@ -1658,8 +1721,23 @@
         }
 
         function loadMoreAssets() {
-            assetCurrentDisplayCount += assetPageSize;
-            renderAssetsView();
+            const grid = document.getElementById('assetsCatalogGrid');
+            if (!grid) return;
+            const totalCount = currentFilteredAssetsList.length;
+            if (assetCurrentDisplayCount >= totalCount) return;
+
+            const nextSlice = currentFilteredAssetsList.slice(assetCurrentDisplayCount, assetCurrentDisplayCount + assetPageSize);
+            assetCurrentDisplayCount += nextSlice.length;
+
+            const newCardsHtml = nextSlice.map(item => renderAssetCardItemHtml(item)).join('');
+            const loadMoreBtnHtml = getLoadMoreBtnHtml(totalCount, assetCurrentDisplayCount);
+
+            const oldContainer = document.getElementById('assetLoadMoreContainer');
+            if (oldContainer) {
+                oldContainer.remove();
+            }
+
+            grid.insertAdjacentHTML('beforeend', newCardsHtml + loadMoreBtnHtml);
         }
 
         function setupAssetInfiniteScroll() {
@@ -1667,15 +1745,19 @@
             const mainEl = document.querySelector('main.app-main');
             if (!mainEl) return;
             mainEl.addEventListener('scroll', () => {
-                if (currentView !== 'assets') return;
-                const scrollBottom = mainEl.scrollHeight - mainEl.scrollTop - mainEl.clientHeight;
-                if (scrollBottom < 350) {
-                    const btn = document.getElementById('btnLoadMoreAssets');
-                    if (btn && btn.style.display !== 'none' && !btn.dataset.loading) {
-                        btn.dataset.loading = 'true';
-                        loadMoreAssets();
+                if (currentView !== 'assets' || isAssetScrollTicking) return;
+                isAssetScrollTicking = true;
+                requestAnimationFrame(() => {
+                    isAssetScrollTicking = false;
+                    const scrollBottom = mainEl.scrollHeight - mainEl.scrollTop - mainEl.clientHeight;
+                    if (scrollBottom < 450) {
+                        const btn = document.getElementById('btnLoadMoreAssets');
+                        if (btn && btn.style.display !== 'none' && !btn.dataset.loading) {
+                            btn.dataset.loading = 'true';
+                            loadMoreAssets();
+                        }
                     }
-                }
+                });
             }, { passive: true });
             assetInfiniteScrollBound = true;
         }
@@ -1694,6 +1776,7 @@
 
             // Tri par date du plus récent au plus ancien
             filtered.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            currentFilteredAssetsList = filtered;
 
             // Compteurs de types
             document.getElementById('assetCounterAll').textContent = assetsCatalogList.length;
@@ -1710,66 +1793,8 @@
             const totalCount = filtered.length;
             const visible = filtered.slice(0, assetCurrentDisplayCount);
 
-            const cardsHtml = visible.map(item => {
-                let previewHtml = '';
-
-                if (item.type === 'Videos') {
-                    // MINIATURE VIDÉO OPTIMISÉE SANS DÉCODEUR ACTIF (0ms de freeze, s'anime au survol)
-                    previewHtml = `
-                        <div class="asset-video-thumb-container" onmouseenter="startAssetVideoHover(this, '${escapeJs(item.url)}')" onmouseleave="stopAssetVideoHover(this)">
-                            <div class="asset-video-placeholder">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width: 28px; height: 28px; color: #a1a1aa;"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                            </div>
-                            <div class="video-play-center-badge">
-                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            </div>
-                        </div>
-                    `;
-                } else if (item.type === 'Images' || item.type === 'Vectors') {
-                    // IMAGE AVEC LAZY LOADING ET DÉCODAGE ASYNCHRONE (chargement fluide 60fps)
-                    previewHtml = `<img src="${item.url}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">`;
-                } else {
-                    // AUDIO AVEC NOTE MUSICALE
-                    previewHtml = `
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 32px; height: 32px; color: #ffffff;"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-                            <span style="font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Audio Preview</span>
-                        </div>
-                    `;
-                }
-
-                return `
-                    <div class="asset-card" onclick="openAssetPreviewModal('${escapeJs(item.url)}', '${escapeJs(item.name)}', '${item.type}', '${item.subfolder}')">
-                        <div class="asset-card-preview">
-                            <span class="asset-badge-type">${item.subfolder || item.type}</span>
-                            <button type="button" class="asset-card-delete-btn" onclick="event.stopPropagation(); promptDeleteAsset('${escapeJs(item.url)}', '${escapeJs(item.name)}')" title="Supprimer cet asset">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            </button>
-                            ${previewHtml}
-                        </div>
-                        <div class="asset-card-body">
-                            <div class="asset-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
-                            <div class="asset-meta-row">
-                                <span>${item.subfolder}</span>
-                                <span>${item.size || ''}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            let loadMoreHtml = '';
-            if (totalCount > assetCurrentDisplayCount) {
-                const remaining = totalCount - assetCurrentDisplayCount;
-                loadMoreHtml = `
-                    <div style="grid-column: 1 / -1; display: flex; justify-content: center; padding: 24px 0 20px 0;">
-                        <button type="button" class="btn-load-more-assets" id="btnLoadMoreAssets" onclick="loadMoreAssets()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            <span>Afficher plus d'assets (${Math.min(assetPageSize, remaining)} de plus / ${totalCount} au total)</span>
-                        </button>
-                    </div>
-                `;
-            }
+            const cardsHtml = visible.map(item => renderAssetCardItemHtml(item)).join('');
+            const loadMoreHtml = getLoadMoreBtnHtml(totalCount, assetCurrentDisplayCount);
 
             grid.innerHTML = cardsHtml + loadMoreHtml;
         }
