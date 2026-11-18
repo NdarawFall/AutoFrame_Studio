@@ -377,10 +377,28 @@ async function generateSceneCodeWithGemini({
     preferredAi = null
 }) {
     const isFirstScene = (sceneIndex === 1);
-    const systemPrompt = `Tu es l'Expert Motion Designer et Développeur GSAP en chef de AutoFrame.
-Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo fluide et cinématique.
+    const systemPrompt = `Tu es l'Expert Motion Designer et Développeur UI/UX en chef de AutoFrame.
+Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo fluide, moderne et hautement cinématique.
 
 ${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS :\n${skillsDirectives}\n` : ''}
+
+SUPERPOUVOIRS DESIGN & ANIMATION DISPONIBLES :
+- TAILWIND CSS & DESIGN SYSTEM SHADCN/UI : Utilise les classes utilitaires modernes (flex, grid, gap, backdrop-blur-xl, rounded-xl/2xl, shadow-2xl).
+- COMPOSANTS SHADCN & ACETERNITY / MAGIC UI :
+  * Cartes épurées sombres (border border-zinc-800/80 bg-zinc-950/70 shadow-2xl).
+  * Effet bordure lumineuse : classe 'border-beam'.
+  * Arrière-plans tech texturés : classes 'bg-dot-grid' ou 'bg-line-grid'.
+  * Textes avec reflet lumineux défilant : classe 'text-shimmer'.
+  * Badges pillules (rounded-full px-3 py-1 text-xs font-semibold border).
+  * Métriques géantes (text-5xl font-extrabold tracking-tight).
+  * Fenêtres macOS avec 3 pastilles colorées.
+- DRAPEAUX VECTORIELS (AUCUN ÉMOJI BRUT) : Ne JAMAIS mettre d'émoji drapeau brut qui s'affiche sous forme de lettres (ex: FR, US) sous Windows ! Utilise TOUJOURS :
+  * Soit Flagcdn SVG : <img src="https://flagcdn.com/fr.svg" class="w-7 h-5 rounded shadow-sm inline-block object-cover">
+  * Soit la classe Flag-Icons : <span class="fi fi-fr rounded-sm shadow-sm inline-block"></span>
+- CAPTURES DE VRAIS SITES WEB (MICROLINK) : Pour afficher un vrai site ou dashboard en arrière-plan ou dans un mockup :
+  <img src="https://api.microlink.io?url=https://[DOMAINE]&screenshot=true&meta=false&embed=screenshot.url" class="rounded-xl border border-zinc-800 shadow-2xl">
+- ICÔNES VECTORIELLES LUCIDE : Tu peux insérer n'importe quelle icône Lucide avec <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i> (ex: zap, trending-up, check, shield, flame, rocket, bar-chart-3, layers, cpu).
+- MOTEURS D'ANIMATION DOUBLE (GSAP & ANIMEJS) : Tu as l'instance 'tl' (GSAP) pour séquencer la scène. Tu peux aussi utiliser Anime.js (ex: 'anime({...})' ou 'anime.timeline({ autoplay: false })') pour des compteurs dynamiques ou effets de ressorts. Si tu crées une timeline Anime.js, enregistre-la via 'window.__animeTimelines = window.__animeTimelines || []; window.__animeTimelines.push(maTimelineAnime);'.
 
 RÈGLES MAÎTRESSES POUR CETTE SCÈNE :
 1. ISOLATION STRICTE :
@@ -1237,8 +1255,66 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&family=JetBrains+Mono:wght@600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
     <!-- GSAP 3.12.5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- AnimeJS 3.2.2 (Support universel micro-animations, ressorts & compteurs) -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flag Icons CSS (Drapeaux vectoriels parfaits partout sans lettres brutes) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
+    <!-- Lucide Icons (Composants graphiques shadcn) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Configuration Tailwind avec Design Tokens shadcn/ui
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            border: "hsl(var(--border))",
+                            background: "hsl(var(--background))",
+                            foreground: "hsl(var(--foreground))",
+                            card: {
+                                DEFAULT: "hsl(var(--card))",
+                                foreground: "hsl(var(--card-foreground))"
+                            },
+                            primary: {
+                                DEFAULT: "hsl(var(--primary))",
+                                foreground: "hsl(var(--primary-foreground))"
+                            },
+                            muted: {
+                                DEFAULT: "hsl(var(--muted))",
+                                foreground: "hsl(var(--muted-foreground))"
+                            },
+                            accent: {
+                                DEFAULT: "hsl(var(--accent))",
+                                foreground: "hsl(var(--accent-foreground))"
+                            }
+                        },
+                        borderRadius: {
+                            lg: "var(--radius)",
+                            md: "calc(var(--radius) - 2px)",
+                            sm: "calc(var(--radius) - 4px)"
+                        }
+                    }
+                }
+            };
+        }
+    </script>
     <style>
         :root {
+            /* Design Tokens Officiels shadcn/ui */
+            --background: 240 10% 3.9%;
+            --foreground: 0 0% 98%;
+            --card: 240 10% 4.9%;
+            --card-foreground: 0 0% 98%;
+            --primary: 0 0% 98%;
+            --primary-foreground: 240 5.9% 10%;
+            --muted: 240 3.7% 15.9%;
+            --muted-foreground: 240 5% 64.9%;
+            --border: 240 3.7% 15.9%;
+            --radius: 0.75rem;
+
             --bg-base: ${baseBg};
             --text-main: ${mainTextColor};
             --text-muted: ${mutedTextColor};
@@ -1263,6 +1339,43 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             background: #000000;
             font-family: var(--font-body);
             color: var(--text-main);
+        }
+
+        /* EFFETS ACETERNITY & MAGIC UI (Poids Plume CSS) */
+        .bg-dot-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .bg-line-grid {
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .border-beam {
+            position: relative;
+            overflow: hidden;
+        }
+        .border-beam::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid transparent;
+            border-radius: inherit;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        .text-shimmer {
+            background: linear-gradient(110deg, #a1a1aa 40%, #ffffff 50%, #a1a1aa 60%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-shimmer-run 3.5s ease-in-out infinite;
+        }
+        @keyframes text-shimmer-run {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         /* CADRE MAÎTRE DU STAGE */
@@ -1440,6 +1553,9 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
         window.addEventListener('resize', handleResize);
         handleResize();
 
+        window.__animeTimelines = [];
+        try { if (window.lucide) lucide.createIcons(); } catch(e) {}
+
         const tl = gsap.timeline({ paused: isIframeMode });
         window.tl = tl;
 
@@ -1576,16 +1692,31 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
             duration: () => ${totalVideoDuration.toFixed(1)},
             seek: (t, isUserSeeking = false) => {
                 tl.seek(t, false);
+                if (window.__animeTimelines && window.__animeTimelines.length > 0) {
+                    window.__animeTimelines.forEach(atl => {
+                        try { atl.seek(t * 1000); } catch(e) {}
+                    });
+                }
                 if (isUserSeeking) {
                     window.syncAudioTimeline(t, false);
                 }
             },
             pause: () => {
                 tl.pause();
+                if (window.__animeTimelines && window.__animeTimelines.length > 0) {
+                    window.__animeTimelines.forEach(atl => {
+                        try { atl.pause(); } catch(e) {}
+                    });
+                }
                 window.syncAudioTimeline(tl.time(), false);
             },
             play: () => {
                 tl.play();
+                if (window.__animeTimelines && window.__animeTimelines.length > 0) {
+                    window.__animeTimelines.forEach(atl => {
+                        try { atl.play(); } catch(e) {}
+                    });
+                }
                 window.syncAudioTimeline(tl.time(), true);
             }
         };

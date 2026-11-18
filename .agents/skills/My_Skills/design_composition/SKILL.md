@@ -306,3 +306,43 @@ Sans fixer de code hexadécimal obligatoire :
 - **30% : Surfaces de Structure** (Fonds des cartes Bento, typographie principale blanche/noire, séparateurs).
 - **10% : Accent Unique** (Une seule couleur vibrante pour les mots-chocs, le bouton CTA et les micro-jauges).
 - **Règle Duo-Tone des Titres** : Jamais plus de 2 couleurs sur un même bloc de texte (ex: Couleur Principale + Couleur d'Accentuation).
+
+## 14. Composants Modern UI (shadcn, Aceternity, Drapeaux vectoriels & Microlink)
+
+### 14.1 Composants Modernes & Bento Grid (shadcn / Aceternity)
+- **Cartes Bento & Glassmorphism** : Fond `bg-zinc-950/70` ou `rgba(9,9,11,0.75)`, bordure fine `border border-zinc-800/80`, biseau intérieur `shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]`, flou `backdrop-blur-xl`.
+- **Bordure lumineuse dynamique** : classe `border-beam` (laser de lumière subtil qui contourne la carte).
+- **Arrière-plans texturés légers** : classe `bg-dot-grid` ou `bg-line-grid` pour donner du relief sans surcharger le GPU.
+- **Badges Pillules** : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> EN DIRECT</span>`.
+- **Fenêtres Mockup macOS** : En-tête avec 3 pastilles colorées (`bg-red-500/80`, `bg-yellow-500/80`, `bg-emerald-500/80`) et titre de fichier mono (`text-xs text-zinc-400 font-mono`).
+
+### 14.2 Règle Stricte des Drapeaux Nationaux (Zéro Émoji Brut)
+> **Sous Windows et les navigateurs Chromium, les émojis drapeaux Unicode s'affichent sous forme de 2 lettres laides (ex: "FR", "SN", "US").**
+> **IL EST STRICTEMENT INTERDIT d'écrire des émojis drapeaux bruts dans le texte HTML.**
+>
+> **Utiliser exclusivement l'une des 2 méthodes vectorielles :**
+> 1. **Flagcdn SVG / PNG (Recommandé)** : `<img src="https://flagcdn.com/fr.svg" class="w-7 h-5 rounded shadow-sm inline-block object-cover" alt="France">` (remplacer `fr` par le code pays à 2 lettres : `sn`, `us`, `gb`, `es`, `br`, etc.).
+> 2. **Classes CSS Flag-Icons** : `<span class="fi fi-fr rounded-sm shadow-sm inline-block"></span>` ou `<span class="fi fi-sn fis inline-block"></span>`.
+
+### 14.3 Captures de Vrais Sites Web (Microlink API)
+Pour intégrer un vrai site web, profil ou dashboard en mockup sans capture manuelle :
+`<img src="https://api.microlink.io?url=https://[DOMAINE]&screenshot=true&meta=false&embed=screenshot.url" class="rounded-xl border border-zinc-800 shadow-2xl">`.
+
+### 14.4 Micro-Animations Fluides avec Anime.js
+Pour animer des compteurs de chiffres, jauges ou ressorts géométriques :
+```javascript
+const aTl = anime.timeline({ autoplay: false });
+aTl.add({
+    targets: { val: 0 },
+    val: 50000,
+    round: 1,
+    duration: 1200,
+    easing: 'easeOutExpo',
+    update: (a) => {
+        const el = document.getElementById('monChiffre');
+        if (el) el.textContent = Math.round(a.animations[0].currentValue).toLocaleString();
+    }
+});
+window.__animeTimelines = window.__animeTimelines || [];
+window.__animeTimelines.push(aTl);
+```
