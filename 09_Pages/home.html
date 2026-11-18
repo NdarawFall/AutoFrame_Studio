@@ -29,6 +29,13 @@
     </script>
 </head>
 <body>
+    <script>
+        try {
+            if (localStorage.getItem('marvidflow_sidebar_collapsed') === 'true') {
+                document.body.classList.add('sidebar-is-collapsed');
+            }
+        } catch(e) {}
+    </script>
 
     <!-- ÉCRAN DE CHARGEMENT INITIAL (FOND FLOU + CERCLE LUMINEUX) -->
     <div id="appInitialLoader" style="
@@ -83,6 +90,15 @@
     <!-- TOP APPLICATION BAR -->
     <header class="app-topbar">
         <div class="topbar-left">
+            <!-- BOUTON PORTE POUR RÉDUIRE / AGRANDIR LA SIDEBAR -->
+            <button type="button" id="sidebarToggleBtn" class="btn-sidebar-door" onclick="toggleSidebarCollapse()" title="Réduire / Agrandir la barre latérale">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="door-svg">
+                    <path d="M3 21h18"></path>
+                    <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
+                    <path d="M15 3l-6 2v14l6 2V3z"></path>
+                    <circle cx="10" cy="12" r="1" fill="currentColor"></circle>
+                </svg>
+            </button>
             <a href="#dashboard" class="brand-badge" title="MarvidFlow Logiciel Pro">
                 <span class="brand-name">MarvidFlow</span>
                 <span class="brand-version">V1.0</span>
@@ -158,7 +174,7 @@
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">Espace de Travail</div>
                     <nav class="sidebar-nav-list">
-                        <a href="#dashboard" class="sidebar-nav-item active" data-view="dashboard" onclick="navigateView('dashboard', event)">
+                        <a href="#dashboard" class="sidebar-nav-item active" data-view="dashboard" onclick="navigateView('dashboard', event)" title="Dashboard">
                             <div class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                 <span>Dashboard</span>
@@ -166,7 +182,7 @@
                             <span class="sidebar-counter" id="navCounterDashboard">0</span>
                         </a>
 
-                        <a href="#reseaux" class="sidebar-nav-item" data-view="reseaux" onclick="navigateView('reseaux', event)">
+                        <a href="#reseaux" class="sidebar-nav-item" data-view="reseaux" onclick="navigateView('reseaux', event)" title="Mes Réseaux">
                             <div class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                                 <span>Mes Réseaux</span>
@@ -174,7 +190,7 @@
                             <span class="sidebar-counter" id="navCounterReseaux">0</span>
                         </a>
 
-                        <a href="#clients" class="sidebar-nav-item" data-view="clients" onclick="navigateView('clients', event)">
+                        <a href="#clients" class="sidebar-nav-item" data-view="clients" onclick="navigateView('clients', event)" title="Montage Clients">
                             <div class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                                 <span>Montage Clients</span>
@@ -182,7 +198,7 @@
                             <span class="sidebar-counter" id="navCounterClients">0</span>
                         </a>
 
-                        <a href="#assets" class="sidebar-nav-item" data-view="assets" onclick="navigateView('assets', event)">
+                        <a href="#assets" class="sidebar-nav-item" data-view="assets" onclick="navigateView('assets', event)" title="Assets">
                             <div class="sidebar-item-left">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                                 <span>Assets</span>
@@ -194,7 +210,7 @@
             </div>
 
             <div class="sidebar-footer">
-                <a href="#settings" class="sidebar-nav-item" data-view="settings" onclick="navigateView('settings', event)">
+                <a href="#settings" class="sidebar-nav-item" data-view="settings" onclick="navigateView('settings', event)" title="Paramètres">
                     <div class="sidebar-item-left">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                         <span>Paramètres</span>
@@ -340,27 +356,40 @@
                     </div>
                 </div>
 
-                <!-- STATS OVERVIEW CARDS (DE CREATEUR.HTML) -->
-                <div class="stats-overview-grid">
+                <!-- LES 3 CARDS MES RÉSEAUX (NOMBRE DE CHAÎNES, NOMBRE DE VIDÉOS & DERNIÈRE VIDÉO DE CHAÎNE CÔTÉ LONGUEUR) -->
+                <div class="reseaux-stats-grid">
+                    <!-- CARD 1 : NOMBRE DE CHAÎNES -->
                     <div class="stat-card-box">
-                        <span class="stat-card-label">Chaînes Actives</span>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span class="stat-card-label">Nombre de Chaînes</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; color: var(--text-muted);"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        </div>
                         <span class="stat-card-number" id="statsTotalChannels">0</span>
                         <span class="stat-card-desc">YouTube, TikTok & Instagram</span>
                     </div>
+
+                    <!-- CARD 2 : NOMBRE DE VIDÉOS -->
                     <div class="stat-card-box">
-                        <span class="stat-card-label">Vidéos Publiées</span>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <span class="stat-card-label">Nombre de Vidéos</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; color: var(--text-muted);"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
                         <span class="stat-card-number" id="statsTotalVideos">0</span>
-                        <span class="stat-card-desc">Toutes chaînes confondues</span>
+                        <span class="stat-card-desc">Vidéos publiées sur vos chaînes</span>
                     </div>
-                    <div class="stat-card-box">
-                        <span class="stat-card-label">Chaînes YouTube</span>
-                        <span class="stat-card-number" id="statsYouTubeCount">0</span>
-                        <span class="stat-card-desc">Format principal 16:9 & Shorts</span>
-                    </div>
-                    <div class="stat-card-box">
-                        <span class="stat-card-label">TikTok & Instagram</span>
-                        <span class="stat-card-number" id="statsMobileCount">0</span>
-                        <span class="stat-card-desc">Formats verticaux 9:16</span>
+
+                    <!-- CARD 3 : DERNIÈRE VIDÉO CRÉÉE POUR UN COMPTE (TAILLE DES DEUX CARDS RÉUNIES CÔTÉ LONGUEUR, HORS MONTAGE CLIENTS) -->
+                    <div class="reseaux-latest-card">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="stat-card-label" style="color: #ffffff; font-weight: 700; font-size: 11.5px;">Dernière Vidéo Créée</span>
+                                <span style="font-size: 9.5px; font-weight: 700; color: #ff3344; background: rgba(255, 51, 68, 0.14); padding: 2px 7px; border-radius: 4px;">Comptes & Chaînes</span>
+                            </div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Exclut les montages clients</span>
+                        </div>
+                        <div id="reseauxLatestVideoContainer">
+                            <!-- Rendu dynamique par renderLatestChannelVideoCard() -->
+                        </div>
                     </div>
                 </div>
 

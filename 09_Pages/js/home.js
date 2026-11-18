@@ -31,6 +31,38 @@
             }, 3000);
         }
 
+        // --- 2bis. GESTION DU REPLIEMENT DE LA SIDEBAR (BOUTON PORTE) AVEC PERSISTANCE STRICTE ---
+        const SIDEBAR_COLLAPSED_KEY = 'marvidflow_sidebar_collapsed';
+
+        function toggleSidebarCollapse() {
+            const isCollapsed = document.body.classList.toggle('sidebar-is-collapsed');
+            try {
+                localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isCollapsed ? 'true' : 'false');
+            } catch (e) {}
+            updateSidebarDoorState(isCollapsed);
+        }
+
+        function updateSidebarDoorState(isCollapsed) {
+            const btn = document.getElementById('sidebarToggleBtn');
+            if (btn) {
+                btn.title = isCollapsed ? 'Ouvrir le menu latéral (Porte)' : 'Réduire le menu latéral (Porte)';
+                btn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+            }
+        }
+
+        function initSidebarState() {
+            try {
+                const isCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
+                if (isCollapsed) {
+                    document.body.classList.add('sidebar-is-collapsed');
+                } else {
+                    document.body.classList.remove('sidebar-is-collapsed');
+                }
+                updateSidebarDoorState(isCollapsed);
+            } catch (e) {}
+        }
+        initSidebarState();
+
         // --- 3. NAVIGATION SPA ET ROUTAGE PAR HASH ---
         function navigateView(viewName, e) {
             if (e) e.preventDefault();
@@ -315,6 +347,9 @@
         }
 
         function loadAllInitialData() {
+            // 0. Restauration de l'état réduit / étendu de la sidebar
+            initSidebarState();
+
             // 1. Initialisation synchrone immédiate (0ms - du tic au tac)
             initLocalDataSynchronously();
 
@@ -803,20 +838,90 @@
         }
 
         // =====================================================================
-        // SECTION MES RÉSEAUX (AVEC FILTRE YOUTUBE PAR DÉFAUT & VRAI LOGO INSTA)
+        // SECTION MES RÉSEAUX (AVEC LES 3 CARDS : NOMBRE CHAÎNES, NOMBRE VIDÉOS & DERNIÈRE VIDÉO DE CHAÎNE)
         // =====================================================================
+        function renderLatestChannelVideoCard(channelVideos) {
+            const container = document.getElementById('reseauxLatestVideoContainer');
+            if (!container) return;
+
+            // Filtrer les vidéos de chaînes (exclut strictement le montage clients)
+            const sorted = (channelVideos || []).slice().sort((a, b) => {
+                const tA = a.timestamp || (typeof getVideoLastOpenedTimestamp === 'function' ? getVideoLastOpenedTimestamp(a) : 0) || 0;
+                const tB = b.timestamp || (typeof getVideoLastOpenedTimestamp === 'function' ? getVideoLastOpenedTimestamp(b) : 0) || 0;
+                return tB - tA;
+            });
+
+            if (sorted.length === 0) {
+                container.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); font-size: 12px;">
+                        <span>Aucune vidéo créée pour vos comptes/chaînes pour le moment (hors montage clients).</span>
+                        <button type="button" class="btn-create-video-head" onclick="openCreateVideoView()" style="font-size: 11.5px; padding: 5px 12px;">+ Créer une Vidéo</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const v = sorted[0];
+            const channel = channelsCache.find(c => c.id === v.channelId || (v.channelName && c.name === v.channelName));
+            const channelName = channel ? channel.name : (v.channelName || (v.platform ? `Chaîne ${v.platform}` : 'Chaîne dédiée'));
+            const isVideoFile = v.videoPath && (v.videoPath.endsWith('.mp4') || v.videoPath.endsWith('.webm') || v.videoPath.endsWith('.mov'));
+            const durationBadge = v.duration || '15s';
+            const formatBadge = v.format || '16:9';
+            const lastOpenedTs = typeof getVideoLastOpenedTimestamp === 'function' ? getVideoLastOpenedTimestamp(v) : Date.now();
+            const dateBadge = typeof formatVideoLastOpenedDateTime === 'function' ? formatVideoLastOpenedDateTime(lastOpenedTs) : 'Récemment';
+
+            let thumbHtml = '';
+            if (isVideoFile) {
+                thumbHtml = `<video src="${v.videoPath}#t=0.5" preload="metadata" muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>`;
+            } else {
+                thumbHtml = `
+                    <div style="width:100%; height:100%; background: radial-gradient(circle at 50% 35%, #181d28 0%, #0c0f16 70%, #06070a 100%); display:flex; align-items:center; justify-content:center;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px; color: #d4d4d8;"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="latest-channel-video-row" onclick="openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}', '${formatBadge}', '${durationBadge}')" title="Regarder la dernière vidéo créée : ${escapeHtml(v.title)}">
+                    <div class="latest-channel-video-thumb">
+                        ${thumbHtml}
+                        <div class="latest-play-badge">▶</div>
+                        <span class="latest-format-tag">${formatBadge}</span>
+                    </div>
+                    <div class="latest-channel-video-content">
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <span class="latest-channel-badge">${escapeHtml(channelName)}</span>
+                            <span style="font-size:11px; color:var(--text-muted);">• Dernière activité : ${dateBadge}</span>
+                        </div>
+                        <h4 class="latest-channel-video-title">${escapeHtml(v.title)}</h4>
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2px;">
+                            <span style="font-size:11px; color:var(--text-muted); font-family:monospace;">Durée: ${durationBadge} • Format: ${formatBadge}</span>
+                            <button type="button" class="btn-play-latest" onclick="event.stopPropagation(); openGrandVideoPlayer('${v.videoPath}', '${escapeJs(v.title)}', '${formatBadge}', '${durationBadge}')">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width:11px; height:11px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span>Visionner le projet</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderChannelsView(customList) {
-            // Stats summary
+            // Stats summary : Chaînes et vidéos de comptes (exclut montage clients)
             const totalChannels = channelsCache.length;
-            const totalPublished = channelsCache.reduce((acc, c) => acc + (c.videoCount || (c.videos ? c.videos.length : 0)), 0);
+            const channelVideos = allVideosList.filter(v => !v.client || v.client.trim() === '');
+            const totalPublished = channelVideos.length;
             const countYouTube = channelsCache.filter(c => c.platform === 'YouTube').length;
             const countInsta = channelsCache.filter(c => c.platform === 'Instagram').length;
             const countTikTok = channelsCache.filter(c => c.platform === 'TikTok').length;
 
-            document.getElementById('statsTotalChannels').textContent = totalChannels;
-            document.getElementById('statsTotalVideos').textContent = totalPublished;
-            document.getElementById('statsYouTubeCount').textContent = countYouTube;
-            document.getElementById('statsMobileCount').textContent = countInsta + countTikTok;
+            const elTotalCh = document.getElementById('statsTotalChannels');
+            if (elTotalCh) elTotalCh.textContent = totalChannels;
+            const elTotalVids = document.getElementById('statsTotalVideos');
+            if (elTotalVids) elTotalVids.textContent = totalPublished;
+
+            // Rendu de la card 3 : Dernière vidéo créée pour un compte (double largeur)
+            renderLatestChannelVideoCard(channelVideos);
 
             const elYt = document.getElementById('pillCountYouTube');
             if (elYt) elYt.textContent = countYouTube;
@@ -825,7 +930,8 @@
             const elTk = document.getElementById('pillCountTikTok');
             if (elTk) elTk.textContent = countTikTok;
             const elSt = document.getElementById('pillCountStandalone');
-            const countStandalone = allVideosList.filter(v => (!v.channelId || v.channelId === '') && (!v.client || v.client === '')).length; if (elSt) elSt.textContent = countStandalone;
+            const countStandalone = allVideosList.filter(v => (!v.channelId || v.channelId === '') && (!v.client || v.client === '')).length;
+            if (elSt) elSt.textContent = countStandalone;
 
             const grid = document.getElementById('channelsListGrid');
             if (!grid) return;
@@ -1069,6 +1175,15 @@
         // =====================================================================
         // SECTION MONTAGE CLIENTS (TRANSPOSITION COMPLÈTE DE MONTEUR.HTML)
         // =====================================================================
+        function formatClientAvatarSrc(url) {
+            if (!url) return '';
+            const trimmed = String(url).trim();
+            if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('blob:')) {
+                return trimmed;
+            }
+            return `../${trimmed.replace(/^\.\.\//, '')}`;
+        }
+
         function renderClientsView() {
             const circleContainer = document.getElementById('clientsCircleContainer');
             document.getElementById('clientsCountSpan').textContent = clientsCache.length;
@@ -1083,13 +1198,14 @@
 
             circleContainer.innerHTML = clientsCache.map(cl => {
                 const isActive = activeClient && activeClient.name === cl.name;
-                const avatarSrc = cl.avatarUrl ? (cl.avatarUrl.startsWith('http') ? cl.avatarUrl : `../${cl.avatarUrl.replace(/^\.\.\//, '')}`) : '';
+                const avatarSrc = formatClientAvatarSrc(cl.avatarUrl);
                 const fallbackChar = cl.name ? cl.name.charAt(0).toUpperCase() : 'C';
 
                 return `
                     <button type="button" class="client-circle-item ${isActive ? 'active' : ''}" onclick="selectActiveClient('${cl.name}')">
                         <div class="client-avatar-ring">
-                            ${avatarSrc ? `<img src="${avatarSrc}" alt="${cl.name}">` : `<div class="avatar-letter">${fallbackChar}</div>`}
+                            ${avatarSrc ? `<img src="${avatarSrc}" alt="${cl.name}" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">` : ''}
+                            <div class="avatar-letter" style="${avatarSrc ? 'display:none;' : ''}">${fallbackChar}</div>
                             <span class="client-circle-count">${getClientTotalFilesCount(cl)}</span>
                         </div>
                         <span class="client-circle-name" title="${escapeHtml(cl.name)}">${escapeHtml(cl.name)}</span>
@@ -1122,10 +1238,18 @@
 
             const imgEl = document.getElementById('activeClientAvatarImg');
             const fallbackEl = document.getElementById('activeClientAvatarFallback');
-            if (activeClient.avatarUrl) {
-                imgEl.src = activeClient.avatarUrl.startsWith('http') ? activeClient.avatarUrl : `../${activeClient.avatarUrl.replace(/^\.\.\//, '')}`;
+            const activeAvatarSrc = formatClientAvatarSrc(activeClient.avatarUrl);
+
+            if (activeAvatarSrc) {
+                imgEl.src = activeAvatarSrc;
                 imgEl.style.display = 'block';
                 fallbackEl.style.display = 'none';
+                imgEl.onerror = () => {
+                    imgEl.onerror = null;
+                    imgEl.style.display = 'none';
+                    fallbackEl.style.display = 'flex';
+                    fallbackEl.textContent = activeClient.name.charAt(0).toUpperCase();
+                };
             } else {
                 imgEl.style.display = 'none';
                 fallbackEl.style.display = 'flex';
@@ -1275,9 +1399,26 @@
                 return;
             }
 
+            const avatarToSend = newClientAvatarBase64 || '';
+            let serverAvatarUrl = '';
+
+            try {
+                const res = await fetch('/api/clients/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, client: name, avatar: avatarToSend })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.client && data.client.avatarUrl) {
+                        serverAvatarUrl = data.client.avatarUrl;
+                    }
+                }
+            } catch (e) {}
+
             const newCl = {
                 name: name,
-                avatarUrl: newClientAvatarBase64 || '',
+                avatarUrl: serverAvatarUrl || avatarToSend || '',
                 categories: {
                     images_references: [],
                     videos_references: [],
@@ -1290,20 +1431,21 @@
                 }
             };
 
-            try {
-                await fetch('/api/clients/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: name, client: name, avatar: newClientAvatarBase64 })
-                });
-            } catch (e) {}
-
             clientsCache.push(newCl);
             activeClient = newCl;
             try {
                 localStorage.setItem(SNAPSHOT_KEY_CLIENTS, JSON.stringify(clientsCache));
                 localStorage.setItem(SNAPSHOT_KEY_ACTIVE_CLIENT, newCl.name);
             } catch(e) {}
+
+            // Nettoyage de l'input et du preview d'avatar
+            newClientAvatarBase64 = null;
+            const prev = document.getElementById('newClientAvatarPreview');
+            if (prev) {
+                prev.innerHTML = '+';
+                prev.style.backgroundImage = 'none';
+            }
+
             closeCreateClientModal();
             showToast(`Client "${name}" créé !`);
             updateSidebarCounters();
