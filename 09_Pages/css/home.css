@@ -2738,28 +2738,20 @@
             align-items: center !important;
             justify-content: center !important;
             background: #000000 !important;
+            z-index: 5 !important;
         }
 
         #grandPlayerContainer:fullscreen #grandPlayerIframeViewport,
         #grandPlayerContainer:-webkit-full-screen #grandPlayerIframeViewport,
         #grandPlayerContainer.is-fullscreen #grandPlayerIframeViewport {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: 100vw !important;
-            max-height: 100vh !important;
             border-radius: 0 !important;
             box-shadow: none !important;
             background: #000000 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
         }
 
         #grandPlayerContainer:fullscreen #grandPlayerIframeEl,
         #grandPlayerContainer:-webkit-full-screen #grandPlayerIframeEl,
         #grandPlayerContainer.is-fullscreen #grandPlayerIframeEl {
-            width: 100% !important;
-            height: 100% !important;
             border-radius: 0 !important;
             background: #000000 !important;
         }
@@ -4314,63 +4306,74 @@
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .sub-stage-169 .subtitle-container.pos-bottom {
-            bottom: 22px;
+        .sub-stage-169 .subtitle-container.pos-bottom,
+        .iphone16-chassis .subtitle-container.pos-bottom {
+            bottom: 14px;
             top: auto;
-            transform: none;
+            transform: translateX(-50%);
         }
 
-        .sub-stage-169 .subtitle-container.pos-center {
+        .sub-stage-169 .subtitle-container.pos-center,
+        .iphone16-chassis .subtitle-container.pos-center {
             top: 50%;
             bottom: auto;
-            transform: translateY(-50%);
+            transform: translate(-50%, -50%);
         }
 
-        .sub-stage-169 .subtitle-container.pos-top {
-            top: 22px;
+        .sub-stage-169 .subtitle-container.pos-top,
+        .iphone16-chassis .subtitle-container.pos-top {
+            top: 16px;
             bottom: auto;
-            transform: none;
+            transform: translateX(-50%);
         }
 
-        .sub-stage-169 .subtitle-box {
-            display: inline-block;
+        .sub-stage-169 .subtitle-box,
+        .iphone16-chassis .subtitle-box,
+        .sub-split-preview .subtitle-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1.25;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.2;
             transition: all 0.15s ease;
-            max-width: 90%;
+            max-width: 95%;
+            white-space: nowrap;
         }
 
-        .sub-stage-169 .subtitle-box.font-inter { font-family: 'Inter', sans-serif; }
-        .sub-stage-169 .subtitle-box.font-montserrat { font-family: 'Montserrat', sans-serif; font-weight: 900; }
-        .sub-stage-169 .subtitle-box.font-caveat { font-family: 'Caveat', cursive; font-size: 28px; }
-        .sub-stage-169 .subtitle-box.font-playfair { font-family: 'Playfair Display', serif; font-style: italic; }
-        .sub-stage-169 .subtitle-box.font-jetbrains { font-family: 'JetBrains Mono', monospace; font-size: 20px; }
-        .sub-stage-169 .subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Inter'), sans-serif; }
+        .subtitle-box.font-poppins { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        .subtitle-box.font-inter { font-family: 'Inter', sans-serif; }
+        .subtitle-box.font-montserrat { font-family: 'Montserrat', sans-serif; font-weight: 800; }
+        .subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Poppins'), sans-serif; }
 
-        .sub-stage-169 .subtitle-box .word {
+        .subtitle-box .word {
             color: var(--sub-base-color, #ffffff);
             display: inline-block;
-            margin: 0 3px;
+            margin: 0 2px;
             transition: color 0.12s ease, transform 0.12s ease;
+            white-space: nowrap;
         }
 
-        .sub-stage-169 .subtitle-box .word.active {
+        .subtitle-box .word.active {
             color: var(--sub-accent-color, #ffe600) !important;
             font-weight: 900;
-            transform: scale(1.08);
+            transform: scale(1.1);
+            text-shadow: 0 0 12px var(--sub-accent-color, #ffe600), 0 2px 6px rgba(0,0,0,0.9) !important;
         }
 
-        .sub-stage-169 .subtitle-box.bg-box {
+        .subtitle-box.has-bg,
+        .subtitle-box.bg-box {
             background: var(--sub-bg-color, rgba(0, 0, 0, 0.85));
-            padding: 8px 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            padding: 3px 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
         }
 
-        .sub-stage-169 .subtitle-box.radius-none { border-radius: 0px; }
-        .sub-stage-169 .subtitle-box.radius-round { border-radius: 8px; }
-        .sub-stage-169 .subtitle-box.radius-pill { border-radius: 999px; padding: 8px 22px; }
+        .subtitle-box.radius-none { border-radius: 0px; }
+        .subtitle-box.radius-sm { border-radius: 5px; }
+        .subtitle-box.radius-md { border-radius: 10px; }
+        .subtitle-box.radius-round { border-radius: 8px; }
+        .subtitle-box.radius-pill { border-radius: 999px; padding: 4px 14px; }
 
         .sub-stage-169 .subtitle-box.glow-subtle {
             filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85));

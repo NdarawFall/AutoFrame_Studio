@@ -661,6 +661,27 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 card.style.color = isLight ? '#09090b' : '#ffffff';
                 card.style.boxShadow = isLight ? '0 10px 25px rgba(0, 0, 0, 0.08)' : '0 10px 25px rgba(0, 0, 0, 0.45)';
             }
+
+            // Synchronisation du téléphone de prévisualisation des sous-titres
+            const subCanvas = document.getElementById('subMonitorScreenCanvas');
+            const subHeadline = document.getElementById('subMockHeadline');
+            const subSubheadline = document.getElementById('subMockSubheadline');
+            const subBadge = document.getElementById('subMockBadge');
+            const subCard = document.getElementById('subMockCard');
+            if (subCanvas) subCanvas.style.background = appliedBg;
+            if (subHeadline) subHeadline.style.color = isLight ? '#09090b' : '#ffffff';
+            if (subSubheadline) subSubheadline.style.color = isLight ? '#475569' : '#94a3b8';
+            if (subBadge) {
+                subBadge.style.color = isLight ? '#09090b' : '#ffffff';
+                subBadge.style.background = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)';
+                subBadge.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.18)';
+            }
+            if (subCard) {
+                subCard.style.background = isLight ? 'rgba(255, 255, 255, 0.88)' : 'rgba(13, 17, 23, 0.85)';
+                subCard.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.12)';
+                subCard.style.color = isLight ? '#09090b' : '#ffffff';
+                subCard.style.boxShadow = isLight ? '0 10px 25px rgba(0, 0, 0, 0.08)' : '0 10px 25px rgba(0, 0, 0, 0.45)';
+            }
         }
 
         let currentSelectedStyle = 'none';
@@ -828,7 +849,22 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 }
             });
             updateBgPlayerFormat(fmt);
+            updateSubMockupFormat(fmt);
             updateCreationFormValidation();
+        }
+
+        function updateSubMockupFormat(fmt) {
+            const subWrapper = document.getElementById('subMockupWrapper');
+            if (!subWrapper) return;
+            subWrapper.classList.remove('mode-landscape', 'mode-portrait', 'mode-square');
+            if (fmt === '9:16') {
+                subWrapper.classList.add('mode-portrait');
+            } else if (fmt === '1:1') {
+                subWrapper.classList.add('mode-square');
+            } else {
+                subWrapper.classList.add('mode-landscape');
+            }
+            updateLiveSubtitlePreview();
         }
 
         function updateBgPlayerFormat(fmt) {
@@ -1382,7 +1418,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         let currentSubtitleType = 'type-wordbyword';
-        let currentSubtitleFont = 'font-inter';
+        let currentSubtitleFont = 'font-poppins';
         let currentSubtitleCustomFont = '';
         let currentSubtitleBaseColorHex = '#ffffff';
         let currentSubtitleGlow = 'none';
@@ -1393,8 +1429,88 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         let currentSubtitlePos = 'pos-bottom';
 
         let subAnimInterval = null;
-        let subActiveWordIdx = 1;
+        let subActiveWordIdx = 0;
         const subPreviewWords = ["Chaque", "seconde", "compte", "ici"];
+
+        // Liste exhaustive des polices installées sur Windows / PC par défaut
+        const SYSTEM_PC_FONTS = [
+            'Arial', 'Arial Black', 'Bahnschrift', 'Calibri', 'Cambria', 'Candara', 
+            'Century Gothic', 'Comic Sans MS', 'Consolas', 'Constantia', 'Corbel', 
+            'Courier New', 'Franklin Gothic Medium', 'Gabriola', 'Georgia', 'Impact', 
+            'Lucida Console', 'Lucida Sans Unicode', 'Microsoft Sans Serif', 'Montserrat', 
+            'Palatino Linotype', 'Poppins', 'Segoe UI', 'Sitka', 'Sylfaen', 'Tahoma', 
+            'Times New Roman', 'Trebuchet MS', 'Verdana'
+        ];
+        let detectedPcFonts = [...SYSTEM_PC_FONTS];
+
+        // Détection dynamique des polices locales du PC si supporté par le navigateur
+        async function initPcFontsList() {
+            if ('queryLocalFonts' in window) {
+                try {
+                    const fonts = await window.queryLocalFonts();
+                    const names = new Set(SYSTEM_PC_FONTS);
+                    for (const f of fonts) {
+                        if (f.family) names.add(f.family);
+                    }
+                    detectedPcFonts = Array.from(names).sort();
+                } catch(e) {}
+            }
+        }
+        initPcFontsList();
+
+        function showPcFontsDropdown() {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (!dropdown) return;
+            const input = document.getElementById('subCustomFontInput');
+            filterPcFontsDropdown(input ? input.value : '');
+            dropdown.style.display = 'block';
+        }
+
+        function hidePcFontsDropdown() {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+
+        function filterPcFontsDropdown(query) {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (!dropdown) return;
+            const q = (query || '').toLowerCase().trim();
+            const filtered = detectedPcFonts.filter(f => !q || f.toLowerCase().includes(q));
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = `<div style="padding: 8px 12px; font-size: 11px; color: var(--text-muted); text-align: center;">Aucune police trouvée. Appuyez sur Entrée pour appliquer "${query}".</div>`;
+            } else {
+                dropdown.innerHTML = filtered.map(f => `
+                    <div class="pc-font-item" onclick="selectPcFontFromDropdown('${f.replace(/'/g, "\\'")}')" style="padding: 6px 10px; font-size: 12px; font-family: '${f}', sans-serif; cursor: pointer; border-radius: 4px; color: #f4f4f5; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s ease;">
+                        <span>${f}</span>
+                        <span style="font-size: 9.5px; opacity: 0.5; font-family: monospace;">Système PC</span>
+                    </div>
+                `).join('');
+                dropdown.querySelectorAll('.pc-font-item').forEach(item => {
+                    item.onmouseenter = () => item.style.background = 'rgba(255, 255, 255, 0.1)';
+                    item.onmouseleave = () => item.style.background = 'transparent';
+                });
+            }
+            dropdown.style.display = 'block';
+        }
+
+        function selectPcFontFromDropdown(fontName) {
+            const input = document.getElementById('subCustomFontInput');
+            if (input) input.value = fontName;
+            hidePcFontsDropdown();
+            applyCustomSubtitleFont();
+        }
+
+        // Fermer le menu déroulant des polices au clic externe
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            const input = document.getElementById('subCustomFontInput');
+            if (dropdown && dropdown.style.display !== 'none') {
+                if (e.target !== input && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
 
         function selectSubtitlesOption(hasSub) {
             currentSubtitlesOption = !!hasSub;
@@ -1407,6 +1523,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     subYes.classList.add('selected');
                     subNo.classList.remove('selected');
                     if (modelsContainer) modelsContainer.style.display = 'flex';
+                    startSubPreviewLoop();
                 } else {
                     subYes.classList.remove('selected');
                     subNo.classList.add('selected');
@@ -1464,7 +1581,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (applyBtn) applyBtn.classList.add('active');
 
             const label = document.getElementById('subFontSelectedLabel');
-            if (label) label.textContent = fontVal + ' (Perso)';
+            if (label) label.textContent = fontVal;
 
             updateLiveSubtitlePreview();
         }
@@ -1589,47 +1706,120 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         function updateLiveSubtitlePreview() {
             const stageBox = document.getElementById('sub169Box');
             const stageContainer = document.getElementById('sub169Container');
-            const stagePosTag = document.getElementById('subStagePosTag');
+            const subWrapper = document.getElementById('subMockupWrapper');
+            const isPortrait = subWrapper && subWrapper.classList.contains('mode-portrait');
+            const isSquare = subWrapper && subWrapper.classList.contains('mode-square');
 
-            // Indicateur de position
+            // Indicateur de position dynamique direct
             if (stageContainer) {
                 stageContainer.className = `subtitle-container ${currentSubtitlePos}`;
-            }
-            if (stagePosTag) {
-                const posName = currentSubtitlePos === 'pos-top' ? 'En Haut' : currentSubtitlePos === 'pos-center' ? 'Au Centre' : 'En Bas';
-                stagePosTag.textContent = `Position : ${posName}`;
+                stageContainer.style.position = 'absolute';
+                stageContainer.style.left = '50%';
+                stageContainer.style.width = '90%';
+                stageContainer.style.display = 'flex';
+                stageContainer.style.justifyContent = 'center';
+                stageContainer.style.alignItems = 'center';
+                stageContainer.style.pointerEvents = 'none';
+                stageContainer.style.zIndex = '10';
+
+                if (currentSubtitlePos === 'pos-top') {
+                    stageContainer.style.top = isPortrait ? '32px' : '16px';
+                    stageContainer.style.bottom = 'auto';
+                    stageContainer.style.transform = 'translateX(-50%)';
+                } else if (currentSubtitlePos === 'pos-center') {
+                    stageContainer.style.top = '50%';
+                    stageContainer.style.bottom = 'auto';
+                    stageContainer.style.transform = 'translate(-50%, -50%)';
+                } else {
+                    stageContainer.style.top = 'auto';
+                    stageContainer.style.bottom = isPortrait ? '24px' : '14px';
+                    stageContainer.style.transform = 'translateX(-50%)';
+                }
             }
 
-            // Génération du contenu HTML des mots
+            // Génération du contenu HTML des mots avec animation et couleurs dynamiques réelles
             let wordsHtml = '';
             if (currentSubtitleType === 'type-standard') {
-                wordsHtml = subPreviewWords.map(w => `<span class="word">${w}</span>`).join(' ');
-            } else if (currentSubtitleType === 'type-wordbyword') {
+                wordsHtml = subPreviewWords.map(w => `<span class="word" style="color:${currentSubtitleBaseColorHex}; display:inline-block; transition:all 0.15s ease;">${w}</span>`).join(' ');
+            } else {
                 wordsHtml = subPreviewWords.map((w, idx) => {
-                    const isActive = (idx === subActiveWordIdx) ? ' active' : '';
-                    return `<span class="word${isActive}">${w}</span>`;
+                    const isActive = (idx === subActiveWordIdx);
+                    if (isActive) {
+                        return `<span class="word active" style="color: ${currentSubtitleAccentColor} !important; font-weight: 900; transform: scale(1.12); display: inline-block; transition: all 0.15s ease; text-shadow: 0 0 14px ${currentSubtitleAccentColor}, 0 2px 6px rgba(0,0,0,0.9);">${w}</span>`;
+                    } else {
+                        return `<span class="word" style="color: ${currentSubtitleBaseColorHex}; display: inline-block; transition: all 0.15s ease;">${w}</span>`;
+                    }
                 }).join(' ');
             }
 
-            // Mise à jour de la boîte de rendu dans le cadre 16:9
+            // Mise à jour de la boîte de rendu dans le téléphone
             if (stageBox) {
                 const classes = ['subtitle-box', currentSubtitleType, currentSubtitleFont];
-                if (currentSubtitleGlow !== 'none') classes.push(currentSubtitleGlow);
                 if (currentSubtitleBg !== 'none') {
                     classes.push(currentSubtitleBg);
                     classes.push(currentSubtitleRadius);
                 }
                 stageBox.className = classes.join(' ');
+
+                // Police d'écriture en temps réel
+                if (currentSubtitleFont === 'font-poppins') {
+                    stageBox.style.fontFamily = "'Poppins', sans-serif";
+                    stageBox.style.fontWeight = '700';
+                } else if (currentSubtitleFont === 'font-montserrat') {
+                    stageBox.style.fontFamily = "'Montserrat', sans-serif";
+                    stageBox.style.fontWeight = '800';
+                } else if (currentSubtitleFont === 'font-custom' && currentSubtitleCustomFont) {
+                    stageBox.style.fontFamily = `'${currentSubtitleCustomFont}', sans-serif`;
+                    stageBox.style.fontWeight = '700';
+                } else {
+                    stageBox.style.fontFamily = "'Poppins', sans-serif";
+                    stageBox.style.fontWeight = '700';
+                }
+
+                // Taille de police adaptative : réduite sur format debout pour tenir sur 1 ligne
+                if (isPortrait) {
+                    stageBox.style.fontSize = '7.5px';
+                    stageBox.style.gap = '2.5px';
+                } else if (isSquare) {
+                    stageBox.style.fontSize = '8.5px';
+                    stageBox.style.gap = '3px';
+                } else {
+                    stageBox.style.fontSize = '12px';
+                    stageBox.style.gap = '4.5px';
+                }
+
+                stageBox.style.whiteSpace = 'nowrap';
+                stageBox.style.display = 'inline-flex';
+                stageBox.style.alignItems = 'center';
+                stageBox.style.justifyContent = 'center';
+                stageBox.style.lineHeight = '1.2';
+                stageBox.style.boxSizing = 'border-box';
+
+                // Fond (Background) & Arrondi en temps réel
+                if (currentSubtitleBg !== 'none') {
+                    stageBox.style.backgroundColor = currentSubtitleBgColorHex;
+                    if (currentSubtitleRadius === 'radius-pill') {
+                        stageBox.style.borderRadius = '999px';
+                        stageBox.style.padding = isPortrait ? '2px 8px' : '4px 14px';
+                    } else if (currentSubtitleRadius === 'radius-md') {
+                        stageBox.style.borderRadius = '10px';
+                        stageBox.style.padding = isPortrait ? '2px 6px' : '4px 10px';
+                    } else if (currentSubtitleRadius === 'radius-sm') {
+                        stageBox.style.borderRadius = '5px';
+                        stageBox.style.padding = isPortrait ? '2px 5px' : '3px 8px';
+                    } else {
+                        stageBox.style.borderRadius = '0px';
+                        stageBox.style.padding = isPortrait ? '2px 5px' : '3px 8px';
+                    }
+                } else {
+                    stageBox.style.backgroundColor = 'transparent';
+                    stageBox.style.borderRadius = '0px';
+                    stageBox.style.padding = '0px';
+                }
+
                 stageBox.style.setProperty('--sub-base-color', currentSubtitleBaseColorHex);
                 stageBox.style.setProperty('--sub-accent-color', currentSubtitleAccentColor);
-                if (currentSubtitleBg !== 'none') {
-                    stageBox.style.setProperty('--sub-bg-color', currentSubtitleBgColorHex);
-                } else {
-                    stageBox.style.removeProperty('--sub-bg-color');
-                }
-                if (currentSubtitleFont === 'font-custom' && currentSubtitleCustomFont) {
-                    stageBox.style.setProperty('--sub-custom-font', `'${currentSubtitleCustomFont}', sans-serif`);
-                }
+
                 stageBox.innerHTML = wordsHtml;
             }
         }
@@ -1641,8 +1831,9 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     subActiveWordIdx = (subActiveWordIdx + 1) % subPreviewWords.length;
                     updateLiveSubtitlePreview();
                 }
-            }, 600);
+            }, 550);
         }
+        startSubPreviewLoop();
 
         // --- LISTE OFFICIELLE DES STYLES (SANS EMOJIS, CARTES COMPACTES) ---
         const DEFAULT_STYLES = [

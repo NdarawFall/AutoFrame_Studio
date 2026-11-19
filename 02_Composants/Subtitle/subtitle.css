@@ -58,14 +58,25 @@
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 4px 16px rgba(0, 0, 0, 0.7);
 }
 
-/* POLICES PROPOSÉES (LES 6 MEILLEURES + POLICE PERSONNALISÉE) */
+/* POLICES PROPOSÉES (POPPINS PAR DÉFAUT + MONTSERRAT + POLICE PC SUR-MESURE) */
+.subtitle-box.font-poppins { font-family: 'Poppins', sans-serif; font-weight: 700; }
 .subtitle-box.font-inter { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; }
 .subtitle-box.font-outfit { font-family: 'Outfit', sans-serif; font-weight: 800; text-transform: uppercase; }
 .subtitle-box.font-montserrat { font-family: 'Montserrat', sans-serif; font-weight: 800; }
 .subtitle-box.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
 .subtitle-box.font-bebas { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 1.5px; }
 .subtitle-box.font-roboto { font-family: 'Roboto', sans-serif; font-weight: 700; }
-.subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Inter', sans-serif); font-weight: 700; }
+.subtitle-box.font-custom { font-family: var(--sub-custom-font, 'Poppins', sans-serif); font-weight: 700; }
+
+/* RÈGLE STRICTE : APERÇU DANS LE MOCKUP CHÂSSIS SUR UNE SEULE LIGNE SANS CASSEMENT */
+.sub-split-preview .subtitle-box,
+.iphone16-chassis .subtitle-box {
+    font-size: 11px !important;
+    gap: 3px !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+    display: inline-flex !important;
+}
 
 /* COULEURS DU TEXTE DE BASE */
 .subtitle-box.color-white .word {
@@ -264,4 +275,90 @@
 .sub-stage-169 .subtitle-box.bg-white,
 .sub-stage-169 .subtitle-box.bg-custom {
     padding: 3px 8px;
+}
+
+/* --- ADAPTATION VISUALISEUR DANS COQUE DE TÉLÉPHONE IPHONE 16 --- */
+.iphone16-chassis .subtitle-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+    transition: all 0.25s ease;
+}
+.iphone16-chassis .subtitle-box,
+.sub-split-preview .subtitle-box {
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    max-width: 95% !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+}
+.iphone16-chassis .subtitle-box .word,
+.sub-split-preview .subtitle-box .word {
+    white-space: nowrap !important;
+    display: inline-block !important;
+}
+
+/* 1. Mode Paysage (16:9 - Format Large) */
+.iphone16-chassis.mode-landscape .subtitle-box {
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+    gap: 3.5px !important;
+}
+.iphone16-chassis.mode-landscape .subtitle-container.pos-bottom,
+.iphone16-chassis.mode-landscape .subtitle-container:not(.pos-center):not(.pos-top) {
+    bottom: 14px !important;
+}
+.iphone16-chassis.mode-landscape .subtitle-container.pos-center {
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.iphone16-chassis.mode-landscape .subtitle-container.pos-top {
+    top: 18px !important;
+}
+
+/* 2. Mode Portrait (9:16 - Format Debout) : Texte diminué davantage pour tenir sur l'écran étroit */
+.iphone16-chassis.mode-portrait .subtitle-box {
+    font-size: 7.5px !important;
+    padding: 2px 5px !important;
+    gap: 2px !important;
+}
+.iphone16-chassis.mode-portrait .subtitle-container.pos-bottom,
+.iphone16-chassis.mode-portrait .subtitle-container:not(.pos-center):not(.pos-top) {
+    bottom: 24px !important;
+}
+.iphone16-chassis.mode-portrait .subtitle-container.pos-center {
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.iphone16-chassis.mode-portrait .subtitle-container.pos-top {
+    top: 38px !important;
+}
+
+/* 3. Mode Carré (1:1) */
+.iphone16-chassis.mode-square .subtitle-box {
+    font-size: 8.5px !important;
+    padding: 2px 6px !important;
+    gap: 2.5px !important;
+}
+.iphone16-chassis.mode-square .subtitle-container.pos-bottom,
+.iphone16-chassis.mode-square .subtitle-container:not(.pos-center):not(.pos-top) {
+    bottom: 16px !important;
+}
+.iphone16-chassis.mode-square .subtitle-container.pos-center {
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.iphone16-chassis.mode-square .subtitle-container.pos-top {
+    top: 22px !important;
 }

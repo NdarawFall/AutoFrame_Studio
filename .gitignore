@@ -102,5 +102,6 @@ __pycache__/
 # COMPOSITIONS ET SCENES LOCALES (SEUL .gitkeep EST SUIVI)
 04_Videos/*
 !04_Videos/.gitkeep
+!04_Videos/hand_cursor_showcase_15s.html
 05_Scenes/*
 !05_Scenes/.gitkeep

@@ -1584,13 +1584,38 @@
         };
 
         // --- CHARGEMENT DYNAMIQUE DES FICHIERS ET RENDUS (AVEC DÉDOUBLONNAGE ET CACHE) ---
+        function filterOutDeletedVideos(list) {
+            if (!Array.isArray(list)) return [];
+            try {
+                const delList = JSON.parse(localStorage.getItem('marvidflow_deleted_videos') || localStorage.getItem('autoframe_deleted_videos') || '[]');
+                if (!Array.isArray(delList) || delList.length === 0) return list;
+                return list.filter(v => {
+                    const vp = (typeof v === 'string' ? v : (v.path || v.file || v.name || '')).trim();
+                    const fn = vp.split(/[/\\]/).pop();
+                    const title = (typeof v === 'object' && v.title) ? v.title.trim().toLowerCase() : '';
+                    return !delList.some(d => {
+                        if (!d) return false;
+                        const dStr = String(d).trim();
+                        const dFn = dStr.split(/[/\\]/).pop();
+                        if (dFn && fn && dFn.toLowerCase() === fn.toLowerCase()) return true;
+                        if (dStr && vp && (dStr === vp || vp.endsWith(dStr))) return true;
+                        if (title && dStr.toLowerCase() === title) return true;
+                        return false;
+                    });
+                });
+            } catch(e) {
+                return list;
+            }
+        }
+
         async function fetchWorkspaceFiles() {
             try {
                 const res = await fetch('/api/files?t=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) return;
                 const data = await res.json();
                 
-                const videos = data.videos || [];
+                const rawVideos = data.videos || [];
+                const videos = filterOutDeletedVideos(rawVideos);
                 const rendus = data.rendus || [];
                 const newVideosJson = JSON.stringify(videos);
                 const newRendusJson = JSON.stringify(rendus);
@@ -1640,6 +1665,7 @@
                 if (lastVideosJson) {
                     try { cachedVideos = JSON.parse(lastVideosJson); } catch (e) {}
                 }
+                cachedVideos = filterOutDeletedVideos(cachedVideos);
                 if (Array.isArray(cachedVideos) && cachedVideos.length > 0) {
                     renderVideosUI(cachedVideos, activeVideoPath);
                 } else {
@@ -1777,13 +1803,44 @@
                     showToast('✓ Vidéo supprimée avec succès');
                     closeDeleteModal();
 
+                    const baseName = videoName.split('/').pop();
+
+                    // Mettre à jour immédiatement allWorkspaceVideos et les badges de compteurs ("Moi" & "Clients") sans attendre
+                    allWorkspaceVideos = (allWorkspaceVideos || []).filter(v => {
+                        const vPath = typeof v === 'string' ? v : (v.path || v.file || v.name || '');
+                        return vPath !== videoName && !vPath.endsWith('/' + baseName);
+                    });
+                    const createurVideos = allWorkspaceVideos.filter(v => {
+                        const p = (typeof v === 'string' ? v : (v.path || v.file || '')).toLowerCase();
+                        const isCl = typeof v === 'object' && Boolean(v.isClient || v.clientName);
+                        return !isCl && !p.startsWith('clients/');
+                    });
+                    const clientVideos = allWorkspaceVideos.filter(v => {
+                        const p = (typeof v === 'string' ? v : (v.path || v.file || '')).toLowerCase();
+                        const isCl = typeof v === 'object' && Boolean(v.isClient || v.clientName);
+                        return isCl || p.startsWith('clients/');
+                    });
+                    const badgeCountCreateurs = document.getElementById('badgeCountCreateurs');
+                    if (badgeCountCreateurs) badgeCountCreateurs.textContent = createurVideos.length;
+                    const badgeCountClients = document.getElementById('badgeCountClients');
+                    if (badgeCountClients) badgeCountClients.textContent = clientVideos.length;
+
+                    // Enregistrer également dans marvidflow_deleted_videos pour synchronisation bidirectionnelle Dashboard <-> Studio
+                    try {
+                        const delList = JSON.parse(localStorage.getItem('marvidflow_deleted_videos') || localStorage.getItem('autoframe_deleted_videos') || '[]');
+                        [videoName, baseName].forEach(item => {
+                            if (item && !delList.includes(item)) delList.push(item);
+                        });
+                        localStorage.setItem('marvidflow_deleted_videos', JSON.stringify(delList));
+                        localStorage.setItem('autoframe_deleted_videos', JSON.stringify(delList));
+                    } catch(e) {}
+
                     // Nettoyage immédiat du cache localStorage local pour éviter toute résurrection au reload
                     try {
                         const rawCached = localStorage.getItem(CACHE_KEY_VIDEOS);
                         if (rawCached) {
                             let cachedList = JSON.parse(rawCached);
                             if (Array.isArray(cachedList)) {
-                                const baseName = videoName.split('/').pop();
                                 cachedList = cachedList.filter(v => {
                                     const vPath = typeof v === 'string' ? v : (v.path || v.file || v.name);
                                     return vPath !== videoName && !vPath.endsWith('/' + baseName);
@@ -1796,7 +1853,7 @@
 
                     // Retrait visuel immédiat dans le DOM
                     const cardToDelete = document.querySelector(`#videoListContainer .item-card[data-src="${videoName}"]`) ||
-                                         document.querySelector(`#videoListContainer .item-card[data-src*="${videoName.split('/').pop()}"]`);
+                                         document.querySelector(`#videoListContainer .item-card[data-src*="${baseName}"]`);
                     if (cardToDelete) cardToDelete.remove();
 
                     // Nettoyage de l'URL et de la vidéo active si c'était celle supprimée

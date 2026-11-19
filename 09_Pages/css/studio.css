@@ -134,6 +134,37 @@
             border-color: rgba(255, 255, 255, 0.18);
         }
 
+        .btn-clear-chat {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 28px;
+            padding: 0 10px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            user-select: none;
+            line-height: 1;
+        }
+
+        .btn-clear-chat:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #f87171;
+        }
+
+        .btn-clear-chat svg {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+
                 
 
         .brand-badge, a.brand-badge, a.brand-badge:link, a.brand-badge:visited {

@@ -1976,6 +1976,83 @@
         let isCompositionPlaying = false;
         let isCompositionMuted = false;
         let currentCompositionSrc = '';
+        let currentCompositionNativeW = 1920;
+        let currentCompositionNativeH = 1080;
+
+        function adaptGrandPlayerIframeScale() {
+            const wrapper = document.getElementById('grandPlayerIframeWrapper');
+            const viewport = document.getElementById('grandPlayerIframeViewport');
+            const iframeEl = document.getElementById('grandPlayerIframeEl');
+            const playerBar = document.getElementById('compositionPlayerBar');
+            const container = document.getElementById('grandPlayerContainer');
+
+            if (!wrapper || !viewport || !iframeEl) return;
+            if (wrapper.style.display === 'none') return;
+
+            const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || container?.classList.contains('is-fullscreen'));
+
+            const nativeW = currentCompositionNativeW || 1920;
+            const nativeH = currentCompositionNativeH || 1080;
+
+            let availW = 0;
+            let availH = 0;
+
+            if (isFullscreen) {
+                availW = window.innerWidth;
+                availH = window.innerHeight;
+            } else {
+                const wrapRect = wrapper.getBoundingClientRect();
+                const contRect = container ? container.getBoundingClientRect() : null;
+                const barRect = playerBar ? playerBar.getBoundingClientRect() : null;
+                const barH = (barRect && barRect.height > 0) ? (barRect.height + 16) : 56;
+
+                if (wrapRect && wrapRect.width > 50) {
+                    availW = wrapRect.width;
+                } else if (contRect && contRect.width > 50) {
+                    availW = contRect.width - 32;
+                } else {
+                    availW = Math.min(1040, window.innerWidth * 0.88);
+                }
+
+                if (wrapRect && wrapRect.height > 50) {
+                    availH = wrapRect.height;
+                } else if (contRect && contRect.height > 50) {
+                    availH = contRect.height - barH - 16;
+                } else {
+                    availH = Math.min(600, window.innerHeight * 0.62);
+                }
+            }
+
+            availW = Math.max(160, availW);
+            availH = Math.max(120, availH);
+
+            // Facteur d'échelle exact garantissant un cadrage 100% complet sans coupure ni déformation
+            const scale = Math.min(availW / nativeW, availH / nativeH);
+
+            // Dimensions de la boîte de cadrage (exactes sans aucune bande parasite)
+            const finalW = Math.round(nativeW * scale);
+            const finalH = Math.round(nativeH * scale);
+
+            viewport.style.width = `${finalW}px`;
+            viewport.style.height = `${finalH}px`;
+            viewport.style.maxWidth = '100vw';
+            viewport.style.maxHeight = '100vh';
+
+            // L'iframe interne a la résolution NATIVE EXACTE du contenu (1920x1080, 1080x1920, etc.)
+            iframeEl.style.width = `${nativeW}px`;
+            iframeEl.style.height = `${nativeH}px`;
+            iframeEl.style.transform = `scale(${scale})`;
+            iframeEl.style.transformOrigin = '0 0';
+            iframeEl.style.position = 'absolute';
+            iframeEl.style.top = '0';
+            iframeEl.style.left = '0';
+
+            // En mode modal, la barre de contrôle s'adapte élégamment à la largeur de la vidéo
+            if (playerBar && !isFullscreen) {
+                const barMaxW = Math.max(340, Math.min(1040, finalW));
+                playerBar.style.maxWidth = `${barMaxW}px`;
+            }
+        }
 
         function applyPlayerFormat(fmt) {
             const rawFmt = (fmt || '16:9').trim();
@@ -1992,7 +2069,6 @@
             if (pillEl) pillEl.textContent = normalizedFmt;
 
             const dialog = document.querySelector('.video-player-modal-dialog');
-            const viewport = document.getElementById('grandPlayerIframeViewport');
             const videoEl = document.getElementById('grandPlayerVideoEl');
             const playerBar = document.getElementById('compositionPlayerBar');
             const container = document.getElementById('grandPlayerContainer');
@@ -2001,11 +2077,6 @@
 
             if (normalizedFmt === '9:16') {
                 if (dialog && !isFullscreen) dialog.style.maxWidth = '480px';
-                if (viewport) {
-                    viewport.style.aspectRatio = '9 / 16';
-                    viewport.style.maxWidth = isFullscreen ? '100vw' : '380px';
-                    viewport.style.maxHeight = isFullscreen ? '100vh' : '72vh';
-                }
                 if (videoEl) {
                     videoEl.style.aspectRatio = '9 / 16';
                     videoEl.style.maxWidth = isFullscreen ? '100vw' : '380px';
@@ -2014,11 +2085,6 @@
                 if (playerBar && !isFullscreen) playerBar.style.maxWidth = '380px';
             } else if (normalizedFmt === '1:1') {
                 if (dialog && !isFullscreen) dialog.style.maxWidth = '720px';
-                if (viewport) {
-                    viewport.style.aspectRatio = '1 / 1';
-                    viewport.style.maxWidth = isFullscreen ? '100vw' : '560px';
-                    viewport.style.maxHeight = isFullscreen ? '100vh' : '68vh';
-                }
                 if (videoEl) {
                     videoEl.style.aspectRatio = '1 / 1';
                     videoEl.style.maxWidth = isFullscreen ? '100vw' : '560px';
@@ -2028,11 +2094,6 @@
             } else {
                 // 16:9
                 if (dialog && !isFullscreen) dialog.style.maxWidth = '1180px';
-                if (viewport) {
-                    viewport.style.aspectRatio = '16 / 9';
-                    viewport.style.maxWidth = isFullscreen ? '100vw' : '1040px';
-                    viewport.style.maxHeight = isFullscreen ? '100vh' : '68vh';
-                }
                 if (videoEl) {
                     videoEl.style.aspectRatio = '16 / 9';
                     videoEl.style.maxWidth = isFullscreen ? '100vw' : '1040px';
@@ -2040,6 +2101,8 @@
                 }
                 if (playerBar && !isFullscreen) playerBar.style.maxWidth = '1040px';
             }
+
+            adaptGrandPlayerIframeScale();
         }
 
         function hookIframePlayback(iframeEl) {
@@ -2056,42 +2119,78 @@
                     internalViewport.style.height = '100%';
                     internalViewport.style.width = '100%';
                 }
-                if (typeof win.fitStage === 'function') win.fitStage();
+                if (typeof win.fitStage === 'function') {
+                    try { win.fitStage(); } catch(e) {}
+                }
 
-                if (doc && doc.body) {
+                if (doc.documentElement) {
+                    doc.documentElement.style.overflow = 'hidden';
+                }
+                if (doc.body) {
                     doc.body.style.margin = '0';
                     doc.body.style.padding = '0';
                     doc.body.style.overflow = 'hidden';
+                    doc.body.style.background = '#000000';
                 }
 
-                // Détection et redimensionnement dynamique de la scène
-                const stage = doc.getElementById('stage') || doc.querySelector('.stage') || doc.body;
+                // Détection universelle et dynamique de la résolution native du contenu
+                let detectedW = 0;
+                let detectedH = 0;
+
+                // 1. Constantes globales dans la composition (WIDTH, HEIGHT, RENDER_WIDTH, etc.)
+                if (typeof win.WIDTH === 'number' && win.WIDTH > 50 && typeof win.HEIGHT === 'number' && win.HEIGHT > 50) {
+                    detectedW = win.WIDTH;
+                    detectedH = win.HEIGHT;
+                } else if (typeof win.RENDER_WIDTH === 'number' && win.RENDER_WIDTH > 50 && typeof win.RENDER_HEIGHT === 'number' && win.RENDER_HEIGHT > 50) {
+                    detectedW = win.RENDER_WIDTH;
+                    detectedH = win.RENDER_HEIGHT;
+                }
+
+                // 2. Balise Canvas (HTML5 Canvas direct)
                 const canvas = doc.getElementById('mainCanvas') || doc.querySelector('canvas');
-
-                if (canvas) {
-                    canvas.style.maxWidth = '100%';
-                    canvas.style.maxHeight = '100%';
-                    canvas.style.objectFit = 'contain';
-                }
-                if (stage && (stage.style.width === '1920px' || stage.getAttribute('width') === '1920')) {
-                    stage.style.maxWidth = '100%';
-                    stage.style.maxHeight = '100%';
-                    stage.style.width = '100%';
-                    stage.style.height = '100%';
-                }
-
-                const stageW = parseInt(stage?.style?.width || stage?.getAttribute('width') || canvas?.getAttribute('width') || '0', 10);
-                const stageH = parseInt(stage?.style?.height || stage?.getAttribute('height') || canvas?.getAttribute('height') || '0', 10);
-
-                if (stageW > 0 && stageH > 0) {
-                    if (stageW === stageH) {
-                        applyPlayerFormat('1:1');
-                    } else if (stageH > stageW) {
-                        applyPlayerFormat('9:16');
-                    } else {
-                        applyPlayerFormat('16:9');
+                if (!detectedW && canvas) {
+                    const cw = parseInt(canvas.getAttribute('width') || canvas.width, 10);
+                    const ch = parseInt(canvas.getAttribute('height') || canvas.height, 10);
+                    if (cw > 50 && ch > 50) {
+                        detectedW = cw;
+                        detectedH = ch;
                     }
                 }
+
+                // 3. Élément Stage (#stage, .stage, [data-stage])
+                const stage = doc.getElementById('stage') || doc.querySelector('.stage') || doc.querySelector('[data-stage]');
+                if (!detectedW && stage) {
+                    try {
+                        const compStyle = win.getComputedStyle(stage);
+                        const pw = parseFloat(compStyle.width);
+                        const ph = parseFloat(compStyle.height);
+                        if (pw > 50 && ph > 50) {
+                            detectedW = pw;
+                            detectedH = ph;
+                        }
+                    } catch(e) {}
+                }
+
+                // 4. Si détecté, appliquer la résolution native
+                if (detectedW > 50 && detectedH > 50) {
+                    currentCompositionNativeW = Math.round(detectedW);
+                    currentCompositionNativeH = Math.round(detectedH);
+                }
+
+                // Détecter et synchroniser automatiquement le format (16:9, 9:16 ou 1:1)
+                const ratio = currentCompositionNativeW / currentCompositionNativeH;
+                let autoFmt = '16:9';
+                if (Math.abs(ratio - 1) < 0.05) {
+                    autoFmt = '1:1';
+                } else if (ratio < 0.8) {
+                    autoFmt = '9:16';
+                } else {
+                    autoFmt = '16:9';
+                }
+                applyPlayerFormat(autoFmt);
+
+                // Cadrer immédiatement et de façon ultra-précise
+                adaptGrandPlayerIframeScale();
 
                 // Détecter la vraie durée
                 if (typeof win.DURATION === 'number' && win.DURATION > 0) {
@@ -2157,6 +2256,19 @@
             if (compositionTimer) {
                 clearInterval(compositionTimer);
                 compositionTimer = null;
+            }
+
+            // Initialiser les dimensions natives par défaut selon le format demandé
+            const cleanFmt = (format || '16:9').trim();
+            if (cleanFmt === '9:16' || cleanFmt === 'vertical' || cleanFmt === '9/16') {
+                currentCompositionNativeW = 1080;
+                currentCompositionNativeH = 1920;
+            } else if (cleanFmt === '1:1' || cleanFmt === 'carre' || cleanFmt === 'square' || cleanFmt === '1/1') {
+                currentCompositionNativeW = 1080;
+                currentCompositionNativeH = 1080;
+            } else {
+                currentCompositionNativeW = 1920;
+                currentCompositionNativeH = 1080;
             }
 
             // Appliquer immédiatement le bon format (16:9, 9:16 ou 1:1)
@@ -2269,6 +2381,12 @@
             }
 
             overlay.classList.add('open');
+
+            // Cadrage automatique instantané et multi-passe pendant l'ouverture du modal
+            requestAnimationFrame(() => adaptGrandPlayerIframeScale());
+            setTimeout(adaptGrandPlayerIframeScale, 60);
+            setTimeout(adaptGrandPlayerIframeScale, 180);
+            setTimeout(adaptGrandPlayerIframeScale, 360);
         }
 
         function closeGrandVideoPlayer() {
@@ -2591,6 +2709,20 @@
                 localStorage.setItem('marvidflow_deleted_videos', JSON.stringify(deletedList));
                 localStorage.setItem('autoframe_deleted_videos', JSON.stringify(deletedList));
                 localStorage.setItem(SNAPSHOT_KEY_VIDEOS, JSON.stringify(allVideosList));
+
+                // Nettoyer également le cache du studio (hyperstudio_cached_videos) pour synchronisation immédiate
+                const rawStudio = localStorage.getItem('hyperstudio_cached_videos');
+                if (rawStudio) {
+                    let studioList = JSON.parse(rawStudio);
+                    if (Array.isArray(studioList)) {
+                        studioList = studioList.filter(v => {
+                            const vp = (typeof v === 'string' ? v : (v.path || v.file || v.name || ''));
+                            const vf = vp.split(/[/\\]/).pop();
+                            return vf !== baseFileName && vp !== cleanPath && vp !== pathToDelete;
+                        });
+                        localStorage.setItem('hyperstudio_cached_videos', JSON.stringify(studioList));
+                    }
+                }
             } catch(e) {}
 
             // 3. Appel API pour supprimer définitivement le fichier physique sur le disque
@@ -2735,6 +2867,8 @@
                     container.classList.remove('is-fullscreen');
                     updateFullscreenIcons(false);
                 }
+                setTimeout(adaptGrandPlayerIframeScale, 60);
+                setTimeout(adaptGrandPlayerIframeScale, 250);
             }
         }
 
@@ -2742,8 +2876,22 @@
             document.addEventListener(evt, () => {
                 const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
                 updateFullscreenIcons(isFs);
+                setTimeout(adaptGrandPlayerIframeScale, 50);
+                setTimeout(adaptGrandPlayerIframeScale, 200);
             });
         });
+
+        window.addEventListener('resize', adaptGrandPlayerIframeScale);
+
+        if (window.ResizeObserver) {
+            const grandPlayerResizeObserver = new ResizeObserver(() => {
+                adaptGrandPlayerIframeScale();
+            });
+            const grandContainer = document.getElementById('grandPlayerContainer');
+            if (grandContainer) grandPlayerResizeObserver.observe(grandContainer);
+            const grandWrapper = document.getElementById('grandPlayerIframeWrapper');
+            if (grandWrapper) grandPlayerResizeObserver.observe(grandWrapper);
+        }
 
         // Détection de mouvement souris et double-clic sur le player
         const playerScreenContainer = document.getElementById('grandPlayerContainer');
@@ -3859,6 +4007,27 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 card.style.color = isLight ? '#09090b' : '#ffffff';
                 card.style.boxShadow = isLight ? '0 10px 25px rgba(0, 0, 0, 0.08)' : '0 10px 25px rgba(0, 0, 0, 0.45)';
             }
+
+            // Synchronisation du téléphone de prévisualisation des sous-titres
+            const subCanvas = document.getElementById('subMonitorScreenCanvas');
+            const subHeadline = document.getElementById('subMockHeadline');
+            const subSubheadline = document.getElementById('subMockSubheadline');
+            const subBadge = document.getElementById('subMockBadge');
+            const subCard = document.getElementById('subMockCard');
+            if (subCanvas) subCanvas.style.background = appliedBg;
+            if (subHeadline) subHeadline.style.color = isLight ? '#09090b' : '#ffffff';
+            if (subSubheadline) subSubheadline.style.color = isLight ? '#475569' : '#94a3b8';
+            if (subBadge) {
+                subBadge.style.color = isLight ? '#09090b' : '#ffffff';
+                subBadge.style.background = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)';
+                subBadge.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.18)';
+            }
+            if (subCard) {
+                subCard.style.background = isLight ? 'rgba(255, 255, 255, 0.88)' : 'rgba(13, 17, 23, 0.85)';
+                subCard.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.12)';
+                subCard.style.color = isLight ? '#09090b' : '#ffffff';
+                subCard.style.boxShadow = isLight ? '0 10px 25px rgba(0, 0, 0, 0.08)' : '0 10px 25px rgba(0, 0, 0, 0.45)';
+            }
         }
 
         let currentSelectedStyle = 'none';
@@ -4026,7 +4195,22 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 }
             });
             updateBgPlayerFormat(fmt);
+            updateSubMockupFormat(fmt);
             updateCreationFormValidation();
+        }
+
+        function updateSubMockupFormat(fmt) {
+            const subWrapper = document.getElementById('subMockupWrapper');
+            if (!subWrapper) return;
+            subWrapper.classList.remove('mode-landscape', 'mode-portrait', 'mode-square');
+            if (fmt === '9:16') {
+                subWrapper.classList.add('mode-portrait');
+            } else if (fmt === '1:1') {
+                subWrapper.classList.add('mode-square');
+            } else {
+                subWrapper.classList.add('mode-landscape');
+            }
+            updateLiveSubtitlePreview();
         }
 
         function updateBgPlayerFormat(fmt) {
@@ -4561,7 +4745,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         let currentSubtitleType = 'type-wordbyword';
-        let currentSubtitleFont = 'font-inter';
+        let currentSubtitleFont = 'font-poppins';
         let currentSubtitleCustomFont = '';
         let currentSubtitleBaseColorHex = '#ffffff';
         let currentSubtitleGlow = 'none';
@@ -4572,8 +4756,88 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         let currentSubtitlePos = 'pos-bottom';
 
         let subAnimInterval = null;
-        let subActiveWordIdx = 1;
+        let subActiveWordIdx = 0;
         const subPreviewWords = ["Chaque", "seconde", "compte", "ici"];
+
+        // Liste exhaustive des polices installées sur Windows / PC par défaut
+        const SYSTEM_PC_FONTS = [
+            'Arial', 'Arial Black', 'Bahnschrift', 'Calibri', 'Cambria', 'Candara', 
+            'Century Gothic', 'Comic Sans MS', 'Consolas', 'Constantia', 'Corbel', 
+            'Courier New', 'Franklin Gothic Medium', 'Gabriola', 'Georgia', 'Impact', 
+            'Lucida Console', 'Lucida Sans Unicode', 'Microsoft Sans Serif', 'Montserrat', 
+            'Palatino Linotype', 'Poppins', 'Segoe UI', 'Sitka', 'Sylfaen', 'Tahoma', 
+            'Times New Roman', 'Trebuchet MS', 'Verdana'
+        ];
+        let detectedPcFonts = [...SYSTEM_PC_FONTS];
+
+        // Détection dynamique des polices locales du PC si supporté par le navigateur
+        async function initPcFontsList() {
+            if ('queryLocalFonts' in window) {
+                try {
+                    const fonts = await window.queryLocalFonts();
+                    const names = new Set(SYSTEM_PC_FONTS);
+                    for (const f of fonts) {
+                        if (f.family) names.add(f.family);
+                    }
+                    detectedPcFonts = Array.from(names).sort();
+                } catch(e) {}
+            }
+        }
+        initPcFontsList();
+
+        function showPcFontsDropdown() {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (!dropdown) return;
+            const input = document.getElementById('subCustomFontInput');
+            filterPcFontsDropdown(input ? input.value : '');
+            dropdown.style.display = 'block';
+        }
+
+        function hidePcFontsDropdown() {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+
+        function filterPcFontsDropdown(query) {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            if (!dropdown) return;
+            const q = (query || '').toLowerCase().trim();
+            const filtered = detectedPcFonts.filter(f => !q || f.toLowerCase().includes(q));
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = `<div style="padding: 8px 12px; font-size: 11px; color: var(--text-muted); text-align: center;">Aucune police trouvée. Appuyez sur Entrée pour appliquer "${query}".</div>`;
+            } else {
+                dropdown.innerHTML = filtered.map(f => `
+                    <div class="pc-font-item" onclick="selectPcFontFromDropdown('${f.replace(/'/g, "\\'")}')" style="padding: 6px 10px; font-size: 12px; font-family: '${f}', sans-serif; cursor: pointer; border-radius: 4px; color: #f4f4f5; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s ease;">
+                        <span>${f}</span>
+                        <span style="font-size: 9.5px; opacity: 0.5; font-family: monospace;">Système PC</span>
+                    </div>
+                `).join('');
+                dropdown.querySelectorAll('.pc-font-item').forEach(item => {
+                    item.onmouseenter = () => item.style.background = 'rgba(255, 255, 255, 0.1)';
+                    item.onmouseleave = () => item.style.background = 'transparent';
+                });
+            }
+            dropdown.style.display = 'block';
+        }
+
+        function selectPcFontFromDropdown(fontName) {
+            const input = document.getElementById('subCustomFontInput');
+            if (input) input.value = fontName;
+            hidePcFontsDropdown();
+            applyCustomSubtitleFont();
+        }
+
+        // Fermer le menu déroulant des polices au clic externe
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('subPcFontsDropdown');
+            const input = document.getElementById('subCustomFontInput');
+            if (dropdown && dropdown.style.display !== 'none') {
+                if (e.target !== input && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
 
         function selectSubtitlesOption(hasSub) {
             currentSubtitlesOption = !!hasSub;
@@ -4586,6 +4850,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     subYes.classList.add('selected');
                     subNo.classList.remove('selected');
                     if (modelsContainer) modelsContainer.style.display = 'flex';
+                    startSubPreviewLoop();
                 } else {
                     subYes.classList.remove('selected');
                     subNo.classList.add('selected');
@@ -4643,7 +4908,7 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             if (applyBtn) applyBtn.classList.add('active');
 
             const label = document.getElementById('subFontSelectedLabel');
-            if (label) label.textContent = fontVal + ' (Perso)';
+            if (label) label.textContent = fontVal;
 
             updateLiveSubtitlePreview();
         }
@@ -4768,47 +5033,120 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         function updateLiveSubtitlePreview() {
             const stageBox = document.getElementById('sub169Box');
             const stageContainer = document.getElementById('sub169Container');
-            const stagePosTag = document.getElementById('subStagePosTag');
+            const subWrapper = document.getElementById('subMockupWrapper');
+            const isPortrait = subWrapper && subWrapper.classList.contains('mode-portrait');
+            const isSquare = subWrapper && subWrapper.classList.contains('mode-square');
 
-            // Indicateur de position
+            // Indicateur de position dynamique direct
             if (stageContainer) {
                 stageContainer.className = `subtitle-container ${currentSubtitlePos}`;
-            }
-            if (stagePosTag) {
-                const posName = currentSubtitlePos === 'pos-top' ? 'En Haut' : currentSubtitlePos === 'pos-center' ? 'Au Centre' : 'En Bas';
-                stagePosTag.textContent = `Position : ${posName}`;
+                stageContainer.style.position = 'absolute';
+                stageContainer.style.left = '50%';
+                stageContainer.style.width = '90%';
+                stageContainer.style.display = 'flex';
+                stageContainer.style.justifyContent = 'center';
+                stageContainer.style.alignItems = 'center';
+                stageContainer.style.pointerEvents = 'none';
+                stageContainer.style.zIndex = '10';
+
+                if (currentSubtitlePos === 'pos-top') {
+                    stageContainer.style.top = isPortrait ? '32px' : '16px';
+                    stageContainer.style.bottom = 'auto';
+                    stageContainer.style.transform = 'translateX(-50%)';
+                } else if (currentSubtitlePos === 'pos-center') {
+                    stageContainer.style.top = '50%';
+                    stageContainer.style.bottom = 'auto';
+                    stageContainer.style.transform = 'translate(-50%, -50%)';
+                } else {
+                    stageContainer.style.top = 'auto';
+                    stageContainer.style.bottom = isPortrait ? '24px' : '14px';
+                    stageContainer.style.transform = 'translateX(-50%)';
+                }
             }
 
-            // Génération du contenu HTML des mots
+            // Génération du contenu HTML des mots avec animation et couleurs dynamiques réelles
             let wordsHtml = '';
             if (currentSubtitleType === 'type-standard') {
-                wordsHtml = subPreviewWords.map(w => `<span class="word">${w}</span>`).join(' ');
-            } else if (currentSubtitleType === 'type-wordbyword') {
+                wordsHtml = subPreviewWords.map(w => `<span class="word" style="color:${currentSubtitleBaseColorHex}; display:inline-block; transition:all 0.15s ease;">${w}</span>`).join(' ');
+            } else {
                 wordsHtml = subPreviewWords.map((w, idx) => {
-                    const isActive = (idx === subActiveWordIdx) ? ' active' : '';
-                    return `<span class="word${isActive}">${w}</span>`;
+                    const isActive = (idx === subActiveWordIdx);
+                    if (isActive) {
+                        return `<span class="word active" style="color: ${currentSubtitleAccentColor} !important; font-weight: 900; transform: scale(1.12); display: inline-block; transition: all 0.15s ease; text-shadow: 0 0 14px ${currentSubtitleAccentColor}, 0 2px 6px rgba(0,0,0,0.9);">${w}</span>`;
+                    } else {
+                        return `<span class="word" style="color: ${currentSubtitleBaseColorHex}; display: inline-block; transition: all 0.15s ease;">${w}</span>`;
+                    }
                 }).join(' ');
             }
 
-            // Mise à jour de la boîte de rendu dans le cadre 16:9
+            // Mise à jour de la boîte de rendu dans le téléphone
             if (stageBox) {
                 const classes = ['subtitle-box', currentSubtitleType, currentSubtitleFont];
-                if (currentSubtitleGlow !== 'none') classes.push(currentSubtitleGlow);
                 if (currentSubtitleBg !== 'none') {
                     classes.push(currentSubtitleBg);
                     classes.push(currentSubtitleRadius);
                 }
                 stageBox.className = classes.join(' ');
+
+                // Police d'écriture en temps réel
+                if (currentSubtitleFont === 'font-poppins') {
+                    stageBox.style.fontFamily = "'Poppins', sans-serif";
+                    stageBox.style.fontWeight = '700';
+                } else if (currentSubtitleFont === 'font-montserrat') {
+                    stageBox.style.fontFamily = "'Montserrat', sans-serif";
+                    stageBox.style.fontWeight = '800';
+                } else if (currentSubtitleFont === 'font-custom' && currentSubtitleCustomFont) {
+                    stageBox.style.fontFamily = `'${currentSubtitleCustomFont}', sans-serif`;
+                    stageBox.style.fontWeight = '700';
+                } else {
+                    stageBox.style.fontFamily = "'Poppins', sans-serif";
+                    stageBox.style.fontWeight = '700';
+                }
+
+                // Taille de police adaptative : réduite sur format debout pour tenir sur 1 ligne
+                if (isPortrait) {
+                    stageBox.style.fontSize = '7.5px';
+                    stageBox.style.gap = '2.5px';
+                } else if (isSquare) {
+                    stageBox.style.fontSize = '8.5px';
+                    stageBox.style.gap = '3px';
+                } else {
+                    stageBox.style.fontSize = '12px';
+                    stageBox.style.gap = '4.5px';
+                }
+
+                stageBox.style.whiteSpace = 'nowrap';
+                stageBox.style.display = 'inline-flex';
+                stageBox.style.alignItems = 'center';
+                stageBox.style.justifyContent = 'center';
+                stageBox.style.lineHeight = '1.2';
+                stageBox.style.boxSizing = 'border-box';
+
+                // Fond (Background) & Arrondi en temps réel
+                if (currentSubtitleBg !== 'none') {
+                    stageBox.style.backgroundColor = currentSubtitleBgColorHex;
+                    if (currentSubtitleRadius === 'radius-pill') {
+                        stageBox.style.borderRadius = '999px';
+                        stageBox.style.padding = isPortrait ? '2px 8px' : '4px 14px';
+                    } else if (currentSubtitleRadius === 'radius-md') {
+                        stageBox.style.borderRadius = '10px';
+                        stageBox.style.padding = isPortrait ? '2px 6px' : '4px 10px';
+                    } else if (currentSubtitleRadius === 'radius-sm') {
+                        stageBox.style.borderRadius = '5px';
+                        stageBox.style.padding = isPortrait ? '2px 5px' : '3px 8px';
+                    } else {
+                        stageBox.style.borderRadius = '0px';
+                        stageBox.style.padding = isPortrait ? '2px 5px' : '3px 8px';
+                    }
+                } else {
+                    stageBox.style.backgroundColor = 'transparent';
+                    stageBox.style.borderRadius = '0px';
+                    stageBox.style.padding = '0px';
+                }
+
                 stageBox.style.setProperty('--sub-base-color', currentSubtitleBaseColorHex);
                 stageBox.style.setProperty('--sub-accent-color', currentSubtitleAccentColor);
-                if (currentSubtitleBg !== 'none') {
-                    stageBox.style.setProperty('--sub-bg-color', currentSubtitleBgColorHex);
-                } else {
-                    stageBox.style.removeProperty('--sub-bg-color');
-                }
-                if (currentSubtitleFont === 'font-custom' && currentSubtitleCustomFont) {
-                    stageBox.style.setProperty('--sub-custom-font', `'${currentSubtitleCustomFont}', sans-serif`);
-                }
+
                 stageBox.innerHTML = wordsHtml;
             }
         }
@@ -4820,8 +5158,9 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     subActiveWordIdx = (subActiveWordIdx + 1) % subPreviewWords.length;
                     updateLiveSubtitlePreview();
                 }
-            }, 600);
+            }, 550);
         }
+        startSubPreviewLoop();
 
         // --- LISTE OFFICIELLE DES STYLES (SANS EMOJIS, CARTES COMPACTES) ---
         const DEFAULT_STYLES = [

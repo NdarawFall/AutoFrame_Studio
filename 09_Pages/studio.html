@@ -311,11 +311,15 @@
 
             <!-- VUE 3 : MODIFIER (CHATBOT IA) -->
             <div id="viewModifier" style="flex:1; display:none; flex-direction:column; overflow:hidden; background:var(--bg-base);">
-                <!-- Header Modifier épuré sans cible/nom encombrant -->
-                <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-                    <button onclick="clearModifierChatHistory()" class="btn-icon" title="Effacer l'historique de cette vidéo" style="display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); color:var(--text-muted); font-size:11px; cursor:pointer; transition:var(--transition-smooth);">
-                        <svg class="icon" viewBox="0 0 24 24" style="width:13px; height:13px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        <span>Effacer l'historique</span>
+                <!-- Header Modifier avec Titre à gauche et Bouton Effacer parfaitement aligné à droite -->
+                <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">
+                        <svg class="icon" viewBox="0 0 24 24" style="width: 13px; height: 13px; color: #a1a1aa;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Assistant Vidéo</span>
+                    </div>
+                    <button type="button" onclick="clearModifierChatHistory()" class="btn-clear-chat" title="Effacer l'historique des modifications de cette vidéo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Effacer</span>
                     </button>
                 </div>
 
