@@ -282,3 +282,17 @@ loader.load('../01_Assets/3D/mon_modele.glb', (gltf) => {
 >   - Les cuisses plient vers l'avant, **mais les tibias et les pieds restent posés au sol ou partent vers l'arrière sous le corps**.
 >   - **INTERDICTION FORMELLE** de faire pivoter les jambes entières rigides vers l'avant (ce qui ressemble à des jambes cassées flottant en l'air à l'horizontale).
 
+---
+
+## 🎨 6. Pipeline Image-to-Three.js (`img2threejs`) — Modélisation Procédurale par Code
+
+> 📘 **Guide et Spécifications Complètes :** Consulter [image2threejs_pipeline.md](file:///c:/Users/ndara/heygen-new/.agents/skills/My_Skills/threejs_3d/image2threejs_pipeline.md).
+> 🛠️ **Script CLI Dédié :** `node 07_Scripts/image2threejs.cjs` (analyse d'images via `sharp`, extraction de palette PBR et génération de composants Three.js).
+
+### 6.1 Pourquoi privilégier le Procédural Code `img2threejs` :
+- **Zéro dépendance réseau** : Pas de téléchargement de `.glb` lourd qui échoue ou ralentit le Studio.
+- **100% Déterministe** : Synchronisation immédiate avec `window.__timeline.seek(t)`.
+- **Rigs GSAP Clés en Main** : Les pivots de rotation sont nativement placés aux articulations (épaules, hanches, genoux).
+- **8 Passes Qualité** : Blockout → Structural → Form → Material → Surface → Lighting → Rigging → Optimization.
+
+

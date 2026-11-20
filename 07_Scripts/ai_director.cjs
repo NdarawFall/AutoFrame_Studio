@@ -360,6 +360,89 @@ function buildFallbackScene(sceneIndex, totalScenes, scenePlan, format, accentCo
     };
 }
 
+// =========================================================================
+// INVENTAIRE EN MÉMOIRE DES OUTILS ET SKILLS DU PROJET (ZÉRO FICHIER RÉSIDUEL)
+// =========================================================================
+function inspectRelevantToolsAndSkills(prompt, customScript = '') {
+    const text = (prompt + ' ' + customScript).toLowerCase();
+    const tools = [];
+    const skills = [];
+    let visualStrategy = 'motion_design_vectoriel';
+
+    // 1. 3D WebGL / Procédural / Modèles
+    if (/3d|three\.?js|maison|chambre|personnage|walk|salon|voiture|smartphone 3d|isometric|objet 3d/i.test(text)) {
+        tools.push('image2threejs.cjs (génération procédurale 3D sans GLB, zéro latence, rig natif GSAP)');
+        skills.push('threejs_3d (caméra third-person over-the-shoulder, CatmullRomCurve3, zéro collision/clipping, pas de fond cosmos)');
+        visualStrategy = '3d_immersion';
+    } else if (/modele 3d|gltf|glb|poly haven|khronos/i.test(text)) {
+        tools.push('fetch_3d_model.cjs (téléchargement GLB photoréaliste)');
+        visualStrategy = '3d_gltf';
+    }
+
+    // 2. Logos officiels de marques
+    if (/logo|marque|apple|nike|tesla|google|meta|amazon|rolex|spotify|netflix|stripe|openai/i.test(text)) {
+        tools.push('brandfetch.cjs (logos officiels vectoriels SVG)');
+        skills.push('design_composition (pas de cercle pixelisé ni de halo destructeur sur les logos)');
+    }
+
+    // 3. Cartes et géographie
+    if (/carte|map|satellite|géographie|pays|ville|trajet|itinéraire|france|paris|tokyo/i.test(text)) {
+        tools.push('fetch_map.cjs & stitch_map.cjs (cartographie satellite HD)');
+    }
+
+    // 4. Captures d'écrans web réelles
+    if (/https?:\/\/|[a-z0-9-]+\.(?:com|io|fr|app|ai|dev)/i.test(text) || /dashboard|saas|interface/i.test(text)) {
+        tools.push('record_web.cjs (captures d\'écrans HD de vrais sites web)');
+        visualStrategy = 'saas_mockup';
+    }
+
+    // 5. Sound Design & Rythme
+    if (!/sans son|muet|none/i.test(text)) {
+        tools.push('sfx.py (sound design percutant, whooshes, impacts rythmés aux transitions)');
+        skills.push('sound_design');
+    }
+
+    // 6. Typographie & Mouvements de Caméra
+    skills.push('text_animation (double typographie fashion light + bold, révélation mot par mot cinématique)');
+    skills.push('Camera (mouvements justifiés, règle des tiers, transitions motivées portal/zoom/slide)');
+
+    return {
+        tools,
+        skills,
+        visualStrategy
+    };
+}
+
+// =========================================================================
+// NETTOYEUR / LINTER AUTOMATIQUE DE SCÈNE (GARDE-FOU MÉCANIQUE RÈGLES 40 & 41)
+// =========================================================================
+function sanitizeSceneCode(codeObj, sceneIndex) {
+    if (!codeObj) return codeObj;
+    let html = codeObj.htmlContent || '';
+    let css = codeObj.customCss || '';
+    let js = codeObj.gsapTimelineCode || '';
+
+    // Règle 40 : Suppression des étiquettes / badges didactiques PowerPoint
+    html = html.replace(/\[\s*(?:étape|scène|scene|règle|regle|chapitre|slide)\s*\d*\s*[:\-]?\s*[^\]]*\]/gi, '');
+    html = html.replace(/<span[^>]*class="[^"]*tag-pill[^"]*"[^>]*>[\s\S]*?<\/span>/gi, '');
+    html = html.replace(/<div[^>]*class="[^"]*hud-telemetry[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
+
+    // Règle 41 : Suppression des faux boutons d'action web (c'est une vidéo, pas un site)
+    html = html.replace(/<button[^>]*>\s*(?:commencer|sign up|s'inscrire|en savoir plus|cliquez ici|télécharger|start free|get started|demo)[\s\S]*?<\/button>/gi, '');
+
+    // Sécurité NaN dans le code GSAP
+    if (js.includes('NaN')) {
+        console.warn(`[Sanitizer] Détection de NaN dans le code GSAP scène ${sceneIndex}, nettoyage.`);
+        js = js.replace(/\bNaN\b/g, '0');
+    }
+
+    return {
+        htmlContent: html,
+        customCss: css,
+        gsapTimelineCode: js
+    };
+}
+
 // Génération individuelle d'une scène par Gemini avec synchronisation stricte sur la voix
 async function generateSceneCodeWithGemini({
     sceneIndex,
@@ -377,48 +460,64 @@ async function generateSceneCodeWithGemini({
     preferredAi = null
 }) {
     const isFirstScene = (sceneIndex === 1);
-    const systemPrompt = `Tu es l'Expert Motion Designer et Développeur UI/UX en chef de AutoFrame.
+    const transitionType = scenePlan.transitionOut?.type || (sceneIndex < totalScenes ? 'object_zoom_portal' : 'cinematic_dissolve');
+    const transitionTrigger = scenePlan.transitionOut?.triggerElement || 'element-cle';
+
+    const systemPrompt = `Tu es l'Expert Motion Designer et Réalisateur Vidéo en chef de AutoFrame.
 Tu dois concevoir et coder la Scène ${sceneIndex}/${totalScenes} d'une composition vidéo fluide, moderne et hautement cinématique.
 
 ${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS :\n${skillsDirectives}\n` : ''}
 
-SUPERPOUVOIRS DESIGN & ANIMATION DISPONIBLES :
-- TAILWIND CSS & DESIGN SYSTEM SHADCN/UI : Utilise les classes utilitaires modernes (flex, grid, gap, backdrop-blur-xl, rounded-xl/2xl, shadow-2xl).
-- COMPOSANTS SHADCN & ACETERNITY / MAGIC UI :
-  * Cartes épurées sombres (border border-zinc-800/80 bg-zinc-950/70 shadow-2xl).
-  * Effet bordure lumineuse : classe 'border-beam'.
-  * Arrière-plans tech texturés : classes 'bg-dot-grid' ou 'bg-line-grid'.
-  * Textes avec reflet lumineux défilant : classe 'text-shimmer'.
-  * Badges pillules (rounded-full px-3 py-1 text-xs font-semibold border).
-  * Métriques géantes (text-5xl font-extrabold tracking-tight).
-  * Fenêtres macOS avec 3 pastilles colorées.
-- DRAPEAUX VECTORIELS (AUCUN ÉMOJI BRUT) : Ne JAMAIS mettre d'émoji drapeau brut qui s'affiche sous forme de lettres (ex: FR, US) sous Windows ! Utilise TOUJOURS :
-  * Soit Flagcdn SVG : <img src="https://flagcdn.com/fr.svg" class="w-7 h-5 rounded shadow-sm inline-block object-cover">
-  * Soit la classe Flag-Icons : <span class="fi fi-fr rounded-sm shadow-sm inline-block"></span>
-- CAPTURES DE VRAIS SITES WEB (MICROLINK) : Pour afficher un vrai site ou dashboard en arrière-plan ou dans un mockup :
-  <img src="https://api.microlink.io?url=https://[DOMAINE]&screenshot=true&meta=false&embed=screenshot.url" class="rounded-xl border border-zinc-800 shadow-2xl">
-- ICÔNES VECTORIELLES LUCIDE : Tu peux insérer n'importe quelle icône Lucide avec <i data-lucide="sparkles" class="w-5 h-5 text-accent"></i> (ex: zap, trending-up, check, shield, flame, rocket, bar-chart-3, layers, cpu).
-- MOTEURS D'ANIMATION DOUBLE (GSAP & ANIMEJS) : Tu as l'instance 'tl' (GSAP) pour séquencer la scène. Tu peux aussi utiliser Anime.js (ex: 'anime({...})' ou 'anime.timeline({ autoplay: false })') pour des compteurs dynamiques ou effets de ressorts. Si tu crées une timeline Anime.js, enregistre-la via 'window.__animeTimelines = window.__animeTimelines || []; window.__animeTimelines.push(maTimelineAnime);'.
+RÈGLES D'OR DE RÉALISATION ET DESIGN :
+1. ZÉRO ÉTIQUETTE POWERPOINT (RÈGLE 40) :
+   - Interdiction FORMELLE des badges didactiques : [ Étape 01 ], [ Scène X ], .tag-pill, ou faux textes HUD de télémétrie aux 4 coins.
+   - Une vidéo est un film, pas un diaporama. On montre l'action visuellement, on ne l'étiquette pas.
+2. ZÉRO BOUTON D'ACTION WEB (RÈGLE 41) :
+   - Ne JAMAIS placer de faux boutons cliquables interactifs (<button>Commencer</button>, <button>Sign up</button>).
+   - L'écran est un flux vidéo regardé par un spectateur, pas une landing page.
+3. TRANSITIONS CINÉMATIQUES MOTIVÉES ENTRE SCÈNES (RÈGLE 42) :
+   - Transition prévue pour sortir de cette scène vers la suivante : "${transitionType}" (déclenchée via "${transitionTrigger}").
+   - Ne PAS utiliser un simple fade-out noir systématique sur toutes les scènes !
+   - Si "object_zoom_portal" : La caméra zoome violemment sur l'élément clé (scale 1.0 -> 15.0, lueur ou flou) pour plonger dans la scène suivante.
+   - Si "whip_slide" : Balayage directionnel dynamique (x: -100% ou y: -100% avec motion blur) motivé par le mouvement d'un objet.
+   - Si "match_cut" : Raccord direct de forme/couleur entre la fin de cette scène et le début de la suivante.
+   - Si "hard_cut" : Coupure nette instantanée sur un temps fort ou percussion audio.
+   - Si "cinematic_dissolve" : Fondu croisé subtil et élégant.
+4. ANIMATION TYPOGRAPHIQUE MOT PAR MOT (TEXT ANIMATION) :
+   - Tout texte doit utiliser la double typographie (mot clé en police bold + mot d'accompagnement en police light/fashion).
+   - Apparition mot-à-mot synchronisée sur la voix off (${scenePlan.timeStart}s -> ${scenePlan.timeEnd}s).
+5. ZÉRO SCÈNE MORTE SANS VIE (RÈGLE 44) :
+   - Chaque scène DOIT VIVRE continuellement. Interdiction formelle des scènes inertes ou figées !
+   - Intégrer une dérive caméra subtile continue (slow push-in scale 1.0 -> 1.05 ou lent pan x/y), et des micro-mouvements d'ambiance (orbes diffuses oscillantes, compteurs actifs, curseurs clignotants).
+   - Seule exception autorisée : un court plateau cognitif ("Holding Phase" de 1.2s à 1.8s max) pour stabiliser le regard sur une métrique clé ou une punchline cruciale, avant de relancer le mouvement.
+6. DIVERSITÉ DES CARDS & ANIMATION INTERNE DÉCALÉE (RÈGLE 45) :
+   - Varier le style des cards selon le contexte :
+     * Flat / Bento Card Minimaliste : bordure fine nette (1px solid rgba(..., 0.08)), contraste maximal, fond neutre.
+     * Card 3D en perspective : relief spatial (transform: perspective(1000px) rotateX(...) rotateY(...)) réagissant à la caméra.
+     * Card Élevée / Ombrée (Elevated Shadow) : ombre portée douce multicouche (box-shadow: 0 12px 32px rgba(...)) avec respect absolu du contraste.
+   - INTERDICTION FORMELLE DE FAIRE APPARAÎTRE UNE CARD COMME UN BLOC FIGÉ MONOBLOC :
+     Chaque élément interne de la card (badge d'en-tête, icône, titre, chiffre/métrique, jauge de progression, sparkline) DOIT s'animer de manière décalée (stagger: 0.08s ou entrées séquencées).
+7. CHORÉGRAPHIE COGNITIVE : ANIMATION SÉQUENCÉE VS SIMULTANÉE (RÈGLE 47) :
+   - Si voix off : chaque mot ou élément animé apparaît pile au moment exact où la voix le prononce (l'œil suit l'oreille).
+   - Si sans voix off : animer selon l'ordre hiérarchique de lecture humaine (Titre -> Card/Objet -> Chiffre/Détail -> Conclusion). Le cerveau ne peut comprendre qu'un élément à la fois.
+   - Le mode SIMULTANÉ (tout en même temps) est STRICTEMENT RÉSERVÉ aux éléments d'ambiance globale où le spectateur n'a PAS besoin de comprendre chaque élément un par un (explosion de particules, confettis, pluie de logos secondaires en fond, grille d'arrière-plan).
+8. SUPERPOUVOIRS DESIGN & ANIMATION DISPONIBLES :
+   - TAILWIND CSS & DESIGN SYSTEM SHADCN/UI (flex, grid, gap, backdrop-blur-xl, rounded-xl/2xl, shadow-2xl).
+   - DRAPEAUX VECTORIELS SVG (Flagcdn ou Flag-Icons, AUCUN émoji brut).
+   - VRAIES CAPTURES DE SITES WEB (Microlink).
+   - ICÔNES LUCIDE VECTORIELLES (<i data-lucide="..."></i>).
+   - GSAP & ANIMEJS (instance 'tl' GSAP déterministe).
 
-RÈGLES MAÎTRESSES POUR CETTE SCÈNE :
+RÈGLES TECHNIQUES MAÎTRESSES :
 1. ISOLATION STRICTE :
    - Tout le code HTML de cette scène DOIT être encapsulé dans :
      <div class="scene-container" id="scene_${sceneIndex}">...</div>
    - Le CSS de cette scène DOIT être préfixé par #scene_${sceneIndex}.
    - NE JAMAIS utiliser '!important'.
-2. SCÈNE 1 (ACCROCHE INITIALE) :
-   - Si scène 1 : active immédiatement dès t=0.0s { opacity: 1; visibility: visible; display: flex; }. BANNIR tout écran noir ou vide à t=0 !
-   - Si scène > 1 : commence à t = ${scenePlan.timeStart}s avec { opacity: 0; display: flex; }.
-3. SYNCHRONISATION ABSOLUE SUR LA VOIX OFF :
-   - Paroles exactes dites pendant cette tranche horaire [${scenePlan.timeStart}s -> ${scenePlan.timeEnd}s] :
-     "${scenePlan.voiceLine || scenePlan.subtitle || ''}"
-   - Le texte à l'écran, le titre ou le mot-clé DOIVENT s'animer et apparaître AU MOMENT EXACT OÙ LA VOIX LES PRONONCE. Pas avant, pas après.
-4. ANIMATION GSAP & TRANSITIONS :
-   - Début à ${scenePlan.timeStart}s : apparition percutante des visuels et typographies.
-   - Sortie à ${scenePlan.timeEnd}s : fondu de sortie ou translation fluide, puis :
-     tl.to('#scene_${sceneIndex}', { opacity: 0, duration: 0.35 }, ${(Math.max(scenePlan.timeStart + 0.4, scenePlan.timeEnd - 0.35)).toFixed(2)});
-     tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
-   - Utilise l'instance 'tl' existante. Ne redéclare PAS 'const tl'.
+2. GESTION DU TEMPS :
+   - Début à ${scenePlan.timeStart}s. Si scène 1 : visible immédiatement dès t=0s.
+   - Sortie à ${scenePlan.timeEnd}s : exécuter la transition cinématique "${transitionType}".
+   - tl.set('#scene_${sceneIndex}', { display: 'none', visibility: 'hidden', pointerEvents: 'none' }, ${scenePlan.timeEnd});
 
 Réponds UNIQUEMENT par un objet JSON valide avec 3 champs :
 {
@@ -428,12 +527,14 @@ Réponds UNIQUEMENT par un objet JSON valide avec 3 champs :
 }`;
 
     const userPrompt = `Génère le code complet de la Scène ${sceneIndex}/${totalScenes} :
+- Type de scène : ${scenePlan.type || 'Séquence cinématique'}
 - Tranche horaire : de ${scenePlan.timeStart}s à ${scenePlan.timeEnd}s (Durée : ${(scenePlan.timeEnd - scenePlan.timeStart).toFixed(1)}s)
 - Voix off correspondante : "${scenePlan.voiceLine || scenePlan.subtitle || ''}"
-- Titre : "${scenePlan.headline}"
+- Titre : "${scenePlan.headline || ''}"
 - Mot-clé accent : "${scenePlan.headlineAccent || ''}"
 - Sous-titre : "${scenePlan.subtitle || ''}"
 - Concept visuel : "${scenePlan.concept || ''}"
+- Transition de sortie : ${transitionType} sur ${transitionTrigger}
 - Format : ${format} (${width}x${height})
 - Couleur accent : ${accentColor}
 - Assets disponibles à intégrer si pertinents :
@@ -443,7 +544,7 @@ Réponds UNIQUEMENT en JSON.`;
 
     const res = await callGeminiAPI(systemPrompt, userPrompt, 0.7, preferredAi);
     if (res && res.htmlContent && res.gsapTimelineCode) {
-        return res;
+        return sanitizeSceneCode(res, sceneIndex);
     }
     throw new Error(`Réponse Gemini incomplète pour la scène ${sceneIndex}`);
 }
@@ -675,23 +776,43 @@ async function runAiVideoPipeline(payload, onProgress = () => { }) {
     if (plan && plan.scenes && plan.scenes.length > 0) {
         logAndSaveStep('step_init', 'Plan narratif restauré depuis le point de contrôle', 15, `[Reprise] Plan existant réutilisé : "${plan.title}" (${plan.scenes.length} scènes)`, 'success');
     } else {
-        logAndSaveStep('step_init', 'Gemini conçoit le découpage et le plan des scènes...', 15, `Analyse du brief et découpage des scènes avec timecodes stricts...`, 'info');
+        // Inventaire dynamique en mémoire des outils du projet sans fichier résiduel
+        const discoveredResources = inspectRelevantToolsAndSkills(prompt, customScript);
+        logAndSaveStep('step_init', 'Inventaire en mémoire des outils & conception narrative...', 12, 
+            `Outils sélectionnés : ${discoveredResources.tools.join(', ') || 'Motion design vectoriel natif'}. Compétences : ${discoveredResources.skills.join(', ')}`, 'info');
 
         const parsedScriptScenes = hasCustomScript ? parseTimestampedScript(customScript, promptDuration || 20.0) : [];
 
         const systemPrompt = `Tu es le Directeur Créatif et Motion Designer en chef de AutoFrame.
-Tu dois analyser le brief utilisateur, intégrer les skills professionnels et concevoir le plan narratif structuré de la vidéo.
+Tu dois analyser le brief utilisateur, intégrer les outils et skills du projet sélectionnés en mémoire, et concevoir un plan narratif original, asymétrique et cinématographique.
 
-${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS (00_Skills/) :\n${skillsDirectives}\n` : ''}
+${discoveredResources.tools.length > 0 ? `OUTILS DU PROJET SÉLECTIONNÉS EN MÉMOIRE POUR CE BRIEF :\n- ${discoveredResources.tools.join('\n- ')}\n` : ''}
+${discoveredResources.skills.length > 0 ? `SKILLS ET COMPÉTENCES MOBILISÉES :\n- ${discoveredResources.skills.join('\n- ')}\n` : ''}
+${skillsDirectives ? `DIRECTIVES SKILLS OFFICIELS :\n${skillsDirectives}\n` : ''}
 
-RÈGLES CRÉATIVES ET DIRECTION ARTISTIQUE :
-1. LIBERTÉ & MAÎTRISE DU FOND (Arrière-plans adaptés à chaque scène) :
-   - Fond Noir pur (#000000, #08080a), Blanc studio (#ffffff, #f8fafc), Couleur Unie spécifique (#111827) ou Dégradé.
-   - BANNISSEMENT ABSOLU DU FOND BLEU ARDOISE / NAVY (#0f172a, #1e293b) sauf demande explicite.
-2. CHARTE 60-30-10 : 60% fond, 30% surfaces/texte secondaire, 10% une seule couleur d'accent vive signature.
-3. SCÈNES DISTINCTES & TIME-CODES :
-   - Tu DOIS diviser la vidéo en 3 à 5 scènes précises. Chaque scène possède : id, timeStart (en s), timeEnd (en s), headline (titre fort), headlineAccent (mot-clé accent), subtitle (phrase d'accompagnement), concept (visuel prévu), voiceLine (paroles exactes de la voix dites pendant cette tranche horaire).
-4. DÉTECTION DES OUTILS : brandLogo (true/false), brandDomain, map, mapQuery, flag, country.
+RÈGLES MAÎTRESSES DE CONCEPTION & TRANSITIONS (ANTI-RÉPÉTITION) :
+1. DÉCOUPAGE ORGANIQUE ASYMÉTRIQUE :
+   - BANNISSEMENT ABSOLU des découpages rigides uniformes (ex: 4 scènes égales de 5 secondes).
+   - Le rythme cinématographique varie naturellement :
+     * Hook d'accroche : 2.0s à 3.5s intenses.
+     * Démonstration / Tension narrative : 5.0s à 8.0s.
+     * Respiration ou Climax : 3.0s à 4.0s.
+2. FIN DU STORYBOARD CLICHÉ (PAS DE TITRE/SOUS-TITRE OBLIGATOIRE SUR TOUT) :
+   - Une scène d'action, de visite 3D ou d'illustration pure DOIT être visuelle (zéro titre parasite, zéro sous-titre si l'image parle d'elle-même).
+   - Les titres sont réservés aux scènes d'accroche ou de conclusion percutante.
+3. TRANSITIONS MOTIVÉES ENTRE SCÈNES (CHAMP "transitionOut" OBLIGATOIRE) :
+   Pour chaque scène vers la suivante, choisis une transition cinématographique spécifique et motivée :
+   * "object_zoom_portal" : Zoom plongeant rapide sur un objet (logo, mot clé, étoile, œil, écran) qui grandit (scale 1.0 -> 15.0) et dévoile la scène suivante.
+   * "whip_slide" : Balayage directionnel énergique entraîné par le déplacement rapide d'un objet.
+   * "match_cut" : Raccord visuel direct basé sur la continuité géométrique ou colorimétrique d'une forme.
+   * "hard_cut" : Coupure nette instantanée sur un temps fort musical ou une phrase percutante.
+   * "j_cut" / "l_cut" : Décalage audio-visuel d'anticipation.
+   * "cinematic_dissolve" : Fondu croisé réservé aux scènes lentes et contemplatives.
+   INTERDICTION d'utiliser un simple fondu noir fade-out standard sur toutes les scènes !
+4. CHARTE 60-30-10 & COULEURS : 60% fond, 30% surfaces/texte secondaire, 10% une seule couleur d'accent vive signature.
+5. ZÉRO ÉTIQUETTE POWERPOINT & ZÉRO BOUTON WEB : Pas de conteneurs didactiques, pas de faux boutons d'action.
+6. ZÉRO SCÈNE MORTE SANS VIE : Chaque scène doit posséder une impulsion continue (dérive caméra, micro-mouvements). Les éléments de cards sont animés en séquence décalée.
+7. AUDIO & FONDU MUSICAL : Voix stable et immédiate dès 0s, ducking de la musique et fondu de fin obligatoire sur la musique.
 
 Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
 {
@@ -699,6 +820,7 @@ Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
   "slug": "2 a 3 mots cles courts (ex: saas_dashboard, rolex_submariner)",
   "pitch": "Résumé en une phrase",
   "targetDuration": ${(promptDuration || 20.0).toFixed(1)},
+  "visualStrategy": "${discoveredResources.visualStrategy}",
   "background": {
     "type": "black",
     "global": "#000000",
@@ -721,18 +843,25 @@ Réponds UNIQUEMENT par un objet JSON valide avec cette structure exacte :
     "mapQuery": "",
     "mapStyle": "dark",
     "flag": false,
-    "country": ""
+    "country": "",
+    "threeJsProcedural": ${discoveredResources.visualStrategy === '3d_immersion'}
   },
   "scenes": [
     {
       "id": 1,
+      "type": "cinematic_hook",
       "timeStart": 0.0,
-      "timeEnd": 5.0,
-      "headline": "TITRE PRINCIPAL",
-      "headlineAccent": "MOT-CLÉ ACCENT",
-      "subtitle": "Sous-titre d'accompagnement",
+      "timeEnd": 3.5,
+      "headline": "TITRE OU VIDE SI SCÈNE PUREMENT VISUELLE",
+      "headlineAccent": "MOT-CLÉ OU VIDE",
+      "subtitle": "Sous-titre ou vide",
       "voiceLine": "Texte dit par la voix off pendant cette tranche horaire",
-      "concept": "Concept visuel fort"
+      "concept": "Concept visuel fort et description de l'action",
+      "transitionOut": {
+        "type": "object_zoom_portal",
+        "triggerElement": "element_cle",
+        "description": "La caméra plonge dans l'élément central pour ouvrir la scène 2"
+      }
     }
   ]
 }`;
@@ -770,6 +899,7 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                 slug: baseRawName,
                 pitch: prompt || 'Composition vidéo dynamique',
                 targetDuration: promptDuration || 20.0,
+                visualStrategy: discoveredResources.visualStrategy,
                 background: { type: payload.backgroundType || 'black', global: '#000000', textMain: '#ffffff', textMuted: '#94a3b8' },
                 theme: { primaryColor: '#000000', secondaryColor: '#121217', accentColor: '#f59e0b', fontTitle: 'Outfit', fontBody: 'Inter' },
                 narration: fallbackNarration,
@@ -780,12 +910,46 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
                     map: /carte|map|pays|ville|paris|tokyo|france/i.test(prompt),
                     mapQuery: 'Paris, France',
                     flag: /suisse|france|japon|etats-unis|usa|bresil|allemagne|chine/i.test(prompt),
-                    country: 'France'
+                    country: 'France',
+                    threeJsProcedural: discoveredResources.visualStrategy === '3d_immersion'
                 },
                 scenes: [
-                    { id: 1, timeStart: 0.0, timeEnd: 6.0, headline: "DÉCOUVREZ L'HISTOIRE", headlineAccent: "L'HISTOIRE", subtitle: "Ce que personne n'avait anticipé", voiceLine: fallbackNarration.slice(0, 60), concept: "Accroche typographique" },
-                    { id: 2, timeStart: 6.0, timeEnd: 12.0, headline: "L'IMPACT FONDAMENTAL", headlineAccent: "FONDAMENTAL", subtitle: "Une transformation radicale", voiceLine: fallbackNarration.slice(60, 120), concept: "Infographie et données" },
-                    { id: 3, timeStart: 12.0, timeEnd: 18.0, headline: "LE FUTUR COMMENCE", headlineAccent: "MAINTENANT", subtitle: "La conclusion incontournable", voiceLine: fallbackNarration.slice(120), concept: "Conclusion centrée" }
+                    { 
+                        id: 1, 
+                        type: "cinematic_hook",
+                        timeStart: 0.0, 
+                        timeEnd: 4.0, 
+                        headline: "DÉCOUVREZ L'HISTOIRE", 
+                        headlineAccent: "L'HISTOIRE", 
+                        subtitle: "Ce que personne n'avait anticipé", 
+                        voiceLine: fallbackNarration.slice(0, 60), 
+                        concept: "Accroche visuelle et typographique percutante",
+                        transitionOut: { type: "object_zoom_portal", triggerElement: "logo_central", description: "Zoom avant dynamique dans le symbole" }
+                    },
+                    { 
+                        id: 2, 
+                        type: "dynamic_tension",
+                        timeStart: 4.0, 
+                        timeEnd: 11.0, 
+                        headline: "L'IMPACT FONDAMENTAL", 
+                        headlineAccent: "FONDAMENTAL", 
+                        subtitle: "Une transformation radicale", 
+                        voiceLine: fallbackNarration.slice(60, 120), 
+                        concept: "Démonstration visuelle et schémas dynamiques",
+                        transitionOut: { type: "whip_slide", triggerElement: "flux_donnees", description: "Balayage rapide vers la conclusion" }
+                    },
+                    { 
+                        id: 3, 
+                        type: "concluding_climax",
+                        timeStart: 11.0, 
+                        timeEnd: (promptDuration || 16.0), 
+                        headline: "LE FUTUR COMMENCE", 
+                        headlineAccent: "MAINTENANT", 
+                        subtitle: "La conclusion incontournable", 
+                        voiceLine: fallbackNarration.slice(120), 
+                        concept: "Conclusion cinématique avec call-to-action signature",
+                        transitionOut: { type: "cinematic_dissolve", triggerElement: "fond", description: "Fondu final élégant" }
+                    }
                 ]
             };
         }
@@ -1725,6 +1889,34 @@ Veille à ce que chaque scène dans "scenes" reprenne exactement les tranches de
 </html>`;
 
     fs.writeFileSync(finalFilePath, finalHtml, 'utf8');
+
+    // Assemblage automatique de la bande-son master (_master_soundtrack.wav) pour render.cjs et le Studio
+    if (hasVoice || hasMusic) {
+        try {
+            const masterSoundtrackDir = path.join(ROOT_DIR, '01_Assets', 'Audio_Mix');
+            ensureDir(masterSoundtrackDir);
+            const masterSoundtrackPath = path.join(masterSoundtrackDir, finalFileName.replace(/\.html$/i, '_master_soundtrack.wav'));
+
+            const voiceFullPath = (hasVoice && generatedVoiceRelPath)
+                ? path.join(ROOT_DIR, generatedVoiceRelPath.replace(/^\.\.\//, ''))
+                : (payload.voiceover ? path.join(ROOT_DIR, '01_Assets', 'Voix_Off', payload.voiceover) : '');
+
+            const musicFullPath = (hasMusic && musicRelPath)
+                ? path.join(ROOT_DIR, musicRelPath.replace(/^\.\.\//, ''))
+                : '';
+
+            const buildSoundtrackScript = path.join(__dirname, 'build_soundtrack.cjs');
+            if (fs.existsSync(buildSoundtrackScript) && (fs.existsSync(voiceFullPath) || fs.existsSync(musicFullPath))) {
+                let cmd = `node "${buildSoundtrackScript}" --out "${masterSoundtrackPath}" --duration ${totalVideoDuration.toFixed(2)} --fade-out 2.2`;
+                if (fs.existsSync(voiceFullPath)) cmd += ` --voice "${voiceFullPath}"`;
+                if (fs.existsSync(musicFullPath)) cmd += ` --music "${musicFullPath}"`;
+                execSync(cmd, { stdio: 'ignore' });
+                console.log(`[AI Director] Bande-son master assemblée avec succès : ${path.basename(masterSoundtrackPath)}`);
+            }
+        } catch (audioMuxErr) {
+            console.warn('[AI Director] Avertissement assemblage soundtrack master :', audioMuxErr.message);
+        }
+    }
 
     checkpoint.status = 'completed';
     checkpoint.progress = 100;

@@ -2726,6 +2726,36 @@
             box-shadow: 0 6px 30px rgba(255, 255, 255, 0.45);
         }
 
+        .btn-roadmap-wide {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            background: #161a26;
+            color: #cbd5e1;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+        }
+
+        .btn-roadmap-wide:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+            border-style: dashed;
+        }
+
+        .btn-roadmap-wide:not(:disabled):hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.35);
+        }
+
         .btn-generate:disabled, .btn-generate[disabled] {
             background: rgba(255, 255, 255, 0.05) !important;
             border-color: rgba(255, 255, 255, 0.1) !important;

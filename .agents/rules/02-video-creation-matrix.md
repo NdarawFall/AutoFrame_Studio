@@ -205,6 +205,52 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
     - **ZÉRO MARCHE EN RECULONS INVOLONTAIRE** : Tout être vivant 3D doit pivoter face à sa cible AVANT d'avancer, et courir dans le sens exact de son regard (`rotation.y` aligné sur le vecteur mouvement).
     - **BIOMÉCANIQUE DE L'ACCROUPISSEMENT / AGENOUILLEMENT** : Lorsqu'un personnage s'accroupit ou s'agenouille, les pieds restent ancrés au sol ou les tibias partent vers l'arrière sous les fesses. Les jambes entières ne doivent jamais pivoter en l'air vers l'avant.
 
+   * **Règle 42 : Diversité & Motivation des Transitions Cinématiques entre Scènes** :
+     - **BANNISSEMENT DU FONDU NOIR SYSTÉMATIQUE** : Il est strictement interdit d'appliquer le même fondu au noir fade-out standard sur toutes les transitions d'une vidéo.
+     - **Transitions Motivées par les Éléments Réels de la Scène** :
+       1. **Object Zoom Portal** : La caméra zoome violemment sur un élément central (ex: étoile, mot clé, pupille, logo, écran) qui grandit (scale 1.0 -> 15.0) et remplit l'écran pour dévoiler la scène suivante.
+       2. **Whip Slide (Balayage Dynamique)** : Le mouvement rapide d'un objet (panneau, véhicule, flux de données) entraîne la scène dans un balayage directionnel rapide avec motion blur.
+       3. **Match Cut (Continuité Morphologique)** : Raccord direct où l'objet final d'une scène possède la même forme ou couleur que l'objet initial de la scène suivante.
+       4. **Hard Cut sur Beat** : Coupure nette instantanée sur un temps fort musical ou une punchline (zéro fondu mou).
+       5. **J-Cut & L-Cut** : Décalage audio-visuel d'anticipation (l'audio de la scène suivante démarre 0.3s avant l'image, ou l'audio précédent déborde).
+       6. **Cinematic Dissolve** : Fondu croisé subtil réservé aux scènes lentes et contemplatives.
+
+   * **Règle 43 : Inventaire Outillage & Planification Interne en Mémoire (Zéro Fichier Résiduel)** :
+     - **INVENTAIRE EN MÉMOIRE SANS DÉCHET** : Avant tout codage, l'IA effectue un inventaire ciblé des outils du projet (`07_Scripts/`) et des compétences requises. Aucun fichier temporaire ou déchet résiduel ne doit être laissé sur le disque.
+     - **PAS D'ANALYSE AVEUGLE DE FICHIERS INUTILES** : L'IA ne doit pas analyser d'images ou d'assets si elle ne les utilise pas ou ne peut pas en tirer une information utile.
+     - **SANITISATION MÉCANIQUE** : Tout code produit passe par le sanitizer automatique pour garantir l'absence totale de boutons web, d'étiquettes PowerPoint et de valeurs `NaN`.
+
+   * **Règle 44 : Audio Mix Infaillible — Voix Constante, Ducking Automatique & Fondu Musique Obligatoire** :
+     - **Volume Voix Constant dès 0s (Parade au Bug `amix`)** : La voix off ne doit JAMAIS commencer faible pour monter ensuite. L'assemblage séquentiel de clips voix avec `amix` sans `normalize=0` divise le volume par le nombre d'entrées actives (atténuation jusqu'à -14 dB au début). **Obligation formelle d'assembler la voix avec `07_Scripts/build_soundtrack.cjs` (filtre `concat` natif avec tampons de silence parfaits)** pour un volume 100% stable dès la première milliseconde (-14 LUFS, True Peak -1.0 dBTP).
+     - **Ducking Musique Automatique** : La musique de fond s'atténue de -10 à -14 dB (-18 à -22 dB sous la voix) dès que la voix parle, et remonte doucement (-10 à -12 dB) lors des pauses respiratoires (> 0.8s), de l'intro et de l'outro.
+     - **Fondu de Sortie Musique Obligatoire (`afade=t=out`)** : Toute piste musicale DOIT impérativement comporter un fondu de sortie progressif de 2.0s à 2.5s avant la fin de la vidéo. Aucune vidéo ne doit s'achever sur une coupure audio sèche.
+
+   * **Règle 45 : Zéro Scène Morte — Vitalité Cinématique Continue vs Plateau Cognitif Réfléchi** :
+     - **INTERDICTION FORMELLE DES SCÈNES MORTES SANS VIE** : Une scène vidéo ne doit jamais rester statique et figée.
+     - **Moteurs de vie continue obligatoires** :
+       1. *Dérive caméra continue (Continuous Drift)* : Travelling lent, push-in subtil (scale 1.0 -> 1.05) ou lent pan x/y permanent.
+       2. *Micro-physique & éclairages vivants* : Orbes lumineuses oscillantes (`sine.inOut`), curseurs clignotants, oscillations douces d'éléments.
+       3. *Apparition cinétique cadencée* : Révélation progressive mot par mot synchronisée sur la voix off.
+     - **Exception unique autorisée : Le Plateau Cognitif ("Holding Phase")** : Uniquement pour ancrer l'attention sur un chiffre clé ou une punchline cruciale, la caméra peut marquer un plateau fixe temporaire (1.2s à 1.8s max), mais les lueurs et indicateurs d'ambiance restent vivants.
+
+   * **Règle 46 : Diversité Stylistique des Cards & Animation Interne Décalée (Stagger)** :
+     - **3 Styles de Cards selon le Contexte** :
+       1. *Card Flat Minimaliste / Bento Nette* : Bordure ultra-fine (1px solid rgba(..., 0.08)), contraste maximal, fond neutre.
+       2. *Card 3D en Perspective* : Relief spatial (`perspective(1200px) rotateX(...) rotateY(...)`), réagissant à la caméra.
+       3. *Card Élevée / Ombrée (Elevated Shadow)* : Ombre portée diffuse multicouche (`box-shadow: 0 12px 32px rgba(...)`) avec respect absolu du contraste (zéro halo sombre baveux).
+     - **INTERDICTION DE FAIRE APPARAÎTRE UNE CARD COMME UN BLOC FIGÉ MONOBLOC** :
+       Chaque élément interne de la card (icône d'en-tête, badge, titre, métrique chiffrée, barre de progression/graphique, note) DOIT s'animer de manière décalée (`stagger: 0.06s à 0.10s` ou entrées séquencées).
+
+   * **Règle 47 : Synchronisation Cognitive — Animation Ordonnée / Séquencée vs Animation Simultanée d'Ensemble** :
+     - **Principe Fondamental** : Le mode d'animation dépend de la charge cognitive du spectateur et du scénario :
+       1. **Mode Séquencé / Ordonné (Standard par défaut — 90% des scènes)** :
+          - *Avec Voix Off* : L'animation DOIT suivre scrupuleusement la voix off. Chaque mot, carte, métrique ou graphique apparaît au moment exact où la voix le prononce. L'œil suit l'oreille.
+          - *Sans Voix Off* : L'animation DOIT suivre un ordre hiérarchique logique de lecture humaine (de haut en bas, de gauche à droite : Titre d'accroche $\rightarrow$ Objet / Card principal $\rightarrow$ Détail / Métrique $\rightarrow$ Conclusion / CTA). Le cerveau ne peut comprendre qu'une idée à la fois.
+       2. **Mode Simultané (Exception ciblée d'ambiance globale)** :
+          - Les éléments s'animent tous en même temps **UNIQUEMENT et STRICTEMENT lorsque le spectateur n'a PAS besoin de comprendre chaque élément un par un**, mais perçoit une sensation d'ensemble ou une texture visuelle globale :
+            * *Exemples autorisés* : explosion de confettis, nuage de particules, constellation d'arrière-plan, volée de logos partenaires secondaires en fond, cascade de données matricielles décoratives.
+            * Tout élément porteur de sens doit obligatoirement être ordonné.
+
 
 
 
@@ -216,6 +262,7 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 | :--- | :--- | :--- |
 | `studio-server.cjs` | Serveur local de l'application Studio (port 3000) | `node 07_Scripts/studio-server.cjs` |
 | `ai_director.cjs` | Orchestrateur IA du pipeline complet de création | `node 07_Scripts/ai_director.cjs --prompt "..."` |
+| `build_soundtrack.cjs` | Assemblage et mixage de bande-son master (voix stable, ducking musique, fondu de fin, -14 LUFS) | `node 07_Scripts/build_soundtrack.cjs --out <sortie_wav> [--clips <json> \| --voice <v>] [--music <m>]` |
 | `render.cjs` | Rendu MP4 headless via Puppeteer et FFmpeg (**SUR DEMANDE EXPLICITE UNIQUEMENT**) | `node 07_Scripts/render.cjs <chemin_html> [format]` |
 | `generate_voice.cjs` | Synthèse vocale IA ElevenLabs réaliste | `node 07_Scripts/generate_voice.cjs "<texte>" <sortie_mp3>` |
 | `youtube_clip.cjs` | Recherche, extraction et transcription d'extraits vidéo YouTube | `node 07_Scripts/youtube_clip.cjs --download <url> --start 00:01:10 --end 00:01:25` |
@@ -225,5 +272,6 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
 | `fetch_flag.cjs` | Téléchargement de drapeaux nationaux & territoriaux (SVG vectoriel & PNG gratuits) | `node 07_Scripts/fetch_flag.cjs <pays>` |
 | `fetch_music.cjs` | Téléchargement de musiques libres de droit par genre / ambiance | `node 07_Scripts/fetch_music.cjs <genre> <dossier_sortie>` |
 | `normalize_audio.cjs` | Normalisation sonore aux normes broadcast (-14 LUFS) | `node 07_Scripts/normalize_audio.cjs <entree> <sortie>` |
+| `generate_bg.cjs` | Générateur universel d'arrière-plans animés (SaaS avec néons lissés, gradients, waves, aurora, grid) | `node 07_Scripts/generate_bg.cjs --style saas [--bg "#ffffff"] [--accent "#e11d48"]` |
 | `remove_bg.cjs` | Détourage automatique d'images | `node 07_Scripts/remove_bg.cjs <image>` |
 | `fetch_3d_model.cjs` | Téléchargement de modèles 3D réalistes (.glb/.gltf) avec fallback multi-sources | `node 07_Scripts/fetch_3d_model.cjs --query "<mot_cle>"` |

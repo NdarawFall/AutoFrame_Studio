@@ -268,15 +268,17 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
 
             const promptText = promptEl ? promptEl.value.trim() : '';
             const promptLen = promptText.length;
-            const hasPrompt = promptLen >= 20;
+            // Le prompt est la seule condition indispensable (dès 3 caractères)
+            const hasPrompt = promptLen >= 3;
 
             const scriptText = scriptEl ? scriptEl.value.trim() : '';
             const scriptLen = scriptText.length;
-            const detectedTimings = countTimestamps(scriptText);
-            const hasScript = (scriptLen >= 30 && detectedTimings >= 1);
+            const detectedTimings = typeof countTimestamps === 'function' ? countTimestamps(scriptText) : 0;
+            // Le script est 100% facultatif : s'il est fourni on l'utilise, sinon l'IA s'en charge
+            const hasCustomScript = (scriptLen >= 10);
 
             customScriptContent = scriptText;
-            isCustomScriptEnabled = hasScript;
+            isCustomScriptEnabled = hasCustomScript;
 
             // Compteur Prompt
             if (promptCounter) {
@@ -284,20 +286,18 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     promptCounter.textContent = `${promptLen} caractères (Valide ✓)`;
                     promptCounter.style.color = '#ffffff';
                 } else {
-                    const remaining = 20 - promptLen;
-                    promptCounter.textContent = `${promptLen} / 20 caractères (${remaining} requis)`;
+                    promptCounter.textContent = `${promptLen} / 3 caractères min`;
                     promptCounter.style.color = '#a3a3a3';
                 }
             }
 
-            // Compteur Script Horodaté
+            // Compteur Script Horodaté (100% Facultatif)
             if (scriptCounter) {
-                if (hasScript) {
-                    scriptCounter.textContent = `${scriptLen} caractères (Valide ✓)`;
+                if (hasCustomScript) {
+                    scriptCounter.textContent = `${scriptLen} caractères (Script manuel actif ✓)`;
                     scriptCounter.style.color = '#ffffff';
                 } else {
-                    const remaining = Math.max(0, 30 - scriptLen);
-                    scriptCounter.textContent = `${scriptLen} / 30 caractères (${remaining > 0 ? remaining + ' requis' : 'timings requis'})`;
+                    scriptCounter.textContent = `Facultatif (L'IA génère le script automatiquement)`;
                     scriptCounter.style.color = '#a3a3a3';
                 }
             }
@@ -307,48 +307,34 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                     timingsCounter.textContent = `✓ ${detectedTimings} scène(s) horodatée(s) détectée(s)`;
                     timingsCounter.style.color = '#ffffff';
                 } else {
-                    timingsCounter.textContent = `⏳ 0 timing détecté (Exemple requis : [00:00 - 00:03])`;
+                    timingsCounter.textContent = hasCustomScript ? `Scénarisation libre` : `Automatique par l'IA`;
                     timingsCounter.style.color = '#a3a3a3';
                 }
             }
 
-            const hasFormat = Boolean(currentSelectedFormat);
-            const hasStyle = Boolean(currentSelectedStyle);
-            const hasAudio = Boolean(currentAudioOption);
-            const hasSubtitles = (currentSubtitlesOption !== null && currentSubtitlesOption !== undefined);
+            // Assurer des valeurs par défaut si non encore sélectionnées
+            if (!currentSelectedFormat) currentSelectedFormat = '16:9';
+            if (!currentSelectedStyle) currentSelectedStyle = 'none';
+            if (!currentAudioOption) currentAudioOption = 'full_mix';
+            if (currentSubtitlesOption === null || currentSubtitlesOption === undefined) currentSubtitlesOption = true;
 
-            const isReady = hasPrompt && hasScript && hasFormat && hasStyle && hasAudio && hasSubtitles;
+            // Le bouton s'active dès que le prompt est présent !
+            const isReady = hasPrompt;
 
             if (isReady) {
                 btn.disabled = false;
                 if (hint) {
-                    hint.textContent = 'Prompt et Script horodaté validés ! Prêt pour la génération IA.';
+                    hint.textContent = hasCustomScript
+                        ? 'Prompt et Script manuel détectés ! Prêt pour la génération IA.'
+                        : 'Prompt prêt ! L\'IA va concevoir le script, la voix et la vidéo.';
                     hint.style.color = '#ffffff';
                 }
-                if (dot) dot.style.background = '#ffffff';
+                if (dot) dot.style.background = '#10b981';
             } else {
                 btn.disabled = true;
                 if (hint) {
-                    if (!hasPrompt) {
-                        const remaining = 20 - promptLen;
-                        hint.textContent = `Le prompt doit comporter au moins 20 caractères (${remaining} restant${remaining > 1 ? 's' : ''})`;
-                        hint.style.color = '#a3a3a3';
-                    } else if (!hasScript) {
-                        hint.textContent = 'Le script horodaté est obligatoire (min. 30 car. avec au moins 1 timecode ex: [00:00 - 00:03])';
-                        hint.style.color = '#a3a3a3';
-                    } else if (!hasFormat) {
-                        hint.textContent = 'Veuillez choisir un format vidéo (16:9, 9:16 ou 1:1)';
-                        hint.style.color = 'var(--text-secondary)';
-                    } else if (!hasStyle) {
-                        hint.textContent = 'Veuillez choisir un style de montage';
-                        hint.style.color = 'var(--text-secondary)';
-                    } else if (!hasAudio) {
-                        hint.textContent = 'Veuillez choisir une composition audio (voix, musique, mix...)';
-                        hint.style.color = 'var(--text-secondary)';
-                    } else if (!hasSubtitles) {
-                        hint.textContent = 'Veuillez choisir l\'option de sous-titres (avec ou sans)';
-                        hint.style.color = 'var(--text-secondary)';
-                    }
+                    hint.textContent = 'Écrivez votre prompt ou idée de vidéo pour commencer';
+                    hint.style.color = '#a3a3a3';
                 }
                 if (dot) dot.style.background = 'rgba(255, 255, 255, 0.25)';
             }
@@ -685,9 +671,9 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
         }
 
         let currentSelectedStyle = 'none';
-        let currentSelectedFormat = null;
-        let currentAudioOption = null;
-        let currentSubtitlesOption = null;
+        let currentSelectedFormat = '16:9';
+        let currentAudioOption = 'full_mix';
+        let currentSubtitlesOption = true;
         const currentChannelId = new URLSearchParams(window.location.search).get('channel') || '';
         // Suffixe aléatoire à 4 chiffres unique pour identifier et lier tous les assets d'une même vidéo autonome
         const sessionAssetSuffix = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1243,12 +1229,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 if (!data || !data.success) {
                     const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
                     if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v2/voices', {
+                        const directRes = await fetch('https://api.heygen.com/v3/voices', {
                             headers: { 'X-Api-Key': savedKey }
                         });
                         if (directRes.ok) {
                             const raw = await directRes.json();
-                            const rawVoices = (raw.data && raw.data.voices) || [];
+                            const rawVoices = Array.isArray(raw.data) ? raw.data : (raw.data && raw.data.voices) || [];
                             const voices = rawVoices.map(v => ({
                                 id: v.voice_id,
                                 name: v.name,
@@ -1314,12 +1300,12 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 if (!data || !data.success) {
                     const savedKey = localStorage.getItem('vibeeditor_api_heygen') || '';
                     if (savedKey) {
-                        const directRes = await fetch('https://api.heygen.com/v2/voices', {
+                        const directRes = await fetch('https://api.heygen.com/v3/voices', {
                             headers: { 'X-Api-Key': savedKey }
                         });
                         if (directRes.ok) {
                             const raw = await directRes.json();
-                            const rawVoices = (raw.data && raw.data.voices) || [];
+                            const rawVoices = Array.isArray(raw.data) ? raw.data : (raw.data && raw.data.voices) || [];
                             const voices = rawVoices.map(v => ({
                                 id: v.voice_id,
                                 name: v.name,
@@ -2187,25 +2173,11 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 return;
             }
 
-            if (!currentSelectedFormat) {
-                alert('Veuillez sélectionner un format vidéo (16:9, 9:16 ou 1:1).');
-                return;
-            }
-
-            if (!currentSelectedStyle) {
-                alert('Veuillez sélectionner un style de montage (ou Sans Template).');
-                return;
-            }
-
-            if (!currentAudioOption) {
-                alert('Veuillez choisir une configuration audio.');
-                return;
-            }
-
-            if (currentSubtitlesOption === null || currentSubtitlesOption === undefined) {
-                alert('Veuillez choisir l\'option avec ou sans sous-titres.');
-                return;
-            }
+            // Fallbacks par défaut automatiques et transparents (jamais de blocage)
+            if (!currentSelectedFormat) currentSelectedFormat = '16:9';
+            if (!currentSelectedStyle) currentSelectedStyle = 'none';
+            if (!currentAudioOption) currentAudioOption = 'full_mix';
+            if (currentSubtitlesOption === null || currentSubtitlesOption === undefined) currentSubtitlesOption = true;
 
             // Script horodaté optionnel via le switch
             const isScriptActive = Boolean(document.getElementById('toggleScriptCheckbox')?.checked);
@@ -2213,8 +2185,25 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
             const customScript = isScriptActive && scriptEl ? scriptEl.value.trim() : '';
             const hasCustomScript = isScriptActive && customScript.length > 0;
 
+            // Mise à jour des boutons : Réflexion active de l'IA sur le scénario et la DA
             btn.disabled = true;
-            btn.innerHTML = `<span>Préparation du pipeline IA...</span>`;
+            btn.innerHTML = `<span>🧠 L'IA réfléchit et rédige la feuille de route...</span>`;
+
+            const btnRoadmap = document.getElementById('btnRoadmapTrigger');
+            const btnRoadmapText = document.getElementById('btnRoadmapText');
+            const btnRoadmapBadge = document.getElementById('btnRoadmapBadge');
+            const btnRoadmapIcon = document.getElementById('btnRoadmapIcon');
+
+            if (btnRoadmap) {
+                btnRoadmap.disabled = true;
+                btnRoadmap.style.cursor = 'wait';
+                btnRoadmap.style.background = '#1e293b';
+                btnRoadmap.style.color = '#93c5fd';
+                btnRoadmap.style.border = '1.5px solid rgba(59, 130, 246, 0.7)';
+                if (btnRoadmapIcon) btnRoadmapIcon.textContent = '🧠';
+                if (btnRoadmapText) btnRoadmapText.textContent = "Réflexion IA en cours... Conception du scénario et découpage...";
+                if (btnRoadmapBadge) btnRoadmapBadge.style.display = 'none';
+            }
 
             const useTemplate = (currentSelectedStyle !== 'none');
             const channelId = currentChannelId;
@@ -2300,12 +2289,300 @@ Visuel : Dézoom fluide, centrage géométrique de la carte finale avec bouton d
                 timestamp: Date.now()
             };
 
-            // Sauvegarder dans localStorage pour la page de process
-            localStorage.setItem('vibeeditor_pending_creation', JSON.stringify(payload));
+            // Mémoriser le payload en cours dans une variable globale de session
+            window._currentPendingVideoPayload = payload;
 
-            // Redirection vers la page de suivi en temps réel du processus
-            const targetUrl = channelId 
-                ? `video_processus.html?channel=${encodeURIComponent(channelId)}` 
-                : 'video_processus.html';
-            window.location.href = targetUrl;
+            // Appel API pour générer la feuille de route dans le fichier unique 09_Pages/feuille_de_route.md
+            try {
+                const response = await fetch('/api/generate-roadmap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const respText = await response.text();
+                let result = null;
+                try {
+                    result = JSON.parse(respText);
+                } catch (e) {
+                    throw new Error(`Le serveur n'a pas renvoyé de JSON valide (${response.status}) : ${respText.slice(0, 100)}`);
+                }
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Erreur lors de la génération de la feuille de route.');
+                }
+
+                // Activer le bouton large de feuille de route avec mise en valeur visuelle
+                if (btnRoadmap) {
+                    btnRoadmap.disabled = false;
+                    btnRoadmap.style.cursor = 'pointer';
+                    btnRoadmap.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.2))';
+                    btnRoadmap.style.border = '1px solid rgba(59, 130, 246, 0.5)';
+                    btnRoadmap.style.color = '#ffffff';
+                    btnRoadmap.style.boxShadow = '0 0 25px rgba(37, 99, 235, 0.4)';
+                    if (btnRoadmapIcon) btnRoadmapIcon.textContent = '📄';
+                    if (btnRoadmapText) btnRoadmapText.textContent = 'Voir / Valider la Feuille de Route de Production';
+                    if (btnRoadmapBadge) {
+                        btnRoadmapBadge.style.display = 'inline-block';
+                        btnRoadmapBadge.textContent = 'Prête';
+                    }
+                }
+
+                // Réinitialiser le bouton Créer
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Créer la vidéo</span>`;
+
+                // Ouvrir automatiquement le Grand Modal pour validation/édition
+                openRoadmapModal(result.content);
+
+            } catch (err) {
+                console.error('[Roadmap Error]:', err);
+                showAppNotice(`Impossible de générer la feuille de route :\n${err.message}`, 'Génération Interrompue', 'error');
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Créer la vidéo</span>`;
+                if (btnRoadmap) {
+                    btnRoadmap.disabled = true;
+                    if (btnRoadmapText) btnRoadmapText.textContent = "Feuille de Route (Erreur lors de la génération)";
+                }
+            }
         }
+
+        // =========================================================================
+        // GESTION DU MODAL DE NOTIFICATION DESIGNÉ (REMPLACEMENT TOTAL DES ALERTS)
+        // =========================================================================
+
+        function showAppNotice(message, title = 'Notification', type = 'warning') {
+            const overlay = document.getElementById('appNoticeModalOverlay');
+            const msgEl = document.getElementById('appNoticeMessage');
+            const titleEl = document.getElementById('appNoticeTitle');
+            const iconEl = document.getElementById('appNoticeIconBox');
+            if (!overlay || !msgEl) {
+                console.warn(`[${title}]:`, message);
+                return;
+            }
+
+            msgEl.textContent = String(message || '');
+            if (titleEl) titleEl.textContent = title;
+
+            if (iconEl) {
+                if (type === 'error') {
+                    iconEl.innerHTML = '✕';
+                    iconEl.style.background = 'rgba(239, 68, 68, 0.15)';
+                    iconEl.style.color = '#ef4444';
+                } else if (type === 'success') {
+                    iconEl.innerHTML = '✓';
+                    iconEl.style.background = 'rgba(16, 185, 129, 0.15)';
+                    iconEl.style.color = '#10b981';
+                } else if (type === 'info') {
+                    iconEl.innerHTML = 'ℹ️';
+                    iconEl.style.background = 'rgba(59, 130, 246, 0.15)';
+                    iconEl.style.color = '#3b82f6';
+                } else {
+                    iconEl.innerHTML = '⚠️';
+                    iconEl.style.background = 'rgba(245, 158, 11, 0.15)';
+                    iconEl.style.color = '#f59e0b';
+                }
+            }
+
+            overlay.style.display = 'flex';
+        }
+
+        function closeAppNotice() {
+            const overlay = document.getElementById('appNoticeModalOverlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        function handleAppNoticeOverlayClick(e) {
+            if (e.target && e.target.id === 'appNoticeModalOverlay') {
+                closeAppNotice();
+            }
+        }
+
+        // Remplacement universel de window.alert pour éradiquer tous les popups natifs
+        window.alert = function(msg) {
+            showAppNotice(msg, 'Information', 'warning');
+        };
+
+        // =========================================================================
+        // GESTION DU GRAND MODAL FEUILLE DE ROUTE (ROADMAP PRODUCTION)
+        // =========================================================================
+
+        async function openRoadmapModal(preloadContent) {
+            const overlay = document.getElementById('roadmapModalOverlay');
+            const textarea = document.getElementById('roadmapEditorTextarea');
+            const statusEl = document.getElementById('roadmapStatusIndicator');
+
+            if (statusEl) statusEl.textContent = '';
+
+            if (preloadContent && textarea) {
+                textarea.value = preloadContent;
+            } else if (textarea && (!textarea.value || textarea.value.trim().length === 0)) {
+                try {
+                    const resp = await fetch('/api/get-roadmap');
+                    const data = await resp.json();
+                    if (data && data.content) {
+                        textarea.value = data.content;
+                    }
+                } catch (e) {
+                    console.error('Erreur lecture feuille de route:', e);
+                }
+            }
+
+            if (overlay) {
+                overlay.classList.add('open');
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeRoadmapModal() {
+            const overlay = document.getElementById('roadmapModalOverlay');
+            if (overlay) {
+                overlay.classList.remove('open');
+                overlay.style.display = 'none';
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleRoadmapOverlayClick(e) {
+            if (e.target && e.target.id === 'roadmapModalOverlay') {
+                closeRoadmapModal();
+            }
+        }
+
+        async function saveCurrentRoadmapChanges() {
+            const textarea = document.getElementById('roadmapEditorTextarea');
+            const statusEl = document.getElementById('roadmapStatusIndicator');
+            if (!textarea) return;
+
+            try {
+                if (statusEl) statusEl.textContent = 'Enregistrement...';
+                const resp = await fetch('/api/save-roadmap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: textarea.value })
+                });
+                const res = await resp.json();
+                if (res.success && statusEl) {
+                    statusEl.textContent = '✓ Modifications enregistrées dans feuille_de_route.md !';
+                    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3500);
+                }
+            } catch (err) {
+                if (statusEl) statusEl.textContent = `❌ Erreur : ${err.message}`;
+            }
+        }
+
+        function copyRoadmapContent() {
+            const textarea = document.getElementById('roadmapEditorTextarea');
+            const statusEl = document.getElementById('roadmapStatusIndicator');
+            if (!textarea) return;
+
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                if (statusEl) {
+                    statusEl.textContent = '✓ Contenu copié dans le presse-papier !';
+                    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+                }
+            }).catch(() => {
+                textarea.select();
+                document.execCommand('copy');
+                if (statusEl) statusEl.textContent = '✓ Contenu copié !';
+            });
+        }
+
+        /**
+         * Validation et lancement de la production :
+         * 1. Sauvegarde et vide le fichier feuille_de_route.md pour la session suivante
+         * 2. Stocke le payload dans localStorage
+         * 3. Redirige vers video_processus.html
+         */
+        async function confirmRoadmapAndLaunchProduction() {
+            const btnConfirm = document.getElementById('btnConfirmAndLaunchProduction');
+            const textarea = document.getElementById('roadmapEditorTextarea');
+            const payload = window._currentPendingVideoPayload;
+
+            if (!payload) {
+                showAppNotice('Aucune configuration vidéo en attente. Veuillez d’abord renseigner un prompt.', 'Information', 'warning');
+                return;
+            }
+
+            if (btnConfirm) {
+                btnConfirm.disabled = true;
+                btnConfirm.innerHTML = `<span>Validation & Vidage de la feuille de route...</span>`;
+            }
+
+            try {
+                // RÈGLE FORMELLE : Valider puis VIDER le fichier unique feuille_de_route.md
+                await fetch('/api/validate-roadmap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: textarea ? textarea.value : '' })
+                });
+
+                // Sauvegarder dans localStorage pour la page de process
+                localStorage.setItem('vibeeditor_pending_creation', JSON.stringify(payload));
+
+                // Fermer le modal
+                closeRoadmapModal();
+
+                // Redirection vers video_processus.html
+                const targetUrl = payload.channelId 
+                    ? `video_processus.html?channel=${encodeURIComponent(payload.channelId)}` 
+                    : 'video_processus.html';
+                window.location.href = targetUrl;
+
+            } catch (err) {
+                console.error('Erreur confirmation roadmap:', err);
+                showAppNotice(`Erreur lors de la validation : ${err.message}`, 'Erreur', 'error');
+                if (btnConfirm) {
+                    btnConfirm.disabled = false;
+                    btnConfirm.innerHTML = `<span>Valider et Lancer la Production 🚀</span>`;
+                }
+            }
+        }
+
+        // Liaison globale impérative pour les handlers HTML et écouteurs directs
+        window.openRoadmapModal = openRoadmapModal;
+        window.closeRoadmapModal = closeRoadmapModal;
+        window.handleRoadmapOverlayClick = handleRoadmapOverlayClick;
+        window.saveCurrentRoadmapChanges = saveCurrentRoadmapChanges;
+        window.copyRoadmapContent = copyRoadmapContent;
+        window.confirmRoadmapAndLaunchProduction = confirmRoadmapAndLaunchProduction;
+
+        // Écouteur direct sur le bouton large de déclenchement
+        const btnRoadmapEl = document.getElementById('btnRoadmapTrigger');
+        if (btnRoadmapEl) {
+            btnRoadmapEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                openRoadmapModal();
+            });
+        }
+
+        // Vérifier au chargement si une feuille de route existe déjà
+        (async () => {
+            try {
+                const resp = await fetch('/api/get-roadmap');
+                const data = await resp.json();
+                if (data && data.content && data.content.trim().length > 60 && !data.content.startsWith('<!-- FEUILLE DE ROUTE RÉINITIALISÉE')) {
+                    if (btnRoadmapEl) {
+                        btnRoadmapEl.disabled = false;
+                        btnRoadmapEl.style.cursor = 'pointer';
+                        btnRoadmapEl.style.background = 'linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.2))';
+                        btnRoadmapEl.style.border = '1px solid rgba(59, 130, 246, 0.5)';
+                        btnRoadmapEl.style.color = '#ffffff';
+                        btnRoadmapEl.style.boxShadow = '0 0 25px rgba(37, 99, 235, 0.4)';
+                        const btnIcon = document.getElementById('btnRoadmapIcon');
+                        const btnText = document.getElementById('btnRoadmapText');
+                        const btnBadge = document.getElementById('btnRoadmapBadge');
+                        if (btnIcon) btnIcon.textContent = '📄';
+                        if (btnText) btnText.textContent = 'Voir / Valider la Feuille de Route de Production';
+                        if (btnBadge) {
+                            btnBadge.style.display = 'inline-block';
+                            btnBadge.textContent = 'Prête';
+                        }
+                    }
+                }
+            } catch (e) {}
+        })();

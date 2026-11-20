@@ -16,7 +16,9 @@ Ce skill est divisé en **deux guides spécialisés** :
    - **Interdiction des Storyboards Stéréotypés** : Ne jamais recycler automatiquement le schéma cliché (Bento $\rightarrow$ Code $\rightarrow$ Orbe) ; concevoir une narration visuelle originale adaptée au produit spécifique.
    - **Couplage Obligatoire avec `text_animation`** : Synchronisation obligatoire des mouvements de caméra avec l'apparition des titres animés **mot par mot** (`titleFadeWordsUp`).
    - Explique en détail **quand zoomer** (slow push-in, crash zoom, macro focus), **quand dézoomer** (pull-back, respiration), **quand glisser/pan** et **quand déclencher une transition**.
-   - Contient le catalogue des **5 grands types de transitions** : Whip Pan cinétique, Zoom-Through Portal, Directional Slide masqué, Flash Cut d'impact et Cut Franc.
+   - Contient le catalogue des **transitions cinématographiques** : Cut Franc (standard sobre et direct), J-Cut/L-Cut, Whip Pan cinétique, Zoom-Through Portal (zoom dans un objet/étoile/mot), Directional Slide et Flash Cut.
+   - **Règle de Sobriété Éditoriale** : Ne pas surjouer les transitions partout. Un simple cut franc est souvent le plus propre ; réserver les transitions spectaculaires aux vidéos SaaS premium et démos tech.
+   - **Fondu Noir d'Outro** : Le fondu noir est 100% légitime en fin de vidéo pour clore élégamment la séquence.
 
 2. 👉 **Navigation & Espace 3D Three.js : [`camera_3D.md`](./camera_3D.md)**
    - Explique tout ce qui concerne les **scènes Three.js / WebGL**, les coordonnées spatiales ($X, Y, Z$), les angles d'Euler et la perspective.

@@ -369,3 +369,80 @@ L'arrière-plan fait partie intégrante de la mise en scène vidéo. Ne jamais s
 4. **Sub-Pixel Matrix & Fines Lignes Vectorielles** :
    - Grille ultra-fine 1px semi-transparente (`rgba(255, 255, 255, 0.04)`) avec masque radial au centre pour focaliser l'attention.
 
+---
+
+## 16. Diversité Stylistique des Cards & Animation Interne Décalée (Stagger)
+
+### 16.1 Les 3 Familles Stylistiques de Cards selon le Contexte
+Ne jamais produire des cartes clonées identiques. Choisir la typologie adaptée à la narration :
+
+1. **Card Flat Minimaliste / Bento Nette** :
+   - *Usage* : Données techniques, tableaux de bord épurés, comparaisons factuelles, keynotes blanc/noir purs.
+   - *Style* : Fond aplat neutre (`#09090b` sur sombre, `#ffffff` sur clair), bordure ultra-fine sub-pixel (`1px solid rgba(255, 255, 255, 0.08)` ou `rgba(0, 0, 0, 0.06)`), zéro ombre lourde. Contraste de luminance maximal.
+2. **Card 3D en Perspective (Tilt Spatial)** :
+   - *Usage* : Présentation produit héroïque, SaaS innovant, cartes bancaires, badges de profil.
+   - *Style* : `transform-style: preserve-3d`, angle de vue dynamique (`transform: perspective(1200px) rotateX(8deg) rotateY(-6deg)`), réagissant au travelling caméra.
+3. **Card Élevée / Ombrée (Elevated Shadow Card)** :
+   - *Usage* : Éléments mis en avant au premier plan, alertes, cartes de synthèse.
+   - *Style* : Ombre portée diffuse multicouche (`box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.25), 0 4px 12px -2px rgba(0, 0, 0, 0.12)`).
+   - *Règle d'or du contraste* : L'ombre ne doit JAMAIS salir ou noyer le texte des éléments voisins. Toujours conserver une zone de respiration de 32px minimum.
+
+### 16.2 Règle Absolue d'Animation Interne Décalée (Stagger)
+> 🚫 **INTERDICTION FORMELLE DE FAIRE APPARAÎTRE UNE CARD COMME UN BLOC FIGÉ MONOBLOC.**
+> Une carte qui apparaît d'un coup avec tous ses textes et chiffres figés donne une sensation amateur et statique.
+
+**Chorégraphie d'animation interne obligatoire (`stagger: 0.06s à 0.10s`) :**
+1. **Entrée du conteneur Card** : Entrée en fondu/glissement léger (`y: 25 -> 0`, `opacity: 0 -> 1`, `duration: 0.5s`, `ease: 'expo.out'`).
+2. **Badge / Tag / Icône d'en-tête** : Pop élastique (`scale: 0.7 -> 1`, `opacity: 0 -> 1`, `ease: 'back.out(1.8)'`).
+3. **Titre & Label** : Dévoilement mot par mot (`splitWordsFadeUp` ou `x: -12 -> 0`, `opacity: 0 -> 1`).
+4. **Métrique Chiffrée Clé** : Rolling counter animé de 0 à la valeur finale via target GSAP (`onUpdate: () => el.textContent = Math.round(val)`).
+5. **Jauge / Barre de progression / Sparkline** : Déploiement dynamique de gauche à droite (`width: 0% -> target%` ou tracé SVG `strokeDashoffset`).
+6. **Note / Description de pied** : Fondu enchaîné doux (`opacity: 0 -> 1`, `duration: 0.4s`).
+
+---
+
+## 17. Règle Anti-Scènes Mortes : Vitalité Cinématique Continue vs Plateau Cognitif Réfléchi
+
+> 🚫 **INTERDICTION FORMELLE DES SCÈNES MORTES SANS VIE.**
+> Une scène vidéo ne doit JAMAIS rester inerte et immobile. Le spectateur perçoit immédiatement l'absence de mouvement comme un arrêt sur image non désiré.
+
+### 17.1 Les 3 Moteurs de Vie Continue Obligatoires
+Dans toute scène active, au moins 2 de ces 3 moteurs doivent être en action :
+1. **Dérive Caméra Continue (*Continuous Camera Drift*)** :
+   - Un lent travelling de caméra imperceptible mais permanent : `scale: 1.0 -> 1.05` sur la durée de la scène, ou translation subtile `x: +30px` / `y: -15px`.
+   - Donne la sensation cinématographique d'une caméra portée ou sur chariot fluide.
+2. **Micro-Physique & Éclairages Vivants (*Ambient Motion*)** :
+   - Orbes de lumière qui ondulent doucement (`sine.inOut`, `yoyo: true`).
+   - Curseurs de code clignotants (`@keyframes blink`).
+   - Particules flottantes lentes ou micro-oscillations d'icônes (`y: -6 -> +6px`).
+3. **Apparition Séquentielle Cadencée** :
+   - Les informations se déploient au fur et à mesure de l'écoute de la voix off, mot par mot, chiffre par chiffre.
+
+### 17.2 L'Exception Unique : Le Plateau Cognitif Réfléchi ("Holding Phase")
+- Lorsqu'une scène nécessite une attention de lecture extrême (ex: compréhension d'un benchmark complexe, lecture d'un mot-clé choc ou punchline financière majeure), une **Holding Phase** est autorisée.
+- *Durée strictement calibrée* : **1.2s à 1.8s maximum**.
+- *Maintien de la vie* : Même pendant que la caméra fige son zoom (`ease: 'none'`), les micro-lumières d'ambiance et les indicateurs système continuent de respirer discrètement. La caméra ne s'arrête que pour laisser le cerveau imprimer l'information, puis la scène enchaîne sur sa transition dynamique.
+
+---
+
+## 18. Synchronisation Cognitive de l'Animation (Séquencée vs Simultanée) & Fonds SaaS Harmonisés
+
+### 18.1 Animation Séquencée / Ordonnée vs Animation Simultanée d'Ensemble
+L'animation visuelle obéit au fonctionnement cognitif du cerveau humain. Deux modes distincts doivent être appliqués selon le contexte :
+
+1. **Le Mode Séquencé / Ordonné (Standard Absolu par Défaut — 90% des cas)** :
+   - **Quand il y a une voix off** : L'animation visuelle DOIT suivre scrupuleusement la voix off (mot par mot, phrase par phrase). L'élément visuel (mot-clé, carte, métrique, diagramme) apparaît à l'instant où l'auditeur l'entend. L'œil confirme ce que l'oreille perçoit.
+   - **Quand il n'y a pas de voix off** : L'animation DOIT suivre un ordre hiérarchique rigoureux de lecture humaine (de haut en bas, de gauche à droite : Titre d'accroche $\rightarrow$ Sujet / Carte Bento $\rightarrow$ Chiffre clé / Détail $\rightarrow$ Action / Conclusion).
+   - **Raison neuro-visuelle** : Le regard humain ne peut lire et imprimer qu'une seule information à la fois. Si 4 éléments s'animent en même temps, le regard hésite, se fatigue et ne retient rien.
+
+2. **Le Mode Simultané (L'Exception Ciblée d'Ambiance)** :
+   - Tous les éléments d'une scène ne s'animent en même temps **QUE et UNIQUEMENT SI le spectateur n'a PAS besoin de comprendre chaque élément un par un**, mais perçoit une sensation globale, une énergie ou un motif de fond :
+     * *Exemples légitimes* : Explosion de confettis, pluie ou constellation de particules, volée de logos partenaires en arrière-plan, grille ou trame de fond qui apparaît, cascade de lignes de code purement illustratives.
+     * Tout élément porteur d'information clé ou de texte lisible doit être ordonné séquentiellement.
+
+### 18.2 Conception des Fonds SaaS Harmonisés (`generate_bg.cjs`)
+- **Couleur principale unie** : Fond sombre (`#09090b`, `#000000`) ou fond blanc pur studio (`#ffffff`).
+- **Néons & Couleurs d'Harmonisation** :
+  - Ne jamais projeter une couleur néon brute directement sur le fond sans transition douce (risque de démarcation dure ou d'effet "coup de pinceau").
+  - Utiliser une **seconde couleur complémentaire ou analogue plus douce** autour du néon central (ex: néon rouge vif `#e11d48` enveloppé d'un halo rose dégradé adouci `#fb7185` avec un flou profond de 90px à 140px).
+  - Cela permet de fondre la lumière de manière organique dans le fond blanc ou noir, sans aucun trait dur ni rupture visuelle.

@@ -454,6 +454,29 @@ Chaque scène d'une vidéo doit avoir son propre profil de mouvement de caméra 
 >    - **Le SVG est vectoriel et infiniment scalable** : Un logo ou pictogramme en SVG vectoriel avec `viewBox` conserve des courbes parfaites au zoom.
 >    - **Interdiction formelle de zoomer sur des images matricielles (PNG, JPEG)** : Un zoom sur un PNG/JPEG fait exploser la grille de pixels et dégrade la vidéo. Si un élément graphique ou logo doit être zoomé, il **DOIT impérativement être un SVG vectoriel**.
 
+---
 
+## ✂️ 12. RÈGLE DE SOBRIÉTÉ ÉDITORIALE DES TRANSITIONS & FONDU DE FIN
 
-
+> 🎯 **LE SIMPLE "CUT" EST SOUVENT ROI — LA SOBRIÉTÉ ÉVITE LE SURJEU :**
+> Il est inutile et contre-productif de forcer des transitions complexes à chaque changement de plan.
+>
+> 1. **Le Cut Franc comme Standard Éditorial** :
+>    - Pour la majorité des enchaînements, un **simple cut direct**, un **J-cut** (la voix ou l'effet sonore de la scène suivante démarre 0.2s–0.3s avant l'image) ou un **L-cut** est le montage le plus percutant, propre et cinématographique.
+>    - Cela évite d'alourdir la vidéo avec des acrobaties visuelles artificielles.
+>
+> 2. **Quand utiliser les Transitions Élaborées ? (SaaS Premium & Démos Tech)** :
+>    - Réserver les transitions complexes et spectaculaires (*Object Zoom Portal*, *Whip Slide*, *Match Cut*, morphing) aux vidéos qui exigent un montage de qualité ultra-premium :
+>      - Vidéos promotionnelles et lancements de produits **SaaS & Tech**.
+>      - Démos d'interfaces produit dynamiques.
+>      - Moments de bascule narrative majeure ou révélation d'un climax.
+>
+> 3. **Transitions Motivées par un Objet Réel de la Scène** :
+>    - Si une transition dynamique est utilisée, elle doit s'appuyer sur un élément physique de la scène :
+>      - **Zoom dans une lettre ou un mot-clé** : la caméra plonge dans la boucle d'un « O », d'un « A » ou d'un chiffre qui s'agrandit pour devenir la fenêtre de la scène suivante.
+>      - **Élément en rotation & slide** : une étoile, un badge ou une icône effectue une rotation sur elle-même en grossissant, puis effectue un slide latéral pour balayer le cadre.
+>      - **Écran ou conteneur d'interface** : un mockup d'ordinateur ou de téléphone s'étend pour devenir la scène suivante.
+>
+> 4. **Le Fondu Noir en Fin de Vidéo (Fade-to-Black / Outro)** :
+>    - **En fin de vidéo, le fondu au noir est 100% autorisé et naturel** : Pour conclure l'histoire, un fondu au noir élégant ou un dézoom progressif s'éteignant doucement apporte la respiration finale nécessaire.
+>    - Ce qui est banni, c'est le fondu noir mou *au milieu* de la vidéo entre deux scènes actives, car il casse le rythme. En conclusion, il est parfaitement adapté.

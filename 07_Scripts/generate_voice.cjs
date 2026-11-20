@@ -314,9 +314,9 @@ async function fetchHeyGenVoices(apiKey, forceRefresh = false) {
     }
 
     try {
-        const response = await fetch('https://api.heygen.com/v2/voices', {
+        const response = await fetch('https://api.heygen.com/v3/voices', {
             headers: { 'X-Api-Key': key },
-            signal: AbortSignal.timeout(4000)
+            signal: AbortSignal.timeout(5000)
         });
 
         if (!response.ok) {
@@ -324,7 +324,7 @@ async function fetchHeyGenVoices(apiKey, forceRefresh = false) {
         }
 
         const data = await response.json();
-        const rawVoices = (data.data && data.data.voices) || [];
+        const rawVoices = Array.isArray(data.data) ? data.data : (data.data && data.data.voices) || [];
 
         const voices = rawVoices.map(v => ({
             id: v.voice_id,

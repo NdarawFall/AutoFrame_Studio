@@ -861,6 +861,10 @@ const server = http.createServer(async (req, res) => {
             let status = 'completed';
             let duration = 20.0;
             let format = '16:9';
+            let progress = 100;
+            let phaseLabel = 'Terminée';
+            let canResume = false;
+            let currentStep = '';
             try {
                 if (fs.existsSync(filePath)) {
                     const content = fs.readFileSync(filePath, 'utf8');
@@ -892,9 +896,25 @@ const server = http.createServer(async (req, res) => {
                             format = '9:16';
                         }
                     }
+
+                    // Détection automatique du Checkpoint (.checkpoint.json) pour reprise
+                    const checkpointPath = filePath.replace(/\.html$/i, '') + '.checkpoint.json';
+                    if (fs.existsSync(checkpointPath)) {
+                        try {
+                            const cp = JSON.parse(fs.readFileSync(checkpointPath, 'utf8'));
+                            if (cp.status) status = cp.status;
+                            if (cp.progress !== undefined) progress = cp.progress;
+                            if (cp.phaseLabel) phaseLabel = cp.phaseLabel;
+                            if (cp.currentStep) currentStep = cp.currentStep;
+                            if (status === 'processing' || status === 'interrupted' || cp.canResume) {
+                                canResume = true;
+                                if (status === 'completed') status = 'interrupted';
+                            }
+                        } catch (e) {}
+                    }
                 }
             } catch (e) {}
-            return { status, duration, format };
+            return { status, duration, format, progress, phaseLabel, canResume, currentStep };
         }
 
         try {
@@ -913,7 +933,11 @@ const server = http.createServer(async (req, res) => {
                         channelName: null,
                         status: meta.status,
                         duration: meta.duration,
-                        format: meta.format
+                        format: meta.format,
+                        progress: meta.progress,
+                        phaseLabel: meta.phaseLabel,
+                        canResume: meta.canResume,
+                        currentStep: meta.currentStep
                     });
                 });
             }
@@ -939,7 +963,11 @@ const server = http.createServer(async (req, res) => {
                             channelName: chName,
                             status: meta.status,
                             duration: meta.duration,
-                            format: meta.format
+                            format: meta.format,
+                            progress: meta.progress,
+                            phaseLabel: meta.phaseLabel,
+                            canResume: meta.canResume,
+                            currentStep: meta.currentStep
                         });
                     });
                 });
@@ -966,7 +994,11 @@ const server = http.createServer(async (req, res) => {
                             channelName: cDir.name,
                             status: meta.status,
                             duration: meta.duration,
-                            format: meta.format
+                            format: meta.format,
+                            progress: meta.progress,
+                            phaseLabel: meta.phaseLabel,
+                            canResume: meta.canResume,
+                            currentStep: meta.currentStep
                         });
                     });
                 });
@@ -2016,6 +2048,77 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
+    // 5e0. API de Gestion de la Feuille de Route Unique (Roadmap IA avant création)
+    if (cleanUrl === '/api/generate-roadmap' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', async () => {
+            try {
+                const payload = JSON.parse(body || '{}');
+                const { generateRoadmap } = require('./roadmap_generator.cjs');
+                const result = await generateRoadmap(payload);
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                console.error('Erreur generate-roadmap :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/save-roadmap' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const { saveRoadmap } = require('./roadmap_generator.cjs');
+                const result = saveRoadmap(data.content);
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                console.error('Erreur save-roadmap :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/validate-roadmap' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const { validateAndClearRoadmap } = require('./roadmap_generator.cjs');
+                const result = validateAndClearRoadmap(data.content);
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify(result));
+            } catch (err) {
+                console.error('Erreur validate-roadmap :', err);
+                res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ error: err.message }));
+            }
+        });
+        return;
+    }
+
+    if (cleanUrl === '/api/get-roadmap' && req.method === 'GET') {
+        try {
+            const { getRoadmap } = require('./roadmap_generator.cjs');
+            const result = getRoadmap();
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify(result));
+        } catch (err) {
+            console.error('Erreur get-roadmap :', err);
+            res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ error: err.message }));
+        }
+    }
+
     // 5e1. API d'intégration Coverr.co (Recherche, Test & Téléchargement)
     if (req.url.startsWith('/api/coverr')) {
         const coverrModule = require('./coverr.cjs');
@@ -2709,6 +2812,10 @@ const isInsideRoot = filePath.startsWith(ROOT_DIR);
 
     fs.stat(filePath, (err, stats) => {
         if (err || !stats.isFile()) {
+            if (reqPath.startsWith('/api/')) {
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=UTF-8', 'Access-Control-Allow-Origin': '*' });
+                return res.end(JSON.stringify({ success: false, error: `Route API non trouvée : ${reqPath}` }));
+            }
             res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
             return res.end(`404: Fichier non trouvé (${reqPath})`);
         }
@@ -2829,7 +2936,7 @@ server.listen(PORT, () => {
     console.log(`⌨️   Appuyez sur [Ctrl + C] pour arrêter le serveur.`);
     console.log(`======================================================\n`);
 
-    if (!process.env.IS_ELECTRON) {
+    if (!process.env.IS_ELECTRON && !process.env.NO_BROWSER) {
         const startCmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`;
         exec(startCmd, (err) => {
             if (err) console.log(`Ouvrez manuellement votre navigateur sur ${url}`);

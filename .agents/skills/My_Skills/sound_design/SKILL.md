@@ -182,6 +182,7 @@ Générer `adelay` à partir du manifeste : `ms = Math.round((t − peak) * 1000
 | SFX trop identiques | variantes + pitch ±5 % |
 | Désynchro SFX après coupes | générer les SFX APRÈS le remapping des cues |
 | Audio des `<video>` B-roll dans le rendu | `muted` sur les balises, tout passe par le mix FFmpeg |
+| **Voix qui démarre bas et augmente (Bug `amix`)** | **NE JAMAIS utiliser `amix` pour assembler des clips voix séquentiels** sans `normalize=0`. Par défaut FFmpeg divise le gain par le nombre de flux actifs : à t=0 le volume est divisé par 5 (-14 dB), puis remonte artificiellement à chaque fin de réplique ! **Parade obligatoire : concaténer avec des tampons de silence parfaits (`concat=n=...:v=0:a=1`) via `07_Scripts/build_soundtrack.cjs`.** |
 
 ### B9. Checklist
 - [ ] Marges pré/post-roll appliquées, aucun mot rogné (écouter les 5 premières coupes).
@@ -191,3 +192,26 @@ Générer `adelay` à partir du manifeste : `ms = Math.round((t − peak) * 1000
 - [ ] Pas deux SFX identiques consécutifs ; max 3 simultanés.
 - [ ] Master −14 LUFS, true peak ≤ −1 dBTP.
 - [ ] Short : son à 0 ms et fin qui boucle.
+- [ ] Fondu de sortie musique systématique (2.0s à 2.5s) avant la fin de la vidéo.
+
+---
+
+### B10. RÈGLES DE PRÉCISION AUDIO ABSOLUE (VibeEditor Standards 2026)
+
+#### 1. Volume de la Voix Off 100% Constant (Dès la Seconde Zéro)
+- La voix off doit afficher une présence immédiate et pleine dès sa première attaque (`mean_volume: -18 à -22 dB`, `peak: -1 dBTP`).
+- **Interdiction de rampe de montée involontaire** : Ne jamais appliquer de compression dynamique à fenêtre courte ou d'atténuation multi-pistes.
+- Pour assembler plusieurs fichiers audio séquentiels sur une même timeline, utiliser impérativement :
+  ```bash
+  node 07_Scripts/build_soundtrack.cjs --clips '[{"file":"sc1.mp3","start":0.5},{"file":"sc2.mp3","start":4.4}]' --music "01_Assets/Musiques/track.mp3" --out "01_Assets/Audio_Mix/video_master_soundtrack.wav" --duration 20.0
+  ```
+
+#### 2. Ducking Musique vs Voix (Hiérarchie Sonore Parfaite)
+- **Quand la voix parle** : La musique s'efface en arrière-plan à **−18 dB à −22 dB** par rapport à la voix (soit une baisse de 10 à 14 dB).
+- **Quand la voix marque une pause (> 0.8s), en intro ou en outro** : La musique remonte doucement et avec élégance à **−10 dB à −12 dB**.
+- Attaque : 40–50 ms (baisse réactive sans claquement). Relâchement : 400–500 ms (remontée imperceptible sans effet de pompage).
+
+#### 3. Fondu de Sortie Musique Obligatoire (`afade=t=out`)
+- **Toute musique de fond DOIT impérativement comporter un fondu de sortie progressif** sur les **2.0s à 2.5s** précédant la fin de la vidéo :
+  `afade=t=out:st=${videoDuration - 2.2}:d=2.2`.
+- **Zéro coupure nette ou brutale sur la musique**. L'outro doit s'éteindre dans le calme et la propreté.

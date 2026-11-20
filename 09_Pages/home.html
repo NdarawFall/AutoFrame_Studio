@@ -379,17 +379,17 @@
                         <span class="stat-card-desc">Vidéos publiées sur vos chaînes</span>
                     </div>
 
-                    <!-- CARD 3 : DERNIÈRE VIDÉO CRÉÉE POUR UN COMPTE (TAILLE DES DEUX CARDS RÉUNIES CÔTÉ LONGUEUR, HORS MONTAGE CLIENTS) -->
-                    <div class="reseaux-latest-card">
+                    <!-- CARD 3 : CRÉATION EN ATTENTE / VIDÉO NON TERMINÉE (REPRISE EN 1 CLIC) -->
+                    <div class="reseaux-latest-card" id="reseauxPendingCard">
                         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span class="stat-card-label" style="color: #ffffff; font-weight: 700; font-size: 11.5px;">Dernière Vidéo Créée</span>
-                                <span style="font-size: 9.5px; font-weight: 700; color: #ff3344; background: rgba(255, 51, 68, 0.14); padding: 2px 7px; border-radius: 4px;">Comptes & Chaînes</span>
+                                <span class="stat-card-label" style="color: #ffffff; font-weight: 700; font-size: 11.5px;">Vidéo Non Terminée</span>
+                                <span id="badgePendingState" style="font-size: 9.5px; font-weight: 700; color: #f59e0b; background: rgba(245, 158, 11, 0.14); padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.25);">Reprise Disponible</span>
                             </div>
-                            <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Exclut les montages clients</span>
+                            <span id="labelPendingSub" style="font-size: 11px; color: var(--text-muted); font-style: italic;">Cliquez pour continuer la création</span>
                         </div>
                         <div id="reseauxLatestVideoContainer">
-                            <!-- Rendu dynamique par renderLatestChannelVideoCard() -->
+                            <!-- Rendu dynamique par renderPendingOrInterruptedVideoCard() -->
                         </div>
                     </div>
                 </div>
@@ -2337,6 +2337,16 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             </button>
         </div>
 
+        <!-- BOUTON LARGE FEUILLE DE ROUTE IA (RÈGLE FEUILLE DE ROUTE UNIQUE DANS 09_Pages) -->
+        <div style="margin-top: 14px; margin-bottom: 24px; width: 100%;">
+            <button type="button" id="btnRoadmapTrigger" class="btn-roadmap-wide" onclick="window.openRoadmapModal && window.openRoadmapModal()" disabled
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 16px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: not-allowed; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1.5px solid rgba(255, 255, 255, 0.2); background: #161a26; color: #cbd5e1; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+                <span id="btnRoadmapIcon" style="font-size: 20px;">📋</span>
+                <span id="btnRoadmapText">Feuille de Route de Production IA (En attente du clic « Créer la vidéo »)</span>
+                <span id="btnRoadmapBadge" style="display: none; background: #10b981; color: #ffffff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px; text-transform: uppercase;">Prête</span>
+            </button>
+        </div>
+
     
             </section>
 
@@ -3115,6 +3125,75 @@ Visuel : Portrait de Harry Kane avec socle acrylique pour cacher la coupure bass
             <div class="modal-footer" style="padding: 14px 22px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3);">
                 <button type="button" class="btn-modal-cancel" onclick="closeChannelSettingsModal()">Annuler</button>
                 <button type="button" class="btn-modal-submit" onclick="saveChannelSettingsModal()">Enregistrer les modifications</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GRAND MODAL FEUILLE DE ROUTE DE PRODUCTION IA (RÈGLE FEUILLE DE ROUTE UNIQUE DANS 09_Pages) -->
+    <div class="script-modal-overlay" id="roadmapModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center;" onclick="handleRoadmapOverlayClick(event)">
+        <div class="script-modal-dialog" style="max-width: 980px; width: 92vw; background: #0c0e14; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); display: flex; flex-direction: column; max-height: 88vh; overflow: hidden;">
+            <div class="script-modal-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        📋
+                    </div>
+                    <div>
+                        <h2 style="font-size: 18px; font-weight: 800; color: #ffffff; margin: 0;">Feuille de Route de Production IA (Roadmap)</h2>
+                        <p style="font-size: 13px; color: #94a3b8; margin: 4px 0 0 0;">Vérifiez, éditez et validez le découpage, les prompts d'images fond vert et les B-rolls avant la mise en production.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeRoadmapModal()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; padding: 6px 10px; border-radius: 8px;">✕</button>
+            </div>
+
+            <div style="padding: 14px 24px; background: rgba(59, 130, 246, 0.05); border-bottom: 1px solid rgba(59, 130, 246, 0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #93c5fd;">
+                    <span>📁 Fichier unique :</span>
+                    <strong style="color: #ffffff; font-family: monospace; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;">09_Pages/feuille_de_route.md</strong>
+                    <span>(synchronisé automatiquement)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" onclick="copyRoadmapContent()" style="background: rgba(255,255,255,0.08); color: #ffffff; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <span>📋 Copier le contenu</span>
+                    </button>
+                    <button type="button" onclick="saveCurrentRoadmapChanges()" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <span>💾 Enregistrer les modifs</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="padding: 20px 24px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                <textarea id="roadmapEditorTextarea" style="width: 100%; height: 380px; min-height: 280px; background: #07090e; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; color: #e2e8f0; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; line-height: 1.6; padding: 16px; resize: vertical; outline: none;"></textarea>
+                <div style="font-size: 12px; color: #64748b; display: flex; align-items: center; justify-content: space-between;">
+                    <span>💡 Astuce : Vous pouvez modifier les textes, les prompts d'illustrations ou les timecodes directement ci-dessus.</span>
+                    <span id="roadmapStatusIndicator" style="color: #10b981; font-weight: 600;"></span>
+                </div>
+            </div>
+
+            <div class="script-modal-footer" style="padding: 16px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); background: #080a0f; display: flex; align-items: center; justify-content: space-between;">
+                <button type="button" onclick="closeRoadmapModal()" style="background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 18px; font-weight: 600; font-size: 13px; cursor: pointer;">
+                    Fermer sans lancer
+                </button>
+                <button type="button" id="btnConfirmAndLaunchProduction" onclick="confirmRoadmapAndLaunchProduction()" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; border: none; border-radius: 8px; padding: 12px 24px; font-weight: 800; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);">
+                    <span>Valider et Lancer la Production 🚀</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE NOTIFICATION DESIGNÉ (REMPLACE TOUS LES POPUPS / ALERTS JS) -->
+    <div id="appNoticeModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 100000; align-items: center; justify-content: center;" onclick="handleAppNoticeOverlayClick(event)">
+        <div style="max-width: 460px; width: 90vw; background: #0f121a; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85); overflow: hidden;">
+            <div style="padding: 20px 24px; display: flex; align-items: flex-start; gap: 14px;">
+                <div id="appNoticeIconBox" style="width: 40px; height: 40px; border-radius: 10px; background: rgba(239, 68, 68, 0.15); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                    ⚠️
+                </div>
+                <div style="flex: 1;">
+                    <h3 id="appNoticeTitle" style="font-size: 16px; font-weight: 700; color: #ffffff; margin: 0 0 6px 0;">Notification</h3>
+                    <p id="appNoticeMessage" style="font-size: 13px; line-height: 1.55; color: #94a3b8; margin: 0; white-space: pre-line; word-break: break-word;"></p>
+                </div>
+            </div>
+            <div style="padding: 14px 24px; background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: flex-end;">
+                <button type="button" onclick="closeAppNotice()" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 8px 20px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">Compris</button>
             </div>
         </div>
     </div>

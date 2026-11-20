@@ -231,3 +231,83 @@ Pour garantir une lecture fluide (sans blocage à la lecture ni textes figés) e
 * Empilement Vertical Sous-titre + UI : `02_Composants/Callouts_Badges/vertical_subtitle_ui_stack.html`
 * Suite de Notifications Vidéo : `02_Composants/Callouts_Badges/shadcn_notification_toast.html`
 
+---
+
+## 🗞️ 15. Direction Artistique Documentaire Vox Explainer (Grammaire Papier & Contraste Élevé)
+Inspiré des standards d'animation et de journalisme visuel Vox (*Vox Earworm*, *Borders*, *Explained*) :
+
+1. **Le Fond Papier Vélin Lumineux (Beige clair virant au Blanc, JAMAIS de marron lourd) :**
+   * **Fond obligatoire :** Papier vélin chaud ultra-lumineux (`#faf8f5` à `#f5f2eb`) avec grain papier subtil ou trame de presse légère (`opacity: 0.035`).
+   * **Interdiction absolue des fonds marron chocolat, sépia lourd ou terreux sombre** qui assombrissent, alourdissent et ruinent la lisibilité.
+   * **Contraste maximal :** Encre noir intense (`#111110`) et gris charbon chaud (`#26201b`) sur fond clair.
+
+2. **La Palette d'Accentuation Documentaire Vox :**
+   * **Jaune Surligneur Vox (`#ffe600` / `#fef08a`) :** Coup de marqueur fluide balayant les phrases clés d'un document ou d'une dépêche (`background-size: 0% 100% -> 100% 100%`).
+   * **Rouge d'Impact & Tampons d'Archive (`#dc2626` / `#b91c1c`) :** Réservé aux ruptures historiques, déclarations, cibles militaires et tampons officiels (*TOP SECRET, DÉCRET, INVASION*).
+   * **Bleu Diplomatique / Encre d'Archive (`#1d4ed8` / `#1e3a8a`) :** Pour les traités, citations solennelles et contre-offensives.
+
+3. **Stickers Découpage Papier Blanc (`.vox-paper-cutout`) :**
+   * Personnages historiques (Hitler, Churchill, De Gaulle, Staline), décorations, objets ou symboles détourés entourés d'une **bordure blanche physique façon papier découpé aux ciseaux** (`border: 4px solid #ffffff` ou `filter: drop-shadow(0 0 0 4px #ffffff) drop-shadow(0 10px 20px rgba(0,0,0,0.22))`).
+   * Donnent l'impression d'éléments réels découpés dans un magazine ou une archive papier et posés sur la table d'animation.
+   * Associés systématiquement à l'effet pendule de balancement doux.
+
+4. **Bannissement Formel du Remplissage Parasite (Interdiction des Drapeaux Systématiques) :**
+   * **INTERDICTION FORMELLE** d'insérer des rangées automatiques de drapeaux ou de badges génériques en bas de chaque écran sans justification narrative.
+   * Un drapeau n'apparaît **QUE** si le propos évoque explicitement une nationalité, un changement d'allégeance ou une victoire symbolique (ex: drapeau rouge sur le Reichstag, signature d'un traité bilatéral).
+   * Zéro encombrement visuel : chaque élément à l'écran doit porter une information indispensable.
+
+---
+
+## 🎭 16. Les Formats Visuels Vox Explainer (Image + Illustration + B-Roll Vidéo)
+La mise en scène ne doit **JAMAIS** être un carrousel de slides ou de pavés textuels. Le montage Vox repose sur l'alternance rythmée de formats visuels riches :
+
+1. **Ken Burns Plein Écran (Full Screen Archive) :**
+   * Photographie d'archive en plein écran (1920x1080) avec animation continue de zoom lent (in 1.0 -> 1.10 ou out 1.12 -> 1.0) et dérive panoramique (pan), recouverte d'un grain vintage léger. Brise la monotonie des simples vignettes.
+2. **B-Roll Vidéo Pur d'Archives / Cinéma (Sans Texte) :**
+   * Extraits vidéo réels (avions bombardiers, chars en mouvement, défilés, ruines urbaines) intégrés en haute fluidité (60 FPS) via `yt-dlp` ou les banques intégrées (Coverr / Pixabay). Obligation d'inclure des séquences vidéo réelles dans tout documentaire historique.
+3. **Sticker Papier Découpé & Effet Pendule (Personnage / Objet) :**
+   * Illustration ou archive d'un personnage/objet détouré sur fond vert, entouré d'une bordure blanche papier (`.vox-paper-cutout`), suspendu par le haut et oscillant comme une cloche.
+4. **Scène Carte Tactique 2D Animée :**
+   * Cartographie d'état-major minimaliste sur papier vélin clair.
+   * Flèches vectorielles d'assaut traçant en direct (`strokeDashoffset`), tenaille d'encerclement, lignes de front animées et cibles radar pulsantes.
+5. **Scène Chiffre Clé Monumental & Échelle :**
+   * Compteur tabulaire géant au centre de l'écran (ex: `8 000 000`, `300 000`) qui s'incrémente en direct, accompagné d'une jauge ou d'une phrase d'échelle concrète.
+6. **Scène Document d'Archive Découpé & Surligné :**
+   * Télétype, décret militaire ou coupure de presse d'époque avec scotch ou trombones.
+   * Animation en direct du surligneur jaune Vox balayant la ligne au mot dit.
+   * Tampon rouge claquant avec rebond élastique (`back.out(2)`).
+7. **Règle de Brièveté Textuelle Absolue (Anti-Slide) :**
+   * Le texte ne raconte JAMAIS l'histoire à la place de l'image. Il sert exclusivement de repère ponctuel (une date : `1ER SEPTEMBRE 1939`, un nom : `WINSTON CHURCHILL`, un titre choc : `DÉBÂCLE ÉCLAIR`). Jamais de pavés de phrases de 3 lignes !
+
+---
+
+## ⚡ 17. Physique, Cadence & Continuité Temporelle Vox
+* **Cadence Vive (3 à 5 Secondes par Séquence) :**
+  * Une séquence ne doit durer que **3 à 5 secondes au maximum**.
+  * Dès que la voix off a fini de traiter un élément (ex: l'Exode et ses 8 millions), la séquence **COUPE IMMÉDIATEMENT** vers le plan suivant. Zéro stagnation passive !
+* **Continuité Temporelle Absolue (Zéro Écran Blanc ni Trou Temporel) :**
+  * Le premier plan doit être visible dès **t = 0.00s pile**. Ne jamais démarrer à 0.5s ou 1.0s en laissant un écran vide.
+  * Aucun trou temporel entre les plans : `shotsData[i].start = shotsData[i-1].end`.
+  * La transition sortante d'un plan et l'arrivée du suivant se chevauchent de manière continue pour qu'à aucun millième de seconde l'écran ne devienne un fond blanc désert.
+* **Concordance Absolue Parole / Image :**
+  * Si la voix cite Hitler, on montre Hitler ; dès qu'elle cite le Maréchal Pétain, on coupe vers Pétain ; quand elle cite Churchill, on montre Churchill.
+* **L'Effet Pendule Continu (*Pendulum Bell Sway*) :**
+  * Les cartes, stickers et tirages photos sont ancrés en haut (`transform-origin: 50% 0%`) et oscillent continuellement (`rotate: -1.8deg <-> +1.8deg`, durée: 1.8s, `yoyo: true, repeat: -1`, avec flottement vertical `y: -4px <-> +4px`).
+
+---
+
+## 📋 18. Système Obligatoire de Feuille de Route IA (Roadmap Unique & Pré-Validation)
+Pour toute création de vidéo dans l'application MarvidFlow :
+
+1. **Génération Systématique de la Feuille de Route :**
+   * Dès que l'utilisateur clique sur « Créer la vidéo », l'IA génère impérativement une feuille de route détaillée dans le **fichier unique racine `feuille_de_route.md`**.
+   * Cette feuille de route contient : le découpage précis plan par plan (3-5s), les formats visuels alternés, les B-rolls vidéo réels requis, et les **prompts d'images sur fond vert avec contour papier blanc découpé** pour génération dans Flow / Midjourney.
+2. **Interface & Grand Modal d'Édition :**
+   * En dessous du bouton « Créer », un bouton large passe en chargement (`⏳ Génération...`), puis s'active et s'illumine (`📄 Voir / Valider la Feuille de Route`).
+   * Au clic, le Grand Modal affiche le contenu intégral éditable dans un textarea pour permettre à l'utilisateur de modifier librement le plan avant toute production.
+3. **Contrat de Vidage du Fichier Unique :**
+   * Il n'existe qu'un seul fichier `feuille_de_route.md`.
+   * Dès que l'utilisateur clique sur **« Valider et Lancer la Production 🚀 »**, les modifications sont prises en compte et le fichier `feuille_de_route.md` est **immédiatement vidé / réinitialisé** afin d'être vierge et prêt pour la création suivante.
+
+
+

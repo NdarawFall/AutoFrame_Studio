@@ -12,7 +12,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win",
     "predist": "node 07_Scripts/audit-build-security.cjs",
-    "clean:scratch": "node 07_Scripts/cleanup-scratch.cjs"
+    "clean:scratch": "node 07_Scripts/cleanup-scratch.cjs",
+    "check:arch": "node 07_Scripts/check-architecture.cjs"
   },
   "keywords": [
     "video-editor",
