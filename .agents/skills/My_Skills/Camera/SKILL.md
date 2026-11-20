@@ -11,6 +11,10 @@ Ce skill est divisé en **deux guides spécialisés** :
    - **Règle d'Or du Cadrage & Zoom Intelligent** : Interdiction du zoom aveugle / centré par défaut. La caméra cible impérativement le sujet d'intérêt (card, visage, métrique, logo) avec marge de sécurité (80-120px) sans jamais couper le sujet.
    - **Tracking & Accompagnement cinétique** : Suivi fluide des carousels, défilements Top 10 et actions mobiles (saut, course) pour maintenir l'élément au cœur du regard.
    - **Zooms d'expressions faciales** : Punch-in cinématique ciblé sur les visages lors des réactions (choc, rire, tension) pour décupler l'impact émotionnel.
+   - **Loi Absolue Anti-Répétition & Diversification** : Interdiction de répéter la même chorégraphie sur deux scènes consécutives. Chaque scène doit avoir une identité visuelle et spatiale propre.
+   - **Modulation du Rythme (Pacing & Respiration)** : Distinguer les moments posés/majestueux (0.9s–1.2s + maintien 1.5s–2s pour absorption cognitive) des moments d'impacts rapides (0.25s–0.38s sur chiffres clés). Zéro animation monotone ou uniformément rushée.
+   - **Interdiction des Storyboards Stéréotypés** : Ne jamais recycler automatiquement le schéma cliché (Bento $\rightarrow$ Code $\rightarrow$ Orbe) ; concevoir une narration visuelle originale adaptée au produit spécifique.
+   - **Couplage Obligatoire avec `text_animation`** : Synchronisation obligatoire des mouvements de caméra avec l'apparition des titres animés **mot par mot** (`titleFadeWordsUp`).
    - Explique en détail **quand zoomer** (slow push-in, crash zoom, macro focus), **quand dézoomer** (pull-back, respiration), **quand glisser/pan** et **quand déclencher une transition**.
    - Contient le catalogue des **5 grands types de transitions** : Whip Pan cinétique, Zoom-Through Portal, Directional Slide masqué, Flash Cut d'impact et Cut Franc.
 

@@ -310,7 +310,23 @@
             </div>
 
             <!-- VUE 3 : MODIFIER (CHATBOT IA) -->
-            <div id="viewModifier" style="flex:1; display:none; flex-direction:column; overflow:hidden; background:var(--bg-base);">
+            <div id="viewModifier" style="flex:1; display:none; flex-direction:column; overflow:hidden; background:var(--bg-base); position:relative;">
+                <!-- Overlay Flouté "Bientôt disponible" -->
+                <div id="modifierComingSoonOverlay" style="position:absolute; inset:0; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); background:rgba(9, 9, 11, 0.72); z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; text-align:center; pointer-events:all;">
+                    <div style="width:48px; height:48px; border-radius:12px; background:rgba(255, 255, 255, 0.05); border:1px solid rgba(255, 255, 255, 0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:22px; box-shadow:0 10px 25px rgba(0,0,0,0.4);">
+                        ✨
+                    </div>
+                    <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:9999px; background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.35); color:#f87171; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:12px;">
+                        Bientôt disponible
+                    </div>
+                    <h4 style="font-size:15px; font-weight:700; color:#fafafa; margin-bottom:8px; font-family:var(--font-sans);">
+                        Modification par IA en cours de déploiement
+                    </h4>
+                    <p style="font-size:12px; color:#a1a1aa; line-height:1.5; max-width:270px; margin:0;">
+                        L'assistant d'édition et de modification de vidéo par chat IA sera bientôt disponible dans une prochaine mise à jour globale.
+                    </p>
+                </div>
+
                 <!-- Header Modifier avec Titre à gauche et Bouton Effacer parfaitement aligné à droite -->
                 <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary);">

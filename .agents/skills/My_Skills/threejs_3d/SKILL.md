@@ -260,3 +260,25 @@ loader.load('../01_Assets/3D/mon_modele.glb', (gltf) => {
     scene.add(model);
 });
 ```
+
+---
+
+## 🐾 5. Règles Critiques d'Animation 3D, Pathfinding & Biomécanique (Zéro Clipping & Zéro Marche en Reculons)
+
+### 5.1 Règle de Non-Traversée d'Objets (Zéro Clipping / Pathfinding Réaliste)
+> 🚫 **INTERDICTION FORMELLE DE TRAVERSER DES MEUBLES OU DES MURS :**
+> - Aucun personnage, animal ou objet mobile ne doit **JAMAIS traverser un meuble en ligne droite** (ex: un chien ou un humain passant à travers une table basse ou un canapé).
+> - **Obligation de Waypoints & Contournement** : Si un meuble est sur le chemin, la trajectoire GSAP doit être découpée en étapes (`waypoints`) contournant l'obstacle avec une trajectoire courbe naturelle, OU l'agencement de la pièce doit laisser un couloir de passage large et dégagé.
+
+### 5.2 Orientation Vectorielle du Regard et du Corps (Zéro Marche en Reculons)
+> 🧭 **LE CORPS S'ORIENTE DANS LE SENS DU VECTEUR DÉPLACEMENT :**
+> - Avant d'avancer vers une cible, le personnage ou l'animal **doit obligatoirement pivoter sur son axe Y** (`rotation.y = Math.atan2(dx, dz)`) pour lui faire face.
+> - **Interdiction formelle de glisser ou de marcher en reculons** sans justification narrative explicite (peur/recul). Pour courir vers son maître, le chien pivote pour le regarder, puis court en marche avant dans l'axe de son museau.
+
+### 5.3 Biomécanique Réaliste des Postures (S'accroupir / S'agenouiller)
+> 🧎 **ANATOMIE COHÉRENTE DU CORPS HUMAIN :**
+> - Lorsqu'un personnage s'agenouille ou s'accroupit pour caresser un animal :
+>   - Le bassin descend verticalement vers le sol (`torso.position.y` descend de 1.7 à 0.85).
+>   - Les cuisses plient vers l'avant, **mais les tibias et les pieds restent posés au sol ou partent vers l'arrière sous le corps**.
+>   - **INTERDICTION FORMELLE** de faire pivoter les jambes entières rigides vers l'avant (ce qui ressemble à des jambes cassées flottant en l'air à l'horizontale).
+

@@ -47,9 +47,19 @@ Cohérence : UNE animation « de base » pour tous les titres d'une vidéo + UNE
 | Rôle Typographique | Condition / Structure | Animation Recommandée | Comportement |
 |---|---|---|---|
 | **Titre Monopoliche (DÉFAUT)** | **1 seule police sur tout le titre** (ex: *"Le Grand Écart Mondial"*) | `titleFadeWordsUp` ou `titleFadeWordsDown` | **Mot par mot** avec fondu vers le haut ou bas. Alignement strict garanti sans briser le layout. |
-| **Titre Multipolice** | **Contient un mot dans un autre font** (accent serif / script dual-font) | `titleMultiFontSlide` | **Bloc entier ou ligne par ligne**. ⚠️ **INTERDICTION du mot par mot** pour préserver la baseline ! |
+| **Titre Dual-Font (Standard Haut de Gamme)** | **Bold Sans + Light Fashion Italic** (ex: *ChatGPT Astra*) | `titleMultiFontSlide` ou `titleFadeLinesUp` | **Ligne par ligne ou bloc synchronisé**. Préserve rigoureusement la baseline et supprime tout espace excessif entre les polices. |
 | **Sous-titre (DÉFAUT n°1)** | 1 à 3 lignes descriptives | `subtitleSlideUp` | **Slide vers le haut** du texte entier (ou ligne par ligne avec conteneur masqué si multiligne). |
 | **Sous-titre (DÉFAUT n°2)** | Phrase d'accroche / rythme cinétique | `subtitleWordsSlideRightToLeft` | **Mot par mot de droite à gauche** : chaque mot glisse à sa place et s'y fige définitivement. |
+
+### ✍️ Règle Typographique Dual-Font & Règle d'Unité du Nom de Marque
+> 💡 **Le Contraste Éditorial Moderne (Norme Keynote & SaaS Luxe)** :
+> - **1. Unité Stricte du Nom de Marque / Modèle** : Le nom de marque ou du modèle (ex: `ChatGPT Astra`) doit **TOUJOURS partager la même police, la même graisse et la même couleur** (ex: 100% Bold Sans noir ou 100% blanc). Il est formellement interdit de scinder le nom de marque avec des polices ou des couleurs hétérogènes.
+> - **2. Le Dual-Font concerne UNIQUEMENT le texte narratif** :
+>   - **Police 1 (Base & Puissance)** : Une police Sans-Serif très bold / géométrique (`Plus Jakarta Sans` ou `Outfit` 800/900).
+>   - **Police 2 (Élégance & Emphase)** : Une police Serif légère et raffinée en italique (`Instrument Serif` 400 italic) pour faire ressortir le mot choc ou l'adjectif dans le texte narratif (ex: *"Une nouvelle <span class="fashion">dimension</span>."*).
+> - **Règle d'Espacement Strict** : Les mots s'enchaînent avec un espacement typographique naturel standard (`gap: 0.22em`).
+
+
 
 ### 🎨 Animations d'Impact & Styles Spécialisés
 | Intention | Animation |

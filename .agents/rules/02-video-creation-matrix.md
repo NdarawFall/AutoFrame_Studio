@@ -147,6 +147,67 @@ Ce document réunit l'ensemble des règles fondamentales de conception vidéo, d
     - **Fondu Vidéo** : Fondu progressif vers le noir (`rgba(0, 0, 0, alpha)`) ou vers le blanc studio (`rgba(255, 255, 255, alpha)`) selon le mode, où `alpha = clamp((t - (duration - fadeTime)) / fadeTime, 0, 1)`.
     - **Fondu Audio Musical** : La piste musicale de fond (`audioBgm`) doit obligatoirement baisser son volume progressivement jusqu'à 0 (`audioBgm.volume = baseVol * clamp((duration - t) / fadeTime, 0, 1)`). Aucune vidéo ne doit se terminer par une coupure nette ou brutale du son ou de l'image.
 
+  * **Règle 31 : Interdiction Stricte des Boutons Flottants dans le Vide (Une Vidéo n'est PAS un Site Web)** :
+    - **BANNISSEMENT ABSOLU DES BOUTONS FLOTTANTS DANS LE VIDE** : Ne JAMAIS insérer de bouton d'action cliquable flottant au milieu du canvas (`<button>`, `<a>`, `.cta-action-pill`, *« Essayer maintenant → »*, *« Get Started »* flottant dans les airs).
+    - Une vidéo n'est pas une landing page web interactive. Le spectateur regarde un film vidéo sur son écran ou son smartphone, il ne peut pas cliquer sur la vidéo.
+    - **Seule exception autorisée** : Un bouton intégré organiquement à l'intérieur d'une maquette réaliste d'interface logicielle (ex: bouton dans une barre d'outils d'app). En dehors de ce cadre applicatif, aucun bouton n'est toléré.
+    - **Pour les outros / fins de vidéo** : Afficher sobrement le branding officiel, le slogan, et l'URL textuelle épurée (ex: `chatgpt.com`), avec une typographie cinématographique nette.
+
+  * **Règle 32 : Interdiction des Mentions de Bas de Page Web (« Tous droits réservés... »)** :
+    - **BANNISSEMENT DES MENTIONS LÉGALES ET FOOTERS WEB** : Ne JAMAIS ajouter de mention textuelle de type footer de site internet (`© 2026 OpenAI. Tous droits réservés • Déploiement progressif...`).
+    - Une vidéo n'a pas de footer web. Les bordures et le bas de l'écran doivent rester propres, aérés et cinématiques.
+
+  * **Règle 33 : Interdiction Formelle des Étiquettes Marketing / Pill Badges** :
+    - **ZÉRO ÉTIQUETTE AU-DESSUS DES TITRES** : Ne jamais ajouter de pilules marketing ou badges flottants au-dessus des titres (`.pill-badge`, *« NOUVELLE GÉNÉRATION DE MODÈLE »*, *« ARCHITECTURE COGNITIVE AVANCÉE »*, *« MULTIMODALITÉ OMNI »*, etc.).
+    - Ces étiquettes créent un rendu lourd, scolaire et amateur. Les titres doivent s'affirmer seuls avec force, contraste et pureté.
+
+  * **Règle 34 : Pureté du Logo Officiel (Zéro Cercle en Pointillés, Zéro Halo Flou)** :
+    - **LOGO NET ET ÉPURÉ** : Présenter les logos officiels sous leur forme vectorielle SVG pure et tranchante.
+    - **Interdiction Formelle** d'ajouter des anneaux orbitaux en pointillés qui tournent (`.logo-orbital-ring`), des cercles parasites ou de gros halos flous radiaux multicolores (`.logo-backlight`) derrière le logo. Le logo officiel doit briller par sa géométrie nette et son contraste, sans artifices kitsch.
+
+  * **Règle 35 : Typographie Nette, Lisible & Haute Résolution (Zéro Flou ni Couleur Indéfinie)** :
+    - **Interdiction des dégradés transparents cassés** : L'utilisation de `-webkit-background-clip: text` avec des dégradés complexes sur des conteneurs morcelés en `inline-block` produit des artefacts flous, grisâtres ou illisibles sous Chromium/Puppeteer.
+    - **Contraste Absolu** : Utiliser un blanc pur tranchant (`#ffffff` ou `#f8fafc`) pour le texte principal, avec une couleur d'accent unique, vive et saturée (ex: vert émeraude OpenAI `#10a37f`, cyan vibrant) sur le mot clé d'impact.
+    - **Positionnement Cinématographique** : Bannir l'empilement vertical centré systématique (logo en haut, titre au milieu, sous-titre en bas, tous centrés au même endroit). Composer avec la règle des tiers, l'asymétrie élégante et des hauteurs de ligne confortables.
+
+  * **Règle 36 : Variété Scénaristique Obligatoire (Zéro Scènes Jumelles / Anti-Monotonie)** :
+    - **INTERDICTION DES SCÈNES IDENTIQUES EN SÉRIE** : Il est interdit de produire une vidéo où toutes les scènes partagent le même layout (même fond bleu sombre, mêmes 3 ronds flous, même carte centrale).
+    - Chaque scène doit surprendre le spectateur avec un cadrage et une structure graphique différente :
+      - *Scène 1* : Révélation typographique héroïque et logo tranchant.
+      - *Scène 2* : Visualisation cinétique de performance (benchmark en pleine largeur, métrique géante nette).
+      - *Scène 3* : Workspace / flux de travail réel avec code haute lisibilité.
+      - *Scène 4* : Espace immersif épuré (vision multimodale ou split-screen cinématique).
+      - *Scène 5* : Climax sobre et mémorable avec signature de marque.
+
+  * **Règle 37 : Typographie Dual-Font & Règle d'Unité du Nom de Marque** :
+    - **Unité Stricte du Nom de Marque / Modèle** : Le nom d'un modèle ou d'une marque (ex: `ChatGPT Astra`) doit **toujours avoir la même police, la même graisse et la même couleur** (ex: les deux mots en Bold Sans noir ou blanc). Ne jamais appliquer deux polices différentes à l'intérieur du nom de marque lui-même.
+    - **Le Dual-Font concerne UNIQUEMENT le texte narratif** :
+      1. **Police Primaire Ultra-Bold** (`Plus Jakarta Sans` ou `Outfit` 800) pour l'ensemble du message.
+      2. **Police Secondaire Light Fashion Italic** (`Instrument Serif` 400 italic) pour sublimer le mot clé d'impact dans les phrases (ex: *"Une nouvelle <span class="fashion">dimension</span>."*).
+    - **Zéro Espacement Excessif** : Espacement compact naturel standard.
+
+  * **Règle 38 : Résolution & Zoom : Vectoriel (SVG) vs Matriciel (PNG / JPEG)** :
+    - **Le SVG est vectoriel et infiniment scalable** : Un logo ou pictogramme en SVG vectoriel avec `viewBox` conserve des courbes parfaites au zoom.
+    - **Interdiction formelle de zoomer sur des images matricielles (PNG, JPEG)** : Un zoom sur un PNG/JPEG fait exploser la grille de pixels et dégrade la vidéo. Si un logo ou élément graphique doit être zoomé, il **DOIT impérativement être un SVG vectoriel pur**.
+
+
+  * **Règle 39 : Motivation Absolue de la Caméra sur le Code & Zéro Mouvement Inutile** :
+    - **Zéro slide sur du code inerte** : Il est strictement interdit de déplacer ou zoomer la caméra vers un bloc de code si ce code est statique et n'affiche aucune animation active. Si la caméra glisse ou zoome sur du code, le code DOIT impérativement être en train de s'écrire ou de streamer en direct (`typewriter`, streaming ligne par ligne, curseur lumineux actif).
+    - **Diversification Radicale par Scène** : Chaque scène d'une vidéo doit avoir une signature de caméra unique, sans répéter les mêmes enchaînements d'une scène à l'autre.
+
+  * **Règle 40 : Interdiction Formelle des Textes Explicatifs Parasites (« Show, Don't Tell »)** :
+    - **BANNISSEMENT DES LABELS ET TEXTES EXPLICATIFS EN MODE POWERPOINT** : Il est strictement interdit d'afficher des bandeaux de texte, des badges ou des statuts HUD qui décrivent ce qui se passe à l'écran (ex: *« Chambre plongée dans l'obscurité »*, *« Lumière allumée »*, *« Le personnage se prépare »*, *« Scène 1 : Arrivée »*).
+    - **Loi Fondamentale du Cinéma & de l'Animation** : La vidéo est un médium visuel pur. **L'action doit être montrée par la 3D, le mouvement, le jeu d'acteurs et la lumière**, et non racontée par du texte redondant comme un exposé scolaire.
+    - **Seules exceptions** : Un titre de présentation officiel ou des sous-titres de voix off explicites. En dehors de cela, dans toute scène narrative, animation ou diorama 3D, **ZÉRO texte explicatif à l'écran**.
+
+  * **Règle 41 : Règle de Non-Traversée d'Objets 3D, Biomécanique & Orientation du Regard** :
+    - **ZÉRO CLIPPING À TRAVERS LE MOBILIER** : Il est formellement interdit qu'un personnage ou un animal traverse un meuble (table, canapé, lit, mur) en ligne droite. Les trajectoires doivent obligatoirement contourner les obstacles via des waypoints fluides, ou la scène doit offrir un couloir de passage dégagé.
+    - **ZÉRO MARCHE EN RECULONS INVOLONTAIRE** : Tout être vivant 3D doit pivoter face à sa cible AVANT d'avancer, et courir dans le sens exact de son regard (`rotation.y` aligné sur le vecteur mouvement).
+    - **BIOMÉCANIQUE DE L'ACCROUPISSEMENT / AGENOUILLEMENT** : Lorsqu'un personnage s'accroupit ou s'agenouille, les pieds restent ancrés au sol ou les tibias partent vers l'arrière sous les fesses. Les jambes entières ne doivent jamais pivoter en l'air vers l'avant.
+
+
+
+
 ---
 
 ## 2. Boîte à Outils de l'IA (`07_Scripts/`)

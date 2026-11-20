@@ -346,3 +346,26 @@ aTl.add({
 window.__animeTimelines = window.__animeTimelines || [];
 window.__animeTimelines.push(aTl);
 ```
+
+---
+
+## 15. Techniques Avancées d'Arrière-Plan Cinématique (`background_cinematics.md`)
+
+> 📖 **Guide complet de référence :** Voir [.agents/skills/My_Skills/design_composition/background_cinematics.md](file:///c:/Users/ndara/heygen-new/.agents/skills/My_Skills/design_composition/background_cinematics.md)
+
+L'arrière-plan fait partie intégrante de la mise en scène vidéo. Ne jamais se contenter d'un aplat noir vide ou d'une grille de points basique. Varier selon les 4 familles cinématiques :
+
+1. **Dégradé Néon Liquide / Aurora Flouté Dynamique** :
+   - Blobs de couleurs néon organiques (Cyan `#06b6d4`, Émeraude `#10a37f`, Violet `#8b5cf6`) avec `filter: blur(80px - 110px)` et opacité contenue (0.25 - 0.35).
+   - Mouvement GSAP lent et sinusoïdal en continu (`duration: 12s - 20s`, `repeat: -1, yoyo: true`).
+2. **Éléments Géométriques Diagonaux aux Coins Opposés (Effet Bokeh 35mm)** :
+   - Deux formes vectorielles identiques (ex: étoiles 4 branches ou polygones) positionnées à cheval sur deux coins diagonalement opposés (ex: Haut-Gauche et Bas-Droite).
+   - Partiellement hors-champ (50% masqué par les bords de scène).
+   - Flou d'arrière-plan optique (`filter: blur(45px - 60px)`, opacité `0.18 - 0.25`).
+   - Rotation lente et continue sur toute la vidéo (`rotation: 360` sur 20-30s, `ease: 'none'`). Apporte une profondeur 3D cinématique sans perturber la lisibilité du premier plan.
+3. **Fond Uni Minimaliste & Haute Définition (Zinc Dark Shadcn `#09090b`)** :
+   - Fond sombre luxueux texturé par une micro-vignette radiale (`radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.75) 100%)`).
+   - Surfaces de cartes contrastées en verre dépoli (`rgba(15, 20, 32, 0.75)` avec `backdrop-filter: blur(20px)` et bordure `rgba(255, 255, 255, 0.08)`).
+4. **Sub-Pixel Matrix & Fines Lignes Vectorielles** :
+   - Grille ultra-fine 1px semi-transparente (`rgba(255, 255, 255, 0.04)`) avec masque radial au centre pour focaliser l'attention.
+

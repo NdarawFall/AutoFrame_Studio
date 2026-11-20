@@ -66,6 +66,21 @@ Animation-craft additions on top of core's contract:
 - **Pre-calculated layout constants** — never derive positions from `getBoundingClientRect()` at tween time. Tween-time DOM measurements desync because the renderer samples in parallel; compute coordinates once at composition setup and reuse.
 - **Spatial motion uses GSAP transform aliases only** (`x`, `y`, `scale`, `rotation`). Core's allowlist also permits `opacity` / `color` / `backgroundColor` / `borderRadius` for non-spatial property tweens — but never `width` / `height` / `top` / `left` for layout changes.
 
+### 📐 Règle de Résolution & Zoom : Vectoriel (SVG) vs Matriciel (PNG / JPEG)
+- **Le SVG est vectoriel et infiniment scalable** : Un logo ou une illustration en SVG pur vectoriel peut être zoomé sans aucune perte de netteté à condition que le moteur SVG soit configuré avec un `viewBox` adapté.
+- **Interdiction formelle de zoomer sur des images matricielles (PNG, JPEG, WebP)** : Ne jamais appliquer un gros zoom sur une image matricielle (PNG / JPEG) car cela fait baver les pixels, crée du flou et détruit le rendu professionnel. Si un élément graphique ou logo doit être zoomé, il **DOIT impérativement être un SVG vectoriel**.
+
+### ✍️ Typographie Dual-Font & Règle du Nom de Marque
+- **Le nom de marque / produit reste STRICTEMENT uniforme** : Le nom d'un produit ou d'une marque (ex: `ChatGPT Astra`) doit **TOUJOURS avoir la même police, la même graisse et la même couleur** (ex: les deux mots en Bold Sans noir ou rouge). Il est strictement interdit d'appliquer deux polices différentes à l'intérieur du nom de marque lui-même.
+- **Le contraste Dual-Font concerne UNIQUEMENT le texte narratif** :
+  - Dans les phrases, titres et accroches, utiliser une police principale Ultra-Bold (`Plus Jakarta Sans` ou `Outfit` 800) et faire ressortir le mot clé d'impact avec une police secondaire raffinée Light Fashion Italic (`Instrument Serif` 400 italic). Exemple : *"Une nouvelle <span class="fashion">dimension</span>."*
+  - **Espacement compact** : Espacement standard naturel sans vide artificiel.
+
+### 🎥 Motivation Obligatoire de la Caméra sur le Code & Fin des Mouvements Répétitifs
+- **Zéro slide sur du contenu inerte** : Il est strictement interdit de déplacer ou zoomer la caméra sur un panneau (code, tableau, carte) si ce panneau est inerte et n'affiche aucune animation active. Si la caméra glisse sur du code, le code DOIT impérativement être en train de s'écrire (frappe typewriter, streaming de lignes, curseur actif).
+- **Variété scénaristique radicale** : Chaque scène doit posséder une dynamique de caméra unique. Ne jamais répéter le même schéma d'une scène à l'autre.
+
+
 ## Scripts
 
 ```bash

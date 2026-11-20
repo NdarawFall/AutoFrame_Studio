@@ -92,7 +92,34 @@ L'IA est autorisée à lancer `render.cjs` **UNIQUEMENT** si l'utilisateur formu
 - *« Fais le rendu de la vidéo X »*
 - *« Convertis en MP4 »*
 
-Dans tous les autres cas : **créer/éditer la composition HTML, tester dans le Studio interactif, et fournir le lien ou chemin du fichier à l'utilisateur.**
+Dans tous les autres cas : **créer/éditer la composition HTML, tester dans le Studio interactif, et fournir le lien ou chemin du fichier à l'utilisateur. Le Studio dispose déjà d'un bouton dédié "Lancer le Rendu MP4" que l'utilisateur utilise lui-même.**
+
+### C. Interdiction Absolue du Git Push Automatique
+> [!CAUTION]
+> **ZÉRO PUSH GITHUB SANS DEMANDE EXPLICITE** :
+> L'IA a l'interdiction formelle d'exécuter `git push` ou de synchroniser avec le dépôt distant sans un ordre écrit direct et intentionnel de l'utilisateur.
+
+### D. Interdiction Stricte des Sous-Titres Non Demandés
+> [!CAUTION]
+> **ZÉRO SOUS-TITRE SANS DEMANDE EXPLICITE DU PROMPT** :
+> L'IA ne doit **JAMAIS** générer de conteneur de sous-titres (`.subtitles-bar`, `#captionDisplay`, `captionsTrack`, barres de transcription dynamiques) sauf si l'utilisateur en fait la demande explicite dans son prompt (ex: "ajoute des sous-titres", "avec sous-titres dynamiques").
+> Les compositions doivent rester épurées, cinématiques et focalisées sur le sujet principal.
+
+### E. Interdiction des Boutons Flottants dans le Vide (Une Vidéo n'est PAS un Site Web)
+> [!CAUTION]
+> **ZÉRO BOUTON D'ACTION FLOTTANT** :
+> Les vidéos ne sont pas des pages web cliquables. Ne JAMAIS insérer de bouton d'action flottant dans le vide (`.cta-action-pill`, bouton « Essayer maintenant », « En savoir plus »). Seuls les boutons légitimes intégrés à l'intérieur d'une maquette d'interface logicielle (UI mockup) sont autorisés. Pour les fins de vidéo, afficher uniquement la marque, l'accroche et l'URL textuelle épurée.
+
+### F. Interdiction des Mentions de Bas de Page Web (« Tous droits réservés... »)
+> [!CAUTION]
+> **ZÉRO FOOTER OU MENTION LÉGALE WEB** :
+> Ne JAMAIS insérer de mentions légales, copyright ou texte de footer type site web (`© 2026 OpenAI. Tous droits réservés...`). Le cadre de la vidéo doit rester cinématographique, propre et net.
+
+### G. Interdiction des Étiquettes Marketing (Pill Badges) & Halos/Cercles sur les Logos
+> [!CAUTION]
+> **ZÉRO ÉTIQUETTE SCOLAIRE & LOGO PUR SANS ARTIFICE** :
+> 1. Ne JAMAIS surmonter les titres de badges marketing ou de pilules textuelles (`.pill-badge`, « NOUVELLE GÉNÉRATION DE MODÈLE »).
+> 2. Les logos officiels doivent être présentés sous leur forme SVG vectorielle pure : interdiction des anneaux orbitaux en pointillés (`.logo-orbital-ring`) et des halos radiaux flous (`.logo-backlight`).
 
 
 ---

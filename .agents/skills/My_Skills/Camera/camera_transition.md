@@ -374,3 +374,86 @@ tl.to("#stage", {
 | Fin de scène / respiration narrative | Dézoom de respiration (`scale → 0.98`) |
 | Transition vers scène suivante | Choisir dans le catalogue §4 (Whip Pan, Zoom-Through, Slide, Flash, Cut) |
 
+---
+
+## 🚫 7. RÈGLE CRITIQUE : LOI DE DIVERSIFICATION SCÉNIQUE & ANTI-RÉPÉTITION
+
+> ⚠️ **INTERDICTION FORMELLE DU COPIÉ-COLLÉ DE CHORÉGRAPHIE :**
+> Une vidéo ne doit **JAMAIS** répéter le même schéma de caméra ou de transition sur deux scènes consécutives. 
+> Ex: Faire un *Zoom-In sur carte gauche $\rightarrow$ Zoom-In sur carte droite* dans la Scène 2, puis refaire exactement la même chose dans la Scène 3 et la Scène 4 est **STRICTEMENT INTERDIT**.
+
+### A. Règle des Identités Spatiales Distinctes
+Chaque scène d'une vidéo doit avoir son propre profil de mouvement de caméra :
+1. **Scène d'Ouverture (Hook / Intro)** : Élévation majestueuse, lent travelling avant (*Slow Push-In*) créant de la gravité et captant l'œil dès la première seconde.
+2. **Scène Technique / Démonstration** : Travelling horizontal d'accompagnement (*Tracking Dolly*) avec stabilisation sur le sujet actif, suivi d'un cadrage macro précis sans mouvements parasites.
+3. **Scène Dynamique / Comparatif** : Alternance de plans fixes stabilisés et de micro-mouvements angulaires (*Dutch Angle 2-4°*, légers basculements de perspective 3D).
+4. **Scène Visuelle / Multimodale** : Mouvement organique flottant ou zoom d'immersion centré sur le cœur de l'élément visuel.
+5. **Scène de Climax / Outro** : Grand dézoom de révélation continu (*Majestic Pull-Back*) sur 3 à 5 secondes qui donne de la respiration, de l'autorité et assoit le statut de la marque.
+
+---
+
+## ⏱️ 8. RÈGLE DE RYTHME & MODULATION DE VITESSE (PACING & TEMPS DE RESPIRATION)
+
+> ⚠️ **INTERDICTION DU RYTHME MONOTONE OU SYSTÉMATIQUEMENT TROP RAPIDE :**
+> Une vidéo où toutes les animations se jouent à toute vitesse en 0.3s-0.4s épuise le spectateur et rend le message incompréhensible. À l'inverse, une vidéo où tout est mou endort.
+> **Le rythme DOIT MODULER** en fonction de critères objectifs :
+
+### A. Les 4 Niveaux de Vitesse selon la Fonction
+| Type de Moment | Durée Recommandée | Easing | Rôle Narratif |
+| :--- | :--- | :--- | :--- |
+| **Révélation de Titre & Cartes Principales** | **0.9s – 1.2s** | `power2.out` ou `expo.out` | **Majestueux & Lisible**. L'œil a le temps de voir l'élément s'installer sans précipitation. |
+| **Temps de Lecture & Respiration (Plateau)** | **1.2s – 2.2s** | Caméra fixe ou dérive lente (`ease: "none"`) | **Absorption Cognitive**. Aucun élément ne bouge brusquement pendant que le spectateur lit ou écoute un argument clé. |
+| **Choc, Mot Clé ou Chiffre Décisif** | **0.25s – 0.38s** | `power4.out` ou `back.out(1.4)` | **Électrochoc Visuel**. Snap Zoom ou punch élastique pour ancrer la métrique. |
+| **Transitions entre Scènes** | **0.35s – 0.55s** | `power3.inOut` ou `expo.in` | **Liaison Cinétique**. Rapide et nette pour éviter les ventres mous. |
+
+### B. Critères de Décision du Rythme
+1. **Complexité du Contenu** : Plus une scène contient d'éléments d'information (schéma, code, tableau de chiffres, étapes de raisonnement), plus l'entrée doit être déliée et le temps de maintien long.
+2. **Rythme Vocal** : Si la voix off marque une pause ou pose une affirmation solennelle, la caméra ralentit et glisse imperceptiblement. Si la voix accélère ou énumère, la caméra devient plus incisive.
+
+---
+
+## 🧠 9. INTERDICTION DES STORYBOARDS STÉRÉOTYPÉS (NON AUX GABARITS EN SÉRIE)
+
+> ⚠️ **L'IA NE DOIT JAMAIS APPLIQUER UN STORYBOARD PRÉ-DÉTERMINÉ EN MODE « PILOTE AUTOMATIQUE » :**
+> Il est interdit de plaquer automatiquement la même structure de scènes (ex: *Bento Grid $\rightarrow$ Fenêtre IDE de code $\rightarrow$ Orbe Multimodal*) sur toutes les vidéos SaaS ou tech.
+> - **Obligation d'Analyse Spécifique** : L'IA doit concevoir la mise en scène selon le produit exact :
+>   - S'il s'agit d'un produit orienté productivité : montrer un canvas collaboratif, des flux de travail réels, des intégrations d'outils.
+>   - S'il s'agit d'un moteur de recherche ou d'un assistant conversationnel : montrer une interface de réponse structurée et fluide.
+>   - S'il s'agit d'une infrastructure : visualiser des nœuds de réseau, des pipelines de latence, des graphes de clusters.
+> - **Variété des Formats Visuels** : Alterner split-screens, cartes d'arguments asymétriques, visualisations de données, gros plans macro, et typographie cinétique pure.
+
+---
+
+## ✍️ 10. SYNCHRONISATION OBLIGATOIRE AVEC LA TYPOGRAPHIE CINÉTIQUE (`text_animation`)
+
+> ⚠️ **COUPLAGE SYSTÉMATIQUE CAMÉRA $\leftrightarrow$ MOT PAR MOT :**
+> - Ne JAMAIS afficher un titre avec un simple fondu global d'opacité en bloc (`opacity: 0 -> 1` sans animation textuelle).
+> - Tout titre doit impérativement être découpé et animé **mot par mot** (`titleFadeWordsUp` avec stagger `0.10s–0.14s`) conformément au skill `text_animation`.
+> - La caméra démarre son *Slow Push-In* au moment exact où le premier mot du titre s'anime, créant une parfaite synergie entre mouvement spatial et lecture textuelle.
+
+---
+
+## 🎥 11. RÈGLE DE MOTIVATION OBLIGATOIRE DE LA CAMÉRA (ZÉRO HYPER-AGITATION / ZÉRO MOUVEMENT GRATUIT)
+
+> ⚠️ **LA SOBRIÉTÉ EST LE LUXE SUPRÊME : TOUT MOUVEMENT DE CAMÉRA DOIT AVOIR UNE JUSTIFICATION NARRATIVE PRÉCISE.**
+> Il est formellement interdit de secouer, faire tourner ou zoomer la caméra « pour faire du mouvement » ou pour combler un vide.
+>
+> 1. **La Caméra a un But Narratif, Jamais du Cheet** :
+>    - Si la caméra zoome (`scale: 1.0 -> 1.15`), c'est **exclusivement** pour isoler une métrique choquante ou attirer l'attention sur un détail critique.
+>    - Si la caméra effectue un travelling latéral (`x: 0 -> -120`), c'est pour accompagner le regard vers une nouvelle carte qui vient de s'activer.
+>    - Si la caméra effectue un dézoom (`scale: 1.15 -> 1.0`), c'est pour révéler une vue d'ensemble ou conclure majestueusement une séquence.
+> 2. **Le Plateau de Respiration et de Stabilité (Holding Phase Obligatoire)** :
+>    - Dès qu'un texte important, un terminal de code ou un bloc de données clé est affiché, la caméra **DOIT se stabiliser** (mouvement quasi nul : micro-dérive `scale < 0.02` ou vitesse `< 10px/s`).
+>    - Le spectateur ne peut pas lire ni comprendre si le cadre tremble, pivote ou accélère sans raison.
+> 3. **Interdiction Formelle du Slide sur Contenu Inerte (Cas du Code / IDE)** :
+>    - **NE JAMAIS glisser la caméra sur du code statique** : Déplacer la caméra sur un bloc de code alors que le texte est inerte et ne bouge pas est un mouvement vide et parasite.
+>    - Si la caméra se déplace vers du code ou suit un terminal, **le code DOIT IMPÉRATIVEMENT être en train de s'écrire ou de streamer en direct** (typewriter, streaming ligne par ligne, curseur lumineux actif).
+> 4. **Interdiction des Schémas de Caméra Répétitifs d'une Scène à l'Autre** :
+>    - Interdiction absolue de réutiliser la même chorégraphie sur deux scènes (ex: slide gauche puis slide droite répété en boucle). Chaque scène doit posséder une grammaire de caméra distincte (ex: lent push-in majestueux sur le hook, travelling horizontal stable sur benchmark, plongée 3D isométrique sur streaming de code, rotation d'arc spatial sur vision/voix, dézoom majestueux sur climax).
+> 5. **Règle de Résolution & Zoom (SVG vs Matriciel PNG/JPEG)** :
+>    - **Le SVG est vectoriel et infiniment scalable** : Un logo ou pictogramme en SVG vectoriel avec `viewBox` conserve des courbes parfaites au zoom.
+>    - **Interdiction formelle de zoomer sur des images matricielles (PNG, JPEG)** : Un zoom sur un PNG/JPEG fait exploser la grille de pixels et dégrade la vidéo. Si un élément graphique ou logo doit être zoomé, il **DOIT impérativement être un SVG vectoriel**.
+
+
+
+
